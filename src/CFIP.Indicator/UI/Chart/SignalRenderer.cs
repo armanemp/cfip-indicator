@@ -71,26 +71,6 @@ namespace cAlgo
             int arrowBar =
                 hostBar;
 
-            double atr =
-                Atr(
-                    Bars,
-                    Math.Max(
-                        1,
-                        Math.Min(
-                            Bars.Count - 1,
-                            arrowBar)));
-
-            double offset =
-                Math.Max(
-                    Symbol.PipSize *
-                    Math.Max(
-                        0.5,
-                        MinimumArrowOffsetPips),
-                    atr *
-                    Math.Max(
-                        0.02,
-                        ArrowOffsetAtr));
-
             // Canonical MTF trend arrows are rendered once by the calculation
             // lifecycle and are independent of trade actionability.
 
@@ -190,53 +170,6 @@ namespace cAlgo
                                         Bars.Count - 1));
                         }
 
-        private string ResolveTriggerArrowState(
-                            SignalVisualSnapshot snapshot)
-                        {
-                            if (snapshot == null)
-                                return "WATCH";
-
-                            int required =
-                                Math.Max(
-                                    1,
-                                    snapshot.TriggerRuntimeRequired);
-
-                            int score =
-                                Math.Max(
-                                    0,
-                                    snapshot.TriggerRuntimeScore);
-
-                            if (score >= required + 1)
-                                return "STRONG";
-
-                            if (score >= required)
-                                return "CONFIRMED";
-
-                            return "WATCH";
-                        }
-
-        private Color SignalArrowColorFor(
-                            int direction,
-                            string state)
-                        {
-                            if (state == "REACTION")
-                                return BlockedReactionArrowColor;
-                
-                            if (state == "WATCH")
-                                return direction == 1
-                                    ? CautionBuyArrowColor
-                                    : CautionSellArrowColor;
-                
-                            if (state == "CONFIRMED")
-                                return direction == 1
-                                    ? ConfirmedBuyArrowColor
-                                    : ConfirmedSellArrowColor;
-                
-                            return direction == 1
-                                ? StrongBuyArrowColor
-                                : StrongSellArrowColor;
-                        }
-        
         private void DrawIcon(
                             string name,
                             ChartIconType type,
