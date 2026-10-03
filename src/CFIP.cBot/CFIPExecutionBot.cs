@@ -193,7 +193,7 @@ namespace CFIP.cBot
             Print(
                 "CFIP cBot START | environment={1} | hostTimeframe={0} | execTimeframe=M15 | state={2} | " +
                 "marketExecution={3} | pendingStopExecution={4} | pendingLimitExecution={5} | aggressiveExecution={6} | managementExecution={7} | " +
-                "maxSessionExecutions={7} | maxConcurrentScenarios={8} | staleAfter={9}s | managementMaxAge={10}s | maxEntryDrift={11}pips | liveArmed={12} | contractVersion={13}",
+                "maxSessionExecutions={8} | maxConcurrentScenarios={9} | staleAfter={10}s | managementMaxAge={11}s | maxEntryDrift={12}pips | liveArmed={13} | contractVersion={14}",
                 Bars == null ? "UNKNOWN" : Bars.TimeFrame.ToString(),
                 Account.IsLive ? "LIVE" : "DEMO",
                 StartupState,
