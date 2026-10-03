@@ -25,7 +25,7 @@ namespace cAlgo
                 if (!IsScenarioBatchExecutableCandidate(candidate, closedM5))
                     continue;
 
-                items.Add(
+                    items.Add(
                     string.Join(
                         "|",
                         candidate.ScenarioId ?? "",
@@ -43,6 +43,10 @@ namespace cAlgo
                             "R",
                             CultureInfo.InvariantCulture),
                         candidate.ExecutionMode.ToString(),
+                        candidate.ActionableNow ? "NOW" : "WAIT",
+                        candidate.FutureOrderReady ? "FUTURE" : "NONE",
+                        candidate.FutureOrderSource ?? "",
+                        candidate.ExecutionPolicyReason ?? "",
                         candidate.RequestedVolume.ToString(
                             "R",
                             CultureInfo.InvariantCulture)));
@@ -318,11 +322,17 @@ namespace cAlgo
             TradeOpportunityCandidate candidate,
             int closedM5)
         {
+            bool futurePending =
+                candidate != null &&
+                candidate.FutureOrderReady &&
+                (candidate.ExecutionMode == ExecutionMode.ContinuationStop ||
+                 candidate.ExecutionMode == ExecutionMode.ReversalLimit);
+
             return candidate != null &&
                 candidate.CreatedM5 == closedM5 &&
                 !candidate.PresentationOnly &&
                 candidate.ExecutionPolicyAllowed &&
-                candidate.ActionableNow &&
+                (candidate.ActionableNow || futurePending) &&
                 candidate.Direction != 0 &&
                 IsFinitePositive(candidate.Entry) &&
                 IsFinitePositive(candidate.Stop) &&
