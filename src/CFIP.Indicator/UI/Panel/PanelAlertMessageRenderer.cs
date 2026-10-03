@@ -17,8 +17,9 @@ namespace cAlgo
             if (_panelAlertMessageStack != null)
                 return;
 
+            _lastRenderedPanelAlertRevision = -1;
+
             try
-            {
                 _panelAlertMessageStack =
                     new StackPanel
                     {
@@ -205,8 +206,11 @@ namespace cAlgo
             if (_panelAlertMessageStack == null)
                 return;
 
+            if (_lastRenderedPanelAlertRevision ==
+                _panelAlertRevision)
+                return;
+
             try
-            {
                 List<AlertDelivery> messages =
                     new List<AlertDelivery>(
                         _panelAlertHistory ??
@@ -269,9 +273,14 @@ namespace cAlgo
                     !_panelHidden &&
                     _panelAlertHistory != null &&
                     _panelAlertHistory.Count > 0;
+
+                _lastRenderedPanelAlertRevision =
+                    _panelAlertRevision;
             }
             catch (Exception ex)
             {
+                _lastRenderedPanelAlertRevision = -1;
+
                 Print(
                     "CFIP panel alert rail render failed: {0}",
                     ex.Message);
@@ -384,7 +393,7 @@ namespace cAlgo
             return Math.Max(
                 24,
                 Math.Min(
-                    PanelAlertMessageMaxCharacters,
+                    PanelAlertMessageMaxCharacters - 2,
                     (int)(
                         Math.Max(
                             120,
