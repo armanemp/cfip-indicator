@@ -362,6 +362,11 @@ namespace cAlgo
                     ? "UNKNOWN"
                     : _cBotExecutionState.LifecycleState;
 
+            string accountMode =
+                string.IsNullOrWhiteSpace(_cBotExecutionState.ExecutionAccountMode)
+                    ? (_cBotExecutionState.DemoAccount ? "DEMO" : "LIVE")
+                    : _cBotExecutionState.ExecutionAccountMode;
+
             string protection =
                 string.IsNullOrWhiteSpace(_cBotExecutionState.ProtectionState)
                     ? "UNKNOWN"
@@ -369,6 +374,7 @@ namespace cAlgo
 
             return
                 "CBOT " +
+                accountMode + " • " +
                 lifecycle +
                 " • " +
                 protection +
