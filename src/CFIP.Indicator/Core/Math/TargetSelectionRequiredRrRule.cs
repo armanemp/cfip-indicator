@@ -4,74 +4,40 @@ using System.Collections.Generic;
 namespace cAlgo
 {
     /// <summary>
-    /// Canonical required-RR ladder used by every target-selection context.
-    /// Platform-neutral so the ordering invariant is directly contract-tested.
+    /// Canonical adaptive target ladder.
+    ///
+    /// RR is derived from the current stop risk in ATR and the live setup
+    /// quality. It is not a fixed strategy target.
     /// </summary>
     internal static class TargetSelectionRequiredRrRule
     {
         public static double[] BuildRequiredRrLadder(
-            double rrStep,
+            string regime,
             OpportunityLane lane,
-            double tp1MinimumRR,
-            double tp2MinimumRR,
-            double tp3MinimumRR,
-            double tp4MinimumRR,
-            double minimumRequiredRR,
-            double minimumTradeRR,
-            double tacticalOpportunityMinimumRR)
+            double riskAtr,
+            int confidence,
+            int smartQuality,
+            int targetQuality,
+            int structuralQuality,
+            double maximumTargetExtensionAtr)
         {
-            double step =
-                Math.Max(
-                    0.10,
-                    rrStep);
-
-            double canonicalMinimum =
-                Math.Max(
-                    0,
-                    minimumRequiredRR);
-
-            double tp1 =
-                IsTacticalLane(lane)
-                    ? Math.Max(
-                        Math.Max(
-                            Math.Max(0, tp1MinimumRR),
-                            canonicalMinimum),
-                        Math.Max(
-                            1.0,
-                            Math.Max(
-                                0,
-                                tacticalOpportunityMinimumRR)))
-                    : Math.Max(
-                        Math.Max(
-                            Math.Max(
-                                0,
-                                tp1MinimumRR),
-                            canonicalMinimum),
-                        Math.Max(
-                            0,
-                            minimumTradeRR));
-
-            double tp2 =
-                Math.Max(
-                    Math.Max(0, tp2MinimumRR),
-                    tp1 + step);
-
-            double tp3 =
-                Math.Max(
-                    Math.Max(0, tp3MinimumRR),
-                    tp2 + step);
-
-            double tp4 =
-                Math.Max(
-                    Math.Max(0, tp4MinimumRR),
-                    tp3 + step);
+            AdaptiveRewardRiskProfile profile =
+                AdaptiveRewardRiskProfileRule.Resolve(
+                    regime,
+                    lane,
+                    riskAtr,
+                    confidence,
+                    smartQuality,
+                    targetQuality,
+                    structuralQuality,
+                    maximumTargetExtensionAtr);
 
             return new[]
             {
-                tp1,
-                tp2,
-                tp3,
-                tp4
+                profile.RequiredTp1RR,
+                profile.RequiredTp2RR,
+                profile.RequiredTp3RR,
+                profile.RequiredTp4RR
             };
         }
 
@@ -102,26 +68,13 @@ namespace cAlgo
             return true;
         }
 
-        private static bool IsTacticalLane(
-            OpportunityLane lane)
-        {
-            return lane == OpportunityLane.Tactical ||
-                   lane == OpportunityLane.CounterHtfTactical ||
-                   lane == OpportunityLane.MicroReaction;
-        }
-
-        private static bool IsFiniteRequiredRr(
-            double value)
-        {
-            return !double.IsNaN(value) &&
-                   !double.IsInfinity(value);
-        }
-
         private static bool IsFiniteNonNegativeRequiredRr(
             double value)
         {
-            return IsFiniteRequiredRr(value) &&
-                   value >= 0;
+            return
+                !double.IsNaN(value) &&
+                !double.IsInfinity(value) &&
+                value >= 0;
         }
     }
 }
