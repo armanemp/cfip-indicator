@@ -1,6 +1,6 @@
 ## 2026-10-03 — Cross-Layer Semantic & Visual Consistency Hardening
 
-Status: IMPLEMENTATION COMPLETE — verification pending on branch `phase/semantic-consistency-hardening-2026-10-03`.
+Status: VERIFIED COMPLETE — merged to `main` via PR #247, merge commit `5933386c26a787ee3297fc6af825d1d85b74a0c3`.
 
 Completed:
 - Market Bias, primary M15/H1 alignment and realtime header no longer re-encode canonical timeframe direction into a competing BUY/SELL vocabulary.
