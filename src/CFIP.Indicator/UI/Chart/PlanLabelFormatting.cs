@@ -196,21 +196,50 @@ namespace cAlgo
             return text;
         }
 
+        private string BuildTrendStrengthTag()
+        {
+            SignalVisualSnapshot snapshot =
+                _renderSignalVisualSnapshot;
+
+            if (snapshot == null ||
+                snapshot.MtfTrendStrengthLevel <= 0 ||
+                string.IsNullOrWhiteSpace(snapshot.MtfTrendStrengthTier))
+                return "";
+
+            return
+                "TREND " +
+                snapshot.MtfTrendStrengthTier.ToUpperInvariant() +
+                " L" +
+                snapshot.MtfTrendStrengthLevel.ToString(
+                    CultureInfo.InvariantCulture);
+        }
+
         private string BuildPlanLevelLabel(
             string levelName,
             double price,
             double entry,
             bool includeDistance)
         {
-            return BuildCanonicalLevelLabel(
-                "",
-                levelName,
-                price,
-                entry,
-                includeDistance,
-                false,
-                0,
-                PlanTimeframeTag());
+            string text =
+                BuildCanonicalLevelLabel(
+                    "",
+                    levelName,
+                    price,
+                    entry,
+                    includeDistance,
+                    false,
+                    0,
+                    PlanTimeframeTag());
+
+            if (string.Equals(levelName, "ENTRY", StringComparison.OrdinalIgnoreCase))
+            {
+                string trendTag = BuildTrendStrengthTag();
+
+                if (!string.IsNullOrWhiteSpace(trendTag))
+                    text += " • " + trendTag;
+            }
+
+            return text;
         }
 
         private string BuildScenarioLevelLabel(
