@@ -13,9 +13,7 @@ namespace cAlgo
             return EvaluateTacticalOpportunityForDirection(
                 decision,
                 closedM5,
-                decision == null
-                    ? 0
-                    : decision.Direction);
+                decision == null ? 0 : decision.Direction);
         }
 
         private TacticalOpportunityResult EvaluateTacticalOpportunityForDirection(
@@ -28,8 +26,7 @@ namespace cAlgo
                 _m5Frame == null ||
                 _m5Bars == null ||
                 closedM5 < 30 ||
-                (direction != 1 &&
-                 direction != -1))
+                (direction != 1 && direction != -1))
                 return new TacticalOpportunityResult(
                     false,
                     OpportunityLane.Tactical,
@@ -64,21 +61,71 @@ namespace cAlgo
                     0,
                     0);
 
-            double atr =
-                geometry.Atr;
-            double entry =
-                geometry.Entry;
-            double stop =
-                geometry.Stop;
-            double risk =
-                geometry.Risk;
+            double atr = geometry.Atr;
+            double entry = geometry.Entry;
+            double risk = geometry.Risk;
+
+            double riskAtr =
+                risk /
+                Math.Max(Symbol.PipSize, atr);
 
             int zoneQuality =
                 Math.Max(
                     0,
+                    Math.Min(100, geometry.ExecutionQuality));
+
+            int structuralEvidence =
+                StructuralConfirmations(direction);
+
+            int independentEvidence =
+                IndependentEvidence(direction);
+
+            int quality =
+                (int)Math.Round(
                     Math.Min(
                         100,
-                        geometry.ExecutionQuality));
+                        Math.Max(50, directionalScore * 1.6)) * 0.45 +
+                    zoneQuality * 0.15 +
+                    _m5Frame.WaveTrendQuality * 0.20 +
+                    independentEvidence * 5.0 +
+                    structuralEvidence * 5.0);
+
+            bool strongHtfConflict =
+                decision.HtfAnchorDirection != 0 &&
+                decision.HtfAlignment >=
+                Math.Max(
+                    60,
+                    Math.Max(
+                        MinimumTimeframeAgreement,
+                        SmartMinimumTimeframeAgreement)) &&
+                decision.HtfAnchorDirection != direction;
+
+            OpportunityLane lane =
+                strongHtfConflict
+                    ? OpportunityLane.CounterHtfTactical
+                    : OpportunityLane.Tactical;
+
+            AdaptiveRewardRiskProfile profile =
+                AdaptiveRewardRiskProfileRule.Resolve(
+                    decision.Regime,
+                    lane,
+                    riskAtr,
+                    decision.Confidence,
+                    quality,
+                    zoneQuality,
+                    Math.Min(100, structuralEvidence * 12),
+                    MaximumTargetExtensionAtr);
+
+            double requiredRR =
+                profile.RequiredTp1RR;
+
+            double dynamicMaximumRR =
+                Math.Min(
+                    Math.Max(requiredRR, MaximumRewardRR),
+                    Math.Max(
+                        requiredRR,
+                        MaximumTargetExtensionAtr /
+                        Math.Max(0.20, riskAtr)));
 
             List<Level> levels =
                 BuildTargetLevels(
@@ -99,10 +146,8 @@ namespace cAlgo
                         risk,
                         direction,
                         atr,
-                        TacticalOpportunityMinimumRR,
-                        Math.Max(
-                            TacticalOpportunityMinimumRR,
-                            MaximumRewardRR),
+                        requiredRR,
+                        dynamicMaximumRR,
                         entry,
                         false,
                         0,
@@ -114,16 +159,15 @@ namespace cAlgo
                 {
                     bestScore = score;
                     bestTarget =
-                        NormalizePrice(
-                            levels[i].Price);
+                        NormalizePrice(levels[i].Price);
                 }
             }
 
             if (!IsFinitePositive(bestTarget))
                 return new TacticalOpportunityResult(
                     false,
-                    OpportunityLane.Tactical,
-                    0,
+                    lane,
+                    quality,
                     0);
 
             RiskRewardMathResult rewardRiskGeometry =
@@ -133,49 +177,33 @@ namespace cAlgo
                     risk,
                     bestTarget,
                     0,
-                    TacticalOpportunityMinimumRR,
-                    MaximumRewardRR,
+                    requiredRR,
+                    dynamicMaximumRR,
                     Symbol.PipSize);
 
             if (!rewardRiskGeometry.Valid)
                 return new TacticalOpportunityResult(
                     false,
-                    OpportunityLane.Tactical,
-                    0,
+                    lane,
+                    quality,
                     0);
-
-            double rr =
-                rewardRiskGeometry.NominalRR;
-
-            int quality =
-                (int)Math.Round(
-                    Math.Min(
-                        100,
-                        Math.Max(
-                            50,
-                            directionalScore * 1.6)) * 0.45 +
-                    zoneQuality * 0.15 +
-                    _m5Frame.WaveTrendQuality * 0.20 +
-                    IndependentEvidence(direction) * 5.0 +
-                    StructuralConfirmations(direction) * 5.0);
 
             return TacticalOpportunityRule.Evaluate(
                 direction,
                 quality,
                 _m5Frame.WaveTrendQuality,
-                StructuralConfirmations(direction),
-                IndependentEvidence(direction),
+                structuralEvidence,
+                independentEvidence,
                 direction,
                 decision.HtfAnchorDirection,
                 decision.HtfAlignment,
                 Math.Max(
                     MinimumTimeframeAgreement,
                     SmartMinimumTimeframeAgreement),
-                rr,
-                TacticalOpportunityMinimumQuality,
-                TacticalOpportunityMinimumRR,
-                CounterHtfMinimumQuality,
-                CounterHtfMinimumRR);
+                rewardRiskGeometry.NominalRR,
+                riskAtr,
+                decision.Regime,
+                decision.Confidence);
         }
     }
 }
