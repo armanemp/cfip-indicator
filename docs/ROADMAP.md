@@ -1,3 +1,28 @@
+## 2026-10-04 — Native cTrader Signal-Line Presentation Closure
+
+Status: IMPLEMENTED — terminal visual acceptance is the remaining boundary.
+
+The previous implementation had a structural visual mismatch even though the canonical line renderer itself was correct: labels were positioned from the right endpoint and a large rectangle spanned chart bars instead of behaving as a compact cTrader-style price tag.
+
+Root cause closed at the existing single owners:
+- PlanLineRenderer remains the only signal/plan line owner: Solid, 1px, finite, exactly 40 bars ending at the latest candle.
+- PlanLabelAnchorCalculator now resolves the LEFT endpoint of that same line.
+- PlanLabelRenderCoordinator, pending labels and parallel opportunity labels converge on that anchor.
+- PlanLabelRenderer now renders a compact filled tag immediately before the line start, rather than a large box across the signal line.
+- The label uses the exact normalized signal price, white text and the same semantic color as the line.
+- No second line renderer, label renderer, calculation path or alternate visual owner was introduced.
+
+This is a presentation correction only; signal calculation, TP/SL/RR, MTF roles and cBot execution ownership are unchanged.
+
+Verification:
+- Branch source changes committed and static single-owner audit contract updated.
+- Local cTrader compile and target-terminal visual acceptance remain required on the final branch head; they are not claimed from repository-side source inspection.
+
+Operator action: git pull --ff-only
+Then run the Release build and inspect the live cTrader chart once; the acceptance target is one clean 40-bar native-style line with one compact colored price tag attached immediately at its left start, with no floating right-side label.
+
+---
+
 ## 2026-10-04 — Master Full Forensic Audit Baseline
 
 Status: **BASELINE CREATED — audit execution pending.**
