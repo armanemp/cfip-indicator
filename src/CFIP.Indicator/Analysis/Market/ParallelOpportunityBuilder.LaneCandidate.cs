@@ -410,19 +410,6 @@ private TradeOpportunityCandidate BuildLaneCandidate(
             }
         }
 
-        private void AddOpportunityCandidate(
-            TradeOpportunityCandidate candidate)
-        {
-            if (candidate == null)
-                return;
-
-            _tradePlanRegistry.UpsertScenario(
-                candidate,
-                Math.Max(
-                    Symbol.PipSize * 2,
-                    0));
-        }
-
         private double CalculatePreviewStageRR(
             double target,
             double entry,
