@@ -1297,10 +1297,24 @@ if "double atr =" not in protection_code or "_m5Frame.Atr" not in protection_cod
 # Signal/execution synchronization gates.
 PLAN_RENDER = ROOT / "UI" / "Chart" / "PlanRenderCoordinator.cs"
 PLAN_LABEL_RENDER = ROOT / "UI" / "Chart" / "PlanLabelRenderCoordinator.cs"
-for visual_path in (PLAN_RENDER, PLAN_LABEL_RENDER):
-    visual_code = visual_path.read_text(encoding="utf-8")
-    if "SignalVisualSnapshot snapshot" not in visual_code or "snapshot.Stop" not in visual_code:
-        raise SystemExit(f"Plan levels must render through the canonical visual snapshot: {visual_path.name}")
+plan_render_code = PLAN_RENDER.read_text(encoding="utf-8")
+plan_label_render_code = PLAN_LABEL_RENDER.read_text(encoding="utf-8")
+
+if (
+    "SignalVisualSnapshot snapshot" not in plan_render_code or
+    "snapshot.Stop" not in plan_render_code
+):
+    raise SystemExit(
+        "Plan levels must render through the canonical visual snapshot: PlanRenderCoordinator.cs"
+    )
+
+if (
+    "SignalVisualSnapshot snapshot" not in plan_label_render_code or
+    "BuildPlanLevelVisualState(" not in plan_label_render_code
+):
+    raise SystemExit(
+        "Plan labels must consume the canonical visual snapshot state builder"
+    )
 
 # Market/Aggressive broker reporting is owned by the cBot after CBOT-P4A.
 
