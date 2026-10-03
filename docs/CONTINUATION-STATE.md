@@ -1,3 +1,25 @@
+
+## 2026-10-04 — Smart Trend Arrow Single-Owner Hardening
+
+Status: **IMPLEMENTATION COMPLETE — repository verification pending.**
+
+The trend-arrow path has been consolidated to one calculation owner and one rendering owner.
+
+Canonical contracts:
+- src/CFIP.Indicator/Core/Math/MtfTrendStrengthRule.cs owns the complete 1..9 strength calculation.
+- 1..3 = WEAK, 4..6 = MEDIUM, 7..9 = STRONG.
+- src/CFIP.Indicator/UI/Chart/MtfTrendArrowRenderer.cs owns all trend-arrow drawing and cleanup.
+- Legacy HtfTrendArrowStrengthRule and SignalStackedArrowRenderer paths are removed.
+- All signal/presentation/plan paths delegate to the canonical renderer.
+- Arrow separation uses a deterministic minimum based on pip size, ATR and the base candle clearance.
+
+The full-chain invariant remains:
+Pre-analysis → M15 decision → M5 trigger/tuning → M1 optional confirmation → entry geometry → signal/alert → Indicator→cBot contract → cBot safety → broker → confirmation → lifecycle/protection → chart/panel.
+
+Target-terminal validation remains required for actual visual spacing and realtime transitions.
+
+Operator action: do not run git pull until this branch is merged into main; after merge run git pull --ff-only.
+
 ## 2026-10-03 — Single-Owner / No-Duality Repair
 
 Status: VERIFIED COMPLETE — merged to `main` via PR #250, merge commit `2e670514e90deeb46a3f140d1383446f0292c64d`.
