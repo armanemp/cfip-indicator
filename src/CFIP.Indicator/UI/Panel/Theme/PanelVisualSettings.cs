@@ -72,6 +72,9 @@ namespace cAlgo
                                         
                                                     int panelHeight =
                                                         headerHeight +
+                                                        PanelTrendTimeframeLampRowHeight +
+                                                        PanelTrendTimeframeLampTopSpacing +
+                                                        PanelTrendTimeframeLampBottomSpacing +
                                                         scrollHeight +
                                                         buttonAreaHeight +
                                                         padding * 2 +

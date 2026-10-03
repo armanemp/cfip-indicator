@@ -113,6 +113,8 @@ check(
 check(
     "PanelStatusLampFontSize = 20" in constants and
     "PanelStatusLampWidth = 30" in constants and
+    "PanelTrendTimeframeLampRowHeight" in visual and
+    "PanelTrendTimeframeLampTopSpacing" in visual and
     "PanelStatusLampHeight = 30" in constants and
     "PanelStatusLampFontSize" in lamp and
     "PanelStatusLampFontSize" in heartbeat and

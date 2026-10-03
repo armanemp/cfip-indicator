@@ -103,6 +103,95 @@ namespace cAlgo
             }
         }
 
+        private void RefreshPanelAlertFooterGeometry()
+        {
+            if (_panel == null ||
+                _panelStack == null ||
+                _panelScroll == null ||
+                _buttonStack == null ||
+                _panelAlertMessageStack == null)
+                return;
+
+            try
+            {
+                int padding = Math.Max(0, PanelPadding);
+                int border = Math.Max(0, PanelBorderThickness);
+                int contentWidth = EffectivePanelContentWidth();
+
+                int buttonHeight = Math.Max(
+                    22,
+                    Math.Min(40, PanelToggleHeight));
+
+                int toggleHeight = Math.Max(
+                    22,
+                    Math.Min(40, PanelToggleHeight));
+
+                int toggleWidth = Math.Max(
+                    22,
+                    Math.Min(40, PanelToggleWidth));
+
+                int buttonGap = Math.Max(0, PanelButtonGap);
+                int alertRailHeight = GetPanelAlertMessageRailHeight();
+
+                int footerAreaHeight = ResolvePanelFooterAreaHeight(
+                    buttonHeight,
+                    toggleHeight,
+                    alertRailHeight);
+
+                int configuredMaxHeight = Math.Max(
+                    260,
+                    Math.Min(1200, PanelMaxHeight));
+
+                int maxHeight = ResolvePanelMaximumHeight(
+                    configuredMaxHeight);
+
+                int fixedHeight =
+                    PanelHeaderHeight +
+                    PanelTrendTimeframeLampRowHeight +
+                    PanelTrendTimeframeLampTopSpacing +
+                    PanelTrendTimeframeLampBottomSpacing +
+                    footerAreaHeight +
+                    padding * 2 +
+                    border * 2;
+
+                int currentScrollHeight = Math.Max(
+                    120,
+                    (int)Math.Round(_panelScroll.Height));
+
+                int maximumScrollHeight = Math.Max(
+                    120,
+                    maxHeight - fixedHeight);
+
+                int scrollHeight = Math.Min(
+                    currentScrollHeight,
+                    maximumScrollHeight);
+
+                int panelHeight = fixedHeight + scrollHeight;
+
+                _panelScroll.Height = scrollHeight;
+                _panelStack.Height = panelHeight;
+                _panel.Height = panelHeight;
+                _buttonStack.Height = footerAreaHeight;
+
+                _buttonStack.IsVisible =
+                    ShowPanelToggleButton ||
+                    alertRailHeight > 0;
+
+                ApplyPanelAlertMessageRailLayout(
+                    contentWidth,
+                    buttonGap,
+                    toggleWidth);
+
+                SetPanelAlignment();
+            }
+            catch (Exception ex)
+            {
+                Print(
+                    "CFIP compact alert footer geometry refresh failed: {0}",
+                    ex.Message);
+            }
+        }
+
         private void UpdatePanelAlertMessageRail()
         {
             if (_panelAlertMessageStack == null)
