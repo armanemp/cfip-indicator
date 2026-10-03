@@ -65,7 +65,7 @@ namespace cAlgo
                 return BlockScenarioExecutionPolicy("FUTURE STOP / DECISION DIRECTION MISMATCH");
 
             double adaptiveRewardFloor =
-                RegimeAdaptiveRewardFloorRule.Resolve(
+                RegimeAdaptiveRewardFloorRule.ResolveAdaptiveRewardFloor(
                     decision.Regime,
                     0,
                     0);
