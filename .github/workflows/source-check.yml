@@ -151,3 +151,4 @@ jobs:
       - run: python tools/audit_phase_cbot_broker_confirmed_facts_2026_10_03.py
       - run: python tools/audit_phase_cbot_management_policy_hardening_2026_10_03.py
       - run: python tools/audit_phase_realtime_multiscenario_opportunity_engine_2026_10_03.py
+      - run: python tools/audit_phase_cbot_multiscenario_capacity_alignment_2026_10_03.py
