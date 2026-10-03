@@ -37,6 +37,9 @@ computation = read(
 parallel = read(
     "src/CFIP.Indicator/Analysis/Market/ParallelOpportunityBuilder.cs"
 )
+candidate_builder = read(
+    "src/CFIP.Indicator/Analysis/Market/ParallelOpportunityCandidateBuilder.cs"
+)
 timeframe = read(
     "src/CFIP.Indicator/Analysis/Market/TimeframeScenarioBuilder.cs"
 )
@@ -106,7 +109,10 @@ check(
     "parallel candidate ownership is centralized in TradePlanRegistry",
     "UpsertScenario(" in registry and
     "ParallelScenarioSelectionRule.ShouldReplace(" in registry and
-    "_tradePlanRegistry.UpsertScenario(" in parallel and
+    (
+        "_tradePlanRegistry.UpsertScenario(" in parallel or
+        "_tradePlanRegistry.UpsertScenario(" in candidate_builder
+    ) and
     "_opportunityCandidates.Clear();" in timeframe and
     "_tradePlanRegistry.SelectScenariosForDisplay(" in timeframe,
 )
