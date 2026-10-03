@@ -54,7 +54,9 @@ namespace cAlgo
 
                 RenderMtfTrendStrengthArrowStack(
                     snapshot,
-                    visualDirection,
+                    ResolveArrowStackDirection(
+                        snapshot,
+                        visualDirection),
                     hostBar,
                     watchOffset);
             }
