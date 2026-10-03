@@ -65,3 +65,10 @@ Implemented on `main` after live visual/audio feedback:
 - The actual MTF rail geometry is now included in the final panel-height equation; previously the height budget reserved the rail for scroll calculation but omitted it from the final panel height.
 - M1/M5/M15/M30/H1/H4/D1/W1 labels now inherit the exact semantic color of their lamp. Status lamps were enlarged slightly through the shared panel constants.
 - Indicator signal sounds now use a second semantic-event gate: same signal/bar/direction can produce one sound, while a later higher-priority escalation may produce the next sound. Panel messages remain independent, so multiple scenarios are still visible without multiple identical/near-identical audio cues.
+
+
+## Live footer relayout / sound idempotency hardening
+
+A timer-delivered alert now immediately recalculates only the compact footer geometry. The panel keeps its existing scroll content height as far as the configured maximum allows, expands the Footer to the real two-row alert rail, and updates the button-stack height without invoking the expensive full panel row renderer.
+
+Signal audio deduplication now stores a bounded set of recent `symbol | signalId | CreatedClosedM5 | direction` event fingerprints. Interleaving different alerts cannot reset the dedup state, and the same signal event therefore reaches audible playback at most once during the retained window.

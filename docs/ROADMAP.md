@@ -3268,3 +3268,8 @@ The Volume Profile evidence phase is part of the consolidated realtime/live arch
 ## 2026-10-03 — Panel footer / alert sound / popup visibility correction
 
 The latest UI feedback resulted in a second hardening pass on the same panel/alert phase. The implementation keeps the full five-event alert history in memory, but renders a compact two-message rail; adds the MTF rail to the final panel-height calculation; enlarges the shared panel lamps and color-locks timeframe labels to the lamp semantic color; and adds a signal-event sound gate so parallel WATCH/REACTION/ACTION alerts do not produce duplicate or triplicate audio for the same M5 event. The indicator/cBot execution architecture is unchanged: analysis and panel presentation remain in the Indicator, while broker execution remains cBot-owned.
+
+
+## 2026-10-03 — Live alert footer relayout hardening
+
+The panel alert rail now performs an immediate lightweight footer geometry refresh on delivery, so timer-delivered alerts are visible without waiting for a later full panel render. Signal sound deduplication uses a bounded recent event set keyed by symbol/signal/bar/direction, preventing interleaved WATCH/REACTION/ACTION events from producing repeated audio while retaining the compact two-message visual rail.
