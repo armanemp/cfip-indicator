@@ -31,15 +31,6 @@ namespace CFIP.cBot.Execution
                     : SoundType.Confirmation);
         }
 
-        public void PlayLiveDisarmed(
-            Robot robot)
-        {
-            Play(
-                robot,
-                "LIVE EXECUTION DISARMED",
-                SoundType.NegativeNotification);
-        }
-
         public void PlayBlocked(
             Robot robot,
             string reason)
