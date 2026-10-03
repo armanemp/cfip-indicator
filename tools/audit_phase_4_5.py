@@ -82,8 +82,8 @@ check(
     and "index <= 40" in analyzer,
 )
 check(
-    "cache is bounded to the active MTF set",
-    "private const int Capacity = 8;" in frame_cache
+    "cache is bounded to the active MTF set including M2",
+    "private const int Capacity = 9;" in frame_cache
     and "new MarketRegimeFrameCacheEntry[Capacity]" in frame_cache,
 )
 check(
