@@ -152,6 +152,20 @@ namespace cAlgo
                         atr,
                         riskAtr);
 
+                if (string.Equals(
+                        candidate.Timeframe,
+                        "M1",
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    // M1 can tighten risk, but it must never outweigh a
+                    // materially stronger higher-timeframe structural anchor.
+                    score -= Math.Min(
+                        8,
+                        Math.Max(
+                            0,
+                            riskAtr - 0.45) * 10);
+                }
+
                 // Prefer structurally valid stops that leave a larger
                 // reward path after accounting for stop width.
                 score +=
