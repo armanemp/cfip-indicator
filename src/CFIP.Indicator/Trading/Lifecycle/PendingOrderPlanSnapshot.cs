@@ -120,9 +120,8 @@ namespace cAlgo
 
             double[] requiredRR =
                 BuildTargetSelectionRequiredRR(
-                    Math.Max(
-                        0.10,
-                        StructuralTpRrStep),
+                    risk,
+                    atr,
                     lane);
 
             double tp1 =
