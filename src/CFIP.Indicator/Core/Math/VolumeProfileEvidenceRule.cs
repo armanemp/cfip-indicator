@@ -32,10 +32,10 @@ namespace cAlgo
         {
             if (!profile.IsValid ||
                 (direction != 1 && direction != -1) ||
-                !FinitePositive(price) ||
-                !FinitePositive(atr) ||
-                !FinitePositive(profile.BinSize) ||
-                !FinitePositive(profile.VAH - profile.VAL))
+                !IsVolumeFinitePositive(price) ||
+                !IsVolumeFinitePositive(atr) ||
+                !IsVolumeFinitePositive(profile.BinSize) ||
+                !IsVolumeFinitePositive(profile.VAH - profile.VAL))
             {
                 return new VolumeProfileEvidenceResult(
                     0,
@@ -150,7 +150,7 @@ namespace cAlgo
                 reason);
         }
 
-        private static bool FinitePositive(double value)
+        private static bool IsVolumeFinitePositive(double value)
         {
             return
                 !double.IsNaN(value) &&
