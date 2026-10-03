@@ -248,9 +248,7 @@ AddPanelRow(
                                                         AddPanelRow(
                                                             ref slot,
                                                             "EARLY WATCH  •  " +
-                                                            (_prediction.Direction == 1
-                                                                ? "BUY"
-                                                                : "SELL") +
+                                                            DirectionText(_prediction.Direction) +
                                                             "  •  SHARE " +
                                                             _prediction.DirectionalShare +
                                                             "  •  STRENGTH " +
