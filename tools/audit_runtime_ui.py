@@ -164,15 +164,11 @@ if "CreatePanelAlertMessageRail(" not in alert_rail or "ResolvePanelAlertMessage
 
 compact_label_renderer = labels_renderer[labels_renderer.find("private void DrawCompactPlanLabel("):]
 if "return Color.White;" not in labels_renderer:
-    raise SystemExit("All compact plan-level text must use the canonical semantic line color")
-if "Chart.DrawRectangle(" not in compact_label_renderer:
-    raise SystemExit("Plan label renderer must own the cTrader-style filled label box")
-if "box.IsFilled" not in compact_label_renderer:
-    raise SystemExit("Plan label box must be filled")
-if "PlanLinePresentationRule.ResolveColor(" not in compact_label_renderer:
-    raise SystemExit("Plan label box must reuse canonical line color")
-if "GetPlanLineRightBar()" not in labels_renderer:
-    raise SystemExit("Plan label box must attach to the canonical line endpoint")
+    raise SystemExit("All compact plan-level text must use canonical white text")
+if "Chart.DrawRectangle(" in compact_label_renderer:
+    raise SystemExit("Plan labels must remain background-free")
+if "GetPlanLineLeftBar()" not in labels_renderer:
+    raise SystemExit("Plan labels must reuse the canonical line left edge")
 if "OrderVolume(" in server_ladder:
     raise SystemExit("Server TP ladder must use the current relative protection volume API")
 if "new RelativeTakeProfitProtection(" not in server_ladder:
