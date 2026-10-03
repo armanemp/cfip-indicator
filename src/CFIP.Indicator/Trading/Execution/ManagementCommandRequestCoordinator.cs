@@ -240,6 +240,18 @@ namespace cAlgo
                 }
 
                 _managementCommands = unique.ToArray();
+
+                for (int i = 0; i < _managementCommands.Length; i++)
+                {
+                    if (_managementCommands[i] != null)
+                    {
+                        _managementCommandRevision =
+                            Math.Max(
+                                _managementCommandRevision,
+                                _managementCommands[i].CommandRevision);
+                    }
+                }
+
                 _managementCommandsLoaded = true;
                 return _managementCommands;
             }
