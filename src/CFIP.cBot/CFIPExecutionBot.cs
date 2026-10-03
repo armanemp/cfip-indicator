@@ -480,8 +480,9 @@ namespace CFIP.cBot
                     _executionSettings,
                     _dailyLossGuard,
                     pendingAction,
-                    MaxConcurrentScenarios,
+                    EffectiveConcurrentScenarioLimit,
                     nowUtc,
+                    Account.IsLive && executionEnabled,
                     out string environmentReason))
             {
                 LogBlockedState(
@@ -539,7 +540,7 @@ namespace CFIP.cBot
                 {
                     Print(
                         "CFIP {0} PENDING | status={1} | action={2} | " +
-                        "revision={2} | pending={3} | reason={4}",
+                        "revision={3} | pending={4} | reason={5}",
                         EffectiveAccountMode,
                         pendingReport.Status,
                         pendingReport.Action,
@@ -570,7 +571,7 @@ namespace CFIP.cBot
                     nowUtc,
                     MaxExecutionMarginUsagePercent,
                     ExecutionMarginBufferPercent,
-                    MaxConcurrentScenarios,
+                    EffectiveConcurrentScenarioLimit,
                     _idempotencyStore,
                     out BrokerExecutionReport report,
                     out string executionReason))
@@ -582,8 +583,8 @@ namespace CFIP.cBot
             {
                 Print(
                     "CFIP {0} MARKET | status={1} | action={2} | " +
-                    "revision={2} | position={3} | entry={4} | stop={5} | " +
-                    "target={6} | reason={7}",
+                    "revision={3} | position={4} | entry={5} | stop={6} | " +
+                    "target={7} | reason={8}",
                     EffectiveAccountMode,
                     report.Status,
                     report.Action,
