@@ -477,3 +477,148 @@ Evidence commits: b00e744a1bf055bf4d6248124323a8cfd5b6751a, 5a8cbb627b8e3bebb2dc
 Evidence commits: c782be3f610f201ab377bc4bc1a3add4ef472c66, fa9e966239e9a11410c405fd320ffb6023a36dba, e58b113b020579acd81b500a242eb47631ec949b, 1cbff2996dfafb82dc6dd717458e0539d8a5f370, 9d1f404b37a30397fb1e3cd4d200f407a76e5b1a, b99172233f626a0c8017c1d578f9d7d864a6bbdd.
 
 **Modernization disposition:** retained `RenderPanel()` as the sole full-layout renderer; reused the existing heartbeat/content owner; introduced only a canonical invalidation primitive, not a second renderer, cache, timer, or workaround. This also respects cTrader's main-thread UI model and keeps UI work on the indicator lifecycle owner.
+
+
+## 2026-10-04 — M2-A.1 repository/build truth — forensic execution
+
+### Current repository snapshot at exact M2 HEAD
+
+HEAD: `e8809f8bfcd0db7687c76201e8b7ed3b6613976e`
+
+Recursive Git tree truth:
+- 1122 tracked files;
+- 82 directories;
+- 734 C# files;
+- 669 Indicator C# files;
+- 22 cBot C# files;
+- 23 Contracts C# files;
+- 210 Markdown files;
+- 155 Python audit/tool files.
+
+The earlier 1113/731/667/22/22/204 baseline remains historical baseline evidence. It is not the current tree count. The difference is now explicitly classified as repository evolution, not silently treated as an audit failure.
+
+### M2.189 — M2 branch is structurally divergent from current main
+
+**STATUS: OPEN / BLOCKING FOR FINAL-MAIN CLAIM**
+
+Repository refs show:
+- M2 HEAD: `e8809f8bfcd0db7687c76201e8b7ed3b6613976e`
+- `main`: `ae1d4c84ccbeb15dc269bcf681b50481998a0a74`
+- merge base: `a0f5ab1e6d7711d980320f8bb83ecbd4997a148b`
+- M2 branch: 138 commits ahead of main and 67 commits behind main.
+
+This is not a cosmetic branch-name issue. It means the current M2 source graph and current main source graph are not the same project state. A final M2 PASS or merge-readiness claim cannot be made until the canonical integration base is explicitly reconciled and the resulting exact HEAD is re-audited.
+
+**Root cause:** M2 work evolved on a divergent branch while main continued to receive independent work.
+
+**Impact:** A defect fixed only on one side can reappear during integration; file counts, owners, contracts and audit assertions can differ between the two histories.
+
+**Required remediation:** reconcile M2 with the canonical project base before closure; do not overwrite either history and do not assume textual conflict resolution is semantic reconciliation. After reconciliation, rerun M2-A through the affected gates on the exact resulting HEAD.
+
+**Verification:** GitHub compare API; current branch ref and main ref inspected directly.
+
+### M2.190 — repository baseline counters are stale relative to exact HEAD
+
+**STATUS: CLASSIFIED / NOT A PRODUCTION DEFECT**
+
+The master baseline records 1113 files / 731 C# / 667 Indicator C# / 22 Contracts C# / 204 Markdown. Exact M2 HEAD contains 1122 / 734 / 669 / 23 / 210 respectively.
+
+The discrepancy is explained by subsequent repository evolution and added audit/documentation/contract files. The baseline must remain immutable as historical evidence, while current phase documents must always report the exact-HEAD snapshot separately.
+
+**Remediation:** current snapshot added above; future audits must never overwrite historical baseline counts.
+
+### M2.191 — production source is explicitly recompiled into multiple contract-test assemblies
+
+**STATUS: OPEN / BUILD-GRAPH REVIEW REQUIRED**
+
+Current project files explicitly compile the same Indicator production source files into multiple tool assemblies. The current scan found **52 exact source-path overlaps** across the Decision, Planning, Runtime and Execution contract harness projects. Examples include:
+- `NumericGuards.cs`;
+- `MarketRegimeClassifier.cs`;
+- `Decision.cs`;
+- `RiskRewardMathRule.cs`;
+- `TargetProgressionRule.cs`;
+- `BrokerConfirmationPolicy.cs`;
+- `LifecycleEventIdempotencyGuard.cs`.
+
+The Runtime harness alone explicitly compiles 168 Indicator source files.
+
+This is not yet classified as a production duplicate owner: the harnesses are deterministic acceptance executables that intentionally compile selected production rules in isolation. However, it is a **build-graph duplication risk** because one source file can exist in several independently compiled assemblies. A future change can make one harness's transitive context differ from another's, creating false confidence or inconsistent semantics.
+
+**Root cause:** contract/acceptance harnesses use explicit source linking instead of a single shared test/contract assembly boundary.
+
+**Impact:** maintenance drift, duplicate compile contexts, namespace/type-resolution differences, and possible test results that do not represent the exact production build graph.
+
+**Required remediation:** before changing architecture, map each linked source to its reason for isolation. Where the same production rule is required by multiple harnesses, prefer one canonical reusable testable assembly or a shared test fixture boundary that preserves the exact production implementation, without copying or rewriting the rule. Do not solve this by creating another source copy.
+
+**Verification:** all current `*.csproj` files inspected; 52 exact source-path overlaps calculated from explicit `Compile Include` entries.
+
+### M2.192 — nested SDK pinning for the OSS benchmark is intentional and valid
+
+**STATUS: VERIFIED / RETAIN**
+
+Root `global.json` pins .NET 6 for the cTrader-oriented repository. The independent benchmark project targets .NET 8 and contains its own `tools/CFIP.StockIndicators.Benchmark/global.json` pinning SDK 8.0.425. Its workflow also explicitly installs .NET 8.
+
+This is a deliberate toolchain boundary, not an accidental duplicate configuration. Removing the nested pin would make the benchmark depend on the repository-wide .NET 6 SDK and could break its target framework.
+
+### M2.193 — four Python tools are not invoked by Source/Architecture CI
+
+**STATUS: VERIFIED OBSERVATIONAL / RETAIN**
+
+The source-check workflow invokes 151 Python scripts. Four current tools are not in that manifest:
+- `tools/analyze_phase_11_3.py`
+- `tools/analyze_runtime_log.py`
+- `tools/analyze_signal_trace.py`
+- `tools/benchmark_target_obstacle_cache.py`
+
+Inspection shows these are observational/manual analyzers or a structural benchmark; they do not mutate live trading logic. They are intentionally retained as operator/research tools and are not dead production paths.
+
+### M2.194 — two ExecutionIntent types are distinct semantics, not a duplicate execution owner
+
+**STATUS: VERIFIED / RETAIN**
+
+There are two files with the same basename:
+- `src/CFIP.Contracts/ExecutionIntent.cs` — immutable cross-boundary Indicator↔cBot contract;
+- `src/CFIP.Indicator/Core/Models/ExecutionIntent.cs` — internal Indicator-side source model with legacy/internal planning fields.
+
+They live in different namespaces and serve different layers. Current architecture documentation explicitly maps the internal Indicator model into the canonical `CFIP.Contracts.ExecutionIntent` boundary.
+
+This is therefore not classified as a second execution authority. It remains a **naming-risk observation**: future contributors can confuse the two types. Renaming is deferred until the full dependency graph is mapped; no speculative rename is introduced during M2-A.
+
+### M2.195 — Contracts platform-neutrality verified at source level
+
+**STATUS: PASS FOR M2-A.1 SUBCHECK**
+
+The 23 current files under `src/CFIP.Contracts` were inspected at the source/project boundary. They contain no cTrader/cAlgo broker/chart dependency, and `CFIP.Contracts.csproj` has no cTrader package reference. The production Indicator and cBot each reference Contracts rather than the reverse.
+
+The codecs use standard .NET serialization only. This satisfies the platform-neutral cross-boundary direction for the inspected Contracts layer.
+
+### M2.196 — CI build graph does not directly build the solution file
+
+**STATUS: OPEN / VERIFY INTENT**
+
+The solution contains the three production projects, but `.github/workflows/ci-build.yml` builds the Contracts project, cBot, Indicator CI harness, contract harnesses, shadow tests and preflight projects individually rather than invoking `dotnet build CFIP.Indicator.sln`.
+
+This is not automatically wrong because the Indicator CI project compiles the Indicator source graph and preflight references the production Indicator project. However, the exact relationship between solution membership, CI coverage and the cTrader target artifact must be proven rather than inferred.
+
+**Required remediation:** prove that every solution production project and every required compile item is covered by an authoritative CI target, and document why the solution itself is not the canonical CI build command. If a project is intentionally outside CI, classify it explicitly.
+
+### M2-A.1 disposition
+
+M2-A.1 is **NOT CLOSED**.
+
+Verified:
+- exact repository inventory;
+- current project/solution manifests;
+- current Contracts project boundary;
+- current workflow manifest existence;
+- intentional observational tools;
+- intentional nested SDK boundary;
+- distinct ExecutionIntent semantics.
+
+Open:
+- M2.189 branch/base reconciliation;
+- M2.191 shared-source build-harness architecture;
+- M2.196 solution-vs-CI build coverage;
+- full conditional-compilation, generated-file, unreachable-source and semantic duplicate analysis.
+
+**Next exact work item:** continue M2-A.2/A.3 from the reconciled repository truth; do not move to M2-B until the remaining M2-A build/reachability checks are dispositioned.
