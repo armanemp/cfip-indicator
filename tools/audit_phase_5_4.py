@@ -112,7 +112,7 @@ check(
     "ReconcilePendingFillServerProtection(" in pending_filled and
     "TryBuildServerSideTakeProfitLadder(" in fill_protection and
     "position.EntryPrice" in fill_protection and
-    "TryModifyTakeProfitLadder(" in fill_protection,
+    "RequestModifyTakeProfitLadder(" in fill_protection,
 )
 
 check(
