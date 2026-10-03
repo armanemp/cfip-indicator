@@ -38,7 +38,7 @@ namespace cAlgo
                     fillExecutionReason);
 
                 ManagementCommandRequestStatus closeStatus =
-                    TryClosePosition(
+                    RequestClosePosition(
                         result.Position,
                         "MARKET FILL MISMATCH");
 
