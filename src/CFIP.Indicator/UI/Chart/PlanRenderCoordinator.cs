@@ -40,7 +40,7 @@ namespace cAlgo
                 Bars == null ||
                 Bars.Count < 2)
             {
-                RemoveStackedSignalArrows();
+                RemoveMtfTrendStrengthArrowStack();
             }
             else
             {
@@ -60,21 +60,11 @@ namespace cAlgo
                 Math.Max(
                     Symbol.PipSize * 2,
                     atr * 0.18);
-            double y =
-                snapshot.PlanDirection == 1
-                    ? Bars.LowPrices[hostBar] - offset
-                    : Bars.HighPrices[hostBar] + offset;
-
-            RenderStackedSignalArrows(
+            RenderMtfTrendStrengthArrowStack(
                 snapshot,
-                snapshot.PlanDirection,
+                ResolveArrowStackDirection(snapshot, snapshot.PlanDirection),
                 hostBar,
-                offset,
-                snapshot.LivePosition
-                    ? "CONFIRMED"
-                    : snapshot.SmartQuality >= SmartStrongSetupQuality
-                        ? "STRONG"
-                        : "CONFIRMED");
+                offset);
             }
 
         }
@@ -98,7 +88,7 @@ namespace cAlgo
                 RenderPlanLabels(snapshot, true);
             else
                 RemovePlanLabels();
-            RemoveStackedSignalArrows();
+            RemoveMtfTrendStrengthArrowStack();
 
         }
 
