@@ -1,4 +1,5 @@
 using System;
+using cAlgo.API;
 
 namespace cAlgo
 {
@@ -10,9 +11,8 @@ namespace cAlgo
                 Bars.Count < 2)
                 return 0;
 
-            // Native-style level labels are anchored to the exact endpoint
-            // of their canonical plan line. The label box itself is attached
-            // to that endpoint by PlanLabelRenderer.
+            // Canonical plan labels share the exact right endpoint of the
+            // canonical plan-level line geometry.
             return GetPlanLineRightBar();
         }
     }
