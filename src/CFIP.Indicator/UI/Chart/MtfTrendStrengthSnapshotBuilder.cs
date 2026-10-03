@@ -49,6 +49,8 @@ namespace cAlgo
                 trendStrength.Level;
             snapshot.MtfTrendStrengthScore =
                 trendStrength.Score;
+            snapshot.MtfTrendStrengthTier =
+                trendStrength.Tier;
             snapshot.HtfTrendDirection =
                 trendStrength.HigherTimeframeDirection;
             snapshot.HtfTrendStrengthScore =
