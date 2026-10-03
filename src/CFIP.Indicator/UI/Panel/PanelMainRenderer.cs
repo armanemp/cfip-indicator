@@ -119,10 +119,7 @@ namespace cAlgo
                                                             0,
                                                             PanelButtonGap);
                                         
-                                                    int buttonMargin =
-                                                        PanelFooterButtonInternalMargin;
-                                        
-                                                    // Reserve an explicit footer minimum before calculating
+// Reserve an explicit footer minimum before calculating
                                                     // the ScrollViewer budget so the bottom controls cannot
                                                     // be pushed below the panel edge.
                                                     int alertRailHeight =
