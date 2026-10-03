@@ -21,7 +21,7 @@ def check(name, condition):
         errors.append(name)
 
 parameter = read("src/CFIP.Indicator/Indicator/Parameters/14_display_core.cs")
-rule = read("src/CFIP.Indicator/Core/Math/PlanLinePresentationRule.cs")
+rule = read("src/CFIP.Indicator/UI/Chart/PlanLinePresentationRule.cs")
 renderer = read("src/CFIP.Indicator/UI/Chart/PlanLineRenderer.cs")
 contracts = read("tools/CFIP.Runtime.Contracts/Program.cs")
 contracts_project = read("tools/CFIP.Runtime.Contracts/CFIP.Runtime.Contracts.csproj")
@@ -50,7 +50,7 @@ check(
 
 check(
     "configured thickness resolves through the canonical one-pixel rule",
-    "PlanLinePresentationRule.ResolveThickness(" in renderer and
+    "PlanLineThicknessRule.ResolveThickness(" in renderer and
     "LevelLineThickness" in renderer and
     "Math.Min(1" not in renderer and
     "Math.Min(1," not in renderer
@@ -72,16 +72,16 @@ check(
 check(
     "deterministic runtime contract covers 1/2/3 and safe bounds",
     "VerifyPlanLineThicknessG3();" in contracts and
-    "PlanLinePresentationRule.ResolveThickness(1) == 1" in contracts and
-    "PlanLinePresentationRule.ResolveThickness(2) == 1" in contracts and
-    "PlanLinePresentationRule.ResolveThickness(3) == 1" in contracts and
-    "PlanLinePresentationRule.ResolveThickness(0) == 1" in contracts and
-    "PlanLinePresentationRule.ResolveThickness(4) == 1" in contracts
+    "PlanLineThicknessRule.ResolveThickness(1) == 1" in contracts and
+    "PlanLineThicknessRule.ResolveThickness(2) == 1" in contracts and
+    "PlanLineThicknessRule.ResolveThickness(3) == 1" in contracts and
+    "PlanLineThicknessRule.ResolveThickness(0) == 1" in contracts and
+    "PlanLineThicknessRule.ResolveThickness(4) == 1" in contracts
 )
 
 check(
     "runtime contract project compiles the canonical G3 rule",
-    "Core/Math/PlanLinePresentationRule.cs" in contracts_project
+    "Core/Math/PlanLineThicknessRule.cs" in contracts_project
 )
 
 check(
