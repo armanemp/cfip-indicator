@@ -116,7 +116,9 @@ namespace cAlgo
                         : 0;
 
                 if (!OpportunityMagnitudeRule.IsMeaningful(
-                        snapshot.Regime,
+                        _decision == null
+                            ? "UNKNOWN"
+                            : _decision.Regime,
                         distanceAtr))
                     return false;
             }
