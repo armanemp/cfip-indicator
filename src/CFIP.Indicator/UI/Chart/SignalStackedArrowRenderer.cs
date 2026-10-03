@@ -5,16 +5,67 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
+        private void RenderCanonicalMtfTrendArrows(
+            SignalVisualSnapshot snapshot,
+            int bar)
+        {
+            if (snapshot == null ||
+                Bars == null ||
+                Bars.Count < 2)
+            {
+                RemoveStackedSignalArrows();
+                return;
+            }
+
+            int safeBar =
+                Math.Max(
+                    0,
+                    Math.Min(
+                        Bars.Count - 1,
+                        bar));
+
+            double atr =
+                Atr(
+                    Bars,
+                    Math.Max(
+                        1,
+                        Math.Min(
+                            Bars.Count - 1,
+                            safeBar)));
+
+            double offset =
+                Math.Max(
+                    Symbol.PipSize * Math.Max(0.5, MinimumArrowOffsetPips),
+                    atr * Math.Max(0.02, ArrowOffsetAtr));
+
+            if (!ShowSignalArrow)
+            {
+                RemoveStackedSignalArrows();
+                return;
+            }
+
+            RenderStackedSignalArrows(
+                snapshot,
+                safeBar,
+                offset);
+        }
+
         private void RenderStackedSignalArrows(
             SignalVisualSnapshot snapshot,
-            int direction,
             int bar,
             double offset)
         {
             if (snapshot == null ||
-                direction == 0 ||
                 Bars == null ||
                 Bars.Count == 0)
+            {
+                RemoveStackedSignalArrows();
+                return;
+            }
+
+            int direction = snapshot.MtfTrendDirection;
+
+            if (direction == 0)
             {
                 RemoveStackedSignalArrows();
                 return;
@@ -39,11 +90,9 @@ namespace cAlgo
                 ((strength - 1) % 3) + 1;
 
             string state =
-                strength <= 3
-                    ? "WATCH"
-                    : strength <= 6
-                        ? "CONFIRMED"
-                        : "STRONG";
+                string.IsNullOrWhiteSpace(snapshot.MtfTrendStrengthTier)
+                    ? "WEAK"
+                    : snapshot.MtfTrendStrengthTier;
 
             Color arrowColor =
                 SignalArrowColorFor(
@@ -56,7 +105,7 @@ namespace cAlgo
                 Math.Max(
                     Symbol.PipSize * 3,
                     Math.Max(
-                        offset * 0.75,
+                        offset * 1.5,
                         Symbol.TickSize * 8));
 
             for (int i = 0;
