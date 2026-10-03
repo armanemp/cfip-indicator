@@ -63,3 +63,9 @@ and
 Signal Event → AlertDeliveryQueue → Panel/Sound.
 
 No second execution owner, Cloud transport, or separate signal-analysis engine was introduced.
+
+## Final verification boundary — 2026-10-03
+- Accumulated CI21 and M3 audits were reconciled with the current canonical owners: ParallelOpportunityCandidatePresentation.ShouldPresentOpportunityCandidate owns presentation quality, and SignalPresentationRenderer owns the current ActionableNow/strong-watch marker contract.
+- Presentation-only primary candidates are rejected before public chart drawing and remain non-executable.
+- cTrader compile and Runtime Acceptance passed on the same functional code revision before the final audit/comment-only commits.
+- Source/Architecture could not be re-triggered on the final connector-created commits; no final green status is claimed until a normal user-authenticated push or equivalent CI-triggering event executes that gate.
