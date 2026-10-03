@@ -75,6 +75,9 @@ namespace cAlgo
                     AddOpportunityCandidate(tactical);
             }
 
+            AddFuturePendingOpportunityCandidates(
+                closedM5);
+
             if (_reaction != null &&
                 MicroReactionSafetyRule.IsClosedBarSafe(
                     closedM5,
@@ -365,6 +368,12 @@ namespace cAlgo
                 Tp2 = preview.Tp2,
                 Tp3 = preview.Tp3,
                 Tp4 = preview.Tp4,
+                ZoneLow = preview.ZoneLow,
+                ZoneHigh = preview.ZoneHigh,
+                ZoneTolerance = preview.ZoneTolerance,
+                FutureOrderReady = false,
+                FutureOrderDistanceAtr = 0,
+                FutureOrderSource = "",
                 Source = execution.Source,
                 Stage =
                     actionability.Actionable
