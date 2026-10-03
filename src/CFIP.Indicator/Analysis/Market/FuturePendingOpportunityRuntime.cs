@@ -6,6 +6,8 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
+        private const int LiveOpportunityRefreshIntervalMilliseconds = 100;
+
         private void AddFuturePendingOpportunityCandidates(int closedM5)
         {
             if (_decision == null ||
@@ -152,6 +154,22 @@ namespace cAlgo
                             : _decision.Regime)))
                 return false;
 
+            double minimumRewardDistanceAtr =
+                RegimeAdaptiveRewardFloorRule.ResolveAdaptiveRewardFloor(
+                    _decision == null
+                        ? "UNKNOWN"
+                        : _decision.Regime,
+                    MinimumTpSpacingAtr,
+                    MinimumSlAtr);
+
+            double rewardDistanceAtr =
+                Math.Abs(
+                    target -
+                    entry) /
+                Math.Max(
+                    atr,
+                    1e-9);
+
             int baseQuality =
                 mode == ExecutionMode.ContinuationStop
                     ? Math.Max(
@@ -235,6 +253,10 @@ namespace cAlgo
                                 Math.Max(
                                     baseQuality,
                                     score))),
+                     RewardDistanceAtr =
+                         rewardDistanceAtr,
+                     MinimumRequiredRewardDistanceAtr =
+                         minimumRewardDistanceAtr,
                     Risk =
                         Math.Abs(
                             entry -
@@ -276,6 +298,12 @@ namespace cAlgo
                     ExecutionPolicyReason = "PENDING POLICY EVALUATION"
                 };
 
+            ApplyOpportunityIntelligenceRanking(
+                candidate,
+                candidate.Lane,
+                direction,
+                candidate.Quality);
+
             ScenarioExecutionPolicyResult policy =
                 ScenarioExecutionPolicyRule.Evaluate(
                     candidate,
@@ -299,7 +327,8 @@ namespace cAlgo
                 _lastLiveOpportunityRefreshM5 != closedM5;
 
             if (!newM5 &&
-                (now - _lastLiveOpportunityRefreshUtc).TotalMilliseconds < 200)
+                (now - _lastLiveOpportunityRefreshUtc).TotalMilliseconds <
+                    LiveOpportunityRefreshIntervalMilliseconds)
                 return;
 
             _lastLiveOpportunityRefreshM5 = closedM5;
@@ -345,6 +374,10 @@ namespace cAlgo
                         candidate.Tp3 = refreshed.Tp3;
                         candidate.Tp4 = refreshed.Tp4;
                         candidate.Risk = refreshed.Risk;
+                         candidate.RewardDistanceAtr =
+                             refreshed.RewardDistanceAtr;
+                         candidate.MinimumRequiredRewardDistanceAtr =
+                             refreshed.MinimumRequiredRewardDistanceAtr;
                         candidate.Tp1RR = refreshed.Tp1RR;
                         candidate.RequestedVolume = refreshed.RequestedVolume;
                         candidate.ZoneLow = refreshed.ZoneLow;

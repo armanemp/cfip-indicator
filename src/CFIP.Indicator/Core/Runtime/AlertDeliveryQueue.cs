@@ -28,17 +28,19 @@ namespace cAlgo
 
             if (Count >= _capacity)
             {
-                if (delivery.Critical)
-                {
-                    if (_normal.Count > 0)
-                        _normal.Dequeue();
-                    else if (_critical.Count > 0)
-                        _critical.Dequeue();
-                    else
-                        return false;
-                }
+                // Only critical events may displace queued normal work.
+                // PlaySound by itself does not raise priority; actionable
+                // signal events already pass through this queue as critical.
+                if (!delivery.Critical)
+                    return false;
+
+                if (_normal.Count > 0)
+                    _normal.Dequeue();
                 else
                 {
+                    // Keep already-buffered critical alerts intact. Under a burst
+                    // of critical/sound events, reject the new event rather than
+                    // silently dropping an existing signal/audio delivery.
                     return false;
                 }
             }

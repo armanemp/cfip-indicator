@@ -52,7 +52,7 @@ expected_scope = {
     "src/CFIP.Indicator/Planning/TradePlan/StructuralStopCandidateEvaluator.cs",
     "src/CFIP.Indicator/Planning/TradePlan/PlanInputPreparation.cs",
     "src/CFIP.Indicator/Planning/TradePlan/PlanIntegrityValidator.cs",
-    "src/CFIP.Indicator/Analysis/Market/ParallelOpportunityBuilder.cs",
+    "src/CFIP.Indicator/Analysis/Market/ParallelOpportunityBuilder.LaneCandidate.cs",
     "src/CFIP.Indicator/Trading/Validation/TradeActionabilityEvaluator.cs",
     "src/CFIP.Indicator/Trading/Execution/AutomaticMarket/AutomaticMarketSubmissionValidator.cs",
     "src/CFIP.Indicator/Trading/Execution/Aggressive/AggressiveFinalExecutionGuard.cs",

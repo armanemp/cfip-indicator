@@ -66,7 +66,10 @@ require(
 
 require(
     "Notifications.PlaySound" not in alerts and
-    "ProcessQueuedAlertDelivery();" in cycle,
+    (
+        "ProcessQueuedAlertDelivery();" in cycle or
+        "ProcessQueuedAlertSoundDelivery();" in cycle
+    ),
     "M3: sound must stay transport-owned by the queued delivery processor",
 )
 
@@ -131,7 +134,7 @@ require(
 require(
     "ProcessDecisionOwnedWatchReactionAlerts(" in stages and
     "RenderCalculationState(" in stages and
-    "ProcessQueuedAlertDelivery();" in cycle,
+    "ProcessQueuedAlertSoundDelivery();" in cycle,
     "M3: calculation cycle must connect analysis, presentation and alert transport",
 )
 

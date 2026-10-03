@@ -7,7 +7,7 @@ namespace cAlgo
     {
         private const int MaxAlertDeliveriesPerPump = 4;
 
-        private void ProcessQueuedAlertDelivery()
+        private void ProcessQueuedAlertPresentation()
         {
             if (_alertDeliveryQueue == null ||
                 _alertDeliveryQueue.Count == 0)
@@ -21,9 +21,43 @@ namespace cAlgo
             {
                 processed++;
 
-                // One canonical alert event feeds both presentation channels:
-                // the bounded panel alert rail first, then the optional sound cue.
+                // The panel rail can be updated from the timer without coupling
+                // audio delivery to timer scheduling.
                 RecordPanelAlertDelivery(next);
+
+                if (!next.PlaySound ||
+                    _alertSoundDeliveryQueue == null)
+                    continue;
+
+                // Keep the sound-bearing event alive until the Indicator's
+                // realtime Calculate/IsLastBar path owns playback.
+                if (!_alertSoundDeliveryQueue.Enqueue(next))
+                {
+                    Print(
+                        "CFIP ALERT SOUND QUEUE REJECTED | id={0}",
+                        next.Envelope == null
+                            ? ""
+                            : next.Envelope.AlertId);
+                }
+            }
+        }
+
+        private void ProcessQueuedAlertSoundDelivery()
+        {
+            // cTrader indicator sound playback is tied to the realtime
+            // last-bar Calculate path. OnTimer must not be the playback owner.
+            if (!IsLastBar ||
+                _alertSoundDeliveryQueue == null ||
+                _alertSoundDeliveryQueue.Count == 0)
+                return;
+
+            int processed = 0;
+
+            while (processed < MaxAlertDeliveriesPerPump &&
+                   _alertSoundDeliveryQueue.TryDequeue(
+                       out AlertDelivery next))
+            {
+                processed++;
 
                 if (!next.PlaySound)
                     continue;

@@ -1,3 +1,33 @@
+# Current Continuation State — 2026-10-03 Live Realtime cBot Hardening
+
+Status: IMPLEMENTED; CI verification in progress on PR #237.
+
+Current architecture contract:
+- Indicator: pre-analysis, historical/outcome memory, M15 canonical decision, M5 trigger/tuning/entry precision, optional M1 confirmation, HTF context, prediction/evidence, opportunity/scenario construction, chart/alerts/presentation.
+- cBot: current-quote Market/Aggressive execution, future Stop/Limit pending placement, broker/account risk, lifecycle, protection, management, reconciliation and recovery.
+- Contracts: immutable Indicator-to-cBot ScenarioBatch/ExecutionIntent boundary.
+- Current scenarios execute only when actionability is for now; future scenarios remain pending-order intents.
+- Multiple distinct ScenarioIds may coexist up to the cBot concurrency bound; duplicate ScenarioIds remain idempotent.
+
+Latest hardening:
+- live cBot remains attached with Enable Live Execution = false and stays broker-mutation fail-closed instead of stopping at startup;
+- live execution is explicitly armable by the cBot;
+- cBot signal-store reload is bounded to 100 ms and Indicator cBot-state visibility to 200 ms;
+- chart CFIP attachment discovery scans Custom indicators first and reports seen candidates on failure;
+- stagnant RANGE/COMPRESSION opportunities require a larger adaptive reward excursion;
+- alert sound is delivered from the realtime last-bar path and keeps normal queue priority semantics;
+- current and future opportunity builders share the adaptive reward-floor rule.
+
+Verification on the current PR head:
+- cTrader compile: latest run PASS;
+- Runtime acceptance: latest run PASS;
+- Source/Architecture: rerun is in progress after P7 contract alignment;
+- target cTrader terminal validation is still required for actual live-account attach/arm, same-tick handoff, simultaneous scenarios, audio playback, pending-order triggering, reconnect and broker-specific behavior.
+
+Operator action after verified merge: git pull --ff-only on local main.
+
+---
+
 ## Current focus — REALTIME MULTI-SCENARIO OPPORTUNITY ENGINE — 2026-10-03
 
 Status: IMPLEMENTATION COMPLETE — verification pending.
@@ -2337,3 +2367,40 @@ Verification must include:
 - independent protection/reconciliation on multiple broker objects.
 
 Operator action after merge: git pull --ff-only.
+
+
+## 2026-10-03 — Live Realtime cBot / Attachment / Audio Hardening
+
+Status: IMPLEMENTATION COMPLETE — repository verification pending on the current branch HEAD.
+
+Completed:
+- realtime present/future multi-scenario engine retained;
+- explicit live-account arm remains OFF by default and broker mutation stays cBot-owned;
+- exact cBot/Indicator attachment identity now uses the actual cBot InstanceId plus bound Indicator InstanceId;
+- Indicator panel can report ATTACHED from the cBot heartbeat instead of falling back to a false NOT ATTACHED when chart enumeration is unavailable;
+- critical alert queue preserves already-buffered critical/audio-worthy signal events under burst pressure;
+- live broker comments no longer say DEMO;
+- accumulated live-hardening audit now covers these invariants.
+
+Current target chain:
+Indicator historical/pre-analysis -> M15 canonical decision -> M5 trigger/tuning -> M1 optional confirmation -> intrabar live actionability -> current Market/Aggressive OR future Pending Stop/Limit -> SignalScenarioBatch -> cBot 100ms handoff -> broker -> broker confirmation/protection -> outcome/history.
+
+Verification:
+- Runtime Acceptance on the preceding hardening head: PASS.
+- cTrader Build on the preceding hardening head: FAIL only because the first attachment-fallback implementation indexed a ChartRobots collection incorrectly; corrected immediately by using enumeration.
+- The corrected head is awaiting the new Source/Architecture + Runtime + Build CI cycle.
+- Target-terminal validation remains mandatory for live arm, exact attachment display, same-tick placement, simultaneous scenarios, pending-order invalidation, audio playback and restart/reconnect.
+
+Operator action after verified merge: git pull --ff-only.
+
+
+## CBOT Live / Realtime Completion — 2026-10-03
+
+Implemented on `phase/cbot-live-realtime-completion-2026-10-03`:
+- immediate publication of the exact bound Indicator InstanceId after successful chart binding;
+- explicit unattached presence on binding loss;
+- realtime sound queue servicing from Calculate finally while IsLastBar remains enforced by the single audio delivery owner;
+- all existing live-arm, present/future, multi-scenario, reward-floor and history/forecast contracts preserved.
+
+Verification pending: Source/Architecture, Runtime Acceptance, cTrader Compile/Build and target-terminal attachment/audio/execution/reconnect acceptance.
+Operator action after merge: `git pull --ff-only` on local `main`.

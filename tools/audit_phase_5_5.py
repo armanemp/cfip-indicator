@@ -37,6 +37,9 @@ computation = read(
 parallel = read(
     "src/CFIP.Indicator/Analysis/Market/ParallelOpportunityBuilder.cs"
 )
+candidate_builder = read(
+    "src/CFIP.Indicator/Analysis/Market/ParallelOpportunityBuilder.LaneCandidate.cs"
+)
 timeframe = read(
     "src/CFIP.Indicator/Analysis/Market/TimeframeScenarioBuilder.cs"
 )
@@ -77,11 +80,11 @@ check(
 
 check(
     "candidate materialization consumes shared geometry without rebuilding execution/stop",
-    "TryBuildParallelScenarioGeometry(" in parallel and
-    "TryGetParallelScenarioPreview(" in parallel and
-    "BuildExecutionModel(" not in parallel and
-    "BuildTradeSetupPreview(" not in parallel and
-    "geometry.Execution" not in parallel and
+    "TryBuildParallelScenarioGeometry(" in candidate_builder and
+    "TryGetParallelScenarioPreview(" in candidate_builder and
+    "BuildExecutionModel(" not in candidate_builder and
+    "BuildTradeSetupPreview(" not in candidate_builder and
+    "geometry.Execution" not in candidate_builder and
     "BuildTradeSetupPreviewFromGeometry(" in preview,
 )
 

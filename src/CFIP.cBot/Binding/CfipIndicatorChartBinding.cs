@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using cAlgo.API;
 using CFIP.Contracts;
 
@@ -26,23 +27,81 @@ namespace CFIP.cBot.Binding
             ChartIndicator match = null;
             int count = 0;
 
-            foreach (ChartIndicator candidate in robot.ChartIndicators.Custom)
+            List<ChartIndicator> candidates =
+                new List<ChartIndicator>();
+
+            try
+            {
+                foreach (ChartIndicator candidate in robot.ChartIndicators.Custom)
+                {
+                    if (candidate != null &&
+                        !candidates.Contains(candidate))
+                        candidates.Add(candidate);
+                }
+            }
+            catch
+            {
+            }
+
+            try
+            {
+                foreach (ChartIndicator candidate in robot.ChartIndicators)
+                {
+                    if (candidate != null &&
+                        !candidates.Contains(candidate))
+                        candidates.Add(candidate);
+                }
+            }
+            catch
+            {
+            }
+
+            foreach (ChartIndicator candidate in candidates)
             {
                 if (candidate == null)
                     continue;
 
+                string candidateName =
+                    candidate.Name ?? string.Empty;
+
                 bool instanceNameMatches =
                     string.Equals(
-                        candidate.Name,
+                        candidateName,
                         DisplayName,
-                        StringComparison.Ordinal);
+                        StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(
+                        candidateName,
+                        TypeName,
+                        StringComparison.OrdinalIgnoreCase) ||
+                    candidateName.StartsWith(
+                        DisplayName + " ",
+                        StringComparison.OrdinalIgnoreCase) ||
+                    candidateName.StartsWith(
+                        TypeName + " ",
+                        StringComparison.OrdinalIgnoreCase);
+
+                string candidateTypeName =
+                    candidate.Type == null
+                        ? string.Empty
+                        : candidate.Type.Name ?? string.Empty;
+
+                string candidateTypeText =
+                    candidate.Type == null
+                        ? string.Empty
+                        : candidate.Type.ToString() ?? string.Empty;
 
                 bool typeNameMatches =
-                    candidate.Type != null &&
                     string.Equals(
-                        candidate.Type.Name,
+                        candidateTypeName,
                         TypeName,
-                        StringComparison.Ordinal);
+                        StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(
+                        candidateTypeText,
+                        TypeName,
+                        StringComparison.OrdinalIgnoreCase) ||
+                    candidateTypeText.EndsWith(
+                        "." + TypeName,
+                        StringComparison.OrdinalIgnoreCase);
 
                 if (!instanceNameMatches &&
                     !typeNameMatches)
@@ -54,7 +113,44 @@ namespace CFIP.cBot.Binding
 
             if (count == 0)
             {
-                reason = "CFIP SMART INDICATOR NOT ATTACHED TO THIS CHART";
+                List<string> diagnostics =
+                    new List<string>();
+
+                for (int i = 0;
+                     i < candidates.Count && i < 8;
+                     i++)
+                {
+                    ChartIndicator candidate = candidates[i];
+                    diagnostics.Add(
+                        (candidate.Name ?? "NAME?") +
+                        "/" +
+                        (candidate.Type == null
+                            ? "TYPE?"
+                            : candidate.Type.ToString()));
+                }
+
+                int customCount = 0;
+                try
+                {
+                    customCount =
+                        robot.ChartIndicators.Custom == null
+                            ? 0
+                            : robot.ChartIndicators.Custom.Count;
+                }
+                catch
+                {
+                }
+
+                reason =
+                    "CFIP SMART INDICATOR NOT ATTACHED TO THIS CHART" +
+                    " • custom=" +
+                    customCount +
+                    " • total=" +
+                    candidates.Count +
+                    (diagnostics.Count == 0
+                        ? ""
+                        : " • seen=" +
+                          string.Join(" | ", diagnostics));
                 return false;
             }
 
@@ -73,5 +169,6 @@ namespace CFIP.cBot.Binding
             indicator = match;
             return true;
         }
+
     }
 }

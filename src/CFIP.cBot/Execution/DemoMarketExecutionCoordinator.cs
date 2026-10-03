@@ -272,7 +272,7 @@ namespace CFIP.cBot.Execution
                             executionLabel,
                             stopPips,
                             targetPips,
-                            "CFIP DEMO",
+                            robot.Account.IsLive ? "CFIP LIVE" : "CFIP DEMO",
                             false)
                         : robot.ExecuteMarketOrder(
                             tradeType,
@@ -282,8 +282,8 @@ namespace CFIP.cBot.Execution
                             stopPips,
                             targetPips,
                             aggressiveAction
-                                ? "CFIP DEMO AGGRESSIVE"
-                                : "CFIP DEMO",
+                                ? robot.Account.IsLive ? "CFIP LIVE AGGRESSIVE" : "CFIP DEMO AGGRESSIVE"
+                                : robot.Account.IsLive ? "CFIP LIVE" : "CFIP DEMO",
                             false);
             }
             catch (Exception ex)

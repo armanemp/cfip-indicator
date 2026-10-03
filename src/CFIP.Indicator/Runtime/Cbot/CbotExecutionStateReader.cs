@@ -8,6 +8,7 @@ namespace cAlgo
     {
         private CbotExecutionStateSnapshot _cBotExecutionState;
         private CbotPresenceSnapshot _cBotPresence;
+        private const int CbotStateReadIntervalMilliseconds = 200;
         private DateTime _nextCbotStateReadUtc = DateTime.MinValue;
         private string _cBotStateReadError = string.Empty;
 
@@ -27,18 +28,47 @@ namespace cAlgo
                     if (candidate == null)
                         continue;
 
+                    string candidateName =
+                        candidate.Name ?? string.Empty;
+
                     bool instanceNameMatches =
                         string.Equals(
-                            candidate.Name,
+                            candidateName,
                             CbotIdentity.DisplayName,
-                            StringComparison.Ordinal);
+                            StringComparison.OrdinalIgnoreCase) ||
+                        candidateName.StartsWith(
+                            CbotIdentity.DisplayName + " ",
+                            StringComparison.OrdinalIgnoreCase) ||
+                        string.Equals(
+                            candidateName,
+                            CbotIdentity.TypeName,
+                            StringComparison.OrdinalIgnoreCase) ||
+                        candidateName.StartsWith(
+                            CbotIdentity.TypeName + " ",
+                            StringComparison.OrdinalIgnoreCase);
+
+                    string candidateTypeName =
+                        candidate.Type == null
+                            ? string.Empty
+                            : candidate.Type.Name ?? string.Empty;
+
+                    string candidateTypeText =
+                        candidate.Type == null
+                            ? string.Empty
+                            : candidate.Type.ToString() ?? string.Empty;
 
                     bool typeNameMatches =
-                        candidate.Type != null &&
                         string.Equals(
-                            candidate.Type.Name,
+                            candidateTypeName,
                             CbotIdentity.TypeName,
-                            StringComparison.Ordinal);
+                            StringComparison.OrdinalIgnoreCase) ||
+                        string.Equals(
+                            candidateTypeText,
+                            CbotIdentity.TypeName,
+                            StringComparison.Ordinal) ||
+                        candidateTypeText.EndsWith(
+                            "." + CbotIdentity.TypeName,
+                            StringComparison.OrdinalIgnoreCase);
 
                     if (!instanceNameMatches &&
                         !typeNameMatches)
@@ -64,6 +94,24 @@ namespace cAlgo
 
             if (count > 1)
             {
+                if (HasFreshCbotPresenceForCurrentIndicator())
+                {
+                    foreach (ChartRobot candidate in ChartRobots)
+                    {
+                        if (candidate == null)
+                            continue;
+
+                        if (string.Equals(
+                                candidate.InstanceId,
+                                _cBotPresence.CbotInstanceId,
+                                StringComparison.Ordinal))
+                        {
+                            robot = candidate;
+                            return true;
+                        }
+                    }
+                }
+
                 robot = null;
                 reason = "CBOT AMBIGUOUS • MULTIPLE INSTANCES";
                 return false;
@@ -111,7 +159,7 @@ namespace cAlgo
                 return;
 
             _nextCbotStateReadUtc =
-                now.AddMilliseconds(750);
+                now.AddMilliseconds(CbotStateReadIntervalMilliseconds);
 
             try
             {
@@ -227,6 +275,12 @@ namespace cAlgo
                     "CBOT CONNECTED • HEARTBEAT LIVE • " +
                     CbotExecutionStatePanelText();
 
+            if (HasFreshCbotPresenceForCurrentIndicator())
+                return
+                    "CBOT CONNECTED • ATTACHED • " +
+                    (_cBotPresence.State ?? "RUNNING") +
+                    " • HEARTBEAT PENDING";
+
             if (HasFreshCbotPresence())
                 return
                     "CBOT DETECTED • " +
@@ -308,9 +362,29 @@ namespace cAlgo
             return IsCbotExecutionStateFresh();
         }
 
+        private bool HasFreshCbotPresenceForCurrentIndicator()
+        {
+            return
+                HasFreshCbotPresence() &&
+                string.Equals(
+                    _cBotPresence.BoundIndicatorInstanceId,
+                    InstanceId,
+                    StringComparison.Ordinal);
+        }
+
         private bool HasFreshCbotPresence()
         {
             if (_cBotPresence == null)
+                return false;
+
+            if (!string.Equals(
+                    _cBotPresence.Symbol,
+                    SymbolName,
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    _cBotPresence.CbotTypeName,
+                    CbotIdentity.TypeName,
+                    StringComparison.Ordinal))
                 return false;
 
             double ageSeconds =

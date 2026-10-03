@@ -16,6 +16,8 @@ namespace CFIP.cBot.Execution
             CbotDailyLossGuard dailyLossGuard,
             bool pendingAction,
             int maximumConcurrentScenarios,
+            bool liveExecutionEnabled,
+            double maximumMarketEntryDriftPips,
             DateTime nowUtc,
             out string reason)
         {
@@ -32,19 +34,10 @@ namespace CFIP.cBot.Execution
                 return false;
             }
 
-            if (!settings.EnableAutoTrading)
-            {
-                reason = "AUTO TRADING DISABLED IN INDICATOR";
-                return false;
-            }
-
-            if (pendingAction &&
-                !settings.EnableAutomaticOrders)
-            {
-                reason = "AUTOMATIC ORDERS DISABLED IN INDICATOR";
-                return false;
-            }
-
+            // Broker execution authority belongs to the cBot's explicit
+            // market/pending modes. Indicator Auto Trading / Automatic Orders
+            // remain analysis-side compatibility settings and are not a hidden
+            // broker permission gate.
             if (settings.UseMarketHoursGuard &&
                 !IsInsideSession(
                     nowUtc,
@@ -67,10 +60,15 @@ namespace CFIP.cBot.Execution
                 return false;
             }
 
-            if (robot.Account == null ||
-                robot.Account.IsLive)
+            if (robot.Account == null)
             {
-                reason = "LIVE ACCOUNT BLOCKED";
+                reason = "ACCOUNT UNAVAILABLE";
+                return false;
+            }
+
+            if (robot.Account.IsLive && !liveExecutionEnabled)
+            {
+                reason = "LIVE EXECUTION DISARMED";
                 return false;
             }
 
@@ -123,6 +121,47 @@ namespace CFIP.cBot.Execution
                 reason = "LIVE QUOTE INVALID";
                 return false;
             }
+
+            bool marketAction =
+                envelope.Intent.Action == ExecutionAction.Market ||
+                envelope.Intent.Action == ExecutionAction.Aggressive;
+
+            if (marketAction)
+            {
+                if (!FinitePositive(maximumMarketEntryDriftPips))
+                {
+                    reason = "MARKET ENTRY DRIFT LIMIT INVALID";
+                    return false;
+                }
+
+                double liveEntry =
+                    envelope.Identity.Direction == TradeDirection.Buy
+                        ? robot.Symbol.Ask
+                        : robot.Symbol.Bid;
+
+                double entryDriftPips =
+                    Math.Abs(
+                        liveEntry -
+                        envelope.Intent.RequestedEntry) /
+                    Math.Max(
+                        robot.Symbol.PipSize,
+                        1e-9);
+
+                if (double.IsNaN(entryDriftPips) ||
+                    double.IsInfinity(entryDriftPips) ||
+                    entryDriftPips >
+                    Math.Max(0.1, maximumMarketEntryDriftPips))
+                {
+                    reason =
+                        "LIVE ENTRY DRIFT EXCEEDS LIMIT • " +
+                        entryDriftPips.ToString(
+                            "F1",
+                            System.Globalization.CultureInfo.InvariantCulture) +
+                        "p";
+                    return false;
+                }
+            }
+
 
             int positions =
                 BrokerExecutionSafety.CountManagedPositions(

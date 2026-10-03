@@ -127,11 +127,13 @@ check(
 )
 
 check(
-    "sound and panel rail consume the same queued alert event",
+    "sound and panel rail consume the same canonical queued alert event",
     "_alertDeliveryQueue.Enqueue(" in alert_engine and
-    "ProcessQueuedAlertDelivery();" in calc_cycle and
-    "ProcessQueuedAlertDelivery();" in initialization and
+    "_alertDeliveryQueue.TryDequeue(" in alert_processor and
     "RecordPanelAlertDelivery(next)" in alert_processor and
+    "_alertSoundDeliveryQueue.Enqueue(next)" in alert_processor and
+    "ProcessQueuedAlertPresentation()" in alert_processor and
+    "ProcessQueuedAlertSoundDelivery()" in alert_processor and
     "Notifications.PlaySound(" in alert_processor
 )
 
@@ -224,11 +226,11 @@ check(
 calculate_start = calc_cycle.rfind("public override void Calculate(")
 calculate_body = calc_cycle[calculate_start:] if calculate_start >= 0 else calc_cycle
 live_stage = calculate_body.find("ProcessLiveCalculationStages(")
-delivery_stage = calculate_body.find("ProcessQueuedAlertDelivery();", live_stage)
+delivery_stage = calculate_body.find("ProcessQueuedAlertSoundDelivery();", live_stage)
 completion_stage = calculate_body.rfind("CompleteRuntimeFaultCycle();")
 
 check(
-    "Calculate drains alert delivery only after live calculation/presentation",
+    "Calculate drains alert sound only after live calculation/presentation",
     live_stage >= 0 and
     delivery_stage >= 0 and
     completion_stage >= 0 and

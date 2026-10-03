@@ -11,6 +11,7 @@ namespace cAlgo
                 return;
 
             _calculationBusy = true;
+            bool soundDeliveryServiced = false;
 
             try
             {
@@ -72,7 +73,10 @@ namespace cAlgo
                     closedM5,
                     newClosedBar);
 
-                ProcessQueuedAlertDelivery();
+                // Timer-driven work handles panel presentation; audible delivery
+                // remains owned by the realtime Indicator Calculate / IsLastBar boundary.
+                ProcessQueuedAlertSoundDelivery();
+                soundDeliveryServiced = true;
 
                 CompleteRuntimeFaultCycle();
             }
@@ -99,8 +103,17 @@ namespace cAlgo
             }
             finally
             {
+                // The normal Calculate path is the primary delivery boundary. If
+                // a recoverable exception/early return bypasses it, service the
+                // queue once here as a fallback. The processor still enforces
+                // IsLastBar, so no non-realtime playback is introduced.
                 if (_initializationReady)
+                {
+                    if (!soundDeliveryServiced)
+                        ProcessQueuedAlertSoundDelivery();
+
                     _lastCalculationCompletedUtc = TimeInUtc;
+                }
 
                 PublishProviderHeartbeatValue(index);
 

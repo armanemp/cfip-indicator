@@ -25,8 +25,7 @@ namespace CFIP.cBot.Execution
                 CbotPresenceSnapshot snapshot =
                     new CbotPresenceSnapshot(
                         ContractVersion.Current,
-                        (robot.GetType().Name ?? string.Empty) + "|" +
-                        (robot.SymbolName ?? string.Empty),
+                        robot.InstanceId ?? string.Empty,
                         robot.GetType().Name ?? string.Empty,
                         CbotIdentity.DisplayName,
                         robot.SymbolName ?? string.Empty,
@@ -217,8 +216,6 @@ namespace CFIP.cBot.Execution
                     executionSettings != null &&
                     executionSettings.EnableAutomaticOrders,
                 EffectiveAutoTradingEnabled =
-                    executionSettings != null &&
-                    executionSettings.EnableAutoTrading &&
                     cbotMarketArmed &&
                     lifecycleAllowsExecution &&
                     !string.Equals(
@@ -232,9 +229,6 @@ namespace CFIP.cBot.Execution
                     !(reconciliation != null &&
                       reconciliation.RecoveryRequired),
                 EffectiveAutomaticOrdersEnabled =
-                    executionSettings != null &&
-                    executionSettings.EnableAutoTrading &&
-                    executionSettings.EnableAutomaticOrders &&
                     cbotOrdersArmed &&
                     lifecycleAllowsExecution &&
                     !string.Equals(

@@ -148,12 +148,20 @@ namespace cAlgo
                     "CBOT AUTO TRADE ON • " +
                     CbotMarketModeText();
 
-            if (!_cBotExecutionState.IndicatorAutoTradingEnabled)
-                return "CBOT CONNECTED • AUTO TRADE OFF • INDICATOR SETTING OFF";
-
             if (!_cBotExecutionState.MarketExecutionEnabled &&
                 !_cBotExecutionState.AggressiveExecutionEnabled)
                 return "CBOT CONNECTED • AUTO TRADE OFF • MARKET DISARMED";
+
+            if (!_cBotExecutionState.EffectiveAutoTradingEnabled &&
+                !_cBotExecutionState.DemoAccount &&
+                string.Equals(
+                    _cBotExecutionState.RuntimeState,
+                    "BLOCKED",
+                    StringComparison.OrdinalIgnoreCase) &&
+                CbotReasonText().IndexOf(
+                    "LIVE EXECUTION DISARMED",
+                    StringComparison.OrdinalIgnoreCase) >= 0)
+                return "CBOT CONNECTED • LIVE AUTO TRADE DISARMED • ARM REQUIRED";
 
             return
                 "CBOT CONNECTED • AUTO TRADE BLOCKED • " +
@@ -193,15 +201,20 @@ namespace cAlgo
                     "CBOT AUTO ORDERS ON • " +
                     CbotPendingModeText();
 
-            if (!_cBotExecutionState.IndicatorAutomaticOrdersEnabled)
-                return "CBOT CONNECTED • AUTO ORDERS OFF • INDICATOR SETTING OFF";
-
-            if (!_cBotExecutionState.IndicatorAutoTradingEnabled)
-                return "CBOT CONNECTED • AUTO ORDERS BLOCKED • AUTO TRADE OFF";
-
             if (!_cBotExecutionState.PendingStopExecutionEnabled &&
                 !_cBotExecutionState.PendingLimitExecutionEnabled)
                 return "CBOT CONNECTED • AUTO ORDERS OFF • PENDING DISARMED";
+
+            if (!_cBotExecutionState.EffectiveAutomaticOrdersEnabled &&
+                !_cBotExecutionState.DemoAccount &&
+                string.Equals(
+                    _cBotExecutionState.RuntimeState,
+                    "BLOCKED",
+                    StringComparison.OrdinalIgnoreCase) &&
+                CbotReasonText().IndexOf(
+                    "LIVE EXECUTION DISARMED",
+                    StringComparison.OrdinalIgnoreCase) >= 0)
+                return "CBOT CONNECTED • LIVE AUTO ORDERS DISARMED • ARM REQUIRED";
 
             return
                 "CBOT CONNECTED • AUTO ORDERS BLOCKED • " +

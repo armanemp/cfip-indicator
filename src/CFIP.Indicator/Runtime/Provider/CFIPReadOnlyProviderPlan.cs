@@ -53,6 +53,14 @@ namespace cAlgo
                     !IsFinitePositive(_plan.OriginalVolume))
                     return null;
 
+                if (!IsCanonicalPlanRewardEligible(closedM5))
+                {
+                    Print(
+                        "CFIP CANONICAL CBOT BLOCK | REWARD FLOOR | m5={0}",
+                        closedM5);
+                    return null;
+                }
+
                 sourceIntent =
                     new cAlgo.ExecutionIntent
                     {
@@ -155,6 +163,55 @@ namespace cAlgo
                 MaxSpreadToStopRiskRatio =
                     MaximumSpreadToStopRiskRatio
             };
+        }
+
+        private bool IsCanonicalPlanRewardEligible(
+            int closedM5)
+        {
+            if (_plan == null ||
+                _decision == null ||
+                _m5Bars == null ||
+                closedM5 < 1 ||
+                closedM5 >= _m5Bars.Count ||
+                _plan.CreatedM5 != closedM5 ||
+                (_plan.EntryMode != ExecutionMode.RetestMarket &&
+                 _plan.EntryMode != ExecutionMode.BreakoutMarket) ||
+                !IsFinitePositive(_plan.Entry) ||
+                !IsFinitePositive(_plan.Stop))
+                return false;
+
+            double target =
+                IsFinitePositive(_plan.Tp1)
+                    ? _plan.Tp1
+                    : _plan.Tp4;
+
+            if (!IsFinitePositive(target))
+                return false;
+
+            double atr =
+                Atr(
+                    _m5Bars,
+                    closedM5);
+
+            if (!IsFinitePositive(atr))
+                return false;
+
+            double rewardDistanceAtr =
+                Math.Abs(
+                    target -
+                    _plan.Entry) /
+                atr;
+
+            double requiredRewardDistanceAtr =
+                RegimeAdaptiveRewardFloorRule.ResolveAdaptiveRewardFloor(
+                    _decision.Regime,
+                    MinimumTpSpacingAtr,
+                    MinimumSlAtr);
+
+            return
+                IsFinitePositive(requiredRewardDistanceAtr) &&
+                rewardDistanceAtr >=
+                requiredRewardDistanceAtr;
         }
 
         private MarketExecutionProfile BuildCanonicalMarketExecutionProfile(

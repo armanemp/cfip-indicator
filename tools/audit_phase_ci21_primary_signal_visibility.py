@@ -23,6 +23,7 @@ def check(name, condition):
 
 
 builder = read("src/CFIP.Indicator/Analysis/Market/ParallelOpportunityBuilder.cs")
+candidate_builder = read("src/CFIP.Indicator/Analysis/Market/ParallelOpportunityBuilder.LaneCandidate.cs")
 timeframes = read("src/CFIP.Indicator/Analysis/Market/TimeframeScenarioBuilder.cs")
 candidate = read("src/CFIP.Indicator/Core/Models/TradeOpportunityCandidate.cs")
 policy = read("src/CFIP.Indicator/Core/Math/ScenarioExecutionPolicyRule.cs")
@@ -56,12 +57,12 @@ check(
 
 check(
     "presentation fallback is owned by the canonical parallel opportunity builder",
-    "allowPrimaryPresentationFallback" in builder and
-    "BuildPrimaryPresentationCandidate(" in builder and
-    "PRIMARY PLAN GEOMETRY UNAVAILABLE" in builder and
-    "PRIMARY EXECUTION MODEL UNAVAILABLE" in builder and
-    "PRIMARY PLAN PREVIEW UNAVAILABLE" in builder and
-    "PRIMARY PLAN LEVELS INCOMPLETE" in builder,
+    "allowPrimaryPresentationFallback" in candidate_builder and
+    "BuildPrimaryPresentationCandidate(" in candidate_builder and
+    "PRIMARY PLAN GEOMETRY UNAVAILABLE" in candidate_builder and
+    "PRIMARY EXECUTION MODEL UNAVAILABLE" in candidate_builder and
+    "PRIMARY PLAN PREVIEW UNAVAILABLE" in candidate_builder and
+    "PRIMARY PLAN LEVELS INCOMPLETE" in candidate_builder,
 )
 
 check(

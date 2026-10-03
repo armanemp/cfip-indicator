@@ -13,6 +13,7 @@ STOP = ROOT / "src/CFIP.Indicator/Planning/TradePlan/StructuralStopCandidateEval
 PLAN = ROOT / "src/CFIP.Indicator/Planning/TradePlan/PlanIntegrityValidator.cs"
 ACTION = ROOT / "src/CFIP.Indicator/Trading/Validation/TradeActionabilityEvaluator.cs"
 PARALLEL = ROOT / "src/CFIP.Indicator/Analysis/Market/ParallelOpportunityBuilder.cs"
+PARALLEL_LANE = ROOT / "src/CFIP.Indicator/Analysis/Market/ParallelOpportunityBuilder.LaneCandidate.cs"
 SCENARIOS = ROOT / "src/CFIP.Indicator/Analysis/Market/TimeframeScenarioBuilder.cs"
 PARALLEL_SELECTION = ROOT / "src/CFIP.Indicator/Core/Math/ParallelScenarioSelectionRule.cs"
 PLANNING_CONTRACT = ROOT / "tools/CFIP.Planning.Contracts/Program.cs"
@@ -41,6 +42,7 @@ stop = read(STOP)
 plan = read(PLAN)
 action = read(ACTION)
 parallel = read(PARALLEL)
+parallel_lane = read(PARALLEL_LANE)
 scenarios = read(SCENARIOS)
 parallel_selection = read(PARALLEL_SELECTION)
 planning_contract = read(PLANNING_CONTRACT)
@@ -86,7 +88,11 @@ if "PlanRewardRiskQualityRule.Evaluate(" not in plan:
 if "PlanRewardRiskQualityRule.Evaluate(" not in action:
     errors.append("live actionability does not consume reward-risk rule")
 
-if "PlanRewardRiskQualityRule.Evaluate(" not in parallel:
+if (
+    "PlanRewardRiskQualityRule.Evaluate(" not in parallel
+    and
+    "PlanRewardRiskQualityRule.Evaluate(" not in parallel_lane
+):
     errors.append("parallel candidate construction does not consume reward-risk rule")
 
 if (

@@ -18,6 +18,9 @@ jobs:
       - run: dotnet restore src/CFIP.cBot/CFIP.cBot.csproj
       - run: dotnet build src/CFIP.cBot/CFIP.cBot.csproj --configuration Release --no-restore
 
+      - run: dotnet restore src/CFIP.Indicator/CFIP.Indicator.csproj
+      - run: dotnet build src/CFIP.Indicator/CFIP.Indicator.csproj --configuration Release --no-restore
+
       - run: dotnet restore tools/CFIP.Indicator.CI/CFIP.Indicator.CI.csproj
       - run: dotnet build tools/CFIP.Indicator.CI/CFIP.Indicator.CI.csproj --configuration Release --no-restore
       - run: dotnet restore tools/CFIP.Decision.Contracts/CFIP.Decision.Contracts.csproj

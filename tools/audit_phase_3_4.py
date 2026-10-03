@@ -28,6 +28,8 @@ workflow = read(".github/workflows/source-check.yml")
 
 errors = []
 
+calculation = read("src/CFIP.Indicator/Runtime/Calculation/CalculationCycle.cs")
+
 checks = {
     "explicit re-arm is a dedicated state-machine operation": (
         "public bool RequestExplicitRearm()" in runtime and
@@ -72,8 +74,10 @@ checks = {
         processor.index("RecordPanelAlertDelivery(next)") <
         processor.index("Notifications.PlaySound(")
     ),
-    "queue is drained at calculation/initialization boundaries": (
-        "ProcessQueuedAlertDelivery();" in initialization
+    "alert presentation is drained from the timer-owned initialization boundary and sound from Calculate": (
+        "ProcessQueuedAlertPresentation();" in initialization and
+        "ProcessQueuedAlertSoundDelivery();" in calculation and
+        "OnTimer()" in initialization
     ),
     "queue is cleared on destroy": (
         "_alertDeliveryQueue.ClearPendingAlerts();" in initialization

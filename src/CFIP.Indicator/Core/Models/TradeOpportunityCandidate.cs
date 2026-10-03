@@ -29,6 +29,8 @@ namespace cAlgo
         public int CreatedM5;
         public int Quality;
         public double Risk;
+        public double RewardDistanceAtr;
+        public double MinimumRequiredRewardDistanceAtr;
         public double Tp1RR;
         public double Tp2RR;
         public double Tp3RR;
@@ -54,6 +56,15 @@ namespace cAlgo
         public bool FutureOrderReady;
         public double FutureOrderDistanceAtr;
         public string FutureOrderSource;
+
+        // These fields are ranking evidence only. They never override the
+        // canonical eligibility policy or create a second execution model.
+        public int ForecastAlignmentScore;
+        public int HistoricalSupportScore;
+        public int HistoricalCalibrationSamples;
+        public double HistoricalObservedWinRate;
+        public double HistoricalAverageRealizedR;
+        public double ExecutionPriorityScore;
 
         public string Source;
         public string Stage;

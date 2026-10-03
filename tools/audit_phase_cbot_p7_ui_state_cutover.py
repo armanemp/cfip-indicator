@@ -42,11 +42,12 @@ for token in (
 
 require(
     "CbotIndicatorExecutionSettings executionSettings" in publisher,
-    "publisher must consume the bound Indicator settings snapshot",
+    "publisher must retain the bound Indicator settings snapshot for observability",
 )
 require(
-    "executionSettings != null &&" in publisher,
-    "effective execution state must require bound Indicator settings",
+    "cbotMarketArmed" in publisher and
+    "cbotOrdersArmed" in publisher,
+    "effective execution state must be owned by explicit cBot arms",
 )
 
 for token in (
@@ -105,10 +106,8 @@ require(
 for token in (
     "EffectiveAutoTradingEnabled",
     "EffectiveAutomaticOrdersEnabled",
-    "IndicatorAutoTradingEnabled",
-    "IndicatorAutomaticOrdersEnabled",
 ):
-    require(token in panel, "panel execution state missing cBot snapshot field " + token)
+    require(token in panel, "panel execution state missing cBot effective field " + token)
 
 require(
     "CbotConnectionPanelText()" in overview and

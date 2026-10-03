@@ -1,3 +1,21 @@
+## 2026-10-03 — Live realtime cBot / attachment / audio / stagnant-market hardening
+
+Implemented:
+- explicit live-account arm boundary without detaching/stopping the cBot when live is unarmed;
+- 100 ms cBot signal-store handoff and 200 ms Indicator cBot-state visibility;
+- cBot-owned broker execution authority independent of legacy Indicator execution switches;
+- hardened same-chart CFIP custom-indicator discovery;
+- adaptive reward floor for stagnant RANGE/COMPRESSION/TRANSITION opportunities;
+- realtime last-bar audio delivery;
+- preserved bounded alert priority semantics;
+- extracted the large lane-candidate module into a canonical CFIPIndicator partial file;
+- accumulated verification in Source/Architecture CI.
+
+Verification:
+- cTrader compile and Runtime Acceptance are green on the latest checked head;
+- Source/Architecture is being rerun after P7 contract alignment;
+- live target-terminal validation remains manual and must precede any real-money activation.
+
 ## Current focus — REALTIME MULTI-SCENARIO OPPORTUNITY ENGINE — 2026-10-03
 
 Status: IMPLEMENTATION COMPLETE — verification pending.
@@ -3715,3 +3733,21 @@ Verification status:
 - Propagated composite quality into scenario PlanSnapshot quality so Indicator ranking and cBot payload quality are aligned.
 - No public confidence/RR/risk gate was lowered to force more signals.
 - Full-chain audit remains mandatory; target-terminal multi-scenario validation is still required before operational adoption.
+
+## 2026-10-03 — Realtime intelligence / audio / attachment closure follow-up
+
+- separated queued alert panel delivery from sound playback so the sole sound owner runs on the Indicator realtime Calculate/IsLastBar path;
+- added bounded history + forecast evidence to execution-priority ordering without altering eligibility or creating a second decision engine;
+- applied the same priority model to future pending scenarios;
+- strengthened RANGE/COMPRESSION minimum reward excursions to suppress undersized stagnant-market trades;
+- hardened cTrader chart-instance name matching while preserving stable type and InstanceId identity;
+- extended the accumulated hardening audit for these invariants.
+
+Verification authority remains Source/Architecture CI plus cTrader Compile/Build; target-terminal acceptance is still mandatory for real attachment/audio/live behavior.
+
+
+## 2026-10-03 — cBot live/realtime completion
+
+Closed two runtime seams found in the live/realtime pass: bound Indicator attachment identity was not republished at the binding transition, and the normal Calculate path could skip queued sound servicing after an early/exceptional cycle. The cBot now republishes attachment truth immediately, and the Indicator services the sound queue from the Calculate finally boundary while retaining the IsLastBar guard and single delivery owner.
+
+No strategy, quality, RR, risk, MTF role or broker-authority threshold was lowered.

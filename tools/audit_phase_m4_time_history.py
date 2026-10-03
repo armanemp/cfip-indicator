@@ -120,7 +120,7 @@ require(
 require(
     "RunClosedBarAnalysisStage(" in calc and
     "ProcessLiveCalculationStages(" in calc and
-    "ProcessQueuedAlertDelivery();" in calc,
+    "ProcessQueuedAlertSoundDelivery();" in calc,
     "M4: closed-bar/live calculation pipeline is missing",
 )
 

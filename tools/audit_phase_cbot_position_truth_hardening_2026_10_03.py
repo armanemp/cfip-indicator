@@ -92,10 +92,11 @@ check(
     "RefreshIndicatorBinding" in bot
 )
 check(
-    "live-account execution remains fail-closed",
-    "if (Account.IsLive)" in bot and
-    'live account detected' in bot and
-    "this build is demo-only" in bot
+    "live execution is explicit and unarmed instances remain attached",
+    "_liveExecutionDisarmed" in bot and
+    "LIVE EXECUTION DISARMED" in bot and
+    "EnableLiveExecution" in bot and
+    "liveExecutionEnabled" in bot
 )
 check(
     "CBOT-6M identity and capacity boundary remains present",

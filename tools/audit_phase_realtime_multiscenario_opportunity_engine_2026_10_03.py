@@ -129,10 +129,11 @@ check(
 )
 
 check(
-    "live trading remains fail-closed while realtime demo execution is available",
-    "if (Account.IsLive)" in bot and
-    "this build is demo-only" in bot and
-    "Enable Demo Market Execution" in bot
+    "live execution remains explicitly armable and fail-closed when unarmed",
+    "_liveExecutionDisarmed" in bot and
+    "Enable Live Execution" in bot and
+    "LIVE EXECUTION DISARMED" in bot and
+    "liveExecutionEnabled" in env
 )
 
 check(

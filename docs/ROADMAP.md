@@ -1,3 +1,73 @@
+# Current focus — CBOT LIVE / REALTIME COMPLETION — 2026-10-03
+
+Status: IMPLEMENTED — repository verification pending.
+
+- Latest accumulated source-audit fixes on the completion branch: M3/M4 now follow the canonical realtime sound owner; P7R and CR3.4/attachment-audio audits were corrected to match the null-safe type inspection and split timer-presentation/Calculate-sound ownership already present in production.
+
+Closed in this completion unit:
+- cBot republishes the exact bound Indicator InstanceId immediately after chart binding succeeds;
+- binding failure overwrites symbol-scoped presence with an explicit unattached state;
+- queued alert sound delivery is serviced from the Indicator Calculate finally boundary, while IsLastBar remains the single realtime audio guard;
+- existing current/future separation, multi-scenario execution, stagnant-market reward floor, history/forecast ranking and explicit live arm remain unchanged.
+
+Full-chain audit:
+history/outcomes -> pre-analysis -> M15 decision -> M5 trigger/tuning -> optional M1 -> current quote -> current Market/Aggressive OR future Stop/Limit -> ScenarioBatch -> cBot preflight -> broker -> confirmation -> protection/management -> outcome/history.
+
+Verification:
+- Source/Architecture accumulated audit;
+- Runtime Acceptance Contracts;
+- cTrader Compile/Build;
+- target-terminal attachment, audio, same-tick handoff, concurrent scenarios, future orders, restart/reconnect and live-arm acceptance.
+
+Operator action after merge: `git pull --ff-only` on local `main`.
+
+Phase record: `docs/PHASE-CBOT-LIVE-REALTIME-COMPLETION-2026-10-03.md`.
+
+---
+
+## Current focus — LIVE REALTIME EXECUTION / ATTACHMENT / AUDIO / QUALITY HARDENING — 2026-10-03
+
+Verification note — 2026-10-03:
+- cTrader Compile: PASS (run #3584 / 37125403700).
+- Runtime Acceptance Contracts: PASS (run #3400 / 37125403702).
+- Source/Architecture run #3591 exposed stale/static-audit assumptions; the remaining M3 sound-owner assertion was corrected to the canonical `ProcessQueuedAlertSoundDelivery()` owner in commit `111b124857fb98061d3c31e0f6d889c19ea4176f`. Targeted source verification now matches the production owner; GitHub has not started a new PR workflow for the API-created commit, so the aggregate Source/Architecture gate remains pending.
+
+
+Status: IMPLEMENTED — automated verification pending; target-terminal validation pending.
+
+Purpose:
+- make current-quote execution handoff fast and deterministic without moving analysis ownership into the cBot;
+- keep future Stop/Limit opportunities separate from current market entries;
+- keep multiple independent ScenarioIds bounded by the cBot concurrency contract;
+- remove hidden Indicator execution switches from the cBot broker permission path;
+- reject low-value micro-opportunities in stagnant RANGE/COMPRESSION conditions through an adaptive reward floor;
+- keep live execution explicitly armed and fail-closed when not armed;
+- make CFIP chart attachment and alert sound delivery observable and reliable.
+
+Completed:
+- live-unarmed cBot stays attached and publishes a visible LIVE DISARMED state;
+- shared signal-store reload is bounded to 100 ms while Indicator intrabar opportunity refresh is 100 ms;
+- cBot market/pending execution modes are the broker execution authority;
+- cBot effective execution state is reflected back to the Indicator panel without the old Indicator-setting false blocker;
+- CFIP binding scans Custom indicators first and reports candidate/type diagnostics when discovery fails;
+- adaptive reward floors are applied to current/future builders and rechecked at the final execution policy;
+- sound delivery stays on the realtime last-bar path with semantic fallback;
+- existing historical memory/calibration and future prediction layers remain in the full decision chain.
+
+Full-chain audit:
+Past/history -> pre-analysis -> M15 decision -> M5 trigger/tuning -> optional M1 -> current quote -> current Market/Aggressive OR future Stop/Limit -> ScenarioBatch -> cBot preflight -> broker/account safety -> broker mutation -> broker confirmation -> protection/management -> outcome/history.
+
+Safety:
+- live arm remains explicitly OFF by default;
+- no confidence, RR or risk threshold was lowered;
+- stagnant-market protection rejects small reward excursions instead of increasing signal frequency;
+- Indicator remains broker-mutation-free;
+- ScenarioId identity/idempotency and bounded concurrency remain mandatory.
+
+Operator action after verified merge: git pull --ff-only.
+
+---
+
 ## Current focus — REALTIME MULTI-SCENARIO OPPORTUNITY ENGINE — 2026-10-03
 
 Status: IMPLEMENTATION COMPLETE — verification pending.
@@ -35,6 +105,48 @@ Verification:
 - target-terminal latency, same-tick handoff, concurrent positions, future pending placement, invalidation and restart/reconnect.
 
 ---
+Status: IMPLEMENTATION COMPLETE — automated verification pending; target-terminal live acceptance pending.
+
+Purpose:
+- continuously refresh current-quote opportunity state without rebuilding structural M5 geometry on every tick;
+- support simultaneous current-market execution scenarios and future pending-order scenarios;
+- keep M15 as canonical trade-decision/execution reference, M5 as trigger/tuning/entry precision, M1 optional, H1+ context/reward;
+- keep historical calibration and forward prediction as separate evidence layers;
+- support demo and explicitly armed live execution through the same cBot mutation owners;
+- reject stale market handoffs and materially undersized reward excursions before broker mutation.
+
+Completed:
+- intrabar candidate state refresh on a bounded 200 ms cadence;
+- live market actionability refresh from the current quote;
+- future Continuation Stop and Reversal Limit scenario construction before price reaches the planned level;
+- provider batch support for current actionable and future pending scenarios in the same revision;
+- isolation of future-order preparation from the canonical live provider intent;
+- scenario-scoped execution remains bounded by cBot Max Concurrent Scenarios;
+- cBot live execution is explicitly armable and disarmed by default;
+- cBot provider staleness default is tightened to 3s;
+- cBot final market-entry drift validation is applied to current Bid/Ask;
+- executable scenarios carry explicit reward excursion in ATR and fail the canonical opportunity floor when too small;
+- sound-bearing alert events are protected from normal queue overflow drops;
+- chart attachment discovery is hardened with complete chart-instance scanning and qualified type matching.
+
+Full-chain audit:
+Past/history -> pre-analysis -> M15 decision -> M5 tuning/trigger -> M1 optional -> current quote actionability -> current Market/Aggressive OR future Stop/Limit -> ScenarioBatch -> cBot preflight -> broker/account safety -> broker execution/placement -> broker confirmation -> protection/management -> outcome/history.
+
+Safety:
+- no quality/RR/risk threshold was lowered;
+- live execution is unavailable unless the cBot's explicit Enable Live Execution arm is true;
+- Indicator remains broker-mutation-free;
+- same ScenarioId remains idempotent;
+- future pending scenarios are not presented as current market entries;
+- margin, capacity, geometry, spread/plan-risk, protection, daily-loss and reconciliation gates remain mandatory.
+
+Verification:
+- Source/Architecture;
+- cTrader Compile/Build;
+- realtime multi-scenario audit;
+- live-arm/disarmed-arm account boundary;
+- target-terminal latency, same-tick handoff, concurrent positions, future pending placement, invalidation, alert audio and restart/reconnect.
+
 ## Current focus — CBOT MANAGEMENT POLICY HARDENING — 2026-10-03
 
 Status: IMPLEMENTATION COMPLETE — verification pending.
@@ -3075,3 +3187,20 @@ The panel now distinguishes **NOT ATTACHED**, **STOPPED/RESTARTING**, **CONNECTI
 No strategy threshold, RR/Entry/SL/TP policy, position capacity or Cloud transport was changed. The cBot remains demo-only.
 
 Target-terminal startup/restart/reconnect, panel latency and broker synchronization remain manual acceptance boundaries until evidenced.
+
+## 2026-10-03 — Realtime intelligence + live execution closure follow-up
+
+Current work unit extends the realtime multi-scenario engine with:
+- realtime Indicator audio delivery on the Calculate/IsLastBar path;
+- a bounded history + forecast execution-priority layer shared by current and future scenarios;
+- stronger minimum reward excursion in RANGE/COMPRESSION to suppress undersized stagnant-market opportunities;
+- more tolerant cTrader chart-instance attachment matching while preserving stable type/InstanceId identity.
+
+Full-chain audit remains mandatory:
+pre-analysis/history → M15 decision → M5 trigger/tuning → M1 optional → Entry/SL/TP/RR → actionability → scenario/plan → signal/alert → scenario batch → cBot preflight → per-ScenarioId broker truth → effective lifecycle → broker execution/future pending placement → broker confirmation → protection → outcome/history.
+
+No look-ahead data is introduced. The cBot remains the only broker-mutation owner. Live execution remains explicitly armable and fail-closed when disarmed.
+
+Verification required before merge: Source/Architecture accumulated CI, cTrader Compile/Build, then target-terminal validation of attachment, audio, same-tick execution, multiple ScenarioIds, future pending orders, restart/reconnect and observed latency.
+
+Operator action after verified merge: `git pull --ff-only`.

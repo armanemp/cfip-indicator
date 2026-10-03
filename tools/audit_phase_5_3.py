@@ -33,7 +33,7 @@ candidate = read(
     "src/CFIP.Indicator/Core/Models/TradeOpportunityCandidate.cs"
 )
 builder = read(
-    "src/CFIP.Indicator/Analysis/Market/ParallelOpportunityBuilder.cs"
+    "src/CFIP.Indicator/Analysis/Market/ParallelOpportunityBuilder.LaneCandidate.cs"
 )
 orchestration = read(
     "src/CFIP.Indicator/Analysis/Market/Decision/DecisionOrchestration.cs"

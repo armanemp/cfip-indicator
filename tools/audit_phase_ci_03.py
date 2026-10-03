@@ -27,6 +27,7 @@ frame = read('src/CFIP.Indicator/Analysis/Market/Models/Frame.cs')
 decision = read('src/CFIP.Indicator/Core/Models/Decision.cs')
 candidate = read('src/CFIP.Indicator/Core/Models/TradeOpportunityCandidate.cs')
 builder = read('src/CFIP.Indicator/Analysis/Market/ParallelOpportunityBuilder.cs')
+candidate_builder = read('src/CFIP.Indicator/Analysis/Market/ParallelOpportunityBuilder.LaneCandidate.cs')
 orchestration = read('src/CFIP.Indicator/Analysis/Market/Decision/DecisionOrchestration.cs')
 runtime = read('tools/CFIP.Runtime.Contracts/Program.cs')
 runtime_project = read('tools/CFIP.Runtime.Contracts/CFIP.Runtime.Contracts.csproj')
@@ -74,7 +75,8 @@ check('indicator-group provenance reaches the decision chain',
       'IndicatorIndependentEvidenceGroupCount' in decision and
       'IndicatorIndependentEvidenceGroupCount' in candidate and
       'decision.IndicatorIndependentEvidenceGroupCount' in orchestration and
-      'IndicatorIndependentEvidenceGroupCount =' in builder)
+      ('IndicatorIndependentEvidenceGroupCount =' in builder or
+       'IndicatorIndependentEvidenceGroupCount =' in candidate_builder))
 check('runtime CI-03 contracts are wired',
       'VerifyCi03IndicatorEvidenceIndependence();' in runtime and
       'IndicatorEvidenceIndependenceRule.cs' in runtime_project and
