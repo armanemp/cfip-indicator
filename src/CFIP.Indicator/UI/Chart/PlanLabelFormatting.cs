@@ -127,7 +127,7 @@ namespace cAlgo
                 string.IsNullOrWhiteSpace(
                     candidate.SourceTimeframe)
                     ? "MTF"
-                    : candidate.SourceTimeframe;
+                    : candidate.SourceTimeframe.Trim().ToUpperInvariant();
 
             string role =
                 candidate.IsPrimaryTimeframeSignal
@@ -139,23 +139,27 @@ namespace cAlgo
                 " " +
                 tf +
                 " " +
-                direction +
-                " " +
-                ScenarioTimeframeTag(candidate);
+                direction;
         }
 
-        private string BuildPlanLevelLabel(
+        private string BuildCanonicalLevelLabel(
+            string prefix,
             string levelName,
             double price,
             double entry,
-            bool includeDistance)
+            bool includeDistance,
+            bool includeRr,
+            double rr,
+            string timeframeTag)
         {
             string text =
-                levelName +
-                " " +
-                Price(price) +
-                " " +
-                PlanTimeframeTag();
+                string.IsNullOrWhiteSpace(prefix)
+                    ? levelName + " " + Price(price)
+                    : prefix +
+                      " " +
+                      levelName +
+                      " " +
+                      Price(price);
 
             if (includeDistance)
             {
@@ -173,59 +177,10 @@ namespace cAlgo
                 }
             }
 
-            return text;
-        }
-
-        private string BuildScenarioLevelLabel(
-            TradeOpportunityCandidate candidate,
-            string levelName,
-            double price,
-            bool includeDistance,
-            bool includeRr,
-            double rr,
-            int displayNumber = 0)
-        {
-            if (candidate == null)
-                return
-                    levelName +
+            if (!string.IsNullOrWhiteSpace(timeframeTag))
+                text +=
                     " " +
-                    Price(price) +
-                    " " +
-                    PlanTimeframeTag();
-
-            string prefix =
-                ScenarioLabelPrefix(candidate);
-
-            if (displayNumber > 0)
-                prefix =
-                    "#" +
-                    displayNumber.ToString(
-                        CultureInfo.InvariantCulture) +
-                    " " +
-                    prefix;
-
-            string text =
-                prefix +
-                " " +
-                levelName +
-                " " +
-                Price(price);
-
-            if (includeDistance)
-            {
-                string pips =
-                    FormatPlanPips(
-                        candidate.Entry,
-                        price);
-
-                if (!string.IsNullOrWhiteSpace(pips))
-                {
-                    text +=
-                        " (" +
-                        pips +
-                        ")";
-                }
-            }
+                    timeframeTag;
 
             if (includeRr &&
                 rr > 0)
@@ -239,6 +194,56 @@ namespace cAlgo
             }
 
             return text;
+        }
+
+        private string BuildPlanLevelLabel(
+            string levelName,
+            double price,
+            double entry,
+            bool includeDistance)
+        {
+            return BuildCanonicalLevelLabel(
+                "",
+                levelName,
+                price,
+                entry,
+                includeDistance,
+                false,
+                0,
+                PlanTimeframeTag());
+        }
+
+        private string BuildScenarioLevelLabel(
+            TradeOpportunityCandidate candidate,
+            string levelName,
+            double price,
+            bool includeDistance,
+            bool includeRr,
+            double rr,
+            int displayNumber = 0)
+        {
+            string prefix =
+                ScenarioLabelPrefix(candidate);
+
+            if (displayNumber > 0)
+                prefix =
+                    "#" +
+                    displayNumber.ToString(
+                        CultureInfo.InvariantCulture) +
+                    " " +
+                    prefix;
+
+            return BuildCanonicalLevelLabel(
+                prefix,
+                levelName,
+                price,
+                candidate == null
+                    ? 0
+                    : candidate.Entry,
+                includeDistance,
+                includeRr,
+                rr,
+                ScenarioTimeframeTag(candidate));
         }
     }
 }
