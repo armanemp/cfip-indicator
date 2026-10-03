@@ -135,8 +135,8 @@ check(
     "directional signal presentation must use canonical arrows while M1 remains a precision-only Circle marker",
 )
 check(
-    "RenderStackedSignalArrows(" in signal_renderer and
-    "RenderStackedSignalArrows(" in signal_presentation and
+    "RenderCanonicalMtfTrendArrows(" in read(IND / "Runtime/Calculation/CalculationLiveCycle.cs") and
+    "RenderStackedSignalArrows(" in signal_stack and
     "snapshot.MtfTrendStrengthLevel" in read(IND / "UI/Chart/SignalStackedArrowRenderer.cs") and
     "fallbackState" not in read(IND / "UI/Chart/SignalStackedArrowRenderer.cs") and
     "ResolveSignalArrowState(" not in signal_renderer,
@@ -152,8 +152,8 @@ check(
     "BUY/SELL arrows must have three distinct default intensity colors",
 )
 check(
-    "DecisionDirection != 0" in signal_presentation and
-    "MinimumEarlyConfidence" in signal_presentation,
+    "RenderNonActionableWatchState" in signal_presentation and
+    "Canonical MTF trend arrows are independent" in signal_presentation,
     "non-actionable directional watch must retain an evidence floor",
 )
 check(
