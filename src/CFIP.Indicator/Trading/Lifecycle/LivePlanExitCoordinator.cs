@@ -2,6 +2,7 @@
 // Single-responsibility lifecycle module.
 
 using System;
+using CFIP.Contracts;
 using System.Collections.Generic;
 using System.Linq;
 using cAlgo.API;
@@ -43,9 +44,11 @@ namespace cAlgo
                                         LifecycleState.ExitRequested,
                                         reason);
                         
-                                    if (!TryClosePosition(
+                                    ManagementCommandRequestStatus closeStatus =
+                                        TryClosePosition(
                                             position,
-                                            reason))
+                                            reason);
+                                    if (!closeStatus.IsAccepted())
                                     {
                                         SetLifecycleState(
                                             LifecycleState.RecoveryRequired,
