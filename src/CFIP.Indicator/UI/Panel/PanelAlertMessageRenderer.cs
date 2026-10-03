@@ -207,6 +207,14 @@ namespace cAlgo
             if (_panelAlertMessageStack == null)
                 return;
 
+            // Visibility follows current panel lifecycle even when no new
+            // alert revision exists. Only row content/color writes are cached.
+            _panelAlertMessageStack.IsVisible =
+                ShowUnifiedPanel &&
+                !_panelHidden &&
+                _panelAlertHistory != null &&
+                _panelAlertHistory.Count > 0;
+
             if (_lastRenderedPanelAlertRevision ==
                 _panelAlertRevision)
                 return;
