@@ -129,7 +129,7 @@ namespace cAlgo
                         RequestCancelPendingOrder(
                             pending,
                             "HIGH IMPACT NEWS");
-                    if (cancelStatus.IsAccepted())
+                    if (cancelStatus.IsBrokerConfirmed())
                     {
                         ArchiveEconomicNewsRisk(
                             closedM5,
