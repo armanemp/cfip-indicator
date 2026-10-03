@@ -21,12 +21,16 @@ namespace cAlgo
 
             double minimumAtr =
                 string.Equals(regime, "COMPRESSION", StringComparison.OrdinalIgnoreCase)
-                    ? 0.70
+                    ? 0.85
                     : string.Equals(regime, "RANGE", StringComparison.OrdinalIgnoreCase)
-                        ? 0.65
+                        ? 0.75
                         : string.Equals(regime, "EXPANSION", StringComparison.OrdinalIgnoreCase)
-                            ? 0.30
-                            : 0.40;
+                            ? 0.40
+                            : string.Equals(regime, "TRANSITION", StringComparison.OrdinalIgnoreCase)
+                                ? 0.55
+                                : string.Equals(regime, "HIGH_VOLATILITY", StringComparison.OrdinalIgnoreCase)
+                                    ? 0.45
+                                    : 0.50;
 
             return targetDistanceAtr >= minimumAtr;
         }
