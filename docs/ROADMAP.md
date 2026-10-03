@@ -1,3 +1,33 @@
+## 2026-10-03 — FINAL REALTIME / LIVE / SMART SYSTEM INTEGRATION
+
+Status: IMPLEMENTED — automated verification pending.
+
+Completed in this continuation unit:
+- realtime current-quote intelligence and historical/forecast evidence remain unified without introducing a second execution authority;
+- all MTF engines remain active across M1/M5/M15/M30/H1/H4/D1/W1, with M15 canonical, M5 entry precision/tuning and M1 optional confirmation;
+- current scenarios execute immediately while future scenarios are broker Pending Stop/Limit orders;
+- multiple ScenarioIds remain bounded, idempotent and independently reconciled;
+- stagnant-market reward/magnitude protection remains mandatory;
+- LIVE Market/Pending/Aggressive/Management arms remain explicit and fail-closed by default;
+- indicator broker-mutation-free boundary remains intact;
+- signal sound delivery is separated from panel rendering and executed on the realtime Calculate/last-bar path;
+- cBot lifecycle/block/execution audio has one owner;
+- HTF trend presentation is a nine-level weak/medium/strong 1/2/3 arrow ladder;
+- panel header has a dedicated realtime owner;
+- fixed M1/M5/M15/M30/H1/H4/D1/W1 trend-lamp row lives outside the ScrollViewer;
+- final integration audit and documentation added.
+
+Verification:
+- cTrader Compile/Build;
+- Runtime Acceptance Contracts;
+- accumulated Source/Architecture audits;
+- final realtime/live/smart-system integration audit;
+- target-terminal acceptance for sound, attachment truth, same-tick handoff, concurrent scenarios, pending lifecycle, restart/reconnect and live broker mutation.
+
+Operator action after verified merge: git pull --ff-only.
+
+---
+
 ## 2026-10-03 — Lifecycle Audio + Realtime Panel Header
 
 Status: IMPLEMENTED — verification pending.
