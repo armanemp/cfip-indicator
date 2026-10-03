@@ -45,7 +45,7 @@ namespace cAlgo
                                         reason);
                         
                                     ManagementCommandRequestStatus closeStatus =
-                                        TryClosePosition(
+                                        RequestClosePosition(
                                             position,
                                             reason);
                                     if (!closeStatus.IsAccepted())
