@@ -47,7 +47,7 @@ namespace cAlgo
 
             if (!signalPresentationAllowed)
             {
-                RemoveMtfTrendStrengthArrowStack();
+                RemoveStackedSignalArrows();
                 Chart.RemoveObject(P + "REACTION_ARROW");
                 return;
             }
@@ -63,7 +63,7 @@ namespace cAlgo
 
             if (visualDirection == 0)
             {
-                RemoveMtfTrendStrengthArrowStack();
+                RemoveStackedSignalArrows();
                 Chart.RemoveObject(P + "REACTION_ARROW");
                 return;
             }
@@ -91,22 +91,23 @@ namespace cAlgo
                         0.02,
                         ArrowOffsetAtr));
 
-            bool showCurrentStateArrow =
-                ShowSignalArrow;
-
-            if (showCurrentStateArrow)
-            {
-                RenderMtfTrendStrengthArrowStack(
+            string arrowState =
+                ResolveSignalArrowState(
                     snapshot,
-                    ResolveArrowStackDirection(
-                        snapshot,
-                        visualDirection),
+                    visualDirection);
+
+            if (ShowSignalArrow)
+            {
+                RenderStackedSignalArrows(
+                    snapshot,
+                    visualDirection,
                     arrowBar,
-                    offset);
+                    offset,
+                    arrowState);
             }
             else
             {
-                RemoveMtfTrendStrengthArrowStack();
+                RemoveStackedSignalArrows();
             }
 
             Chart.RemoveObject(
@@ -390,7 +391,7 @@ namespace cAlgo
         
         private void ClearWatchObjects()
                         {
-                            RemoveMtfTrendStrengthArrowStack();
+                            RemoveStackedSignalArrows();
                 
                             Chart.RemoveObject(
                                 P + "REACTION_ARROW");
