@@ -7,6 +7,7 @@ Completed:
 - MTF labels remain sourced from PanelTimeframePresentationState.DirectionLabel.
 - Top-Down HTF/MID direction text no longer exposes raw numeric direction values; ENTRY retains alignment/strength without inventing a second EntryFrameDirection owner.
 - Decision, Entry Gate and readiness rows no longer use overlapping READY/CONFIRMED/BLOCKED wording; setup confirmation, trigger waiting, entry waiting and current actionability are distinguished.
+- Canonical SignalVisualSnapshot stage CONFIRMED is preserved as CONFIRMED in authoritative panel state instead of being relabeled READY.
 - WaveTrend evidence text and color now use WaveTrend direction, with explicit CONFLICT when it opposes the trade direction.
 - No strategy, risk, RR, execution, M15/M5/M1 role or cBot broker-ownership rule was changed.
 - Obsolete duplicate realtime-header formatting/color helpers were removed after the dedicated header owner became canonical.
