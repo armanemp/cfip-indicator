@@ -7,6 +7,11 @@ namespace cAlgo
     {
         private const int PanelContentRefreshMilliseconds = 500;
 
+        private void RequestPanelContentRefresh()
+        {
+            _lastPanelContentRefreshUtc = DateTime.MinValue;
+        }
+
         private bool ShouldRefreshPanelContent(
             DateTime nowUtc)
         {
