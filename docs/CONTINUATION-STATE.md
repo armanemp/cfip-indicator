@@ -1,3 +1,17 @@
+## 2026-10-03 — cBot Management Policy Hardening corrective seam
+
+A post-implementation review found a retryability defect in cooldown handling: a cooldown-deferred management command could be recorded as an intermediate broker acknowledgment and then remain in confirmation-only processing without reaching mutation.
+
+Correction:
+- cooldown now defers without publishing a synthetic broker result;
+- the command stays queued and becomes retryable after the position-scoped cooldown;
+- regression coverage explicitly rejects synthetic acknowledgment in the cooldown path.
+
+No strategy, RR, risk, capacity or broker-authority threshold changed.
+
+Phase record: docs/PHASE-CBOT-MANAGEMENT-POLICY-HARDENING-2026-10-03.md.
+
+
 ## 2026-10-03 — cBot Management Policy Hardening
 
 Status: implementation complete, verification pending.
