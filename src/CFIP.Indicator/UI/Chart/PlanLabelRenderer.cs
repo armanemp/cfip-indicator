@@ -13,8 +13,10 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private const double CompactPlanLabelFontSize = 8.5;
-        private const int CompactPlanLabelWidthBars = 7;
+        private const double CompactPlanLabelFontSize = 8.0;
+        private const int CompactPlanLabelMinimumWidthBars = 7;
+        private const int CompactPlanLabelMaximumWidthBars = 16;
+        private const int CompactPlanLabelGapBars = 1;
         private const double CompactPlanLabelHeightRangeFactor = 0.12;
         private const double CompactPlanLabelMinimumHeightPips = 4.0;
 
@@ -140,17 +142,26 @@ namespace cAlgo
                     !IsFinitePositive(price))
                     return;
 
-                int rightBar =
+                int lineLeftBar =
                     Math.Max(
                         0,
                         Math.Min(
                             Bars.Count - 1,
                             labelBar));
 
+                int rightBar =
+                    Math.Max(
+                        0,
+                        lineLeftBar -
+                        CompactPlanLabelGapBars);
+
+                int widthBars =
+                    ResolveCompactPlanLabelWidthBars(text);
+
                 int leftBar =
                     Math.Max(
                         0,
-                        rightBar - CompactPlanLabelWidthBars);
+                        rightBar - widthBars + 1);
 
                 double labelPrice =
                     NormalizePrice(price);
@@ -284,7 +295,7 @@ namespace cAlgo
                 label.Y =
                     labelPrice;
                 label.Color =
-                    Color.White;
+                    GetReadableLabelTextColor(labelColor);
                 label.FontSize =
                     CompactPlanLabelFontSize;
                 label.FontFamily =
@@ -309,12 +320,40 @@ namespace cAlgo
             }
         }
 
+        private int ResolveCompactPlanLabelWidthBars(
+            string text)
+        {
+            int length =
+                string.IsNullOrWhiteSpace(text)
+                    ? 1
+                    : text.Trim().Length;
+
+            int estimated =
+                CompactPlanLabelMinimumWidthBars +
+                (int)Math.Ceiling(length / 5.0);
+
+            return Math.Max(
+                CompactPlanLabelMinimumWidthBars,
+                Math.Min(
+                    CompactPlanLabelMaximumWidthBars,
+                    estimated));
+        }
+
         private Color GetReadableLabelTextColor(
             Color semanticColor)
         {
-            // Text is always white; its canonical filled background is rendered
-            // by DrawCompactPlanLabel using the exact line semantic color.
-            return Color.White;
+            Color background =
+                PlanLinePresentationRule.ResolveColor(
+                    semanticColor);
+
+            double luminance =
+                (0.2126 * background.R) +
+                (0.7152 * background.G) +
+                (0.0722 * background.B);
+
+            return luminance >= 160.0
+                ? Color.Black
+                : Color.White;
         }
 
         private void RemovePlanLabel(
