@@ -1694,3 +1694,9 @@ Then begin at checklist item 1.1 and record every disposition in this document o
 31. Indicator binding refresh can reset instance state while execution settings have a separate cache rule that returns when settings are non-null. Same-instance configuration changes must be proven to invalidate settings, especially across ChartIndicator Modified events.
 32. The cBot timer forces signal-store reload every cycle (~100ms), bypassing the non-forced reload cadence used by OnTick. This is a second transport refresh policy and must be centralized.
 33. Scenario recovery in SweepScenarioProtectionStates writes scenario-local data into global fields (`_activeManagedExecutionLabel`, `_lastSignalEnvelope`, `_reconciliation`). This can let one scenario's recovery context leak into another scenario's global execution/presentation state; recovery must remain scenario-scoped until a canonical promotion rule exists.
+
+### M2 remediation checkpoint — realtime and scenario ownership
+
+M2.177/M2.178 were root-corrected by making OnTimer the sole realtime transport/management consumer and removing signal/management consumption plus protection sweeping from OnTick. The timer now uses the canonical non-forced transport reload cadence after startup. M2.183 was root-corrected by keeping scenario recovery reconciliation local rather than copying it into global execution context during scenario sweeping. M2.184 was corrected by replacing the single global realtime revision tracker with per-scenario revision tracking keyed by ScenarioId, with reset on indicator rebinding.
+
+Acceptance remains open pending authoritative CI/build and target-terminal validation; no compile PASS is claimed from static source edits alone.
