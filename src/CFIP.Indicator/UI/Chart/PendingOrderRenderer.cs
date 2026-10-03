@@ -66,24 +66,6 @@ namespace cAlgo
                 GetLabelBoxRightBar(
                     lineLeft);
 
-            double labelAtr =
-                Bars.Count >= 3
-                    ? Atr(
-                        Bars,
-                        Math.Max(
-                            1,
-                            Math.Min(
-                                Bars.Count - 2,
-                                labelBar)))
-                    : 0;
-
-            double boxHalfHeight =
-                Math.Max(
-                    Symbol.PipSize * 3,
-                    labelAtr > 0
-                        ? labelAtr * 0.055
-                        : Symbol.PipSize * 4);
-
             string typeText =
                 snapshot.PendingOrderType;
 
@@ -97,9 +79,7 @@ namespace cAlgo
                 TriggerLineColor,
                 ShowTrigger,
                 lineLeft,
-                labelBar,
-                boxRightBar,
-                boxHalfHeight);
+                labelBar);
 
             RenderCompactPlanLabel(
                 P + "PENDING_SL_LABEL",
@@ -109,9 +89,7 @@ namespace cAlgo
                 SlLineColor,
                 ShowSL,
                 lineLeft,
-                labelBar,
-                boxRightBar,
-                boxHalfHeight);
+                labelBar);
 
             RenderCompactPlanLabel(
                 P + "PENDING_TP_LABEL",
@@ -121,9 +99,7 @@ namespace cAlgo
                 TpLineColor,
                 ShowTP1,
                 lineLeft,
-                labelBar,
-                boxRightBar,
-                boxHalfHeight);
+                labelBar);
         }
 
         private void RemoveManagedPendingOrderObjects()
