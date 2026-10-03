@@ -120,7 +120,7 @@ namespace cAlgo
                  i < pendingOrdersToCancel.Count;
                  i++)
             {
-                TryCancelPendingOrder(
+                RequestCancelPendingOrder(
                     pendingOrdersToCancel[i],
                     "END OF SESSION");
             }
