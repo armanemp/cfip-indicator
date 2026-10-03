@@ -86,7 +86,7 @@ namespace cAlgo
                             ? (double?)null
                             : closeVolume);
 
-                if (!closeStatus.IsAccepted())
+                if (!closeStatus.IsBrokerConfirmed())
                 {
                     Print(
                         "CFIP partial close rejected ({0}).",
