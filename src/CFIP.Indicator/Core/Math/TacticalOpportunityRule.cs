@@ -35,10 +35,9 @@ namespace cAlgo
             int htfAlignment,
             int strongHtfThreshold,
             double tp1RR,
-            int tacticalMinimumQuality,
-            double tacticalMinimumRR,
-            int counterHtfMinimumQuality,
-            double counterHtfMinimumRR)
+            double riskAtr,
+            string regime,
+            int confidence)
         {
             if (m5Direction == 0 ||
                 selectedDirection != m5Direction ||
@@ -53,37 +52,39 @@ namespace cAlgo
                 (int)Math.Round(
                     m5Quality * 0.55 +
                     waveTrendQuality * 0.20 +
-                    Math.Min(
-                        100,
-                        structuralEvidence * 12) * 0.15 +
-                    Math.Min(
-                        100,
-                        independentEvidence * 12) * 0.10);
+                    Math.Min(100, structuralEvidence * 12) * 0.15 +
+                    Math.Min(100, independentEvidence * 12) * 0.10);
 
             bool strongHtfConflict =
                 htfDirection != 0 &&
                 htfAlignment >=
-                Math.Max(
-                    60,
-                    strongHtfThreshold) &&
+                Math.Max(60, strongHtfThreshold) &&
                 htfDirection != m5Direction;
 
-            int requiredQuality =
-                strongHtfConflict
-                    ? counterHtfMinimumQuality
-                    : tacticalMinimumQuality;
-
-            double requiredRR =
-                strongHtfConflict
-                    ? counterHtfMinimumRR
-                    : tacticalMinimumRR;
-
-            return new TacticalOpportunityResult(
-                quality >= requiredQuality &&
-                tp1RR >= requiredRR,
+            OpportunityLane lane =
                 strongHtfConflict
                     ? OpportunityLane.CounterHtfTactical
-                    : OpportunityLane.Tactical,
+                    : OpportunityLane.Tactical;
+
+            AdaptiveRewardRiskProfile profile =
+                AdaptiveRewardRiskProfileRule.Resolve(
+                    regime,
+                    lane,
+                    riskAtr,
+                    confidence,
+                    quality,
+                    60,
+                    Math.Min(100, structuralEvidence * 12),
+                    4.0);
+
+            double requiredRR =
+                profile.RequiredTp1RR;
+
+            return new TacticalOpportunityResult(
+                quality >=
+                    (strongHtfConflict ? 82 : 70) &&
+                tp1RR >= requiredRR,
+                lane,
                 quality,
                 tp1RR);
         }
