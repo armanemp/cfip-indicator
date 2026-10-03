@@ -2373,3 +2373,27 @@ Verification must include:
 - independent protection/reconciliation on multiple broker objects.
 
 Operator action after merge: git pull --ff-only.
+
+
+## 2026-10-03 — Realtime/Live Execution + Volume Profile Intelligence
+
+Implementation continued on codex/realtime-live-signal-unification-2026-10-03 / PR #240.
+
+Completed in this unit:
+- live account routing became explicit and default-OFF per broker mutation action;
+- current actionable scenarios remain immediate Market/Aggressive executions, while future scenarios remain Pending Stop/Limit orders;
+- cBot owns bounded simultaneous ScenarioId capacity independently of the Indicator legacy single-plan capacity;
+- signal-store reload cadence is 100 ms;
+- tiny stagnant-market opportunities receive a volatility-relative magnitude gate and RANGE receives the stronger 2.00 TP1-RR floor;
+- cBot attachment/presence and alert-sound transport seams remain observable through canonical state/queue owners;
+- the previously supplied Volume Profile source was verified as unused in the repository and has now been integrated as a lightweight M15 POC/VAL/VAH evidence layer with closed-bar caching and bounded quality/ranking influence.
+
+Verification status:
+- Runtime Acceptance and cTrader Compile were green on the PR #240 head before the final follow-up edits;
+- Source/Architecture initially failed at the architecture verifier because PR #240 incorrectly changed the Indicator certified single-plan MaximumOpenPositions contract to 1..10; this was corrected by restoring that contract and making cBot concurrency the sole broker-side capacity owner;
+- repository CI must be rerun against the latest branch head after these follow-up edits;
+- target-terminal acceptance remains required for live arm, same-tick handoff, simultaneous scenarios, future pending fill lifecycle, cBot attachment, audible sound and restart/reconnect.
+
+Operator action after merge: git pull --ff-only on local main.
+
+Phase records: docs/PHASE-REALTIME-LIVE-SIGNAL-UNIFICATION-2026-10-03.md, docs/PHASE-VOLUME-PROFILE-EVIDENCE-2026-10-03.md.
