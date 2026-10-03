@@ -56,7 +56,9 @@ check(
 check(
     "protection recovery preserves per-scenario reconciliation truth",
     "TryRecoverProtection(" in bot and
-    "_reconciliation =\n                        ReconcileScenarioState(" in bot
+    "CbotBrokerReconciliationResult reconciliation" in bot and
+    "TryRecoverProtection(\n                        scenario,\n                        result," in bot and
+    "_scenarioReconciliations[item.Key]" in bot
 )
 check(
     "cBot management is gated by the effective account-scoped arm",
