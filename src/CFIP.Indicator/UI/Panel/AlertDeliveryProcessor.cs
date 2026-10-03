@@ -8,15 +8,13 @@ namespace cAlgo
     {
         private const int MaxAlertDeliveriesPerPump = 4;
 
-        // Multiple semantic signal alerts can legitimately target the same M5
-        // market event (WATCH/REACTION/ACTION, parallel lanes, etc.). They remain
-        // visible in the panel, but only one sound is emitted per event and
-        // direction; a higher-priority escalation may replace a lower one.
-        private const int MaxRememberedSignalSoundGroups = 256;
-        private readonly HashSet<string> _rememberedSignalSoundGroups =
+        // The same causal alert may pass through several presentation stages.
+        // Only one audible cue is allowed for one canonical event group.
+        private const int MaxRememberedAlertSoundGroups = 256;
+        private readonly HashSet<string> _rememberedAlertSoundGroups =
             new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        private readonly Queue<string> _rememberedSignalSoundGroupOrder =
-            new Queue<string>(MaxRememberedSignalSoundGroups);
+        private readonly Queue<string> _rememberedAlertSoundGroupOrder =
+            new Queue<string>(MaxRememberedAlertSoundGroups);
 
         private void ProcessQueuedAlertDelivery()
         {
@@ -66,81 +64,8 @@ namespace cAlgo
                     continue;
                 }
 
-                RememberSignalSoundGroup(
+                RememberAlertSoundGroup(
                     soundGroupKey);
-            }
-        }
-
-        private int ResolveSignalSoundPriority(
-            string key)
-        {
-            string normalized =
-                key ?? string.Empty;
-
-            if (normalized.StartsWith(
-                    "ACTION|",
-                    StringComparison.OrdinalIgnoreCase) ||
-                normalized.StartsWith(
-                    "HIGH|",
-                    StringComparison.OrdinalIgnoreCase) ||
-                normalized.StartsWith(
-                    "SMART|",
-                    StringComparison.OrdinalIgnoreCase))
-                return 3;
-
-            if (normalized.StartsWith(
-                    "EARLY|",
-                    StringComparison.OrdinalIgnoreCase) ||
-                normalized.StartsWith(
-                    "WATCH|",
-                    StringComparison.OrdinalIgnoreCase))
-                return 2;
-
-            if (normalized.StartsWith(
-                    "REACTION|",
-                    StringComparison.OrdinalIgnoreCase) ||
-                normalized.StartsWith(
-                    "AUTO-REACTION|",
-                    StringComparison.OrdinalIgnoreCase))
-                return 1;
-
-            return 0;
-        }
-
-        private bool IsSignalSoundAlertKey(
-            string key)
-        {
-            string normalized =
-                key ?? string.Empty;
-
-            return
-                normalized.StartsWith("WATCH|", StringComparison.OrdinalIgnoreCase) ||
-                normalized.StartsWith("REACTION|", StringComparison.OrdinalIgnoreCase) ||
-                normalized.StartsWith("ACTION|", StringComparison.OrdinalIgnoreCase) ||
-                normalized.StartsWith("HIGH|", StringComparison.OrdinalIgnoreCase) ||
-                normalized.StartsWith("SMART|", StringComparison.OrdinalIgnoreCase) ||
-                normalized.StartsWith("EARLY|", StringComparison.OrdinalIgnoreCase) ||
-                normalized.StartsWith("AUTO-REACTION|", StringComparison.OrdinalIgnoreCase);
-        }
-
-        private void RememberSignalSoundGroup(
-            string groupKey)
-        {
-            if (string.IsNullOrWhiteSpace(groupKey) ||
-                _rememberedSignalSoundGroups.Contains(groupKey))
-                return;
-
-            _rememberedSignalSoundGroups.Add(groupKey);
-            _rememberedSignalSoundGroupOrder.Enqueue(groupKey);
-
-            while (_rememberedSignalSoundGroupOrder.Count >
-                   MaxRememberedSignalSoundGroups)
-            {
-                string expiredGroup =
-                    _rememberedSignalSoundGroupOrder.Dequeue();
-
-                _rememberedSignalSoundGroups.Remove(
-                    expiredGroup);
             }
         }
 
@@ -149,77 +74,53 @@ namespace cAlgo
             out string groupKey)
         {
             groupKey = string.Empty;
-            if (!delivery.PlaySound)
+
+            if (!delivery.PlaySound ||
+                delivery.Envelope == null)
                 return false;
 
-            int priority =
-                ResolveSignalSoundPriority(
-                    delivery.Key);
+            AlertSoundPolicy.Decision soundDecision =
+                AlertSoundPolicy.Resolve(
+                    delivery.Key,
+                    UseSemanticAlertSounds,
+                    AlertSoundType,
+                    delivery.Envelope,
+                    SymbolName);
 
-            if (priority <= 0 ||
-                delivery.Envelope == null ||
-                delivery.Envelope.Identity == null)
+            groupKey = soundDecision.GroupKey;
+
+            if (string.IsNullOrWhiteSpace(groupKey))
                 return true;
 
-            string signalId =
-                delivery.Envelope.Identity.SignalId ?? string.Empty;
-
-            int createdClosedM5 =
-                delivery.Envelope.Identity.CreatedClosedM5;
-
-            if (string.IsNullOrWhiteSpace(signalId) ||
-                createdClosedM5 < 0)
-                return true;
-
-            bool signalFamily =
-                IsSignalSoundAlertKey(
-                    delivery.Key);
-
-            if (signalFamily)
-            {
-                // WATCH/REACTION/ACTION/SMART/EARLY are one user-facing
-                // signal event family. Only one audible cue is allowed for
-                // the same symbol + closed-M5 + direction, even when the
-                // semantic stage/key changes between deliveries.
-                groupKey =
-                    "SIGNAL|" +
-                    (SymbolName ?? string.Empty) +
-                    "|" +
-                    createdClosedM5.ToString() +
-                    "|" +
-                    delivery.Direction.ToString();
-            }
-            else
-            {
-                groupKey =
-                    (SymbolName ?? string.Empty) +
-                    "|" +
-                    signalId +
-                    "|" +
-                    delivery.Envelope.Identity.ScenarioId +
-                    "|" +
-                    delivery.Envelope.Identity.PlanId +
-                    "|" +
-                    createdClosedM5.ToString() +
-                    "|" +
-                    delivery.Direction.ToString() +
-                    "|" +
-                    (delivery.Key ?? string.Empty);
-            }
-
-
-            if (_rememberedSignalSoundGroups.Contains(groupKey))
+            if (_rememberedAlertSoundGroups.Contains(groupKey))
             {
                 Print(
-                    "CFIP ALERT SOUND SUPPRESSED | group={0} | priority={1} | alreadyPlayed=true",
-                    groupKey,
-                    priority);
+                    "CFIP ALERT SOUND SUPPRESSED | group={0} | alreadyPlayed=true",
+                    groupKey);
                 return false;
             }
 
             return true;
         }
 
+        private void RememberAlertSoundGroup(string groupKey)
+        {
+            if (string.IsNullOrWhiteSpace(groupKey) ||
+                _rememberedAlertSoundGroups.Contains(groupKey))
+                return;
+
+            _rememberedAlertSoundGroups.Add(groupKey);
+            _rememberedAlertSoundGroupOrder.Enqueue(groupKey);
+
+            while (_rememberedAlertSoundGroupOrder.Count >
+                   MaxRememberedAlertSoundGroups)
+            {
+                string expiredGroup =
+                    _rememberedAlertSoundGroupOrder.Dequeue();
+
+                _rememberedAlertSoundGroups.Remove(expiredGroup);
+            }
+        }
 
         private void ProcessQueuedAlertSoundDelivery()
         {
