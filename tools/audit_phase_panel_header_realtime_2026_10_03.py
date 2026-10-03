@@ -35,7 +35,8 @@ check(
     "header reads current canonical signal state",
     "UpdatePanelHeaderLiveState()" in live_header and
     "GetCanonicalSignalPanelStatus()" in live_header and
-    "FrameDirection(_m15Frame)" in live_header
+    "ResolvePanelTimeframeState(_m15Frame)" in live_header and
+    "ResolvePanelTimeframeState(_h1Frame)" in live_header
 )
 check(
     "header reads current cBot runtime truth",
