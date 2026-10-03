@@ -151,7 +151,7 @@ namespace cAlgo
                         RequestClosePosition(
                             position,
                             "HIGH IMPACT NEWS PRE-PROTECTION");
-                    if (closeStatus.IsAccepted())
+                    if (closeStatus.IsBrokerConfirmed())
                     {
                         SynchronizeLiveBrokerState();
 
