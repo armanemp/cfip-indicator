@@ -8,7 +8,7 @@ namespace cAlgo
     {
         private const int PanelAlertMessageCapacity = 5;
         private const int PanelAlertMessageVisibleCapacity = 2;
-        private const int PanelAlertMessageRowHeight = 20;
+        private const int PanelAlertMessageRowHeight = 18;
         private const int PanelAlertMessageGap = 1;
         private const int PanelAlertMessageMaxCharacters = 132;
 
@@ -16,6 +16,8 @@ namespace cAlgo
         {
             if (_panelAlertMessageStack != null)
                 return;
+
+            _lastRenderedPanelAlertRevision = -1;
 
             try
             {
@@ -52,7 +54,7 @@ namespace cAlgo
                                 Math.Max(
                                     12,
                                     Math.Min(
-                                        18,
+                                        16,
                                         PanelFontSize)),
                             Margin =
                                 new Thickness(
@@ -205,6 +207,18 @@ namespace cAlgo
             if (_panelAlertMessageStack == null)
                 return;
 
+            // Visibility follows current panel lifecycle even when no new
+            // alert revision exists. Only row content/color writes are cached.
+            _panelAlertMessageStack.IsVisible =
+                ShowUnifiedPanel &&
+                !_panelHidden &&
+                _panelAlertHistory != null &&
+                _panelAlertHistory.Count > 0;
+
+            if (_lastRenderedPanelAlertRevision ==
+                _panelAlertRevision)
+                return;
+
             try
             {
                 List<AlertDelivery> messages =
@@ -269,9 +283,14 @@ namespace cAlgo
                     !_panelHidden &&
                     _panelAlertHistory != null &&
                     _panelAlertHistory.Count > 0;
+
+                _lastRenderedPanelAlertRevision =
+                    _panelAlertRevision;
             }
             catch (Exception ex)
             {
+                _lastRenderedPanelAlertRevision = -1;
+
                 Print(
                     "CFIP panel alert rail render failed: {0}",
                     ex.Message);
@@ -384,7 +403,7 @@ namespace cAlgo
             return Math.Max(
                 24,
                 Math.Min(
-                    PanelAlertMessageMaxCharacters,
+                    PanelAlertMessageMaxCharacters - 2,
                     (int)(
                         Math.Max(
                             120,

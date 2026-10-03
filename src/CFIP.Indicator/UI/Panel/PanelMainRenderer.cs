@@ -120,9 +120,7 @@ namespace cAlgo
                                                             PanelButtonGap);
                                         
                                                     int buttonMargin =
-                                                        Math.Max(
-                                                            0,
-                                                            PanelPadding);
+                                                        PanelFooterButtonInternalMargin;
                                         
                                                     // Reserve an explicit footer minimum before calculating
                                                     // the ScrollViewer budget so the bottom controls cannot

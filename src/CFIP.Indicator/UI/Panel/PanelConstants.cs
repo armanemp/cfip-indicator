@@ -15,7 +15,10 @@ namespace cAlgo
         private const int PanelBottomClearance = 50;
         private const int PanelRestoreBottomClearance = 50;
 
-        private const int PanelFooterMinHeight = 40;
+        // Compact footer chrome: outer PanelPadding is not reused as internal
+        // button spacing, and two alert rows stay within a 37px rail.
+        private const int PanelFooterMinHeight = 34;
+        private const int PanelFooterButtonInternalMargin = 2;
         private const int PanelStatusLampFontSize = 20;
         private const int PanelStatusLampWidth = 30;
         private const int PanelStatusLampHeight = 30;
