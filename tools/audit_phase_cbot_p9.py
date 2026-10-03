@@ -128,7 +128,7 @@ check(
     "CompactPlanLineLengthBars = 40" in line and
     "PlanLinePresentationRule.ResolveThickness(" in line and
     "return Color.White;" in labels and
-    "Chart.DrawRectangle(" not in labels,
+    "Chart.DrawRectangle(" in labels and "box.IsFilled" in labels and 'name + "_BOX"' in labels,
 )
 check(
     "prediction signal line remains thickness one",
