@@ -3529,3 +3529,10 @@ The canonical MTF trend-arrow path was recovered on main. Trend arrows are indep
 ## 2026-10-04 — Arrow + Signal-Line Deep Presentation Audit
 
 Canonical presentation re-audited end-to-end. Final contract: one MTF trend-arrow owner with 9 strength levels (1–3 weak, 4–6 medium, 7–9 strong), M1 Circle precision marker only; signal/plan lines Solid + 1px + exactly 40 chart-bar geometry ending at latest candle; labels are regular-weight white text in a filled box matching the line color, with the box attached to the exact line endpoint. Historical audits that contradicted this current contract were reconciled so they cannot reintroduce duplicate/obsolete rendering paths.
+
+
+### 2026-10-04 — Follow-up canonical arrow/line audit cleanup
+- Re-verified the live MTF arrow path: `MtfTrendStrengthRule → SignalVisualSnapshot → SignalStackedArrowRenderer → CalculationLiveCycle`; BUY/SELL remain explicit UpArrow/DownArrow, M1 remains Circle, and 9-level strength maps to 1/2/3 glyphs within each tier.
+- Re-verified plan-level geometry: Solid, fixed 1px, finite 40-bar span ending at the latest chart candle; compact labels use a filled semantic-color box with white regular text and the exact line endpoint as the right edge.
+- Removed obsolete arrow calculations from the non-owner signal renderer and consolidated arrow-color resolution under the canonical stacked-arrow owner; no parallel renderer was introduced.
+- Runtime/build verification remains pending on the user's local cTrader environment.
