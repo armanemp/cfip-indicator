@@ -48,6 +48,15 @@ check(
     "ProcessSignalEnvelope(\n                        scenarios[scenarioIndex]," in bot
 )
 check(
+    "cached shadow result and broker recheck time are scenario-scoped",
+    "_lastResultByScenario" in coord and
+    "_lastBrokerRecheckUtcByScenario" in coord and
+    "GetLastResult(scenarioKey)" in coord and
+    "GetLastBrokerRecheck(scenarioKey)" in coord and
+    "SetScenarioResult(" in coord and
+    "SetScenarioBrokerRecheck(" in coord
+)
+check(
     "shadow global telemetry remains available without being the per-scenario gate",
     "public long LastAcceptedRevision" in coord and
     "public string LastAcceptedIdempotencyKey" in coord and
