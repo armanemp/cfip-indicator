@@ -26,6 +26,7 @@ stage = read("src/CFIP.Indicator/Runtime/Calculation/CalculationStageIsolation.c
 state = read("src/CFIP.Indicator/Indicator/State.cs")
 provider = read("src/CFIP.Indicator/Runtime/Provider/CFIPReadOnlyProviderScenarioBatch.cs")
 policy = read("src/CFIP.Indicator/Core/Math/ScenarioExecutionPolicyRule.cs")
+registry = read("src/CFIP.Indicator/Trading/Intelligence/TradePlanRegistry.cs")
 intent_builder = read("src/CFIP.Indicator/Planning/Execution/ExecutionIntentBuilder.cs")
 bot = read("src/CFIP.cBot/CFIPExecutionBot.cs")
 env = read("src/CFIP.cBot/Execution/CbotExecutionEnvironmentGate.cs")
@@ -67,6 +68,20 @@ check(
     "parallel structural candidates remain closed-M5 based while live state is refreshed separately",
     "if (_lastOpportunityCandidatesM5 == closedM5)" in builder and
     "RefreshLiveParallelOpportunityStates(" in stage
+)
+
+check(
+    "execution candidates are not truncated by the display-only opportunity limit",
+    "SelectScenariosForExecution(" in registry and
+    "SelectScenariosForExecution(" in provider and
+    "SelectScenariosForDisplay(" not in re.search(
+        r"private string BuildScenarioBatchFingerprint[\s\S]*?private SignalScenarioBatch BuildScenarioBatch",
+        provider
+    ).group(0)
+    if re.search(
+        r"private string BuildScenarioBatchFingerprint[\s\S]*?private SignalScenarioBatch BuildScenarioBatch",
+        provider
+    ) else False
 )
 
 check(
