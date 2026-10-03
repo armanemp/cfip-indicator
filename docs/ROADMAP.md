@@ -1,3 +1,29 @@
+
+## 2026-10-04 — Smart Trend Arrow Single-Owner Hardening
+
+Status: **IMPLEMENTATION COMPLETE — repository verification pending.**
+
+This work unit completes the trend-arrow requirement at the architectural owner level.
+
+Completed:
+- MtfTrendStrengthRule is now the single source of truth for the complete trend-strength model.
+- The nine levels are derived from signed multi-timeframe evidence and evidence magnitude, not a second HTF-only calculator.
+- Level semantics are fixed: **1–3 = WEAK, 4–6 = MEDIUM, 7–9 = STRONG**.
+- M1 remains precision/confirmation only; M15 remains the canonical decision/reference layer; H1+ contributes higher-timeframe context without becoming a competing calculation owner.
+- MtfTrendArrowRenderer is the single chart renderer for trend-strength arrows across watch/confirmed/active presentation paths.
+- The legacy HtfTrendArrowStrengthRule and SignalStackedArrowRenderer duplicate owners were removed.
+- All legacy arrow namespaces are cleaned by the canonical renderer to prevent stale objects after reload/update.
+- Arrow spacing is deterministic and bounded by ATR/pip minimums so stacked arrows cannot be drawn on top of each other.
+- Existing alert, panel, plan, execution and MTF contracts remain unchanged; this unit changes only the canonical trend-strength/arrow presentation path.
+
+Verification contract:
+- Source/Architecture accumulated audits must pass.
+- cTrader Compile/Build must pass.
+- Runtime Acceptance must pass.
+- Target-terminal visual validation remains required for actual glyph spacing, realtime level transitions and stale-object cleanup.
+
+Operator action after merge: **git pull --ff-only**.
+
 ## 2026-10-03 — Single-Owner / No-Duality Repair
 
 Status: VERIFIED COMPLETE — merged to `main` via PR #250, merge commit `2e670514e90deeb46a3f140d1383446f0292c64d`.
