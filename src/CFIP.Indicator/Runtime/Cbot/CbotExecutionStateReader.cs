@@ -33,11 +33,27 @@ namespace cAlgo
                             CbotIdentity.DisplayName,
                             StringComparison.Ordinal);
 
+                    string candidateTypeName =
+                        candidate.Type == null
+                            ? string.Empty
+                            : candidate.Type.Name ?? string.Empty;
+
+                    string candidateTypeText =
+                        candidate.Type == null
+                            ? string.Empty
+                            : candidate.Type.ToString() ?? string.Empty;
+
                     bool typeNameMatches =
-                        candidate.Type != null &&
                         string.Equals(
-                            candidate.Type.Name,
+                            candidateTypeName,
                             CbotIdentity.TypeName,
+                            StringComparison.Ordinal) ||
+                        string.Equals(
+                            candidateTypeText,
+                            CbotIdentity.TypeName,
+                            StringComparison.Ordinal) ||
+                        candidateTypeText.EndsWith(
+                            "." + CbotIdentity.TypeName,
                             StringComparison.Ordinal);
 
                     if (!instanceNameMatches &&
