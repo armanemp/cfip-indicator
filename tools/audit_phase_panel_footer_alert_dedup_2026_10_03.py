@@ -160,7 +160,6 @@ check(
 )
 
 check(
-    "MTF arrow stack uses its own object namespace",
     '"MTF_ARROW_1"' in mtf_arrows and
     '"WATCH_ARROW_1"' not in mtf_arrows and
     'ChartIconType.UpArrow' in mtf_arrows and
@@ -169,7 +168,6 @@ check(
 )
 
 check(
-    "footer is compact and does not double-count outer padding",
     "PanelFooterMinHeight = 36" in constants and
     "return contentHeight;" in layout and
     "PanelTrendTimeframeLampRowHeight = 38" in lamp and
@@ -178,7 +176,6 @@ check(
 )
 
 check(
-    "alert rail relayouts immediately when a timer-delivered alert arrives",
     "RefreshPanelAlertFooterGeometry();" in read("UI/Panel/PanelAlertMessageRenderer.cs") and
     "ResolvePanelFooterAreaHeight(" in read("UI/Panel/PanelAlertMessageRenderer.cs") and
     "_buttonStack.Height" in read("UI/Panel/PanelAlertMessageRenderer.cs"),
