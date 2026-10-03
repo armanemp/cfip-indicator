@@ -3540,3 +3540,10 @@ Operator action after merge: git pull --ff-only.
 ## M2 current continuation — 2026-10-04
 
 M2 remains **IN PROGRESS**. The current production owner for management requests now uses an explicit platform-neutral request-status contract, broker-confirmed state is no longer inferred from a queued request, management command persistence/report I/O has been removed from the request hot path and routed through the existing runtime heartbeat + buffered persistence owner, and legacy management helper names have been aligned to Request* semantics. Indicator broker lifecycle listeners were audited and retained only because their read-only consumers are required for broker-confirmed lifecycle/protection reconciliation. Closure still requires contract/build-graph validation, Source/Architecture, Runtime Acceptance, cTrader Compile, and target-terminal verification.
+
+
+## M2 continuation — 2026-10-04 — canonical panel refresh ownership
+
+M2 remains **IN PROGRESS**. A targeted ownership audit found four secondary Indicator paths that still invoked the full RenderPanel() directly even though the ready-state runtime had already established RefreshPanelContentIfDue() as the canonical panel-content refresh owner. Calculation-readiness, runtime-fault, closed-bar MTF-wait, and cBot chart-lifecycle paths now invalidate that same owner through RequestPanelContentRefresh(); they no longer create competing synchronous panel-refresh paths.
+
+This is a repository-hygiene/architecture correction only: no signal, Decision, Plan, Entry/SL/TP, alert semantic, or broker-execution rule was changed. The full RenderPanel() layout renderer remains the single renderer, and the runtime heartbeat remains the single normal content-refresh clock. Verification still requires Source/Architecture, Runtime Acceptance, cTrader Compile, and target-terminal evidence.
