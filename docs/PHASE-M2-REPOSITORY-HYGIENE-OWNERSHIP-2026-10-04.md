@@ -403,3 +403,15 @@ Evidence commit: e09b07f79a718f24dc72733d5bd91184393946ec.
 **ROOT-CORRECTED.** Trading lifecycle event hookup is now transactional with rollback of every successfully attached handler if a later subscription fails, preventing partial initialization and duplicate subscriptions on retry. Initialization polling no longer performs a full RenderPanel() layout on every 250ms data-wait cycle; it updates the existing lightweight live-state/header owner and leaves full rendering to the canonical render lifecycle. Shutdown now enters an explicit quiescing state, stops the timer and removes lifecycle subscriptions before final state persistence, then flushes buffered persistence after the final writes. Queued startup calculation callbacks also refuse to execute after shutdown begins.
 
 Evidence commits: 5639cbb15a4490d14ed8ec30d88255de57b8e83a and 41d1f565f0c816d2720e1879806f99bcc55ecfdb.
+
+### M2.180 remediation — deterministic confirmation retention
+
+Management confirmation retention no longer removes an arbitrary first-enumerated `HashSet` item. A dedicated FIFO order tracks confirmed idempotency keys and trimming removes the oldest confirmation first. This keeps the bounded-memory policy deterministic without creating a second semantic authority.
+
+Evidence commit: 7aa44cf88fd0fe1ed9a2fe54d178a7a2f99079b8.
+
+### M2 verification-contract maintenance
+
+The architecture verifier was updated to understand the intentional `RuntimeInitializationLifecycle.cs` owner split and the canonical modern plan-label contract: adaptive filled box, semantic line color, contrast-aware text, and left-of-line placement. These are verifier alignment changes only; they do not weaken production assertions.
+
+Evidence commits: 61358e556defb3bbd84aa9a5fe2542154dd8a298 and 450cc7a8b2a4f2492886fdae4ebf792483054f68.
