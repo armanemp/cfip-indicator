@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Focused audit for the demo-only Market / Pending Stop / Market-Range execution bridge."""
+"""Focused audit for Market / Pending Stop / Market-Range execution bridge."""
 from pathlib import Path
 import re
 import sys
@@ -20,6 +20,7 @@ for token in (
     "CbotIdentity.DisplayName",
     'DefaultTimeFrame = "M5"',
     "EnableDemoMarketExecution",
+    "EnableLiveExecution",
     "Account.IsLive",
     "CfipIndicatorChartBinding.TryFind(",
     "CfipDeviceSignalTransport.TryRead(",
@@ -32,7 +33,7 @@ if "Bars.TimeFrame != TimeFrame.Minute15" in bot:
     errors.append("cBot must not bind execution to host Chart TF")
 
 if 'DefaultValue = false)]' not in bot:
-    errors.append("demo execution must default to false")
+    errors.append("execution arms must default to false")
 
 if "PlaceStopOrder(" not in pending or "ExecutionAction.PendingStop" not in pending:
     errors.append("demo Pending Stop coordinator has no Pending Stop mutation")
@@ -43,8 +44,8 @@ if "ExecuteMarketOrder(" not in coord:
 if "ExecuteMarketRangeOrder(" not in coord:
     errors.append("demo market coordinator has no Market-Range mutation")
 
-if "CFIP DEMO" not in coord:
-    errors.append("demo coordinator must use explicit demo comment")
+if "CFIP MARKET" not in bot:
+    errors.append("cBot market execution path must remain observable")
 
 if "CS0612" not in indicator:
     errors.append("Indicator SDK warning suppression is missing")
@@ -58,5 +59,5 @@ if errors:
 print("CBOT DEMO LIVE MARKET AUDIT: PASS")
 print("Market / Market-Range mutation owner: DemoMarketExecutionCoordinator")
 print("Pending Stop mutation owner: DemoPendingOrderExecutionCoordinator")
-print("Demo-only guard: PASS")
-print("Default execution arm: OFF")
+print("Explicit live-arm guard: PASS")
+print("Default execution arms: OFF")
