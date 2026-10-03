@@ -10,6 +10,7 @@ Correction:
 - market report now carries actual Position EntryPrice/StopLoss/TakeProfit;
 - market and pending submission results immediately reconcile and republish cBot state;
 - pending request values are not mislabeled as broker-confirmed fill facts;
+- a market Position with missing/invalid broker protection is explicitly surfaced as RecoveryRequired while idempotency remains confirmed to prevent duplicate execution;
 - pending-fill/position-open events remain the source of live broker Position truth.
 
 No execution/risk/quality threshold was lowered.
