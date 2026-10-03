@@ -1,3 +1,21 @@
+## 2026-10-03 — Footer + Alert/Popup Lifecycle Hardening
+
+Status: VERIFIED COMPLETE — merged to `main` via PR #248, merge commit `94edfb5f52f98bea21f0e25d0a74b3cce49fa700`.
+
+Current closure:
+- Footer geometry is compact and no longer reuses outer panel padding as button margin.
+- Alert transport identity is revision-independent for the same causal event.
+- Rejected duplicate alerts no longer send a secondary email.
+- Alert rail content is revision-driven while visibility follows current panel lifecycle.
+- Runtime/Source/Compile automated gates passed on the final head.
+
+Remaining acceptance boundary:
+Manual target-terminal cTrader validation for exact footer height, Popup readability, audio single-event behavior, and hide/show lifecycle.
+
+Operator action after verified merge: `git pull --ff-only`.
+
+---
+
 ## 2026-10-03 — Cross-Layer Semantic & Visual Consistency Hardening
 
 Status: VERIFIED COMPLETE — merged to `main` via PR #247, merge commit `5933386c26a787ee3297fc6af825d1d85b74a0c3`.
