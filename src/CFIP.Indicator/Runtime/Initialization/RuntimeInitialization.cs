@@ -221,6 +221,66 @@ namespace cAlgo
             }
         }
 
+        private bool _tradingLifecycleEventsHooked;
+
+        private void HookTradingLifecycleEvents()
+        {
+            if (_tradingLifecycleEventsHooked)
+                return;
+
+            bool positionOpened = false;
+            bool positionClosed = false;
+            bool positionModified = false;
+            bool accountSwitched = false;
+            bool outcomeMemoryAccountSwitched = false;
+            bool pendingCreated = false;
+            bool pendingModified = false;
+            bool pendingFilled = false;
+            bool pendingCancelled = false;
+
+            try
+            {
+                Positions.Opened += OnPositionOpened;
+                positionOpened = true;
+                Positions.Closed += OnPositionClosed;
+                positionClosed = true;
+                Positions.Modified += OnPositionModified;
+                positionModified = true;
+                Account.Switched += OnAccountSwitched;
+                accountSwitched = true;
+                Account.Switched += OnOutcomeMemoryAccountSwitched;
+                outcomeMemoryAccountSwitched = true;
+                PendingOrders.Created += OnPendingOrderCreated;
+                pendingCreated = true;
+                PendingOrders.Modified += OnPendingOrderModified;
+                pendingModified = true;
+                PendingOrders.Filled += OnPendingOrderFilled;
+                pendingFilled = true;
+                PendingOrders.Cancelled += OnPendingOrderCancelled;
+                pendingCancelled = true;
+
+                _tradingLifecycleEventsHooked = true;
+            }
+            catch (Exception ex)
+            {
+                if (pendingCancelled) PendingOrders.Cancelled -= OnPendingOrderCancelled;
+                if (pendingFilled) PendingOrders.Filled -= OnPendingOrderFilled;
+                if (pendingModified) PendingOrders.Modified -= OnPendingOrderModified;
+                if (pendingCreated) PendingOrders.Created -= OnPendingOrderCreated;
+                if (outcomeMemoryAccountSwitched) Account.Switched -= OnOutcomeMemoryAccountSwitched;
+                if (accountSwitched) Account.Switched -= OnAccountSwitched;
+                if (positionModified) Positions.Modified -= OnPositionModified;
+                if (positionClosed) Positions.Closed -= OnPositionClosed;
+                if (positionOpened) Positions.Opened -= OnPositionOpened;
+
+                Print(
+                    "CFIP trading event hookup rolled back: {0}",
+                    ex.ToString());
+
+                throw;
+            }
+        }
+
         private void FinalizeAsyncInitialization()
         {
             if (_initializationReady)
@@ -246,24 +306,7 @@ namespace cAlgo
             if (_w1Bars != null)
                 RegisterNative(_w1Bars);
 
-            try
-            {
-                Positions.Opened += OnPositionOpened;
-                Positions.Closed += OnPositionClosed;
-                Positions.Modified += OnPositionModified;
-                Account.Switched += OnAccountSwitched;
-                Account.Switched += OnOutcomeMemoryAccountSwitched;
-                PendingOrders.Created += OnPendingOrderCreated;
-                PendingOrders.Modified += OnPendingOrderModified;
-                PendingOrders.Filled += OnPendingOrderFilled;
-                PendingOrders.Cancelled += OnPendingOrderCancelled;
-            }
-            catch (Exception ex)
-            {
-                Print(
-                    "CFIP trading event hookup failed: {0}",
-                    ex.ToString());
-            }
+            HookTradingLifecycleEvents();
 
             InitializeExecutionRuntimeState();
             HookHistoricalBarsEvents();
@@ -455,7 +498,6 @@ namespace cAlgo
                         : "BUILDING DATA";
 
                 UpdateInitializationPanelStatus();
-                RenderPanel();
                 ScheduleInitializationPoll();
                 return;
             }
