@@ -64,10 +64,21 @@ namespace cAlgo
                 candidate.Direction != decision.Direction)
                 return BlockScenarioExecutionPolicy("FUTURE STOP / DECISION DIRECTION MISMATCH");
 
+            double adaptiveRewardFloor =
+                RegimeAdaptiveRewardFloorRule.Resolve(
+                    decision.Regime,
+                    0,
+                    0);
+
+            double requiredRewardFloor =
+                Math.Max(
+                    candidate.MinimumRequiredRewardDistanceAtr,
+                    adaptiveRewardFloor);
+
             if (!IsFinitePositive(candidate.RewardDistanceAtr) ||
-                !IsFinitePositive(candidate.MinimumRequiredRewardDistanceAtr) ||
+                !IsFinitePositive(requiredRewardFloor) ||
                 candidate.RewardDistanceAtr <
-                candidate.MinimumRequiredRewardDistanceAtr)
+                requiredRewardFloor)
             {
                 return BlockScenarioExecutionPolicy(
                     "REWARD DISTANCE BELOW OPPORTUNITY FLOOR");
