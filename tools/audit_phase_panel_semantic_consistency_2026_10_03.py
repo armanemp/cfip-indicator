@@ -64,6 +64,12 @@ check(
 )
 
 check(
+    "private string DirectionText(int direction)" in signal_state and
+    "private string DirectionText(TradeType tradeType)" in signal_state,
+    "panel action-direction text helpers must have one source file owner",
+)
+
+check(
     '"ENTRY CONFIRMED"' not in prediction and
     '"ENTRY ACTIONABLE"' in prediction and
     '"SETUP CONFIRMED • WAITING ENTRY"' in prediction and
