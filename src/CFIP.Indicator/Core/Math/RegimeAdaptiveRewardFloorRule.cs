@@ -4,7 +4,7 @@ namespace cAlgo
 {
     internal static class RegimeAdaptiveRewardFloorRule
     {
-        internal static double Resolve(
+        internal static double ResolveAdaptiveRewardFloor(
             string regime,
             double minimumTpSpacingAtr,
             double minimumSlAtr)
