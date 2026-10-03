@@ -378,3 +378,16 @@ No production changes from the stale branch are being carried forward automatica
 - Source-level review completed for the modified cBot paths.
 - GitHub combined status for the documentation-only preceding commit was empty; no passing build gate was claimed.
 - cTrader compile/runtime acceptance remains open until the branch can pass the repository's authoritative build/audit workflow and target-terminal checks.
+
+
+## 2026-10-04 — Mandatory Modern / Advanced / Optimized Engineering Gate
+
+M2 now requires every touched production area to be evaluated for the most modern, advanced and efficient practical design compatible with CFIP constraints.
+
+This covers architecture, logic, performance, runtime/lifecycle, UI/UX, presentation, observability, persistence, testing/CI, dependencies, safety and documentation. Modern does not mean adopting fashionable technology blindly: the single-owner architecture, deterministic contracts, measured performance, cTrader constraints and maintainability remain authoritative.
+
+When a non-trivial decision can benefit from current research, use current official/vendor/primary technical sources and strong engineering references as design input. Do not import a pattern merely because it is new or popular.
+
+Optimization must remove unnecessary work at its owner/source. Extra throttles, duplicate caches, parallel implementations and workaround gates are not accepted as substitutes for architectural correction.
+
+M2 closure now additionally requires a modernization disposition for each touched area: what is current/optimal, what was improved, what was deliberately retained, and why no materially safer or more efficient practical design was ignored.
