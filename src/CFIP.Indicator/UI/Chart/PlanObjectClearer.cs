@@ -46,7 +46,7 @@ namespace cAlgo
                                     RemovePlanLine(
                                         P + "ACTIVE_TP");
                         
-                                    RemoveStackedSignalArrows();
+                                    RemoveMtfTrendStrengthArrowStack();
 
                                     Chart.RemoveObject(
                                         P + "ARROW");
