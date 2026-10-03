@@ -1,3 +1,28 @@
+## 2026-10-03 — cBot Position Truth / Restart Idempotency Hardening
+
+Status: implementation complete, verification pending.
+
+Implemented:
+- exact per-ScenarioId reconciliation is now used immediately before scenario execution;
+- aggregate cBot broker reconciliation distinguishes independent ScenarioIds from duplicate objects belonging to the same scenario;
+- aggregate state publication finds managed positions/pending orders from Indicator-instance scope even without an active scenario label;
+- management execution no longer depends on an unrelated aggregate recovery flag;
+- cBot signal preflight validates contract version, Plan/Intent identity and complete signal execution identity;
+- Market and Pending coordinators use a persistent Device-scoped idempotency store so confirmed executions remain suppressed across cBot restart, while failed attempts can retry after a bounded cooldown.
+
+Full-chain audit repeated:
+Pre-analysis -> M15 -> M5 -> M1(optional) -> Entry/SL/TP/RR -> Actionability -> Scenario -> Alert -> SignalEnvelope -> cBot -> per-scenario broker truth -> execution -> confirmation -> protection -> outcome/history.
+
+Safety:
+- no public strategy/RR/risk threshold changed;
+- no Indicator broker mutation authority added;
+- live account block remains;
+- Max Concurrent Scenarios remains bounded.
+
+Phase record: docs/PHASE-CBOT-POSITION-TRUTH-HARDENING-2026-10-03.md.
+
+Operator action after merge: git pull --ff-only.
+
 ## 2026-10-03 — Retest trigger-path hardening
 
 Status: implementation complete, verification pending.
