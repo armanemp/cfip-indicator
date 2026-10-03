@@ -17,8 +17,9 @@ Full-chain routine audit:
 Analysis -> MTF -> Decision -> Signal -> Alert -> cBot execution -> Broker confirmation -> Protection/Lifecycle -> Outcome/History.
 
 Verification:
-- Source/Architecture, Runtime Acceptance and cTrader Compile/Build on the exact branch head.
-- Target-terminal visual inspection for lamp/text/header parity, Top-Down readability, WaveTrend conflict state and alert presentation.
+- Source/Architecture, Runtime Acceptance and cTrader Compile/Build passed on the exact final branch head before merge.
+- Branch-local semantic consistency audit passed.
+- Target-terminal visual/runtime acceptance was not performed in this environment and remains a manual cTrader acceptance boundary; it must not be inferred from CI success.
 
 Operator action:
 `git pull --ff-only`
