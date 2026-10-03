@@ -1,6 +1,6 @@
 ## 2026-10-03 — FINAL REALTIME / LIVE / SMART SYSTEM INTEGRATION
 
-Status: IMPLEMENTED — automated verification pending.
+Status: MERGED TO MAIN — PR #243 — merge commit `7af17f4fa65142468c76501399ee5082bf0f0f42`.
 
 Completed in this continuation unit:
 - realtime current-quote intelligence and historical/forecast evidence remain unified without introducing a second execution authority;
@@ -18,7 +18,10 @@ Completed in this continuation unit:
 - final integration audit and documentation added.
 
 Verification:
-- cTrader Compile/Build;
+- Pre-merge cTrader Compile/Build passed;
+- Pre-merge Runtime Acceptance passed;
+- Pre-merge Source/Architecture passed;
+- target-terminal acceptance remains required;
 - Runtime Acceptance Contracts;
 - accumulated Source/Architecture audits;
 - final realtime/live/smart-system integration audit;
