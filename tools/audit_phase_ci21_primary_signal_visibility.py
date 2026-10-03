@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# CI-21 ownership is evaluated against the canonical presentation owner as well as builders.
 """Static acceptance gate for CI-21 primary M15 signal visibility."""
 
 from pathlib import Path
