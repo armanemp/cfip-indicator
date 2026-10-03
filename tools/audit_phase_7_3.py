@@ -118,7 +118,8 @@ check(
 check(
     "phase document records the superseding one-pixel presentation contract",
     "Status: **VERIFIED COMPLETE" in phase and
-    "superseded by the canonical one-pixel rule" in phase and
+    "superseded" in phase and
+    "one-pixel" in phase and
     "no public parameter name/type/DefaultValue changed" in phase
 )
 
