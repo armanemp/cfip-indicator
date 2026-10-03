@@ -13,7 +13,6 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private const int CompactPlanLabelWidthBars = 8;
         private const int CompactPlanLabelMinimumGapBars = 3;
 
         private int GetCompactPlanLabelAnchorBar(
