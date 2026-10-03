@@ -104,7 +104,20 @@ Market Data → Canonical Price/Time Context → MTF Closed Context → Primitiv
 14. Signal/plan/scenario/execution identities must remain distinct through the full chain.
 15. The calculation-integrity program forbids threshold tuning as a substitute for correctness proof.
 
-## 7. Complete repository structure — machine inventory
+## 7. M2 current-main correction and newly confirmed findings
+
+The first M2 branch was found to be 41 commits behind current `main` and contained a truncated `ROADMAP.md` (96 lines versus 3522 on current `main`). It is not a valid merge candidate. M2 was recreated from current `main` as `phase/M2-repository-hygiene-ownership-current`; the stale branch must not be merged.
+
+New source-based findings requiring M2 disposition:
+
+16. `ManagementCommandRequestCoordinator.RequestManagementCommand` returns a single `bool` that conflates invalid/rejected, queued, and confirmed semantics. A queued request can therefore be interpreted as a rejection by one caller, while changing the bool to mean acceptance would make other callers treat queued state as broker-confirmed. A temporary boolean change was intentionally reverted. The root fix requires one explicit Request/Confirmed/Rejected status contract with one owner.
+17. The management-command publication path performs synchronous `LocalStorage.SetString + Flush`; this is a confirmed hot-path persistence/latency risk.
+18. `ProcessManagementReports` synchronously reads LocalStorage from the management request path, coupling command/reconciliation behavior to storage latency.
+19. Indicator management helper names such as `TryClosePosition` and `TryModifyStopLoss` still imply direct broker mutation although the current implementation is command publication. This is a semantic maintenance hazard and should be normalized at the canonical owner.
+20. Historical execution-boundary documents still mention removed Indicator broker owner files such as `BrokerMarketOrderMutation.cs` and `BrokerLimitOrderPlacement.cs`; this is documentation/audit drift, not evidence that those production files currently exist.
+21. No parallel management bus may be introduced to solve the submission-state problem; the status contract must remain on the existing canonical management command path.
+
+## 8. Complete repository structure — machine inventory
 
 The following list is generated from the recursive Git tree of the audited main commit.
 
