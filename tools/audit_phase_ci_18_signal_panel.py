@@ -59,9 +59,11 @@ require(
     "panel must expose trigger runtime details",
 )
 require(
-    "FrameDirection(_m15Frame)" in canonical and
-    "FrameDirection(_h1Frame)" in canonical,
-    "canonical signal status must use shared MTF display direction",
+    "ResolvePanelTimeframeState(_m15Frame)" in canonical and
+    "ResolvePanelTimeframeState(_h1Frame)" in canonical and
+    "m15State.DirectionLabel" in canonical and
+    "h1State.DirectionLabel" in canonical,
+    "canonical signal status must use the single-source MTF presentation state",
 )
 require(
     "M5OnlyConfirmedTrigger &&" not in confirmation,
