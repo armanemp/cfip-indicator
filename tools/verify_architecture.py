@@ -1167,8 +1167,8 @@ if "MapM5ToChart(" in visual_line_code or "anchorM5" in visual_line_code:
     raise SystemExit("Plan line geometry must not end at an M5 event-time mapping")
 if "GetPlanLineLeftBar" not in visual_line_code:
     raise SystemExit("Plan line renderer must expose one canonical left-edge calculation")
-if "GetPlanLineLeftBar(" not in plan_label_coordinator_code:
-    raise SystemExit("Plan label/level presentation must reuse the canonical line left-edge helper")
+if "GetCompactPlanLabelAnchorBar(" not in plan_label_coordinator_code:
+    raise SystemExit("Plan label/level presentation must reuse the canonical label-anchor owner")
 
 if "CreateExecutionToggle(" not in control_factory_code:
     raise SystemExit("Execution controls must use the shared status ToggleButton presentation")
@@ -2665,8 +2665,8 @@ PLAN_LABEL_RENDERER = ROOT / "UI" / "Chart" / "PlanLabelRenderer.cs"
 PLAN_LABEL_RENDERER_CODE = PLAN_LABEL_RENDERER.read_text(encoding="utf-8")
 if "GetReadableLabelTextColor(" not in PLAN_LABEL_RENDERER_CODE:
     raise SystemExit("Compact plan labels must resolve the canonical semantic text color")
-if "return PlanLinePresentationRule.ResolveColor(" not in PLAN_LABEL_RENDERER_CODE:
-    raise SystemExit("Compact plan labels must use the canonical line color")
+if "return ResolvePlanLineColor(" not in PLAN_LABEL_RENDERER_CODE:
+    raise SystemExit("Compact plan labels must use the canonical line color owner")
 compact_label_start = PLAN_LABEL_RENDERER_CODE.find("private void DrawCompactPlanLabel(")
 compact_label_code = PLAN_LABEL_RENDERER_CODE[compact_label_start:] if compact_label_start >= 0 else ""
 if compact_label_start < 0:
@@ -3106,8 +3106,8 @@ label_renderer = ROOT / "UI" / "Chart" / "PlanLabelRenderer.cs"
 label_code = label_renderer.read_text(encoding="utf-8")
 if "GetReadableLabelTextColor(" not in label_code:
     raise SystemExit("Plan labels must use the canonical semantic text-color resolver")
-if "return PlanLinePresentationRule.ResolveColor(" not in label_code:
-    raise SystemExit("Plan labels must use the canonical line color")
+if "return ResolvePlanLineColor(" not in label_code:
+    raise SystemExit("Plan labels must use the canonical line color owner")
 compact_label_start = label_code.find("private void DrawCompactPlanLabel(")
 compact_label_code = label_code[compact_label_start:] if compact_label_start >= 0 else ""
 if "Chart.DrawRectangle(" in compact_label_code:
