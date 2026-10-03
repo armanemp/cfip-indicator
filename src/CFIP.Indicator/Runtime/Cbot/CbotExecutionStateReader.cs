@@ -236,8 +236,11 @@ namespace cAlgo
                         _cBotPresence.BoundIndicatorInstanceId,
                         InstanceId,
                         StringComparison.Ordinal)
-                        ? "PENDING"
-                        : "NOT RESOLVED");
+                        ? "RESOLVED"
+                        : string.IsNullOrWhiteSpace(
+                            _cBotPresence.BoundIndicatorInstanceId)
+                            ? "WAITING"
+                            : "OTHER INSTANCE");
 
             ChartRobot chartRobot;
             string chartState;
