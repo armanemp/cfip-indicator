@@ -341,10 +341,7 @@ namespace CFIP.cBot.Shadow.Tests
                 secondResult.State == ShadowHostState.Ready &&
                 firstRecheck.State == ShadowHostState.Ready &&
                 firstResult.ScenarioId != secondResult.ScenarioId &&
-                firstRecheck.ScenarioId == firstResult.ScenarioId &&
-                secondResult.Reason != firstRecheck.Reason ||
-                (secondResult.Reason == firstRecheck.Reason &&
-                 secondResult.ScenarioId != firstRecheck.ScenarioId),
+                firstRecheck.ScenarioId == firstResult.ScenarioId,
                 "independent ScenarioIds must keep separate shadow results when they share one provider revision");
         }
 
