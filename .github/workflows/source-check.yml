@@ -149,3 +149,4 @@ jobs:
       - run: python tools/audit_phase_cbot_shadow_multiscenario_truth_2026_10_03.py
       - run: python tools/audit_phase_cbot_lifecycle_effective_state_2026_10_03.py
       - run: python tools/audit_phase_cbot_broker_confirmed_facts_2026_10_03.py
+      - run: python tools/audit_phase_cbot_management_policy_hardening_2026_10_03.py
