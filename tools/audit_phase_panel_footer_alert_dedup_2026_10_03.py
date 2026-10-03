@@ -98,7 +98,7 @@ heartbeat = read("UI/Panel/ProcessingHeartbeatLamp.cs")
 decision_alerts = read("Runtime/Calculation/CalculationDecisionAlerts.cs")
 context_alerts = read("Trading/Alerts/ContextAlertEmitter.cs")
 constants = read("UI/Panel/PanelConstants.cs")
-mtf_arrows = read("UI/Chart/MtfTrendArrowRenderer.cs")
+canonical_arrows = read("UI/Chart/SignalStackedArrowRenderer.cs")
 
 check(
     "PanelFooterMinHeight = 34" in constants and
@@ -168,11 +168,13 @@ check(
 )
 
 check(
-    '"MTF_ARROW_1"' in mtf_arrows and
-    '"WATCH_ARROW_1"' not in mtf_arrows and
-    'ChartIconType.UpArrow' in mtf_arrows and
-    'ChartIconType.DownArrow' in mtf_arrows,
-    "MTF trend arrows must never overwrite canonical signal arrows",
+    '"WATCH_ARROW"' in canonical_arrows and
+    '"WATCH_ARROW_2"' in canonical_arrows and
+    '"WATCH_ARROW_3"' in canonical_arrows and
+    'ChartIconType.UpArrow' in canonical_arrows and
+    'ChartIconType.DownArrow' in canonical_arrows and
+    "snapshot.MtfTrendStrengthLevel" in canonical_arrows,
+    "canonical signal arrows must use the canonical smart-strength stack",
 )
 
 check(
