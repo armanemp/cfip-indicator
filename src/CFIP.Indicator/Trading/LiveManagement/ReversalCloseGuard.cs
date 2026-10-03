@@ -60,7 +60,7 @@ namespace cAlgo
                         "REVERSAL PROTECTION");
                 }
 
-                if (!TryClosePosition(
+                if (!RequestClosePosition(
                         position,
                         "REVERSAL PROTECTION"))
                 {
