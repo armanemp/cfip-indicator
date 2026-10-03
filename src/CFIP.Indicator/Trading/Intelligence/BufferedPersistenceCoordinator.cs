@@ -53,7 +53,8 @@ namespace cAlgo
 
             bool localStoragePending =
                 _outcomeMemoryPersistenceDirty ||
-                _dailyLossPersistenceDirty;
+                _dailyLossPersistenceDirty ||
+                HasPendingManagementCommandPersistence();
 
             if (!force &&
                 !intervalDue &&
@@ -87,20 +88,40 @@ namespace cAlgo
             if (shouldFlushLocalStorage &&
                 localStoragePending)
             {
+                bool managementCommandsWritten =
+                    FlushManagementCommandPersistenceToLocalStorage();
+
                 try
                 {
-                    LocalStorage.Flush(
-                        LocalStorageScope.Type);
+                    if (_outcomeMemoryPersistenceDirty ||
+                        _dailyLossPersistenceDirty)
+                    {
+                        LocalStorage.Flush(
+                            LocalStorageScope.Type);
+                    }
 
-                    _outcomeMemoryPersistenceDirty = false;
-                    _dailyLossPersistenceDirty = false;
-                    _dailyLossPersistenceForceFlush = false;
+                    if (managementCommandsWritten &&
+                        !HasPendingManagementCommandPersistence())
+                    {
+                        LocalStorage.Flush(
+                            LocalStorageScope.Device);
+                    }
+
+                    if (managementCommandsWritten)
+                        _managementCommandsPersistenceDirtyResetGuard();
                 }
                 catch (Exception ex)
                 {
                     Print(
                         "CFIP buffered LocalStorage flush failed: {0}",
                         ex.Message);
+                }
+
+                if (managementCommandsWritten)
+                {
+                    _outcomeMemoryPersistenceDirty = false;
+                    _dailyLossPersistenceDirty = false;
+                    _dailyLossPersistenceForceFlush = false;
                 }
             }
 
