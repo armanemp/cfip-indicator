@@ -15,12 +15,20 @@ namespace cAlgo
             List<string> items =
                 new List<string>();
 
+            IReadOnlyList<TradeOpportunityCandidate> executionCandidates =
+                _tradePlanRegistry == null
+                    ? null
+                    : _tradePlanRegistry.SelectScenariosForExecution();
+
+            if (executionCandidates == null)
+                return "";
+
             for (int i = 0;
-                 i < _opportunityCandidates.Count;
+                 i < executionCandidates.Count;
                  i++)
             {
                 TradeOpportunityCandidate candidate =
-                    _opportunityCandidates[i];
+                    executionCandidates[i];
 
                 if (!IsScenarioBatchExecutableCandidate(candidate, closedM5))
                     continue;
@@ -75,12 +83,28 @@ namespace cAlgo
                     ? ""
                     : canonicalEnvelope.Identity.ScenarioId ?? "";
 
+            IReadOnlyList<TradeOpportunityCandidate> executionCandidates =
+                _tradePlanRegistry == null
+                    ? null
+                    : _tradePlanRegistry.SelectScenariosForExecution();
+
+            if (executionCandidates == null)
+                return new SignalScenarioBatch(
+                    ContractVersion.Current,
+                    InstanceId ?? "",
+                    SymbolName ?? "",
+                    observedUtc,
+                    Math.Max(
+                        1,
+                        _cfipProviderRevision),
+                    scenarios.ToArray());
+
             for (int i = 0;
-                 i < _opportunityCandidates.Count;
+                 i < executionCandidates.Count;
                  i++)
             {
                 TradeOpportunityCandidate candidate =
-                    _opportunityCandidates[i];
+                    executionCandidates[i];
 
                 if (!IsScenarioBatchExecutableCandidate(candidate, closedM5))
                     continue;
