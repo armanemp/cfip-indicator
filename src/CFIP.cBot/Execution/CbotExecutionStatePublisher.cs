@@ -217,8 +217,6 @@ namespace CFIP.cBot.Execution
                     executionSettings != null &&
                     executionSettings.EnableAutomaticOrders,
                 EffectiveAutoTradingEnabled =
-                    executionSettings != null &&
-                    executionSettings.EnableAutoTrading &&
                     cbotMarketArmed &&
                     lifecycleAllowsExecution &&
                     !string.Equals(
@@ -232,9 +230,6 @@ namespace CFIP.cBot.Execution
                     !(reconciliation != null &&
                       reconciliation.RecoveryRequired),
                 EffectiveAutomaticOrdersEnabled =
-                    executionSettings != null &&
-                    executionSettings.EnableAutoTrading &&
-                    executionSettings.EnableAutomaticOrders &&
                     cbotOrdersArmed &&
                     lifecycleAllowsExecution &&
                     !string.Equals(
