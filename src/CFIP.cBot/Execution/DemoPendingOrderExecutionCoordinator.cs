@@ -38,6 +38,13 @@ namespace CFIP.cBot.Execution
                 reason = "NO PENDING EXECUTION ENVELOPE";
                 return false;
             }
+            if (robot.Account == null ||
+                liveAccount != robot.Account.IsLive)
+            {
+                reason = "EXECUTION ACCOUNT MODE MISMATCH";
+                return false;
+            }
+
 
             ExecutionAction action =
                 envelope.Intent.Action;
