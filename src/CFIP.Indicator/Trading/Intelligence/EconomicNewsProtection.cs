@@ -147,9 +147,11 @@ namespace cAlgo
                 if (position != null &&
                     CloseActiveBeforeHighImpactNews)
                 {
-                    if (TryClosePosition(
+                    ManagementCommandRequestStatus closeStatus =
+                        TryClosePosition(
                             position,
-                            "HIGH IMPACT NEWS PRE-PROTECTION"))
+                            "HIGH IMPACT NEWS PRE-PROTECTION");
+                    if (closeStatus.IsAccepted())
                     {
                         SynchronizeLiveBrokerState();
 
