@@ -52,6 +52,8 @@ namespace cAlgo
                         now);
 
                 UpdateProcessingHeartbeatLamp();
+                UpdatePanelHeaderLiveState();
+                UpdatePanelTrendTimeframeLamps();
 
                 RefreshPanelContentIfDue(
                     now);

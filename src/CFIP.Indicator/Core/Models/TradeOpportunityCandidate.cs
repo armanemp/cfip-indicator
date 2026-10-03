@@ -22,6 +22,12 @@ namespace cAlgo
         public bool PrimaryLocationConfluence;
         public int PrimaryLocationQuality;
         public int WaveTrendQuality;
+        public int VolumeProfileQuality;
+        public bool VolumeProfileConfluence;
+        public string VolumeProfileLocation;
+        public double VolumeProfilePoc;
+        public double VolumeProfileValueAreaLow;
+        public double VolumeProfileValueAreaHigh;
         public bool ExecutionPolicyAllowed;
         public string ExecutionPolicyReason;
         public OpportunityLane Lane;
@@ -29,6 +35,8 @@ namespace cAlgo
         public int CreatedM5;
         public int Quality;
         public double Risk;
+        public double RewardDistanceAtr;
+        public double MinimumRequiredRewardDistanceAtr;
         public double Tp1RR;
         public double Tp2RR;
         public double Tp3RR;

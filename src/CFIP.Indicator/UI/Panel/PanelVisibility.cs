@@ -66,6 +66,7 @@ namespace cAlgo
                                     }
                         
                                     _panel = null;
+                                    _lastPanelHeaderLiveKey = "";
                                     _panelStack = null;
                                     _panelHeaderStack = null;
                                     _panelHeaderTitle = null;

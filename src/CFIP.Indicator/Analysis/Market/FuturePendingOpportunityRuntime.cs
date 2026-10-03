@@ -152,6 +152,15 @@ namespace cAlgo
                             : _decision.Regime)))
                 return false;
 
+            double futureTargetDistanceAtr =
+                Math.Abs(target - entry) /
+                Math.Max(atr, 1e-9);
+
+            if (!OpportunityMagnitudeRule.IsMeaningful(
+                    _decision == null ? "UNKNOWN" : _decision.Regime,
+                    futureTargetDistanceAtr))
+                return false;
+
             int baseQuality =
                 mode == ExecutionMode.ContinuationStop
                     ? Math.Max(

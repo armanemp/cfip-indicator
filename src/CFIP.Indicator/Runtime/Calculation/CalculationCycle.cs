@@ -11,6 +11,7 @@ namespace cAlgo
                 return;
 
             _calculationBusy = true;
+            bool soundDeliveryServiced = false;
 
             try
             {
@@ -74,6 +75,11 @@ namespace cAlgo
 
                 ProcessQueuedAlertDelivery();
 
+                // Realtime signal sound is serviced on the last-bar Calculate
+                // boundary; panel presentation remains timer-owned.
+                ProcessQueuedAlertSoundDelivery();
+                soundDeliveryServiced = true;
+
                 CompleteRuntimeFaultCycle();
             }
             catch (OutOfMemoryException)
@@ -99,8 +105,15 @@ namespace cAlgo
             }
             finally
             {
+                // Recoverable early returns/exceptions must not strand queued
+                // signal sounds. The delivery owner itself is last-bar gated.
                 if (_initializationReady)
+                {
+                    if (!soundDeliveryServiced)
+                        ProcessQueuedAlertSoundDelivery();
+
                     _lastCalculationCompletedUtc = TimeInUtc;
+                }
 
                 PublishProviderHeartbeatValue(index);
 

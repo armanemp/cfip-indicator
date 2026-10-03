@@ -139,6 +139,10 @@ jobs:
       - run: python tools/audit_phase_m5_panel_live.py
       - run: python tools/audit_phase_ci21_primary_signal_visibility.py
       - run: python tools/audit_phase_cbot_p7r_attachment_alert_visibility.py
+      - run: python tools/audit_phase_cbot_lifecycle_audio_2026_10_03.py
+      - run: python tools/audit_phase_panel_header_realtime_2026_10_03.py
+      - run: python tools/audit_phase_user_requirements_2026_10_03.py
+      - run: python tools/audit_phase_final_realtime_live_smart_system_2026_10_03.py
       - run: python tools/audit_phase_cbot_p8_progressive_protection_state_sync.py
       - run: python tools/audit_phase_cbot_p9.py
       - run: python tools/audit_phase_cbot_6m.py
@@ -151,3 +155,5 @@ jobs:
       - run: python tools/audit_phase_cbot_broker_confirmed_facts_2026_10_03.py
       - run: python tools/audit_phase_cbot_management_policy_hardening_2026_10_03.py
       - run: python tools/audit_phase_realtime_multiscenario_opportunity_engine_2026_10_03.py
+      - run: python tools/audit_phase_realtime_live_signal_unification_2026_10_03.py
+      - run: python tools/audit_phase_volume_profile_evidence_2026_10_03.py

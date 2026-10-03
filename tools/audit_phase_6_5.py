@@ -28,7 +28,10 @@ trap_policy = read("src/CFIP.Indicator/Core/Math/EntryTrapRiskPolicy.cs")
 trap = read("src/CFIP.Indicator/Core/Math/EntryTrapRiskRule.cs")
 indicator = read("src/CFIP.Indicator/Core/Math/IndicatorActionabilityRule.cs")
 thresholds = read("src/CFIP.Indicator/Core/Math/ActionabilityThresholdPolicy.cs")
-evaluator = read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityEvaluator.cs")
+evaluator = (
+    read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityEvaluator.cs") +
+    read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityDecisionGate.cs")
+)
 resolver = read("src/CFIP.Indicator/Planning/Execution/ExecutionModeResolver.cs")
 trigger = read("src/CFIP.Indicator/Planning/Execution/TriggerGate.cs")
 plan_gate = read("src/CFIP.Indicator/Trading/Validation/PlanCreationEligibility.cs")

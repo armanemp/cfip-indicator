@@ -52,6 +52,8 @@ namespace cAlgo
                                                         Server.TimeInUtc;
 
                                                     UpdateProcessingHeartbeatLamp();
+                                                    UpdatePanelHeaderLiveState();
+                                                    UpdatePanelTrendTimeframeLamps();
                                         
                                                     ownsVisualSnapshot =
                                                         _renderSignalVisualSnapshot == null;
@@ -148,6 +150,7 @@ namespace cAlgo
                                         
                                                     int fixedHeight =
                                                         PanelHeaderHeight +
+                                                        PanelTrendTimeframeLampRowHeight +
                                                         buttonAreaHeight +
                                                         padding * 2 +
                                                         border * 2;

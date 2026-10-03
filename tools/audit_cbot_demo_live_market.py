@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Focused audit for the demo-only Market / Pending Stop / Market-Range execution bridge."""
+"""Focused audit for the explicit demo/live Market / Pending Stop / Market-Range execution bridge."""
 from pathlib import Path
 import re
 import sys
@@ -43,8 +43,18 @@ if "ExecuteMarketOrder(" not in coord:
 if "ExecuteMarketRangeOrder(" not in coord:
     errors.append("demo market coordinator has no Market-Range mutation")
 
-if "CFIP DEMO" not in coord:
-    errors.append("demo coordinator must use explicit demo comment")
+if "CFIP DEMO" not in coord or "CFIP LIVE" not in coord:
+    errors.append("coordinator must use explicit demo/live broker comments")
+
+if "EnableLiveMarketExecution" not in bot or \
+   "EnableLivePendingStopExecution" not in bot or \
+   "EnableLivePendingLimitExecution" not in bot or \
+   "EnableLiveAggressiveExecution" not in bot or \
+   "EnableLiveManagementExecution" not in bot:
+    errors.append("live execution arms are incomplete")
+
+if "LIVE ACCOUNT BLOCKED" not in bot and "EnableLiveMarketExecution" not in bot:
+    errors.append("cBot lacks explicit live-account execution control")
 
 if "CS0612" not in indicator:
     errors.append("Indicator SDK warning suppression is missing")
@@ -57,6 +67,6 @@ if errors:
 
 print("CBOT DEMO LIVE MARKET AUDIT: PASS")
 print("Market / Market-Range mutation owner: DemoMarketExecutionCoordinator")
-print("Pending Stop mutation owner: DemoPendingOrderExecutionCoordinator")
-print("Demo-only guard: PASS")
+print("Pending mutation owner: DemoPendingOrderExecutionCoordinator")
+print("Explicit demo/live account routing: PASS")
 print("Default execution arm: OFF")

@@ -62,6 +62,10 @@ namespace cAlgo
                 private readonly Dictionary<int, TradeSetupPreview> _parallelPreviewCache =
                     new Dictionary<int, TradeSetupPreview>();
 
+                private VolumeProfileSnapshot _m15VolumeProfile =
+                    VolumeProfileSnapshot.Empty;
+                private int _m15VolumeProfileClosedIndex = -1;
+
                 private DateTime _lastLiveOpportunityRefreshUtc = DateTime.MinValue;
                 private int _lastLiveOpportunityRefreshM5 = -1;
                 private bool _suppressProviderIntentCapture;
@@ -294,6 +298,8 @@ namespace cAlgo
         
                 private readonly AlertDeliveryQueue _alertDeliveryQueue =
                     new AlertDeliveryQueue(16);
+                private readonly AlertDeliveryQueue _alertSoundDeliveryQueue =
+                    new AlertDeliveryQueue(8);
 
                 private Queue<AlertDelivery> _panelAlertHistory =
                     new Queue<AlertDelivery>(5);
@@ -311,6 +317,7 @@ namespace cAlgo
                 private bool _panelHidden;
                 private Button _panelToggleButton;
                 private string _panelStableHeader = "";
+                private string _lastPanelHeaderLiveKey = "";
                 private DateTime _panelStableHeaderSinceUtc = DateTime.MinValue;
         private int _runtimeTpStageIndex = -1;
         private int _runtimeTpStagePlanCreatedM5 = -1;

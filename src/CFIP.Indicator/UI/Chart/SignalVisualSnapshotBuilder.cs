@@ -206,6 +206,8 @@ namespace cAlgo
             snapshot.ReactionDirection =
                 _reaction == null ? 0 : _reaction.Direction;
 
+            ApplyMtfTrendStrength(snapshot);
+
             int strongPredictionConfidence =
                 Math.Max(
                     Math.Max(

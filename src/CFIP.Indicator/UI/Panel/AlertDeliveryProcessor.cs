@@ -21,9 +21,52 @@ namespace cAlgo
             {
                 processed++;
 
-                // One canonical alert event feeds both presentation channels:
-                // the bounded panel alert rail first, then the optional sound cue.
-                RecordPanelAlertDelivery(next);
+                // Keep panel delivery and sound delivery separate. A presentation
+                // failure must never suppress realtime sound, and sound playback
+                // is owned by the last-bar Calculate path.
+                try
+                {
+                    RecordPanelAlertDelivery(next);
+                }
+                catch (Exception ex)
+                {
+                    Print(
+                        "CFIP alert panel delivery failed [{0}]: {1}",
+                        next.Key,
+                        ex.Message);
+                }
+
+                if (!next.PlaySound ||
+                    _alertSoundDeliveryQueue == null)
+                    continue;
+
+                if (!_alertSoundDeliveryQueue.Enqueue(next))
+                {
+                    Print(
+                        "CFIP ALERT SOUND QUEUE REJECTED | id={0}",
+                        next.Envelope == null
+                            ? ""
+                            : next.Envelope.AlertId);
+                }
+            }
+        }
+
+        private void ProcessQueuedAlertSoundDelivery()
+        {
+            // cTrader indicator sound playback stays on the realtime last-bar
+            // Calculate boundary rather than the timer/panel rendering path.
+            if (!IsLastBar ||
+                _alertSoundDeliveryQueue == null ||
+                _alertSoundDeliveryQueue.Count == 0)
+                return;
+
+            int processed = 0;
+
+            while (processed < MaxAlertDeliveriesPerPump &&
+                   _alertSoundDeliveryQueue.TryDequeue(
+                       out AlertDelivery next))
+            {
+                processed++;
 
                 if (!next.PlaySound)
                     continue;

@@ -236,8 +236,11 @@ namespace cAlgo
                         _cBotPresence.BoundIndicatorInstanceId,
                         InstanceId,
                         StringComparison.Ordinal)
-                        ? "PENDING"
-                        : "NOT RESOLVED");
+                        ? "RESOLVED"
+                        : string.IsNullOrWhiteSpace(
+                            _cBotPresence.BoundIndicatorInstanceId)
+                            ? "WAITING"
+                            : "OTHER INSTANCE");
 
             ChartRobot chartRobot;
             string chartState;
@@ -362,6 +365,11 @@ namespace cAlgo
                     ? "UNKNOWN"
                     : _cBotExecutionState.LifecycleState;
 
+            string accountMode =
+                string.IsNullOrWhiteSpace(_cBotExecutionState.ExecutionAccountMode)
+                    ? (_cBotExecutionState.DemoAccount ? "DEMO" : "LIVE")
+                    : _cBotExecutionState.ExecutionAccountMode;
+
             string protection =
                 string.IsNullOrWhiteSpace(_cBotExecutionState.ProtectionState)
                     ? "UNKNOWN"
@@ -369,6 +377,7 @@ namespace cAlgo
 
             return
                 "CBOT " +
+                accountMode + " • " +
                 lifecycle +
                 " • " +
                 protection +

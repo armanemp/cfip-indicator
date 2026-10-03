@@ -609,6 +609,7 @@ expected_models = {
     "SignalEvaluationTrace",
     "EntryGeometrySnapshot",
     "EntrySignalTiming",
+    "VolumeProfileSnapshot",
     "CanonicalPriceSnapshot",
     "MarketStateFrameSnapshot", "MarketStateSnapshot",
     "StructuralStopGeometrySnapshot",
@@ -3120,6 +3121,9 @@ actionability_model = ROOT / "Core" / "Models" / "TradeActionabilityResult.cs"
 actionability_evaluator = ROOT / "Trading" / "Validation" / "TradeActionabilityEvaluator.cs"
 plan_registry = ROOT / "Trading" / "Intelligence" / "TradePlanRegistry.cs"
 parallel_builder = ROOT / "Analysis" / "Market" / "ParallelOpportunityBuilder.cs"
+parallel_candidate_builder = (
+    ROOT / "Analysis" / "Market" / "ParallelOpportunityCandidateBuilder.cs"
+)
 decision_model = ROOT / "Core" / "Models" / "Decision.cs"
 visual_builder = ROOT / "UI" / "Chart" / "SignalVisualSnapshotBuilder.cs"
 alert_calc = ROOT / "Runtime" / "Calculation" / "CalculationDecisionAlerts.cs"
@@ -3157,6 +3161,9 @@ for token in (
         raise SystemExit(f"Divergence evidence is not flowing through Frame: {token}")
 
 act_code = actionability_evaluator.read_text(encoding="utf-8")
+actionability_gate_code = (
+    ROOT / "Trading" / "Validation" / "TradeActionabilityDecisionGate.cs"
+).read_text(encoding="utf-8")
 decision_code = decision_model.read_text(encoding="utf-8")
 for token in (
     "EntryGeometryRule.Evaluate(",
@@ -3169,7 +3176,7 @@ for token in (
     "RR BELOW ACTIONABLE FLOOR",
     "LATE / PRICE EXTENDED",
 ):
-    if token not in act_code:
+    if token not in act_code and token not in actionability_gate_code:
         raise SystemExit(f"Actionability gate missing deterministic execution condition: {token}")
 for token in (
     "ActionableNow",
@@ -3185,12 +3192,14 @@ if "_decision.ActionableNow" in plan_eligibility.read_text(encoding="utf-8"):
 
 registry_code = plan_registry.read_text(encoding="utf-8")
 parallel_code = parallel_builder.read_text(encoding="utf-8")
+parallel_candidate_builder_code = parallel_candidate_builder.read_text(encoding="utf-8")
 for token in ("Dictionary<string, TradeOpportunityCandidate>", "Upsert(", "Snapshot()"):
     if token not in registry_code:
         raise SystemExit(f"Multi-plan registry contract missing: {token}")
 if (
     "_tradePlanRegistry.Upsert(" not in parallel_code and
-    "_tradePlanRegistry.UpsertScenario(" not in parallel_code
+    "_tradePlanRegistry.UpsertScenario(" not in parallel_code and
+    "_tradePlanRegistry.UpsertScenario(" not in parallel_candidate_builder_code
 ):
     raise SystemExit(
         "Parallel opportunity builder must register every materialized candidate"

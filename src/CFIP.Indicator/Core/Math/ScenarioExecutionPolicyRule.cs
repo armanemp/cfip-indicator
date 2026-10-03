@@ -64,6 +64,31 @@ namespace cAlgo
                 candidate.Direction != decision.Direction)
                 return BlockScenarioExecutionPolicy("FUTURE STOP / DECISION DIRECTION MISMATCH");
 
+            // Materialized candidates carry measured reward distance.
+            // Lightweight diagnostic candidates may omit it and remain governed
+            // by the other execution-policy gates.
+            if (NumericGuards.IsFinitePositive(
+                    candidate.RewardDistanceAtr))
+            {
+                double adaptiveRewardFloor =
+                    RegimeAdaptiveRewardFloorRule.ResolveAdaptiveRewardFloor(
+                        decision.Regime,
+                        0,
+                        0);
+
+                double requiredRewardFloor =
+                    Math.Max(
+                        candidate.MinimumRequiredRewardDistanceAtr,
+                        adaptiveRewardFloor);
+
+                if (NumericGuards.IsFinitePositive(requiredRewardFloor) &&
+                    candidate.RewardDistanceAtr < requiredRewardFloor)
+                {
+                    return BlockScenarioExecutionPolicy(
+                        "REWARD DISTANCE BELOW OPPORTUNITY FLOOR");
+                }
+            }
+
             if (candidate.Lane != expectedLane)
                 return BlockScenarioExecutionPolicy("SCENARIO / PLAN LANE MISMATCH");
 

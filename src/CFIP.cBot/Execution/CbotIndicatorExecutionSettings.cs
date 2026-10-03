@@ -160,7 +160,6 @@ namespace CFIP.cBot.Execution
                 reason = "INDICATOR EXECUTION SETTINGS INCOMPLETE";
                 return false;
             }
-
             if (maximumOpenPositions != 1)
             {
                 reason = "UNSUPPORTED NON-SINGLE-PLAN CAPACITY";

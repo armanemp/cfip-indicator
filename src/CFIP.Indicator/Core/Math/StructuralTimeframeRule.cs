@@ -17,6 +17,7 @@ namespace cAlgo
             string value = timeframe.Trim().ToUpperInvariant();
 
             return
+                value == "M1" ||
                 value == "M15" ||
                 value == "M30" ||
                 value == "H1" ||

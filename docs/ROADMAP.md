@@ -1,3 +1,86 @@
+## 2026-10-03 — FINAL REALTIME / LIVE / SMART SYSTEM INTEGRATION
+
+Status: IMPLEMENTED — automated verification pending.
+
+Completed in this continuation unit:
+- realtime current-quote intelligence and historical/forecast evidence remain unified without introducing a second execution authority;
+- all MTF engines remain active across M1/M5/M15/M30/H1/H4/D1/W1, with M15 canonical, M5 entry precision/tuning and M1 optional confirmation;
+- current scenarios execute immediately while future scenarios are broker Pending Stop/Limit orders;
+- multiple ScenarioIds remain bounded, idempotent and independently reconciled;
+- stagnant-market reward/magnitude protection remains mandatory;
+- LIVE Market/Pending/Aggressive/Management arms remain explicit and fail-closed by default;
+- indicator broker-mutation-free boundary remains intact;
+- signal sound delivery is separated from panel rendering and executed on the realtime Calculate/last-bar path;
+- cBot lifecycle/block/execution audio has one owner;
+- HTF trend presentation is a nine-level weak/medium/strong 1/2/3 arrow ladder;
+- panel header has a dedicated realtime owner;
+- fixed M1/M5/M15/M30/H1/H4/D1/W1 trend-lamp row lives outside the ScrollViewer;
+- final integration audit and documentation added.
+
+Verification:
+- cTrader Compile/Build;
+- Runtime Acceptance Contracts;
+- accumulated Source/Architecture audits;
+- final realtime/live/smart-system integration audit;
+- target-terminal acceptance for sound, attachment truth, same-tick handoff, concurrent scenarios, pending lifecycle, restart/reconnect and live broker mutation.
+
+Operator action after verified merge: git pull --ff-only.
+
+---
+
+## 2026-10-03 — Lifecycle Audio + Realtime Panel Header
+
+Status: IMPLEMENTED — verification pending.
+
+Completed:
+- cBot lifecycle/execution audio has a dedicated owner for Start, Stop, broker-confirmed execution, rejection and recovery.
+- Indicator signal audio remains exclusively owned by the Indicator alert-delivery boundary.
+- Panel header has a dedicated presentation owner and is refreshed from the current canonical signal state plus fresh cBot heartbeat/presence.
+- Header updates are change-aware to avoid unnecessary chart-control writes.
+- Existing M15/M5/M1/HTF timeframe-role contract, realtime current-vs-future scenarios, bounded multi-scenario execution, live-account explicit arming and stagnant-market reward protection remain unchanged.
+
+Verification:
+- cTrader Compile/Runtime/Source CI pending after this phase.
+- Target-terminal validation remains required for actual sound audibility and panel freshness.
+
+Operator action after verified merge: `git pull --ff-only` on local `main`.
+
+## Current focus — REALTIME LIVE EXECUTION + SIGNAL TRUTH UNIFICATION — 2026-10-03
+
+Status: IMPLEMENTATION COMPLETE — automated verification pending.
+
+Closed in this phase:
+- explicit account-scoped Live execution arms for Market, Pending Stop, Pending Limit, Aggressive and Management;
+- live account no longer hard-stops the cBot; live mutation remains default-OFF and fail-closed until the corresponding live arm is explicitly enabled;
+- bounded multi-scenario capacity now uses the effective minimum of cBot Max Concurrent Scenarios and Indicator Maximum Open Positions, with the Indicator default raised to 3 and maximum 10;
+- cBot signal-store reload cadence reduced from 500 ms to 100 ms while preserving per-tick ScenarioBatch processing;
+- volatility-relative minimum TP1 opportunity magnitude gate added for current and future opportunities;
+- RANGE low-RR structural floor strengthened to 2.00;
+- reaction/actionable alert direction now consumes the canonical SignalVisualSnapshot direction;
+- cBot execution account mode is published to the Indicator panel as LIVE/DEMO;
+- phase record: docs/PHASE-REALTIME-LIVE-SIGNAL-UNIFICATION-2026-10-03.md.
+
+Full-chain audit:
+History/context -> MTF -> M15 canonical decision -> M5 trigger/tuning -> M1 optional -> current quote -> current/future scenario -> ScenarioBatch -> cBot preflight -> account-mode gate -> scenario capacity -> broker mutation -> broker confirmation -> protection/management -> outcome/history -> panel/alert/chart truth.
+
+Safety:
+- live arms default OFF;
+- Demo and Live flags are account-scoped;
+- Indicator remains broker-mutation-free;
+- M15/M5/M1 role separation unchanged;
+- risk percentage was not increased;
+- broker geometry/volume/margin/daily-loss/spread/market-hours protections remain active.
+
+Verification:
+- Source/Architecture;
+- Runtime Acceptance;
+- cTrader Compile/Build;
+- target-terminal live execution, multi-position, same-tick handoff, attachment, audio and UI consistency validation.
+
+Operator action after merge: git pull --ff-only.
+
+---
+
 ## Current focus — REALTIME MULTI-SCENARIO OPPORTUNITY ENGINE — 2026-10-03
 
 Status: IMPLEMENTATION COMPLETE — verification pending.
@@ -22,7 +105,7 @@ Past/history -> pre-analysis -> M15 decision -> M5 tuning/trigger -> M1 optional
 
 Safety:
 - no quality/RR/risk threshold was lowered;
-- live accounts remain blocked in the current demo-only cBot build;
+- prior demo-only live-account blocking was superseded by the explicit default-OFF Live execution arms in the 2026-10-03 unification phase;
 - Indicator remains broker-mutation-free;
 - same ScenarioId remains idempotent;
 - future pending scenarios are not presented as current market entries.
@@ -54,7 +137,7 @@ Full-chain audit:
 Pre-analysis -> M15 decision -> M5 trigger/tuning -> M1 optional -> Entry/SL/TP/RR -> Actionability -> Scenario/Plan -> Signal/Alert -> ScenarioBatch -> cBot preflight -> per-ScenarioId broker truth -> management policy -> broker mutation -> confirmation -> protection -> outcome/history.
 
 Safety:
-- live accounts remain blocked;
+- live accounts were blocked during the historical phase recorded here; current live behavior is governed by the explicit default-OFF Live execution arm;
 - cBot remains sole broker mutation owner;
 - M15/M5/M1 role separation unchanged;
 - no signal-quality, RR, risk, margin, spread, daily-loss or concurrency threshold is lowered;
@@ -247,9 +330,10 @@ Completed:
 
 Quality/safety:
 - no public entry-quality, confidence, MTF, evidence, RR or risk threshold was lowered;
-- M15 remains the canonical execution timeframe;
-- M5 remains tuning/entry-precision;
-- M1 remains optional confirmation;
+- all aligned M1/M5/M15/M30/H1/H4/D1/W1 frames contribute simultaneous analysis;
+- M15 is the canonical signal-tuning/reference layer, not the only analysis source;
+- M5 provides lower-timeframe entry precision and M1 provides optional micro-entry/confirmation refinement;
+- SL/TP candidates are drawn from lower and higher timeframe structure and filtered by common risk/reward and obstacle constraints;
 - Breakout and predictive pending modes remain trigger-dependent.
 
 Full-chain audit:
@@ -2988,6 +3072,55 @@ M1 must explicitly scan and disposition at least these risk families:
 
 ---
 
+## Realtime / Live Execution + Volume Profile Intelligence — 2026-10-03
+
+Status: implementation branch codex/realtime-live-signal-unification-2026-10-03; PR #240 remains the integration boundary. Repository CI must pass before merge; target-terminal acceptance remains manual.
+
+This current unit establishes:
+- current ActionableNow scenarios -> immediate Market/Aggressive cBot execution;
+- future FutureOrderReady scenarios -> Pending Stop/Limit placement;
+- multiple independent ScenarioIds with bounded cBot-owned concurrency;
+- explicit LIVE/DEMO account routing with live arms default OFF;
+- 100 ms signal-store handoff cadence;
+- magnitude filtering for tiny stagnant-market setups and stronger RANGE RR protection;
+- canonical arrow/popup direction synchronization;
+- explicit cBot attachment/presence truth and queued alert-audio delivery;
+- M15 closed-bar Volume Profile evidence (POC/VAL/VAH) cached by closed M15 index and used as bounded contextual confluence in opportunity quality/ranking.
+
+The Indicator legacy Maximum Open Positions remains the certified single-plan analytical capacity contract. The cBot owns broker-side simultaneous ScenarioId capacity so the two concerns are not incorrectly coupled.
+
+Phase records:
+- docs/PHASE-REALTIME-LIVE-SIGNAL-UNIFICATION-2026-10-03.md
+- docs/PHASE-VOLUME-PROFILE-EVIDENCE-2026-10-03.md
+
+No claim of profitability, prediction accuracy or target-terminal certification is made by repository code/CI alone.
+
+## 21A. 2026-10-03 — Realtime All-Timeframe Intelligence / Smart Arrow Hardening
+
+Implementation branch: phase/mtf-realtime-all-engines-smart-arrows-2026-10-03.
+
+Scope completed in this implementation unit:
+- all aligned closed frames M1/M5/M15/M30/H1/H4/D1/W1 continue to feed the common analysis/decision stack;
+- Early Prediction now has an explicit all-timeframe fusion owner over M5/M15/M30/H1/H4/D1/W1;
+- live trend-strength presentation is recalculated from all active frames plus the current quote, with H1+ as higher-timeframe authority;
+- the chart displays weak/medium/strong 1/2/3-arrow intensity tiers as a presentation state only;
+- stagnant-market magnitude floors and RANGE RR floor are strengthened to reduce tiny low-value trade plans;
+- cBot attachment binding is exact-instance aware and emits deterministic chart-indicator diagnostics when unresolved;
+- current scenarios remain immediate Market/Aggressive actions, future scenarios remain Pending Stop/Limit orders;
+- cBot-side concurrent ScenarioId capacity remains bounded independently from the Indicator legacy analytical single-plan contract;
+- audio remains under the existing canonical queued delivery processor; actual audibility still requires target-terminal verification.
+
+Non-goals:
+- no claim of guaranteed profitability or predictive accuracy;
+- no automatic live arming by default;
+- no replacement of the M15 canonical decision/reference role;
+- no bypass of shared RR, structural-risk, spread, margin, daily-loss or broker-confirmation gates.
+
+Verification:
+- PR/CI must pass on the latest branch head;
+- cTrader target-terminal checks remain required for actual live broker mutation, sound audibility and attachment behavior.
+
+Operator action after merge: git pull --ff-only.
 # 22. Final cleanup rule for obsolete planning material
 
 Once M41 is accepted:
@@ -3012,7 +3145,7 @@ During M0-M42, a newly discovered issue is handled as follows:
 - New feature idea: postponed until M42 unless required for an existing acceptance contract.
 - New indicator: forbidden before M14.
 - Threshold tuning: forbidden before OOS evidence.
-- Production live auto-execution remains forbidden before M42. A narrowly bounded demo-only Market execution bridge is allowed only under CBOT-DEMO-MARKET, with live-account rejection and explicit default DISARMED controls.
+- Production live auto-execution may be implemented through the cBot as an explicitly armed capability, but remains default-OFF and requires target-terminal evidence before operational adoption.
 
 This prevents the roadmap from becoming an endlessly expanding patch queue.
 ## MTF-P3 — Primary M15/H1 Provider Scenario Identity Cohesion
@@ -3075,3 +3208,8 @@ The panel now distinguishes **NOT ATTACHED**, **STOPPED/RESTARTING**, **CONNECTI
 No strategy threshold, RR/Entry/SL/TP policy, position capacity or Cloud transport was changed. The cBot remains demo-only.
 
 Target-terminal startup/restart/reconnect, panel latency and broker synchronization remain manual acceptance boundaries until evidenced.
+### Realtime all-timeframe intelligence + smart arrows
+This current hardening includes the all-timeframe realtime intelligence path, M15 canonical decision/reference, M5 entry refinement, optional M1 confirmation, future pending-order scenarios, nine-level HTF smart arrows, realtime panel truth and modular audio ownership.
+
+### VOLUME PROFILE EVIDENCE
+The Volume Profile evidence phase is part of the consolidated realtime/live architecture and remains contextual evidence only.

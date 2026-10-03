@@ -126,6 +126,22 @@ namespace cAlgo
                 _plan != null &&
                 _plan.IsLivePosition;
 
+            SignalVisualSnapshot canonicalSnapshot =
+                BuildSignalVisualSnapshot(
+                    reactionM5);
+
+            // Reaction alerts are informational, but they must never announce a
+            // direction that contradicts the same canonical snapshot used by the
+            // chart arrow. An already-actionable canonical plan also owns the alert.
+            if (canonicalSnapshot != null &&
+                canonicalSnapshot.ActionableNow)
+                return;
+
+            if (canonicalSnapshot != null &&
+                canonicalSnapshot.AuthoritativeDirection != 0 &&
+                canonicalSnapshot.AuthoritativeDirection != _reaction.Direction)
+                return;
+
             bool rangeAllowed =
                 IsRangeSignalVisualAllowed(
                     reactionM5,
@@ -308,20 +324,30 @@ namespace cAlgo
             RefreshLiveDecisionActionability(
                 closedM5);
 
-            if (_lastActionableEntryAlertM5 ==
-                closedM5 &&
-                _lastActionableEntryAlertDirection ==
-                    _decision.Direction ||
+            bool sameBarAlertAlreadySent =
+                _lastActionableEntryAlertM5 == closedM5 &&
+                _lastActionableEntryAlertDirection == _decision.Direction;
+
+            if (sameBarAlertAlreadySent ||
                 !_decision.EntryAllowed ||
                 !_decision.ActionableNow ||
                 GetManagedPendingOrder() != null ||
                 _decision.Direction == 0 ||
                 _plan == null ||
-                _plan.IsLivePosition)
+                _plan.IsLivePosition ||
+                _plan.Direction != _decision.Direction)
+                return;
+
+            SignalVisualSnapshot canonicalSnapshot =
+                BuildSignalVisualSnapshot(closedM5);
+
+            if (canonicalSnapshot != null &&
+                canonicalSnapshot.AuthoritativeDirection != 0 &&
+                canonicalSnapshot.AuthoritativeDirection != _decision.Direction)
                 return;
 
             int direction =
-                _plan.Direction;
+                _decision.Direction;
 
             string source = "CONFIRMED";
 

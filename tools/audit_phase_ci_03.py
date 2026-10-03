@@ -26,7 +26,10 @@ scoring = read('src/CFIP.Indicator/Analysis/Market/MarketFrameScoringService.cs'
 frame = read('src/CFIP.Indicator/Analysis/Market/Models/Frame.cs')
 decision = read('src/CFIP.Indicator/Core/Models/Decision.cs')
 candidate = read('src/CFIP.Indicator/Core/Models/TradeOpportunityCandidate.cs')
-builder = read('src/CFIP.Indicator/Analysis/Market/ParallelOpportunityBuilder.cs')
+builder = (
+    read('src/CFIP.Indicator/Analysis/Market/ParallelOpportunityBuilder.cs') +
+    read('src/CFIP.Indicator/Analysis/Market/ParallelOpportunityCandidateBuilder.cs')
+)
 orchestration = read('src/CFIP.Indicator/Analysis/Market/Decision/DecisionOrchestration.cs')
 runtime = read('tools/CFIP.Runtime.Contracts/Program.cs')
 runtime_project = read('tools/CFIP.Runtime.Contracts/CFIP.Runtime.Contracts.csproj')

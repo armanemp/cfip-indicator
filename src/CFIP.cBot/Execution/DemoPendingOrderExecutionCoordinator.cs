@@ -18,6 +18,7 @@ namespace CFIP.cBot.Execution
         public bool TryExecute(
             Robot robot,
             SignalEnvelope envelope,
+            bool liveAccount,
             DateTime nowUtc,
             double maximumMarginUsagePercent,
             double marginBufferPercent,
@@ -37,6 +38,13 @@ namespace CFIP.cBot.Execution
                 reason = "NO PENDING EXECUTION ENVELOPE";
                 return false;
             }
+            if (robot.Account == null ||
+                liveAccount != robot.Account.IsLive)
+            {
+                reason = "EXECUTION ACCOUNT MODE MISMATCH";
+                return false;
+            }
+
 
             ExecutionAction action =
                 envelope.Intent.Action;
@@ -283,6 +291,9 @@ namespace CFIP.cBot.Execution
             string label =
                 executionLabel + "-PENDING";
 
+            string brokerCommentPrefix =
+                liveAccount ? "CFIP LIVE" : "CFIP DEMO";
+
             TradeResult result;
 
             try
@@ -300,7 +311,7 @@ namespace CFIP.cBot.Execution
                             targetPips,
                             ProtectionType.Relative,
                             expiration,
-                            "CFIP DEMO PENDING STOP",
+                            brokerCommentPrefix + " PENDING STOP",
                             false)
                         : robot.PlaceLimitOrder(
                             tradeType,
@@ -312,7 +323,7 @@ namespace CFIP.cBot.Execution
                             targetPips,
                             ProtectionType.Relative,
                             expiration,
-                            "CFIP DEMO PENDING LIMIT",
+                            brokerCommentPrefix + " PENDING LIMIT",
                             false);
             }
             catch (Exception ex)

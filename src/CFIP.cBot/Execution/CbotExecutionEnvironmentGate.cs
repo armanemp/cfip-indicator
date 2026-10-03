@@ -17,6 +17,7 @@ namespace CFIP.cBot.Execution
             bool pendingAction,
             int maximumConcurrentScenarios,
             DateTime nowUtc,
+            bool allowLiveExecution,
             out string reason)
         {
             reason = "OK";
@@ -67,10 +68,16 @@ namespace CFIP.cBot.Execution
                 return false;
             }
 
-            if (robot.Account == null ||
-                robot.Account.IsLive)
+            if (robot.Account == null)
             {
-                reason = "LIVE ACCOUNT BLOCKED";
+                reason = "ACCOUNT UNAVAILABLE";
+                return false;
+            }
+
+            if (robot.Account.IsLive &&
+                !allowLiveExecution)
+            {
+                reason = "LIVE EXECUTION NOT ARMED";
                 return false;
             }
 

@@ -81,6 +81,18 @@ namespace cAlgo
             if (vwapBear)
                 sell += VwapBonus;
 
+            return Finalize(
+                buy,
+                sell);
+        }
+
+        internal static EarlyPredictionScoreResult Finalize(
+            double buy,
+            double sell)
+        {
+            buy = Score(buy);
+            sell = Score(sell);
+
             double total =
                 buy + sell;
 
