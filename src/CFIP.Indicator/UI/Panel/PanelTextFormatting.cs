@@ -17,14 +17,8 @@ namespace cAlgo
         private int FrameDirection(
                                     Frame frame)
                                 {
-                                    return frame == null
-                                        ? 0
-                                        : PanelFrameDirectionRule.ResolveDisplayDirection(
-                                            frame.Direction,
-                                            frame.BullScore,
-                                            frame.BearScore,
-                                            frame.TrendBull,
-                                            frame.TrendBear);
+                                    return ResolvePanelTimeframeState(frame)
+                                        .Direction;
                                 }
         
         private string GetStablePanelState(
