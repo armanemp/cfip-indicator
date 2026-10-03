@@ -117,8 +117,8 @@ if "return LineStyle.Solid" not in line:
     raise SystemExit("Plan lines must remain Solid")
 if "PlanLinePresentationRule.ResolveThickness(" not in line:
     raise SystemExit("Plan signal line thickness must use the canonical presentation rule")
-if "MinimumThickness = 1" not in presentation_rule or "MaximumThickness = 3" not in presentation_rule:
-    raise SystemExit("Plan signal line thickness must preserve the public 1..3 contract")
+if "MinimumThickness = 1" not in presentation_rule or "return MinimumThickness;" not in presentation_rule:
+    raise SystemExit("Plan signal line thickness must preserve the canonical one-pixel contract")
 if "Math.Min(1" in line:
     raise SystemExit("Plan signal line renderer must not force thickness back to one")
 if "line.Thickness =\n                                            1;" not in prediction_line and "line.Thickness = 1;" not in prediction_line:
@@ -163,8 +163,8 @@ if "CreatePanelAlertMessageRail(" not in alert_rail or "ResolvePanelAlertMessage
     raise SystemExit("Unified panel alert rail is incomplete")
 
 compact_label_renderer = labels_renderer[labels_renderer.find("private void DrawCompactPlanLabel("):]
-if "return semanticColor" not in compact_label_renderer:
-    raise SystemExit("All compact plan-level text must reuse the exact semantic line color")
+if "return Color.White;" not in labels_renderer:
+    raise SystemExit("All compact plan-level text must use canonical white text")
 if "Chart.DrawRectangle(" in labels_renderer:
     raise SystemExit("Plan label renderer must not create text backgrounds")
 if "OrderVolume(" in server_ladder:
