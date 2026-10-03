@@ -65,7 +65,7 @@ require(
     '"WATCH_ARROW_2"' in arrow and
     '"WATCH_ARROW_3"' in arrow and
     "Symbol.PipSize * 3" in arrow and
-    "offset * 0.75" in arrow,
+    "offset * 1.5" in arrow,
     "stacked arrows must have one canonical renderer, deterministic level mapping and real separation",
 )
 
