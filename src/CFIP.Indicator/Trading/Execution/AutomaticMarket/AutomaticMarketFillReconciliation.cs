@@ -1,4 +1,5 @@
 using System;
+using CFIP.Contracts;
 using cAlgo.API;
 
 namespace cAlgo
@@ -36,12 +37,12 @@ namespace cAlgo
                     "ERROR",
                     fillExecutionReason);
 
-                bool closed =
+                ManagementCommandRequestStatus closeStatus =
                     TryClosePosition(
                         result.Position,
                         "MARKET FILL MISMATCH");
 
-                if (!closed)
+                if (!closeStatus.IsAccepted())
                 {
                     SetLifecycleState(
                         LifecycleState.RecoveryRequired,
