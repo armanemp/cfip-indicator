@@ -112,6 +112,40 @@ check(
 )
 
 check(
+    "all timeframe analysis roles remain explicit",
+    "M15Frame" in provider and
+    "_m15Frame" in actionability and
+    "_m30Frame" in actionability and
+    "_h1Frame" in actionability and
+    "_h4Frame" in actionability and
+    "_d1Frame" in actionability and
+    "_w1Frame" in actionability
+)
+
+check(
+    "M15 is tuning/reference while lower timeframes refine entry",
+    "canonical multi-timeframe architecture" in read("src/CFIP.Indicator/Core/Math/ExecutionTimeframePolicy.cs") and
+    "M15 is the canonical signal-tuning/reference layer" in read("src/CFIP.Indicator/Core/Math/ExecutionTimeframePolicy.cs") and
+    "M5/M1 refine the live entry" in read("src/CFIP.Indicator/Core/Math/ExecutionTimeframePolicy.cs")
+)
+
+check(
+    "stop geometry consumes M1 through W1 structural candidates",
+    "M1_MICRO_STRUCTURE_STOP" in read("src/CFIP.Indicator/Planning/TradePlan/StructuralStopCandidateCollector.cs") and
+    '"M15"' in read("src/CFIP.Indicator/Planning/TradePlan/StructuralStopCandidateCollector.cs") and
+    '"W1"' in read("src/CFIP.Indicator/Planning/TradePlan/StructuralStopCandidateCollector.cs") and
+    'candidate.Timeframe == "M1"' in read("src/CFIP.Indicator/Planning/TradePlan/StructuralStopCandidateEvaluator.cs")
+)
+
+check(
+    "target geometry consumes M1 plus M5/M15/M30/H1/H4/D1/W1",
+    "M1_MICRO_SWING_TARGET" in read("src/CFIP.Indicator/Planning/TradePlan/Sources/M1MicroTargetSource.cs") and
+    "AddM1MicroTargetContext(" in read("src/CFIP.Indicator/Planning/TradePlan/TargetLevelBuilder.cs") and
+    "HTF_FVG" in read("src/CFIP.Indicator/Planning/TradePlan/Sources/HtfTargetSource.cs") and
+    '"W1"' in read("src/CFIP.Indicator/Planning/TradePlan/Sources/HtfTargetSource.cs")
+)
+
+check(
     "popup direction is reconciled against canonical chart direction",
     "canonicalSnapshot.AuthoritativeDirection" in alerts and
     "_reaction.Direction" in alerts and
