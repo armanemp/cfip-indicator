@@ -36,25 +36,8 @@ namespace cAlgo
                             Bars.Count - 1,
                             bar));
 
-                double labelAtr =
-                    safeBar >= 2
-                        ? Atr(
-                            Bars,
-                            Math.Max(
-                                1,
-                                safeBar - 1))
-                        : 0;
-
-                double verticalGap =
-                    Math.Max(
-                        Symbol.PipSize * 5,
-                        labelAtr > 0
-                            ? labelAtr * 0.04
-                            : Symbol.PipSize * 6);
-
                 double labelPrice =
-                    NormalizePrice(
-                        price + verticalGap);
+                    NormalizePrice(price);
 
                 Color labelTextColor =
                     GetReadableLabelTextColor(color);
