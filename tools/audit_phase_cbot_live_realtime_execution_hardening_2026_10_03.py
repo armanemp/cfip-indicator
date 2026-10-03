@@ -79,10 +79,15 @@ check("multiple matching cBots resolve by exact cBot InstanceId",
       "CbotInstanceId" in reader and
       "candidate.InstanceId" in reader)
 
-check("sound delivery is restricted to indicator live last-bar execution",
-      "if (!IsLastBar)" in audio and
+calculation_cycle = read("src/CFIP.Indicator/Runtime/Calculation/CalculationCycle.cs")
+initialization = read("src/CFIP.Indicator/Runtime/Initialization/RuntimeInitialization.cs")
+
+check("sound delivery is restricted to indicator realtime Calculate/last-bar execution",
+      "ProcessQueuedAlertSoundDelivery()" in audio and
       "Notifications.PlaySound" in audio and
-      "SoundType" in audio)
+      "IsLastBar" in audio and
+      "ProcessQueuedAlertSoundDelivery();" in calculation_cycle and
+      "ProcessQueuedAlertPresentation();" in initialization)
 
 check("critical alert queue never evicts an existing critical event",
       "Keep already-buffered critical alerts intact" in read("src/CFIP.Indicator/Core/Runtime/AlertDeliveryQueue.cs"))
