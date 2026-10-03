@@ -16,6 +16,7 @@ namespace CFIP.cBot.Execution
         public bool TryExecute(
             Robot robot,
             SignalEnvelope envelope,
+            bool liveAccount,
             DateTime nowUtc,
             double maximumMarginUsagePercent,
             double marginBufferPercent,
@@ -44,7 +45,7 @@ namespace CFIP.cBot.Execution
 
             if (!marketAction && !aggressiveAction)
             {
-                reason = "DEMO BRIDGE SUPPORTS MARKET AND AGGRESSIVE ACTIONS ONLY";
+                reason = "MARKET BRIDGE SUPPORTS MARKET AND AGGRESSIVE ACTIONS ONLY";
                 return false;
             }
 
@@ -254,6 +255,9 @@ namespace CFIP.cBot.Execution
                     ? TradeType.Buy
                     : TradeType.Sell;
 
+            string brokerCommentPrefix =
+                liveAccount ? "CFIP LIVE" : "CFIP DEMO";
+
             TradeResult result;
             try
             {
@@ -272,7 +276,7 @@ namespace CFIP.cBot.Execution
                             executionLabel,
                             stopPips,
                             targetPips,
-                            "CFIP DEMO",
+                            brokerCommentPrefix,
                             false)
                         : robot.ExecuteMarketOrder(
                             tradeType,
@@ -282,8 +286,8 @@ namespace CFIP.cBot.Execution
                             stopPips,
                             targetPips,
                             aggressiveAction
-                                ? "CFIP DEMO AGGRESSIVE"
-                                : "CFIP DEMO",
+                                ? brokerCommentPrefix + " AGGRESSIVE"
+                                : brokerCommentPrefix,
                             false);
             }
             catch (Exception ex)
