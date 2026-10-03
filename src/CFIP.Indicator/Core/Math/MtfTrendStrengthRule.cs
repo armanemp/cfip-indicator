@@ -29,9 +29,9 @@ namespace cAlgo
     {
         private static readonly double[] DefaultWeights =
         {
-            0.00, // M1: trigger/precision, not HTF trend authority
+            0.00, // M1: precision/confirmation only
             0.50, // M5
-            1.00, // M15
+            1.00, // M15: canonical decision/reference
             1.10, // M30
             1.35, // H1
             1.55, // H4
@@ -39,6 +39,10 @@ namespace cAlgo
             1.95  // W1
         };
 
+        // One owner for the complete nine-level trend model:
+        // 1-3 = WEAK, 4-6 = MEDIUM, 7-9 = STRONG.
+        // The level is derived from signed multi-timeframe evidence, not
+        // from a second HTF-only strength calculator.
         public static MtfTrendStrengthResult Evaluate(
             Frame[] frames,
             double[] weights,
@@ -47,15 +51,12 @@ namespace cAlgo
             if (frames == null ||
                 frames.Length == 0 ||
                 !NumericGuards.IsFinitePositive(livePrice))
-                return new MtfTrendStrengthResult(0, 0, 0, 0, 0);
+                return Empty();
 
-            double weightedBull = 0;
-            double weightedBear = 0;
-            double weightedTotal = 0;
-
-            double htfBull = 0;
-            double htfBear = 0;
-            double htfTotal = 0;
+            double signedEvidence = 0;
+            double absoluteEvidence = 0;
+            double htfSignedEvidence = 0;
+            double htfAbsoluteEvidence = 0;
 
             for (int i = 0; i < frames.Length; i++)
             {
@@ -78,142 +79,202 @@ namespace cAlgo
                     continue;
 
                 double quality =
-                    Math.Max(0, Math.Min(100, frame.Quality)) / 100.0;
+                    Clamp01(frame.Quality / 100.0);
+
+                double bullScore =
+                    Clamp01(frame.BullScore / 100.0);
+
+                double bearScore =
+                    Clamp01(frame.BearScore / 100.0);
+
+                int structuralDirection =
+                    ResolveStructuralDirection(frame);
 
                 double pressure =
-                    Math.Max(
-                        -1.0,
-                        Math.Min(
-                            1.0,
-                            (livePrice - frame.EmaFast) /
-                            Math.Max(
-                                frame.Atr,
-                                1e-9)));
+                    ClampSigned(
+                        (livePrice - frame.EmaFast) /
+                        Math.Max(frame.Atr, 1e-9));
 
-                double directional =
-                    frame.Direction != 0
-                        ? frame.Direction
-                        : pressure;
+                double pressureDirection =
+                    structuralDirection != 0
+                        ? structuralDirection * 0.75 +
+                          pressure * 0.25
+                        : pressure * 0.50;
 
-                if (frame.Direction != 0)
-                {
-                    // Closed-frame direction remains the anchor. Intrabar EMA
-                    // pressure can strengthen or soften it without flipping a
-                    // strong structural frame on one tick.
-                    directional =
-                        frame.Direction * 0.70 +
-                        pressure * 0.30;
-                }
+                double directionalScore =
+                    structuralDirection > 0
+                        ? bullScore
+                        : structuralDirection < 0
+                            ? bearScore
+                            : Math.Max(bullScore, bearScore);
 
-                double contribution =
+                // Quality, directional score and live pressure all contribute.
+                // A direction without evidence therefore cannot manufacture a
+                // strong arrow merely by winning a percentage comparison.
+                double magnitude =
+                    Clamp01(
+                        quality * 0.40 +
+                        directionalScore * 0.40 +
+                        Math.Abs(pressureDirection) * 0.20);
+
+                if (magnitude <= 0)
+                    continue;
+
+                double signedContribution =
                     weight *
-                    quality *
-                    Math.Max(
-                        0.25,
-                        Math.Abs(directional));
+                    magnitude *
+                    ClampSigned(pressureDirection);
 
-                if (directional > 0)
-                    weightedBull += contribution;
-                else if (directional < 0)
-                    weightedBear += contribution;
-
-                weightedTotal +=
+                signedEvidence += signedContribution;
+                absoluteEvidence +=
                     weight *
-                    quality;
+                    magnitude;
 
-                // H1+ is the explicit higher-timeframe trend authority for the
-                // nine-level arrow, while M15/M30 provide calibration context.
                 if (i >= 4)
                 {
-                    if (directional > 0)
-                        htfBull += contribution;
-                    else if (directional < 0)
-                        htfBear += contribution;
-
-                    htfTotal += weight * quality;
+                    htfSignedEvidence += signedContribution;
+                    htfAbsoluteEvidence +=
+                        weight *
+                        magnitude;
                 }
             }
 
-            if (weightedTotal <= 0)
-                return new MtfTrendStrengthResult(0, 0, 0, 0, 0);
+            if (absoluteEvidence <= 0)
+                return Empty();
 
-            double bullShare =
-                100.0 * weightedBull /
-                Math.Max(
-                    1e-9,
-                    weightedBull + weightedBear);
-
-            double bearShare = 100.0 - bullShare;
+            double normalizedStrength =
+                Math.Min(
+                    1.0,
+                    Math.Abs(signedEvidence) /
+                    Math.Max(1e-9, absoluteEvidence));
 
             int direction =
-                bullShare == bearShare
-                    ? 0
-                    : bullShare > bearShare
-                        ? 1
-                        : -1;
+                ResolveDirection(
+                    signedEvidence,
+                    htfSignedEvidence,
+                    htfAbsoluteEvidence);
 
-            double dominance =
-                Math.Max(
-                    bullShare,
-                    bearShare);
+            if (direction == 0)
+                return new MtfTrendStrengthResult(
+                    0,
+                    0,
+                    50,
+                    50,
+                    0);
 
-            double normalizedHtf =
-                htfTotal <= 0
-                    ? 50.0
-                    : 100.0 *
-                      Math.Max(htfBull, htfBear) /
-                      Math.Max(
-                          1e-9,
-                          htfBull + htfBear);
-
-            int htfDirection =
-                htfBull == htfBear
-                    ? 0
-                    : htfBull > htfBear
-                        ? 1
-                        : -1;
-
-            // H1+ is the requested arrow authority. When HTF data exists, arrow
-            // intensity is derived from HTF dominance; the full MTF score remains
-            // available for context and diagnostics.
-            double arrowDominance =
-                htfTotal > 0
-                    ? normalizedHtf
-                    : dominance;
-
+            // 0.10 is the minimum meaningful directional dominance.
+            // The remaining range is quantized into exactly nine levels.
             int level =
-                (int)Math.Floor(
-                    (arrowDominance - 50.0) /
-                    5.0);
-
-            if (arrowDominance <= 50.0)
-                level = 0;
-            else
-                level = Math.Max(1, Math.Min(9, level));
-
-            int arrowDirection =
-                htfTotal > 0 &&
-                htfDirection != 0
-                    ? htfDirection
-                    : direction;
+                normalizedStrength < 0.10
+                    ? 0
+                    : Math.Max(
+                        1,
+                        Math.Min(
+                            9,
+                            (int)Math.Ceiling(
+                                normalizedStrength * 9.0)));
 
             int score =
-                (int)Math.Round(dominance);
+                50 +
+                (int)Math.Round(
+                    normalizedStrength * 50.0);
+
+            double normalizedHtf =
+                htfAbsoluteEvidence <= 0
+                    ? 0
+                    : Math.Min(
+                        1.0,
+                        Math.Abs(htfSignedEvidence) /
+                        Math.Max(
+                            1e-9,
+                            htfAbsoluteEvidence));
+
+            int htfDirection =
+                htfSignedEvidence > 0
+                    ? 1
+                    : htfSignedEvidence < 0
+                        ? -1
+                        : 0;
 
             int htfScore =
-                (int)Math.Round(
-                    Math.Max(
-                        50.0,
-                        Math.Min(
-                            100.0,
-                            normalizedHtf)));
+                htfAbsoluteEvidence <= 0
+                    ? 50
+                    : 50 +
+                      (int)Math.Round(
+                          normalizedHtf * 50.0);
 
             return new MtfTrendStrengthResult(
-                arrowDirection,
+                direction,
                 level,
-                score,
-                htfScore,
+                Math.Max(50, Math.Min(100, score)),
+                Math.Max(50, Math.Min(100, htfScore)),
                 htfDirection);
+        }
+
+        private static int ResolveStructuralDirection(Frame frame)
+        {
+            if (frame.Direction == 1 ||
+                frame.Direction == -1)
+                return frame.Direction;
+
+            if (frame.TrendBull && !frame.TrendBear)
+                return 1;
+
+            if (frame.TrendBear && !frame.TrendBull)
+                return -1;
+
+            return 0;
+        }
+
+        private static int ResolveDirection(
+            double signedEvidence,
+            double htfSignedEvidence,
+            double htfAbsoluteEvidence)
+        {
+            if (Math.Abs(signedEvidence) > 1e-9)
+                return signedEvidence > 0 ? 1 : -1;
+
+            if (htfAbsoluteEvidence > 0 &&
+                Math.Abs(htfSignedEvidence) > 1e-9)
+                return htfSignedEvidence > 0 ? 1 : -1;
+
+            return 0;
+        }
+
+        private static double Clamp01(double value)
+        {
+            if (double.IsNaN(value) ||
+                double.IsInfinity(value))
+                return 0;
+
+            return Math.Max(
+                0,
+                Math.Min(
+                    1,
+                    value));
+        }
+
+        private static double ClampSigned(double value)
+        {
+            if (double.IsNaN(value) ||
+                double.IsInfinity(value))
+                return 0;
+
+            return Math.Max(
+                -1,
+                Math.Min(
+                    1,
+                    value));
+        }
+
+        private static MtfTrendStrengthResult Empty()
+        {
+            return new MtfTrendStrengthResult(
+                0,
+                0,
+                0,
+                0,
+                0);
         }
     }
 }
