@@ -671,3 +671,26 @@ Full symbol reachability, reflection/string entry points, unused members,
 dead event/timer/chart/persistence paths: **NOT CLOSED** and remain mandatory
 for M2-A/B.
 
+
+
+## 2026-10-04 — M2-A.1 repository/build truth audit
+
+**M2-A.1 remains OPEN.** The exact findings and evidence are recorded in `docs/M2-A1-REPOSITORY-BUILD-TRUTH-2026-10-04.md`.
+
+Confirmed at HEAD `3123030fa058200d1847203efe28454cf2172ada`:
+
+- recursive tree: 1122 tracked files; previous master baseline: 1113, so +9 files require reconciliation;
+- primary solution contains only Indicator, Contracts and cBot production projects;
+- contract/preflight/benchmark/shadow verification projects are outside the primary solution graph;
+- 52 platform-neutral source files are explicitly compiled into more than one contract harness assembly;
+- Runtime Contracts has 168 explicit Compile entries;
+- Indicator CI separately compiles the full Indicator source tree;
+- Contracts project has no targeted `cAlgo.API` dependency evidence.
+
+### Architecture disposition
+
+The current source is physically single-owner but the verification build graph is overly coupled to `src/CFIP.Indicator`. The target architecture is to place genuinely platform-neutral shared rules/models behind explicit project references, keeping Indicator and cBot as platform adapters/owners and Contracts as the cross-boundary transport layer. No blind extraction is being performed until the dependency audit establishes the exact shared surface.
+
+No runtime/build PASS is claimed from this static audit.
+
+Next: **M2-A.2 — duplicate/near-duplicate files, partial classes, conditional compilation, generated/obsolete/unreachable artifacts, and build reachability reconciliation.**
