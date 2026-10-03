@@ -67,7 +67,7 @@ require(
     "cBot state publisher must persist/flush through the canonical device bus",
 )
 require(
-    "TryClosePosition" in management or
+    "RequestClosePosition" in management or
     "ManagementCommandType.FullClose" in management,
     "cBot management execution owner missing close path",
 )
