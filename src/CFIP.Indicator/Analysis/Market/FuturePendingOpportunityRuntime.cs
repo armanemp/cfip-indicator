@@ -153,7 +153,7 @@ namespace cAlgo
                 return false;
 
             double minimumRewardDistanceAtr =
-                RegimeAdaptiveRewardFloorRule.Resolve(
+                RegimeAdaptiveRewardFloorRule.ResolveAdaptiveRewardFloor(
                     _decision == null
                         ? "UNKNOWN"
                         : _decision.Regime,
