@@ -125,15 +125,19 @@ check(
 )
 
 check(
-    "ChartIconType.Circle" not in signal_renderer and
-    "ChartIconType.Circle" not in signal_presentation and
+    "ChartIconType.Circle" in signal_renderer and
+    "P + \"M1_TRIGGER\"" in signal_renderer and
     "ChartIconType.UpArrow" in signal_renderer and
     "ChartIconType.DownArrow" in signal_renderer,
-    "directional signal presentation must use arrows only",
+    "directional signal presentation must use canonical arrows while M1 remains a precision-only Circle marker",
 )
 check(
-    "ResolveSignalArrowState(" in signal_renderer,
-    "signal arrow state must resolve through one directional state helper",
+    "RenderStackedSignalArrows(" in signal_renderer and
+    "RenderStackedSignalArrows(" in signal_presentation and
+    "snapshot.MtfTrendStrengthLevel" in read(IND / "UI/Chart/SignalStackedArrowRenderer.cs") and
+    "fallbackState" not in read(IND / "UI/Chart/SignalStackedArrowRenderer.cs") and
+    "ResolveSignalArrowState(" not in signal_renderer,
+    "signal arrow state must resolve through the single canonical snapshot/strength owner",
 )
 check(
     'DefaultValue = "Lime"' in arrow_params and
