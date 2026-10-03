@@ -8,23 +8,22 @@ The internal execution clock is M15. Chart timeframe is not an execution input. 
 
 Date: 2026-10-02
 
-Status: **VERIFIED INVENTORY — migration pending subsequent CBOT phases.**
+Status: **HISTORICAL EXTRACTION INVENTORY — superseded by completed execution-owner cutover.**
 
-This document is the concrete extraction map for the current broker/account/lifecycle authority. It is not a second roadmap.
+This document preserves the original extraction map as audit evidence. It is not a current ownership registry and must not be used as an implementation source of truth.
 
-## 1. Broker mutation owners
+## 1. Historical broker mutation owners
 
-| Owner | Direct APIs | Current role | Required destination |
-| --- | --- | --- | --- |
-| `Trading/Execution/BrokerMarketOrderMutation.cs` | ExecuteMarketOrder, ExecuteMarketRangeOrder | Market + market-range broker mutation | cBot |
-| `Trading/Execution/BrokerPendingOrderPlacement.cs` | PlaceStopOrder | Stop-order mutation | **MIGRATED in CBOT-P4C** |
-| `Trading/Execution/BrokerLimitOrderPlacement.cs` | PlaceLimitOrder | Limit-order mutation | cBot |
-| `src/CFIP.cBot/Execution/ManagementExecutionCoordinator.cs` | CancelPendingOrder | Pending cancellation | cBot — P4E |
-| `src/CFIP.cBot/Execution/ManagementExecutionCoordinator.cs` | ClosePosition | Full/partial close | cBot — P4E |
-| `src/CFIP.cBot/Execution/ManagementExecutionCoordinator.cs` | ModifyStopLossPrice | Broker SL mutation | cBot — P4E |
-| `src/CFIP.cBot/Execution/ManagementExecutionCoordinator.cs` | ModifyTakeProfitPrice, ModifyTakeProfit, ModifyTakeProfitPips | Broker TP mutation / server ladder | cBot — P4E |
+The following Indicator owners were the pre-cutover mutation inventory. They are retained here only to prove migration scope and deletion; they are **not current production owners**.
 
-Frozen direct mutation inventory remains **15 call-sites**.
+| Historical owner | Broker APIs | Current owner after cutover |
+| --- | --- | --- |
+| `Trading/Execution/BrokerMarketOrderMutation.cs` | ExecuteMarketOrder, ExecuteMarketRangeOrder | `src/CFIP.cBot/Execution/DemoMarketExecutionCoordinator.cs` |
+| `Trading/Execution/BrokerPendingOrderPlacement.cs` | PlaceStopOrder | `src/CFIP.cBot/Execution/DemoPendingOrderExecutionCoordinator.cs` |
+| `Trading/Execution/BrokerLimitOrderPlacement.cs` | PlaceLimitOrder | `src/CFIP.cBot/Execution/DemoPendingOrderExecutionCoordinator.cs` |
+| legacy management mutation owners | CancelPendingOrder, ClosePosition, ModifyStopLossPrice, ModifyTakeProfitPrice, ModifyTakeProfit, ModifyTakeProfitPips | `src/CFIP.cBot/Execution/ManagementExecutionCoordinator.cs` |
+
+The authoritative current boundary is maintained by `docs/ARCHITECTURE.md`, `docs/CBOT-0-BOUNDARY-INVENTORY.md` and the executable audits.
 
 ## 2. Current production callers
 
