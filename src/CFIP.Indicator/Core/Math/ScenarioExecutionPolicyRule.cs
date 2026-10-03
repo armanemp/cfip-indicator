@@ -64,6 +64,16 @@ namespace cAlgo
                 candidate.Direction != decision.Direction)
                 return BlockScenarioExecutionPolicy("FUTURE STOP / DECISION DIRECTION MISMATCH");
 
+            if (!IsFinitePositive(candidate.RewardDistanceAtr) ||
+                !IsFinitePositive(candidate.MinimumRequiredRewardDistanceAtr) ||
+                candidate.RewardDistanceAtr <
+                candidate.MinimumRequiredRewardDistanceAtr)
+            {
+                return BlockScenarioExecutionPolicy(
+                    "REWARD DISTANCE BELOW OPPORTUNITY FLOOR");
+            }
+
+
             if (candidate.Lane != expectedLane)
                 return BlockScenarioExecutionPolicy("SCENARIO / PLAN LANE MISMATCH");
 
