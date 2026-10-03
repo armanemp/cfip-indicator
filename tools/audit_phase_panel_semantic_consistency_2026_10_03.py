@@ -51,6 +51,16 @@ check(
 )
 
 check(
+    '!_decision.EntryAllowed' in decision and
+    '"BLOCKED"' in decision and
+    '"WAITING TRIGGER"' in decision and
+    '"WAITING ENTRY"' in decision and
+    '"WATCH / BLOCKED"' not in decision and
+    '_decision.EntryAllowed\n                                                            ? "READY"' not in decision,
+    "decision and entry-gate panel states must not expose contradictory READY/BLOCKED meanings",
+)
+
+check(
     "DirectionText(_decision.HtfAnchorDirection)" in decision and
     "DirectionText(_decision.MidframeDirection)" in decision and
     "_decision.EntryFrameAlignment" in decision and
