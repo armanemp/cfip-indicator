@@ -18,20 +18,16 @@ namespace CFIP.cBot.Execution
             TimeSpan.FromMilliseconds(1500);
 
         public void PlayStarted(
-            Robot robot,
-            bool liveAccount)
+            Robot robot)
         {
             Play(
                 robot,
                 "CBOT STARTED",
-                liveAccount
-                    ? SoundType.PositiveNotification
-                    : SoundType.PositiveNotification);
+                SoundType.PositiveNotification);
         }
 
         public void PlayStopped(
-            Robot robot,
-            bool liveAccount)
+            Robot robot)
         {
             Play(
                 robot,
