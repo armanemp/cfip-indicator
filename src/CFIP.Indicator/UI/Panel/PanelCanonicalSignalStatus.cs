@@ -19,9 +19,7 @@ namespace cAlgo
             }
 
             string direction =
-                _decision.Direction == 1
-                    ? "BUY"
-                    : "SELL";
+                DirectionText(_decision.Direction);
 
             if (!_decision.EntryAllowed)
                 return "SIGNAL  •  " + direction + "  •  BLOCKED";
