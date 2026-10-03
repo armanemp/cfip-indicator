@@ -141,6 +141,7 @@ jobs:
       - run: python tools/audit_phase_cbot_p7r_attachment_alert_visibility.py
       - run: python tools/audit_phase_cbot_lifecycle_audio_2026_10_03.py
       - run: python tools/audit_phase_panel_header_realtime_2026_10_03.py
+      - run: python tools/audit_phase_user_requirements_2026_10_03.py
       - run: python tools/audit_phase_cbot_p8_progressive_protection_state_sync.py
       - run: python tools/audit_phase_cbot_p9.py
       - run: python tools/audit_phase_cbot_6m.py
