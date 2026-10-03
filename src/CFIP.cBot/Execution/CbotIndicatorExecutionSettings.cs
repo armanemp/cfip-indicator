@@ -161,9 +161,10 @@ namespace CFIP.cBot.Execution
                 return false;
             }
 
-            if (maximumOpenPositions != 1)
+            if (maximumOpenPositions < 1 ||
+                maximumOpenPositions > 10)
             {
-                reason = "UNSUPPORTED NON-SINGLE-PLAN CAPACITY";
+                reason = "INDICATOR OPEN-POSITION CAPACITY INVALID";
                 return false;
             }
 
