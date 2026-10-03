@@ -52,17 +52,18 @@ namespace cAlgo
                             0.02,
                             ArrowOffsetAtr));
 
-                RenderMtfTrendStrengthArrowStack(
+                RenderStackedSignalArrows(
                     snapshot,
-                    ResolveArrowStackDirection(
-                        snapshot,
-                        visualDirection),
+                    visualDirection,
                     hostBar,
-                    watchOffset);
+                    watchOffset,
+                    ResolveSignalArrowState(
+                        snapshot,
+                        visualDirection));
             }
             else
             {
-                RemoveMtfTrendStrengthArrowStack();
+                RemoveStackedSignalArrows();
             }
         }
 
