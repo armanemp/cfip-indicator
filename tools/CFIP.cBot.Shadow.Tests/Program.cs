@@ -1,6 +1,7 @@
 using System;
 using CFIP.Contracts;
 using CFIP.cBot.Shadow;
+using CFIP.cBot.Execution;
 
 namespace CFIP.cBot.Shadow.Tests
 {
@@ -16,6 +17,7 @@ namespace CFIP.cBot.Shadow.Tests
         {
             VerifyMarginBudget();
             LifecycleState();
+            ManagementPolicy();
             Ready(TradeDirection.Buy, ExecutionAction.Market, 1, "K1");
             Ready(TradeDirection.Sell, ExecutionAction.Aggressive, -1, "K1A");
             Ready(TradeDirection.Sell, ExecutionAction.PendingLimit, -1, "K2");
@@ -395,6 +397,119 @@ namespace CFIP.cBot.Shadow.Tests
                     "UNKNOWN",
                     false),
                 "UNKNOWN lifecycle must remain fail-closed");
+        }
+
+        private static void ManagementPolicy()
+        {
+            Assert(
+                CbotManagementPolicyRule.Allows(
+                    ManagementCommandType.CancelPending,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    out _),
+                "pending cancellation remains available for safety lifecycle");
+
+            Assert(
+                CbotManagementPolicyRule.Allows(
+                    ManagementCommandType.FullClose,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    out _),
+                "full close remains available for safety lifecycle");
+
+            Assert(
+                CbotManagementPolicyRule.Allows(
+                    ManagementCommandType.PartialClose,
+                    false,
+                    true,
+                    false,
+                    false,
+                    false,
+                    out _),
+                "partial close must be allowed only when partial TP is enabled");
+
+            Assert(
+                !CbotManagementPolicyRule.Allows(
+                    ManagementCommandType.PartialClose,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    out _),
+                "partial close must fail closed when partial TP is disabled");
+
+            Assert(
+                CbotManagementPolicyRule.Allows(
+                    ManagementCommandType.ModifyProtection,
+                    false,
+                    false,
+                    true,
+                    false,
+                    false,
+                    out _),
+                "broker protection must be allowed when smart protection is enabled");
+
+            Assert(
+                !CbotManagementPolicyRule.Allows(
+                    ManagementCommandType.ModifyProtection,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    out _),
+                "protection mutation must fail closed when all protection controls are disabled");
+
+            Assert(
+                CbotManagementPolicyRule.Allows(
+                    ManagementCommandType.AdvanceTarget,
+                    true,
+                    false,
+                    false,
+                    false,
+                    true,
+                    out _),
+                "target advance requires live-exit management plus TP sync");
+
+            Assert(
+                !CbotManagementPolicyRule.Allows(
+                    ManagementCommandType.AdvanceTarget,
+                    false,
+                    false,
+                    true,
+                    false,
+                    true,
+                    out _),
+                "target advance must fail when live-exit management is disabled");
+
+            Assert(
+                !CbotManagementPolicyRule.Allows(
+                    ManagementCommandType.AdvanceTarget,
+                    true,
+                    false,
+                    true,
+                    false,
+                    false,
+                    out _),
+                "target advance must fail when broker TP sync is disabled");
+
+            Assert(
+                !CbotManagementPolicyRule.Allows(
+                    (ManagementCommandType)999,
+                    true,
+                    true,
+                    true,
+                    true,
+                    true,
+                    out _),
+                "unknown management commands must fail closed");
         }
 
         private static void VerifyMarginBudget()
