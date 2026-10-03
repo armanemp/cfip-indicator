@@ -29,7 +29,7 @@ namespace cAlgo
         private bool _managementCommandsLoaded;
         private bool _managementCommandsPersistenceDirty;
 
-        private ManagementCommandRequestStatus TryCancelPendingOrder(PendingOrder order, string context)
+        private ManagementCommandRequestStatus RequestCancelPendingOrder(PendingOrder order, string context)
         {
             if (order == null)
                 return ManagementCommandRequestStatus.Rejected;
