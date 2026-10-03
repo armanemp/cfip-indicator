@@ -23,7 +23,7 @@ namespace cAlgo
                                             continue;
                         
                                         ManagementCommandRequestStatus cancelStatus =
-                                            TryCancelPendingOrder(
+                                            RequestCancelPendingOrder(
                                                 order,
                                                 "PENDING CIRCUIT BREAKER");
                                         if (!cancelStatus.IsAccepted())
