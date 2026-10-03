@@ -14,6 +14,20 @@ Operator action after merge: git pull --ff-only
 
 ---
 
+## 2026-10-04 — M2 FULL FORENSIC RESTART — AUTHORITATIVE CONTINUATION
+
+Status: **IN PROGRESS — RESTARTED FROM PROJECT BASELINE — NOT CLOSED.**
+
+M2 is intentionally restarted from the beginning of the project's relevant history and current repository truth. The goal is a gap-free forensic audit, not a feature patch queue. Every production behavior must be traced from source to consumer and assigned exactly one logic, one owner and one source of truth.
+
+Audit sequence is mandatory and sequential: **M2-A Repository/Build Truth → M2-B Architecture/Ownership → M2-C Full Calculation Chain → M2-D Signal/Visual Semantics → M2-E Alert/Audio/Event Transport → M2-F cBot Runtime/Execution → M2-G Persistence/History → M2-H Performance/Lifecycle → M2-I Documentation/Test/CI Closure.**
+
+No gate is considered complete from a partial search. Existing fixes are re-verified rather than assumed correct. Historical audit findings remain historical evidence when explicitly marked; current architecture authority must agree with code and current contracts.
+
+Canonical continuation checkpoint: docs/M2-FULL-FORENSIC-RESTART-CHECKPOINT-2026-10-04.md.
+
+**Exact next item:** M2-A.1 — repository/build truth. The next chat must read the checkpoint and continue there, not infer a different starting point.
+
 ## 2026-10-04 — Master Full Forensic Audit Baseline
 
 Status: **BASELINE CREATED — audit execution pending.**
