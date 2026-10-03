@@ -274,6 +274,18 @@ namespace CFIP.cBot.Shadow.Tests
                     101,
                     SignalStage.Confirmed);
 
+            SignalEnvelope secondFixture =
+                Build(
+                    22,
+                    TradeDirection.Sell,
+                    ExecutionAction.Market,
+                    "K22-B",
+                    Now.AddMinutes(5),
+                    100,
+                    101,
+                    99,
+                    SignalStage.Confirmed);
+
             ContractIdentity secondIdentity =
                 new ContractIdentity(
                     ContractVersion.Current,
@@ -308,7 +320,7 @@ namespace CFIP.cBot.Shadow.Tests
                 new SignalEnvelope(
                     secondIdentity,
                     SignalStage.Confirmed,
-                    first.Plan,
+                    secondFixture.Plan,
                     secondIntent,
                     Now);
 
