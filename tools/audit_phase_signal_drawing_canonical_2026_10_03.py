@@ -3,7 +3,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 line = (ROOT / "src/CFIP.Indicator/UI/Chart/PlanLineRenderer.cs").read_text(encoding="utf-8")
-line_rule = (ROOT / "src/CFIP.Indicator/Core/Math/PlanLinePresentationRule.cs").read_text(encoding="utf-8")
+line_rule = (ROOT / "src/CFIP.Indicator/UI/Chart/PlanLinePresentationRule.cs").read_text(encoding="utf-8")
 labels = (ROOT / "src/CFIP.Indicator/UI/Chart/PlanLabelRenderer.cs").read_text(encoding="utf-8")
 anchor = (ROOT / "src/CFIP.Indicator/UI/Chart/PlanLabelAnchorCalculator.cs").read_text(encoding="utf-8")
 plan = (ROOT / "src/CFIP.Indicator/UI/Chart/PlanRenderCoordinator.cs").read_text(encoding="utf-8")
