@@ -1,3 +1,39 @@
+## Current focus — REALTIME LIVE EXECUTION + SIGNAL TRUTH UNIFICATION — 2026-10-03
+
+Status: IMPLEMENTATION COMPLETE — verification pending; target-terminal acceptance required.
+
+Completed:
+- explicit account-scoped Live arms for Market, Pending Stop, Pending Limit, Aggressive and Management;
+- live accounts no longer hard-stop the cBot; Live mutation remains default-OFF and fails closed while unarmed;
+- simultaneous ScenarioId capacity is bounded by the effective minimum of cBot Max Concurrent Scenarios and Indicator Maximum Open Positions;
+- Indicator Maximum Open Positions is now bounded 1..10 and defaults to 3;
+- cBot signal-store reload cadence is 100 ms while ScenarioBatch processing remains per incoming tick;
+- current and future opportunities receive a volatility-relative minimum TP1 magnitude guard; RANGE low-RR floor strengthened to 2.00;
+- reaction and actionable popup alerts are reconciled against the canonical SignalVisualSnapshot direction used by chart arrows;
+- cBot LIVE/DEMO account mode is published to the Indicator connection state;
+- phase record: docs/PHASE-REALTIME-LIVE-SIGNAL-UNIFICATION-2026-10-03.md.
+
+Full-chain audit:
+history/context -> MTF -> M15 canonical decision -> M5 trigger/tuning -> M1 optional -> current quote -> current/future scenario -> ScenarioBatch -> cBot preflight -> account-mode gate -> scenario capacity -> broker mutation -> broker confirmation -> protection/management -> outcome/history -> panel/chart/alert truth.
+
+Safety:
+- Live mutation defaults OFF;
+- Demo and Live controls are account-scoped;
+- Indicator remains broker-mutation-free;
+- M15/M5/M1 role separation remains intact;
+- existing geometry, margin, volume, spread, session and daily-loss controls remain active;
+- no automatic risk increase was introduced.
+
+Verification:
+- Source/Architecture audits;
+- Runtime Acceptance;
+- cTrader Compile/Build;
+- target-terminal Live, simultaneous-scenario, pending-fill, attachment, audio and UI consistency validation.
+
+Operator action after merge: git pull --ff-only.
+
+---
+
 ## Current focus — REALTIME MULTI-SCENARIO OPPORTUNITY ENGINE — 2026-10-03
 
 Status: IMPLEMENTATION COMPLETE — verification pending.
