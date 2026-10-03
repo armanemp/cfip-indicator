@@ -24,7 +24,8 @@ namespace cAlgo
                             if (string.IsNullOrWhiteSpace(
                                     message))
                                 return false;
-// A blocked candidate does not create a trade/signal
+
+                            // A blocked candidate does not create a trade/signal
                             // side effect. An explicitly configured restriction alert
                             // is a user-facing diagnostic event and remains deliverable.
                             if (message.StartsWith(
@@ -38,7 +39,8 @@ namespace cAlgo
                                     "RESTRICT|",
                                     StringComparison.OrdinalIgnoreCase))
                                 return false;
-DateTime now =
+
+                            DateTime now =
                                 TimeInUtc;
                 
                             if (direction == 0)
@@ -60,7 +62,8 @@ DateTime now =
                                     _lastRestrictionMessage,
                                     StringComparison.OrdinalIgnoreCase) >= 0)
                                 return false;
-if (SuppressDuplicateAlerts)
+
+                            if (SuppressDuplicateAlerts)
                             {
                                 int cooldownSeconds =
                                     (normalizedKey.StartsWith(
@@ -80,7 +83,7 @@ if (SuppressDuplicateAlerts)
                                         1,
                                         cooldownSeconds))
                                     return false;
-}
+                            }
                 
                             // Light housekeeping so this dictionary can't grow forever over
                             // a long-running session — unique keys (per-plan TP/SL, daily
@@ -137,7 +140,8 @@ if (SuppressDuplicateAlerts)
                                         SoundFilePath));
 
                             Print(
-                                "CFIP ALERT QUEUED | id={0} | key={1} | stage={2} | critical={3} | sound={4} | soundType={5} | queue={6}",
+                                "CFIP ALERT ENQUEUE | accepted={0} | id={1} | key={2} | stage={3} | critical={4} | sound={5} | soundType={6} | queue={7}",
+                                queued,
                                 envelope.AlertId,
                                 envelope.AlertKey,
                                 envelope.Stage,
@@ -170,8 +174,6 @@ if (SuppressDuplicateAlerts)
                                     now;
                             }
 
-                            bool delivered = queued;
-
                             if (EnableEmailAlerts &&
                                 !string.IsNullOrWhiteSpace(
                                     SenderEmail) &&
@@ -195,9 +197,7 @@ if (SuppressDuplicateAlerts)
                                 }
                             }
                 
-                            return delivered;
-
-
+                            return queued;
                         }
 
         private bool IsVisualSignalAlertKey(
