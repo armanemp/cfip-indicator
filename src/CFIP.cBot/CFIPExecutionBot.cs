@@ -304,102 +304,10 @@ namespace CFIP.cBot
             }
 
             RefreshExecutionSettings(false);
-            ReloadSignalStore(false);
 
             DateTime nowUtc = Server.TimeInUtc;
             ReconcileBrokerState(false);
             PublishExecutionState("HEARTBEAT", false);
-
-            if (EffectiveManagementExecutionEnabled &&
-                !string.IsNullOrWhiteSpace(_boundIndicatorInstanceId))
-            {
-                _management.Process(
-                    this,
-                    _boundIndicatorInstanceId,
-                    nowUtc,
-                    ManagementCommandMaxAgeSeconds,
-                    _executionSettings,
-                    out string managementStatus);
-
-                if (!string.IsNullOrWhiteSpace(managementStatus) &&
-                    !string.Equals(
-                        managementStatus,
-                        "NO MANAGEMENT COMMAND",
-                        StringComparison.Ordinal))
-                {
-                    Print("CFIP MANAGEMENT | {0}", managementStatus);
-                }
-            }
-
-            bool hasScenarioBatch =
-                CfipDeviceSignalTransport.TryReadScenarioBatch(
-                    this,
-                    _boundIndicatorInstanceId,
-                    out SignalScenarioBatch scenarioBatch,
-                    out string scenarioBatchReason);
-
-            if (hasScenarioBatch)
-            {
-                if (scenarioBatch == null ||
-                    scenarioBatch.ContractVersion != ContractVersion.Current ||
-                    !string.Equals(
-                        scenarioBatch.IndicatorInstanceId,
-                        _boundIndicatorInstanceId,
-                        StringComparison.Ordinal) ||
-                    !string.Equals(
-                        scenarioBatch.Symbol,
-                        SymbolName,
-                        StringComparison.Ordinal))
-                {
-                    LogBlockedState(
-                        "SCENARIO BATCH CONTRACT OR IDENTITY MISMATCH");
-                    return;
-                }
-
-                SignalEnvelope[] scenarios =
-                    scenarioBatch.Scenarios ??
-                    Array.Empty<SignalEnvelope>();
-
-                if (scenarios.Length == 0)
-                {
-                    PublishExecutionState(
-                        "NO EXECUTABLE SCENARIOS",
-                        false);
-                    return;
-                }
-
-                for (int scenarioIndex = 0;
-                     scenarioIndex < scenarios.Length;
-                     scenarioIndex++)
-                {
-                    ProcessSignalEnvelope(
-                        scenarios[scenarioIndex],
-                        nowUtc);
-                }
-
-                SweepScenarioProtectionStates(nowUtc);
-                return;
-            }
-
-            if (!CfipDeviceSignalTransport.TryRead(
-                    this,
-                    _boundIndicatorInstanceId,
-                    out SignalEnvelope envelope,
-                    out string transportReason))
-            {
-                LogBlockedState(
-                    string.IsNullOrWhiteSpace(scenarioBatchReason)
-                        ? transportReason
-                        : scenarioBatchReason);
-                return;
-            }
-
-            ProcessSignalEnvelope(
-                envelope,
-                nowUtc);
-
-            SweepScenarioProtectionStates(nowUtc);
-            return;
         }
 
         private bool ShouldProcessRealtimeTimerEnvelope(
@@ -436,10 +344,30 @@ namespace CFIP.cBot
                 return;
 
             RefreshExecutionSettings(false);
-            ReloadSignalStore(true);
+            ReloadSignalStore(false);
 
-            DateTime nowUtc =
-                Server.TimeInUtc;
+            DateTime nowUtc = Server.TimeInUtc;
+
+            if (EffectiveManagementExecutionEnabled &&
+                !string.IsNullOrWhiteSpace(_boundIndicatorInstanceId))
+            {
+                _management.Process(
+                    this,
+                    _boundIndicatorInstanceId,
+                    nowUtc,
+                    ManagementCommandMaxAgeSeconds,
+                    _executionSettings,
+                    out string managementStatus);
+
+                if (!string.IsNullOrWhiteSpace(managementStatus) &&
+                    !string.Equals(
+                        managementStatus,
+                        "NO MANAGEMENT COMMAND",
+                        StringComparison.Ordinal))
+                {
+                    Print("CFIP MANAGEMENT | {0}", managementStatus);
+                }
+            }
 
             if (CfipDeviceSignalTransport.TryReadScenarioBatch(
                     this,
@@ -463,20 +391,14 @@ namespace CFIP.cBot
                     scenarioBatch.Scenarios ??
                     Array.Empty<SignalEnvelope>();
 
-                for (int i = 0;
-                     i < scenarios.Length;
-                     i++)
+                for (int i = 0; i < scenarios.Length; i++)
                 {
-                    SignalEnvelope scenario =
-                        scenarios[i];
+                    SignalEnvelope scenario = scenarios[i];
 
-                    if (!ShouldProcessRealtimeTimerEnvelope(
-                            scenario))
+                    if (!ShouldProcessRealtimeTimerEnvelope(scenario))
                         continue;
 
-                    ProcessSignalEnvelope(
-                        scenario,
-                        nowUtc);
+                    ProcessSignalEnvelope(scenario, nowUtc);
                 }
 
                 SweepScenarioProtectionStates(nowUtc);
@@ -490,14 +412,10 @@ namespace CFIP.cBot
                     out _))
                 return;
 
-            if (!ShouldProcessRealtimeTimerEnvelope(
-                    envelope))
+            if (!ShouldProcessRealtimeTimerEnvelope(envelope))
                 return;
 
-            ProcessSignalEnvelope(
-                envelope,
-                nowUtc);
-
+            ProcessSignalEnvelope(envelope, nowUtc);
             SweepScenarioProtectionStates(nowUtc);
         }
 
@@ -889,17 +807,9 @@ namespace CFIP.cBot
                     !EffectiveManagementExecutionEnabled)
                     continue;
 
-                _activeManagedExecutionLabel =
-                    scenario.Intent.ExecutionLabel;
-
-                _lastSignalEnvelope =
-                    scenario;
-
-                _reconciliation =
-                    result;
-
                 if (TryRecoverProtection(
                         scenario,
+                        result,
                         nowUtc))
                 {
                     _scenarioReconciliations[item.Key] =
@@ -1330,13 +1240,14 @@ namespace CFIP.cBot
 
         private bool TryRecoverProtection(
             SignalEnvelope envelope,
+            CbotBrokerReconciliationResult reconciliation,
             DateTime nowUtc)
         {
             if (envelope == null ||
                 envelope.Intent == null ||
-                _reconciliation == null ||
-                !_reconciliation.RecoveryRequired ||
-                _reconciliation.ManagedPositions != 1)
+                reconciliation == null ||
+                !reconciliation.RecoveryRequired ||
+                reconciliation.ManagedPositions != 1)
                 return false;
 
             if (envelope.Identity == null ||
