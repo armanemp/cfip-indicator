@@ -1,3 +1,21 @@
+## 2026-10-03 — Live realtime cBot / attachment / audio / stagnant-market hardening
+
+Implemented:
+- explicit live-account arm boundary without detaching/stopping the cBot when live is unarmed;
+- 100 ms cBot signal-store handoff and 200 ms Indicator cBot-state visibility;
+- cBot-owned broker execution authority independent of legacy Indicator execution switches;
+- hardened same-chart CFIP custom-indicator discovery;
+- adaptive reward floor for stagnant RANGE/COMPRESSION/TRANSITION opportunities;
+- realtime last-bar audio delivery;
+- preserved bounded alert priority semantics;
+- extracted the large lane-candidate module into a canonical CFIPIndicator partial file;
+- accumulated verification in Source/Architecture CI.
+
+Verification:
+- cTrader compile and Runtime Acceptance are green on the latest checked head;
+- Source/Architecture is being rerun after P7 contract alignment;
+- live target-terminal validation remains manual and must precede any real-money activation.
+
 ## Current focus — REALTIME MULTI-SCENARIO OPPORTUNITY ENGINE — 2026-10-03
 
 Status: IMPLEMENTATION COMPLETE — verification pending.
