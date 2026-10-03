@@ -30,7 +30,8 @@ evaluator = (
 )
 parallel = (
     read("src/CFIP.Indicator/Analysis/Market/ParallelOpportunityBuilder.cs") +
-    read("src/CFIP.Indicator/Analysis/Market/ParallelOpportunityCandidateBuilder.cs")
+    read("src/CFIP.Indicator/Analysis/Market/ParallelOpportunityCandidateBuilder.cs") +
+    read("src/CFIP.Indicator/Analysis/Market/ParallelOpportunityCandidatePresentation.cs")
 )
 quality_rule = read("src/CFIP.Indicator/Core/Math/ActionableSignalQualityRule.cs")
 orchestration = read("src/CFIP.Indicator/Analysis/Market/Decision/DecisionOrchestration.cs")
