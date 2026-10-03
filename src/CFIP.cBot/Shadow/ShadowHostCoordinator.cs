@@ -137,6 +137,10 @@ namespace CFIP.cBot.Shadow
                     scenarioKey,
                     rechecked);
 
+                // Compatibility telemetry only. The authoritative cached
+                // result remains ScenarioId-scoped above.
+                _lastResult = rechecked;
+
                 return rechecked;
             }
 
