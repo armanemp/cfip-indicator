@@ -1,3 +1,29 @@
+## Current focus — CBOT MULTI-SCENARIO CAPACITY ALIGNMENT — 2026-10-03
+
+Status: IMPLEMENTATION COMPLETE — verification pending.
+
+Closed:
+- cBot Max Concurrent Scenarios default is aligned to 5 while the hard upper bound remains 10;
+- Max Demo Executions Per Session default is aligned to 10 while the hard upper bound remains 20;
+- the bounded capacity model now matches the realtime execution-candidate architecture rather than the old three-execution demo ceiling.
+
+Safety:
+- live accounts remain blocked;
+- concurrency remains explicitly bounded;
+- same ScenarioId idempotency and per-scenario reconciliation remain unchanged;
+- no quality, confidence, RR or risk gate was lowered.
+
+Phase record: docs/PHASE-CBOT-MULTISCENARIO-CAPACITY-ALIGNMENT-2026-10-03.md.
+
+Verification:
+- Source/Architecture;
+- Runtime Acceptance;
+- cTrader Compile/Build;
+- target-terminal concurrent ScenarioId and session-cap validation.
+
+Operator action after verified merge: git pull --ff-only.
+
+---
 ## Current focus — REALTIME MULTI-SCENARIO OPPORTUNITY ENGINE — 2026-10-03
 
 Status: IMPLEMENTATION COMPLETE — verification pending.
