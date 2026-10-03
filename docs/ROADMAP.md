@@ -3653,3 +3653,9 @@ Operator action after merge: `git pull --ff-only`.
 The canonical `PlanLabelRenderer` now anchors each label at the exact left edge of its line and offsets the label price by exactly 2 pips using `Symbol.PipSize`. This removes the previous one-bar approximation that could visually place text on top of the line. No rectangle, circle, duplicate renderer, signal logic, or execution logic was introduced.
 
 Verification: source/audit updated; local Release build and target cTrader visual acceptance remain required.
+
+
+### 2026-10-04 — Plan label build/contract correction
+- Corrected `PlanLabelRenderer` compilation and removed stale one-bar spacing logic.
+- Canonical label contract: native `ChartText`, semantic line color, no rectangle/circle, exact 2-pip price-space clearance.
+- Architecture audit updated to match the final visual contract; runtime acceptance failure is pre-existing on `main` and requires a separate root-cause phase.
