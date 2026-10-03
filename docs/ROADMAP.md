@@ -1,6 +1,6 @@
 # Current focus — CBOT SHADOW MULTI-SCENARIO TRUTH — 2026-10-03
 
-Status: IMPLEMENTATION COMPLETE — verification pending.
+Status: IMPLEMENTATION COMPLETE — automated verification PASS; target-terminal acceptance pending.
 
 Finding closed:
 
@@ -10,13 +10,16 @@ Finding closed:
 
 - a valid second ScenarioId in the same batch could therefore hit REVISION CONFLICT before broker execution.
 
+Additional execution-chain seam closed:
+- ScenarioBatch materialization was explicitly bound to the current closed M5 so stale registry candidates cannot enter the cBot handoff.
+
 Canonical correction:
 
 - last revision/idempotency state is now keyed by ScenarioId;
 
 - same-scenario replay/conflict semantics remain strict;
 
-- last revision/idempotency state is keyed by ScenarioId;
+- cached shadow result/recheck timing is also keyed by ScenarioId;
 - cached shadow result/recheck timing is also keyed by ScenarioId;
 - global last-accepted values remain telemetry only;
 - ScenarioBatch materialization is restricted to the current closed M5 so stale registry candidates cannot enter the execution handoff;
@@ -29,13 +32,15 @@ Pre-analysis -> M15 decision -> M5 trigger/tuning -> M1 optional -> Entry/SL/TP/
 
 Verification:
 
-- Source/Architecture;
+- Source/Architecture: PASS;
 
-- Runtime Acceptance;
+- Runtime Acceptance: PASS;
 
-- cTrader Compile/Build;
+- cTrader Compile/Build: PASS;
 
-- dedicated shadow multi-scenario audit;
+- dedicated shadow multi-scenario audit: PASS;
+
+- stale-candidate/current-closed-M5 materialization audit: wired and covered;
 
 - target-terminal two-independent-ScenarioIds/same-revision, duplicate replay and independent protection/reconciliation validation.
 
