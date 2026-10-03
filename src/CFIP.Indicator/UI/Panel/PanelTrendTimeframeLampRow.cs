@@ -175,23 +175,8 @@ namespace cAlgo
 
                 label.Text = labels[i];
 
-                Color lampColor =
-                    state.Direction == 1
-                        ? (state.Strength >= 3
-                            ? StrongBuyArrowColor
-                            : state.Strength == 2
-                                ? ConfirmedBuyArrowColor
-                                : CautionBuyArrowColor)
-                        : state.Direction == -1
-                            ? (state.Strength >= 3
-                                ? StrongSellArrowColor
-                                : state.Strength == 2
-                                    ? ConfirmedSellArrowColor
-                                    : CautionSellArrowColor)
-                            : PanelSecondaryTextColor;
-
-                indicator.ForegroundColor = lampColor;
-                label.ForegroundColor = lampColor;
+                indicator.ForegroundColor = state.Color;
+                label.ForegroundColor = state.Color;
             }
         }
 
