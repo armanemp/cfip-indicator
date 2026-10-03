@@ -79,15 +79,7 @@ namespace cAlgo
                 delivery.Envelope == null)
                 return false;
 
-            AlertSoundPolicy.Decision soundDecision =
-                AlertSoundPolicy.Resolve(
-                    delivery.Key,
-                    UseSemanticAlertSounds,
-                    AlertSoundType,
-                    delivery.Envelope,
-                    SymbolName);
-
-            groupKey = soundDecision.GroupKey;
+            groupKey = delivery.SoundGroupKey;
 
             if (string.IsNullOrWhiteSpace(groupKey))
                 return true;
