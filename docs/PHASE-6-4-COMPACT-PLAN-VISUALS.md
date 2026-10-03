@@ -125,3 +125,20 @@ After pulling the merged commit and rebuilding in cTrader:
 
 After live verification of this presentation phase, continue with
 **Phase 7.1 — Hidden-clamp audit**.
+
+
+---
+
+## Superseded visual contract — 2026-10-04
+
+The implementation described in the original 6.4 phase note is historical. Its label box/background, semantic-color text and earlier horizontal-alignment wording are superseded by the later canonical presentation contract.
+
+Current authoritative contract:
+- solid, finite, one-pixel signal/plan lines;
+- exactly 40 chart bars ending at the latest candle;
+- label anchor before the line start with deterministic horizontal gap;
+- ChartText.HorizontalAlignment = Right so the visible label renders to the left of the line;
+- exact level price, white text, no background;
+- one ChartText mutation owner: PlanLabelRenderer.UpsertPlanLabel.
+
+Do not reintroduce the historical box/second-renderer/alignment behavior.
