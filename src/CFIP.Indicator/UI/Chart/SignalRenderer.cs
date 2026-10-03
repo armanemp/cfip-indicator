@@ -91,19 +91,13 @@ namespace cAlgo
                         0.02,
                         ArrowOffsetAtr));
 
-            string arrowState =
-                ResolveSignalArrowState(
-                    snapshot,
-                    visualDirection);
-
             if (ShowSignalArrow)
             {
                 RenderStackedSignalArrows(
                     snapshot,
                     visualDirection,
                     arrowBar,
-                    offset,
-                    arrowState);
+                    offset);
             }
             else
             {
@@ -164,11 +158,12 @@ namespace cAlgo
                                     ? Bars.LowPrices[triggerBar] - offset
                                     : Bars.HighPrices[triggerBar] + offset;
 
+                            // M1 is the trigger/precision layer, not a second
+                            // directional signal arrow. Keep it as a Circle so
+                            // it cannot overlap the canonical arrow stack.
                             DrawIcon(
                                 P + "M1_TRIGGER",
-                                (snapshot.DecisionDirection == 1
-                                     ? ChartIconType.UpArrow
-                                     : ChartIconType.DownArrow),
+                                ChartIconType.Circle,
                                 triggerBar,
                                 price,
                                 SignalArrowColorFor(
@@ -225,32 +220,6 @@ namespace cAlgo
                                 return "STRONG";
 
                             if (score >= required)
-                                return "CONFIRMED";
-
-                            return "WATCH";
-                        }
-
-        private string ResolveSignalArrowState(
-                            SignalVisualSnapshot snapshot,
-                            int direction)
-                        {
-                            if (snapshot == null ||
-                                direction == 0)
-                                return "WATCH";
-
-                            if (snapshot.LivePosition ||
-                                snapshot.ActionableNow)
-                            {
-                                return
-                                    snapshot.SmartQuality >=
-                                    SmartStrongSetupQuality ||
-                                    snapshot.Confidence >=
-                                    HighConfidenceThreshold
-                                        ? "STRONG"
-                                        : "CONFIRMED";
-                            }
-
-                            if (snapshot.DecisionEntryAllowed)
                                 return "CONFIRMED";
 
                             return "WATCH";

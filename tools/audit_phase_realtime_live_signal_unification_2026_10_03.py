@@ -176,14 +176,15 @@ check(
 )
 
 check(
-    "nine-level HTF-strength arrow stack is presentation-only and bounded",
+    "nine-level smart arrow stack has one canonical owner",
     "class MtfTrendStrengthRule" in read("src/CFIP.Indicator/Core/Math/MtfTrendStrengthRule.cs") and
+    "preferredDirection" in read("src/CFIP.Indicator/Core/Math/MtfTrendStrengthRule.cs") and
     "MtfTrendStrengthLevel" in read("src/CFIP.Indicator/UI/Chart/SignalVisualSnapshot.cs") and
-    "ApplyMtfTrendStrength(snapshot)" in read("src/CFIP.Indicator/UI/Chart/SignalVisualSnapshotBuilder.cs") and
-    "((level - 1) % 3) + 1" in read("src/CFIP.Indicator/UI/Chart/MtfTrendArrowRenderer.cs") and
-    'level <= 3' in read("src/CFIP.Indicator/UI/Chart/MtfTrendArrowRenderer.cs") and
-    'level <= 6' in read("src/CFIP.Indicator/UI/Chart/MtfTrendArrowRenderer.cs") and
-    'state =' in read("src/CFIP.Indicator/UI/Chart/MtfTrendArrowRenderer.cs")
+    "ApplyMtfTrendStrength(" in read("src/CFIP.Indicator/UI/Chart/SignalVisualSnapshotBuilder.cs") and
+    "visualDirection" in read("src/CFIP.Indicator/UI/Chart/SignalVisualSnapshotBuilder.cs") and
+    "((strength - 1) % 3) + 1" in read("src/CFIP.Indicator/UI/Chart/SignalStackedArrowRenderer.cs") and
+    '"WATCH_ARROW_3"' in read("src/CFIP.Indicator/UI/Chart/SignalStackedArrowRenderer.cs") and
+    "Symbol.PipSize * 3" in read("src/CFIP.Indicator/UI/Chart/SignalStackedArrowRenderer.cs")
 )
 
 check(

@@ -15,6 +15,7 @@ def read(rel):
     return p.read_text(encoding="utf-8")
 
 snapshot = read("src/CFIP.Indicator/UI/Chart/SignalVisualSnapshotBuilder.cs")
+visual_direction = read("src/CFIP.Indicator/UI/Chart/SignalVisualDirectionResolver.cs")
 signal_state = read("src/CFIP.Indicator/UI/Panel/PanelSignalState.cs")
 overview = read("src/CFIP.Indicator/UI/Panel/Rows/PanelOverviewStateRowsRenderer.cs")
 context = read("src/CFIP.Indicator/UI/Panel/Rows/PanelContextRowsRenderer.cs")
@@ -33,9 +34,9 @@ def require(cond, msg):
         errors.append(msg)
 
 require(
-    "if (_decision != null &&" in snapshot and
-    "_decision.Direction != 0" in snapshot and
-    "return _decision.Direction;" in snapshot,
+    "_decision != null &&" in visual_direction and
+    "_decision.Direction != 0" in visual_direction and
+    "return _decision.Direction;" in visual_direction,
     "visual direction must retain a directional Decision even before actionability",
 )
 require(

@@ -26,8 +26,7 @@ binding = read("src/CFIP.cBot/Binding/CfipIndicatorChartBinding.cs")
 alerts = read("src/CFIP.Indicator/Runtime/Calculation/CalculationDecisionAlerts.cs")
 signal_renderer = (
     read("src/CFIP.Indicator/UI/Chart/SignalRenderer.cs") +
-    read("src/CFIP.Indicator/UI/Chart/SignalStackedArrowRenderer.cs") +
-    read("src/CFIP.Indicator/UI/Chart/MtfTrendArrowRenderer.cs")
+    read("src/CFIP.Indicator/UI/Chart/SignalStackedArrowRenderer.cs")
 )
 watch_renderer = read("src/CFIP.Indicator/UI/Chart/SignalPresentationRenderer.cs")
 labels = read("src/CFIP.Indicator/UI/Chart/PlanLabelFormatting.cs")
