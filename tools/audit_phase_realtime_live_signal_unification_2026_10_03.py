@@ -91,6 +91,15 @@ check(
 )
 
 check(
+    "cBot signal handoff is not dependent on the next broker tick",
+    "Timer.Start(" in bot and
+    "TimeSpan.FromMilliseconds(100)" in bot and
+    "protected override void OnTimer()" in bot and
+    "ShouldProcessRealtimeTimerEnvelope(" in bot and
+    "ReloadSignalStore(true)" in bot
+)
+
+check(
     "tiny opportunity magnitude is enforced on current and future paths",
     "OpportunityMagnitudeRule.IsMeaningful(" in actionability and
     "OpportunityMagnitudeRule.IsMeaningful(" in future and
