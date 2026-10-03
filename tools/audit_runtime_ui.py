@@ -183,8 +183,10 @@ if "!pendingValid" not in signal_snapshot or "!livePlan" not in signal_snapshot:
     raise SystemExit("Signal snapshot must suppress lower-priority signal layers during execution state")
 if "!snapshot.PendingOrder" not in signal_renderer or "!snapshot.LivePosition" not in signal_renderer:
     raise SystemExit("Signal alerts must yield while pending/live execution is authoritative")
-if "Chart.DrawRectangle(" in labels:
-    raise SystemExit("Plan label coordinator must not create text backgrounds")
+if "Chart.DrawRectangle(" not in labels_renderer:
+    raise SystemExit("Plan label renderer must own the canonical filled cTrader-style box")
+if "box.IsFilled" not in labels_renderer:
+    raise SystemExit("Plan label box must be filled")
 if "_serverSideTakeProfitLadderActive" not in partial:
     raise SystemExit("Local partial-close path must know server TP authority")
 if "_serverSideTakeProfitLadderActive" not in target_progression:
