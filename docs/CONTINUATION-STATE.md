@@ -2411,3 +2411,23 @@ The timeframe architecture was corrected to match the intended behavior:
 
 This supersedes the older interpretation that described M15 as the only execution analysis source. Existing M15 canonical identity/clock semantics are retained where required for traceability and history, while analysis/planning consumes the full multi-timeframe context.
 
+
+## 2026-10-03 — Realtime all-timeframe intelligence + smart arrows
+
+Implementation branch: phase/mtf-realtime-all-engines-smart-arrows-2026-10-03.
+
+Completed:
+- added dedicated all-timeframe early-prediction fusion over M5/M15/M30/H1/H4/D1/W1, with M1 retained as precision/confirmation only;
+- added live quote-responsive MTF trend-strength evaluation over M1/M5/M15/M30/H1/H4/D1/W1;
+- chart arrows now use a nine-level bounded stack: weak 1/2/3, medium 1/2/3, strong 1/2/3;
+- strengthened stagnant/compression/range magnitude/RR filters;
+- made cBot exact-instance binding resilient when multiple matching Indicator instances exist;
+- added detailed chart-indicator binding diagnostics on unresolved attachment;
+- preserved current-market immediate execution vs future Pending Stop/Limit semantics and bounded simultaneous ScenarioId capacity.
+
+Verification state:
+- source changes completed on this branch;
+- accumulated CI must rerun after the latest commits;
+- cTrader target-terminal validation remains required for actual live execution, audible sound and chart attachment behavior.
+
+Operator action after merge: git pull --ff-only.
