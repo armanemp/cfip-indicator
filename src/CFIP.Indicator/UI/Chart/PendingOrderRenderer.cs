@@ -62,10 +62,6 @@ namespace cAlgo
                 GetCompactPlanLabelAnchorBar(
                     lineLeft);
 
-            int boxRightBar =
-                GetLabelBoxRightBar(
-                    lineLeft);
-
             string typeText =
                 snapshot.PendingOrderType;
 
