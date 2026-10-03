@@ -66,8 +66,7 @@ namespace cAlgo
             }
             else
             {
-                Chart.RemoveObject(
-                    P + "WATCH_ARROW");
+                RemoveStackedSignalArrows();
             }
         }
 
