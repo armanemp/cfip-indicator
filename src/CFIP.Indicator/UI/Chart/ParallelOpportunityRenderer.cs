@@ -98,8 +98,7 @@ namespace cAlgo
                     DrawIcon(
                         markerName,
                         candidate.Direction == 1
-                            ? ChartIconType.UpArrow
-                            : ChartIconType.DownArrow,
+                            ? ChartIconType.UpTriangle : ChartIconType.DownTriangle,
                         markerBar,
                         markerPrice,
                         SignalArrowColorFor(
