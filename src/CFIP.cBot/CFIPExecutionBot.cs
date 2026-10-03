@@ -242,7 +242,22 @@ namespace CFIP.cBot
             _sessionExecutions = 0;
 
             _audio.PlayStarted(
-                this);
+                this,
+                EffectiveMarketExecutionEnabled ||
+                EffectivePendingStopExecutionEnabled ||
+                EffectivePendingLimitExecutionEnabled ||
+                EffectiveAggressiveExecutionEnabled ||
+                EffectiveManagementExecutionEnabled);
+
+            if (Account.IsLive &&
+                !EffectiveMarketExecutionEnabled &&
+                !EffectivePendingStopExecutionEnabled &&
+                !EffectivePendingLimitExecutionEnabled &&
+                !EffectiveAggressiveExecutionEnabled &&
+                !EffectiveManagementExecutionEnabled)
+            {
+                _audio.PlayLiveDisarmed(this);
+            }
 
             // Chart timeframe is host-only. CFIP execution is driven by the
             // Indicator's internal M15 analysis clock and does not use Bars.TimeFrame.
@@ -1149,6 +1164,10 @@ namespace CFIP.cBot
 
             _state = ShadowHostState.Blocked;
             _lastLoggedReason = reason;
+
+            _audio.PlayBlocked(
+                this,
+                reason);
 
             Print(
                 "CFIP cBot STATE | state=BLOCKED | reason={0} | " +
