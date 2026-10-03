@@ -162,37 +162,30 @@ namespace cAlgo
                         ? frames[i]
                         : null;
 
-                PanelTimeframePresentationState presentation =
-                    PanelTimeframePresentationRule.Resolve(
-                        frame);
-
-                int direction =
-                    presentation.Direction;
-
-                int strength =
-                    presentation.Strength;
+                PanelTimeframePresentationState state =
+                    ResolvePanelTimeframeState(frame);
 
                 indicator.Text = "●";
                 indicator.FontSize =
-                    strength >= 3
+                    state.Strength >= 3
                         ? PanelStatusLampFontSize
-                        : strength == 2
+                        : state.Strength == 2
                             ? PanelStatusLampFontSize - 1
                             : PanelStatusLampFontSize - 2;
 
                 label.Text = labels[i];
 
                 Color lampColor =
-                    direction == 1
-                        ? (strength >= 3
+                    state.Direction == 1
+                        ? (state.Strength >= 3
                             ? StrongBuyArrowColor
-                            : strength == 2
+                            : state.Strength == 2
                                 ? ConfirmedBuyArrowColor
                                 : CautionBuyArrowColor)
-                        : direction == -1
-                            ? (strength >= 3
+                        : state.Direction == -1
+                            ? (state.Strength >= 3
                                 ? StrongSellArrowColor
-                                : strength == 2
+                                : state.Strength == 2
                                     ? ConfirmedSellArrowColor
                                     : CautionSellArrowColor)
                             : PanelSecondaryTextColor;

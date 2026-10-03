@@ -40,10 +40,15 @@ namespace cAlgo
             }
             else
             {
+                PanelTimeframePresentationState m15State =
+                    ResolvePanelTimeframeState(_m15Frame);
+                PanelTimeframePresentationState h1State =
+                    ResolvePanelTimeframeState(_h1Frame);
+
                 int m15Direction =
-                    FrameDirection(_m15Frame);
+                    m15State.Direction;
                 int h1Direction =
-                    FrameDirection(_h1Frame);
+                    h1State.Direction;
 
                 string m15Text =
                     m15Direction == 1

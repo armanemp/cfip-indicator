@@ -122,8 +122,8 @@ namespace cAlgo
             if (frame == null)
                 return "NULL";
 
-            PanelTimeframePresentationState presentation =
-                PanelTimeframePresentationRule.Resolve(
+            PanelTimeframePresentationState state =
+                ResolvePanelTimeframeState(
                     frame);
 
             return string.Join(
@@ -150,9 +150,10 @@ namespace cAlgo
                 frame.ObBearQuality,
                 frame.FvgObBullConfluence ? "1" : "0",
                 frame.FvgObBearConfluence ? "1" : "0",
-                presentation.Direction,
-                presentation.Strength,
-                presentation.Label);
+                state.Direction,
+                state.Strength,
+                state.DirectionLabel ?? "",
+                state.Ready ? "1" : "0");
         }
 
         private string PriceKey(

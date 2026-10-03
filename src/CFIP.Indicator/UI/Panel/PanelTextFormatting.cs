@@ -17,8 +17,7 @@ namespace cAlgo
         private int FrameDirection(
                                     Frame frame)
                                 {
-                                    return PanelTimeframePresentationRule
-                                        .Resolve(frame)
+                                    return ResolvePanelTimeframeState(frame)
                                         .Direction;
                                 }
         
@@ -131,12 +130,8 @@ namespace cAlgo
                                     if (frame == null)
                                         return "WAIT";
                         
-                                    PanelTimeframePresentationState presentation =
-                                        PanelTimeframePresentationRule.Resolve(
-                                            frame);
-
-                                    string directionLabel =
-                                        presentation.Label;
+                                    PanelTimeframePresentationState state =
+                                        ResolvePanelTimeframeState(frame);
 
                                     string zones =
                                         "FVG " +
@@ -158,7 +153,7 @@ namespace cAlgo
                                                 : "");
 
                                     return
-                                        directionLabel +
+                                        state.DirectionLabel +
                                         " | Q" +
                                         frame.Quality +
                                         " | E" +

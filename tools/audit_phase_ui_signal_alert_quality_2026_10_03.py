@@ -14,7 +14,6 @@ def check(condition: bool, message: str) -> None:
         raise SystemExit(message)
 
 state = read("UI/Panel/PanelTimeframePresentationState.cs")
-rule = read("UI/Panel/PanelTimeframePresentationRule.cs")
 text_format = read("UI/Panel/PanelTextFormatting.cs")
 lamp = read("UI/Panel/PanelTrendTimeframeLampRow.cs")
 render_key = read("UI/Panel/PanelRenderOptimization.cs")
@@ -35,14 +34,10 @@ csproj = (IND / "CFIP.Indicator.csproj").read_text(encoding="utf-8")
 indicator = read("Indicator/CFIPIndicator.cs")
 
 check(
-    "internal readonly struct PanelTimeframePresentationState" in state and
-    "internal static class PanelTimeframePresentationRule" in rule and
-    "PanelTimeframePresentationRule" in text_format and
-    ".Resolve(" in text_format and
-    "PanelTimeframePresentationRule" in lamp and
-    ".Resolve(" in lamp and
-    "PanelTimeframePresentationRule" in render_key and
-    ".Resolve(" in render_key,
+    "internal struct PanelTimeframePresentationState" in state and
+    "ResolvePanelTimeframeState(" in text_format and
+    "ResolvePanelTimeframeState(" in lamp and
+    "ResolvePanelTimeframeState(" in render_key,
     "timeframe status must have one canonical presentation owner",
 )
 

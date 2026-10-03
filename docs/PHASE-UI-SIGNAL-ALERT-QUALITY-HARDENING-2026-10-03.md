@@ -13,7 +13,7 @@ Integrated correction phase for the user-reported panel, alert, chart drawing an
 - The relayout path leaves no phantom spacing after the final visible row.
 
 ### Timeframe status synchronization
-- Added PanelTimeframePresentationState and PanelTimeframePresentationRule as the single presentation owner.
+- Reused the existing canonical PanelTimeframePresentationState / ResolvePanelTimeframeState owner already present on main.
 - MTF lamps now consume the same resolved direction/strength state used by panel text.
 - The panel presentation key now includes the underlying score/trend/ADX/FVG/OB inputs that can change the displayed timeframe status, preventing a stale text row while lamps update.
 
