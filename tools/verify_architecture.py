@@ -1302,7 +1302,7 @@ PLAN_RENDER = ROOT / "UI" / "Chart" / "PlanRenderCoordinator.cs"
 PLAN_LABEL_RENDER = ROOT / "UI" / "Chart" / "PlanLabelRenderCoordinator.cs"
 for visual_path in (PLAN_RENDER, PLAN_LABEL_RENDER):
     visual_code = visual_path.read_text(encoding="utf-8")
-    if "SignalVisualSnapshot snapshot" not in visual_code or "snapshot.Stop" not in visual_code:
+    if "SignalVisualSnapshot snapshot" not in visual_code or "BuildPlanLevelVisualState(" not in visual_code:
         raise SystemExit(f"Plan levels must render through the canonical visual snapshot: {visual_path.name}")
 
 # Market/Aggressive broker reporting is owned by the cBot after CBOT-P4A.
