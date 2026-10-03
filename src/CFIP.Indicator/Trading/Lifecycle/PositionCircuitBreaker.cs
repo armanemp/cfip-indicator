@@ -2,6 +2,7 @@
 // Single-responsibility lifecycle module.
 
 using System;
+using CFIP.Contracts;
 using System.Collections.Generic;
 using System.Linq;
 using cAlgo.API;
@@ -21,9 +22,11 @@ namespace cAlgo
                                         if (!IsManagedPosition(position))
                                             continue;
                         
-                                        if (!TryClosePosition(
+                                        ManagementCommandRequestStatus closeStatus =
+                                            TryClosePosition(
                                                 position,
-                                                "END OF DAY"))
+                                                "END OF DAY");
+                                        if (!closeStatus.IsAccepted())
                                             allClosedOrAbsent = false;
                                     }
                         
