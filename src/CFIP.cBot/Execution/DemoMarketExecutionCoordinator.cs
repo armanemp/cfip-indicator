@@ -288,7 +288,6 @@ namespace CFIP.cBot.Execution
             }
             catch (Exception ex)
             {
-                Remember(key);
                 if (idempotencyStore != null)
                     idempotencyStore.RecordAttempt(
                         robot,
@@ -304,8 +303,6 @@ namespace CFIP.cBot.Execution
                     ex.Message);
                 return false;
             }
-
-            Remember(key);
 
             if (result == null)
             {
@@ -352,6 +349,8 @@ namespace CFIP.cBot.Execution
             }
 
             reason = "POSITION #" + result.Position.Id;
+
+            Remember(key);
 
             report = BuildReport(
                 envelope,
