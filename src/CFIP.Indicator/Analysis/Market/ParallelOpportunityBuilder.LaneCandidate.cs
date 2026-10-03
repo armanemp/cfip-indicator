@@ -288,6 +288,12 @@ private TradeOpportunityCandidate BuildLaneCandidate(
                     direction);
             }
 
+            ApplyOpportunityIntelligenceRanking(
+                candidate,
+                lane,
+                direction,
+                candidate.Quality);
+
             ScenarioExecutionPolicyResult policy =
                 ScenarioExecutionPolicyRule.Evaluate(
                     candidate,
