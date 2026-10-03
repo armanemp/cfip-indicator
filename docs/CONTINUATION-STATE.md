@@ -1,3 +1,26 @@
+## 2026-10-03 — cBot Shadow Multi-Scenario Truth
+
+Status: implementation complete, verification pending.
+
+Closed a multi-scenario execution bottleneck in ShadowHostCoordinator:
+
+- per-ScenarioId revision/idempotency state replaces one global execution revision slot;
+
+- independent scenarios may share the same provider revision;
+
+- same-scenario duplicate/revision-conflict behavior remains strict;
+- cached result/recheck timing is isolated per ScenarioId;
+- ScenarioBatch materialization rejects stale candidates by requiring the current closed M5.
+
+No execution/risk/quality threshold was lowered.
+
+Verification required:
+
+Source/Architecture, Runtime Acceptance, cTrader Compile/Build, dedicated shadow audit and target-terminal two-scenario/replay/reconnect evidence.
+
+Phase record: docs/PHASE-CBOT-SHADOW-MULTISCENARIO-TRUTH-2026-10-03.md.
+
+Operator action after merge: git pull --ff-only.
 ## 2026-10-03 — cBot position truth / restart idempotency hardening
 
 Status: IMPLEMENTATION COMPLETE — automated verification PASS; target-terminal acceptance pending.

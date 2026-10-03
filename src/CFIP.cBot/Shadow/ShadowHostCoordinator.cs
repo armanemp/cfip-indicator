@@ -7,6 +7,11 @@ namespace CFIP.cBot.Shadow
     public sealed class ShadowHostCoordinator
     {
         private const int MaxSeenIdempotencyKeys = 128;
+        private readonly Dictionary<string, long> _lastAcceptedRevisionByScenario =
+            new Dictionary<string, long>(StringComparer.Ordinal);
+        private readonly Dictionary<string, string> _lastAcceptedIdempotencyKeyByScenario =
+            new Dictionary<string, string>(StringComparer.Ordinal);
+
         private readonly HashSet<string> _seenIdempotencyKeys =
             new HashSet<string>(StringComparer.Ordinal);
         private readonly Queue<string> _seenOrder =
@@ -14,7 +19,12 @@ namespace CFIP.cBot.Shadow
 
         private long _lastAcceptedRevision = -1;
         private string _lastAcceptedIdempotencyKey = "";
-        private DateTime _lastBrokerRecheckUtc = DateTime.MinValue;
+
+        private readonly Dictionary<string, DateTime> _lastBrokerRecheckUtcByScenario =
+            new Dictionary<string, DateTime>(StringComparer.Ordinal);
+        private readonly Dictionary<string, ShadowHostResult> _lastResultByScenario =
+            new Dictionary<string, ShadowHostResult>(StringComparer.Ordinal);
+
         private ShadowHostResult _lastResult;
 
         public long LastAcceptedRevision =>
@@ -55,6 +65,9 @@ namespace CFIP.cBot.Shadow
                     nowUtc);
             }
 
+            string scenarioKey =
+                identity.ScenarioId ?? string.Empty;
+
             if (providerRevision != identity.Revision)
             {
                 ShadowHostResult mismatch =
@@ -68,40 +81,63 @@ namespace CFIP.cBot.Shadow
                         identity.PlanId,
                         identity.IdempotencyKey);
 
-                _lastResult = mismatch;
+                SetScenarioResult(
+                    scenarioKey,
+                    mismatch);
                 return mismatch;
             }
 
+            long lastScenarioRevision =
+                GetLastRevision(scenarioKey);
+
+            string lastScenarioIdempotencyKey =
+                GetLastIdempotencyKey(scenarioKey);
+
+            ShadowHostResult scenarioResult =
+                GetLastResult(scenarioKey);
+
+            DateTime scenarioRecheckUtc =
+                GetLastBrokerRecheck(scenarioKey);
+
             bool sameCurrent =
-                identity.Revision == _lastAcceptedRevision &&
+                identity.Revision == lastScenarioRevision &&
                 string.Equals(
                     identity.IdempotencyKey,
-                    _lastAcceptedIdempotencyKey,
+                    lastScenarioIdempotencyKey,
                     StringComparison.Ordinal);
 
             if (sameCurrent)
             {
-                if (_lastResult != null &&
-                    (_lastResult.State == ShadowHostState.Expired ||
-                     _lastResult.State == ShadowHostState.Duplicate ||
-                     (_lastResult.State == ShadowHostState.Blocked &&
-                      !IsTransientBrokerBlock(_lastResult.Reason))))
+                if (scenarioResult != null &&
+                    (scenarioResult.State == ShadowHostState.Expired ||
+                     scenarioResult.State == ShadowHostState.Duplicate ||
+                     (scenarioResult.State == ShadowHostState.Blocked &&
+                      !IsTransientBrokerBlock(scenarioResult.Reason))))
                 {
-                    return _lastResult;
+                    return scenarioResult;
                 }
 
-                if ((nowUtc - _lastBrokerRecheckUtc).TotalMilliseconds < 500)
-                    return _lastResult ?? ShadowHostValidator.RevalidateBrokerSafety(
-                        envelope,
-                        broker);
+                if ((nowUtc - scenarioRecheckUtc).TotalMilliseconds < 500)
+                    return scenarioResult ??
+                        ShadowHostValidator.RevalidateBrokerSafety(
+                            envelope,
+                            broker);
 
-                _lastBrokerRecheckUtc = nowUtc;
+                SetScenarioBrokerRecheck(
+                    scenarioKey,
+                    nowUtc);
 
                 ShadowHostResult rechecked =
                     ShadowHostValidator.RevalidateBrokerSafety(
                         envelope,
                         broker);
 
+                SetScenarioResult(
+                    scenarioKey,
+                    rechecked);
+
+                // Compatibility telemetry only. The authoritative cached
+                // result remains ScenarioId-scoped above.
                 _lastResult = rechecked;
 
                 return rechecked;
@@ -127,11 +163,13 @@ namespace CFIP.cBot.Shadow
                         envelope,
                         broker,
                         contractVersion,
-                        _lastAcceptedRevision,
-                        _lastAcceptedIdempotencyKey,
+                        lastScenarioRevision,
+                        lastScenarioIdempotencyKey,
                         nowUtc);
 
-            _lastResult = result;
+            SetScenarioResult(
+                scenarioKey,
+                result);
 
             if (result.State == ShadowHostState.Ready ||
                 result.State == ShadowHostState.Observing ||
@@ -140,6 +178,7 @@ namespace CFIP.cBot.Shadow
                  !IsTransientBrokerBlock(result.Reason)))
             {
                 Remember(
+                    scenarioKey,
                     identity.Revision,
                     identity.IdempotencyKey);
             }
@@ -148,9 +187,23 @@ namespace CFIP.cBot.Shadow
         }
 
         private void Remember(
+            string scenarioKey,
             long revision,
             string idempotencyKey)
         {
+            scenarioKey =
+                scenarioKey ?? string.Empty;
+
+            if (revision >
+                GetLastRevision(scenarioKey))
+            {
+                _lastAcceptedRevisionByScenario[scenarioKey] =
+                    revision;
+            }
+
+            _lastAcceptedIdempotencyKeyByScenario[scenarioKey] =
+                idempotencyKey ?? "";
+
             if (revision > _lastAcceptedRevision)
                 _lastAcceptedRevision = revision;
 
@@ -170,6 +223,72 @@ namespace CFIP.cBot.Shadow
 
                 _seenIdempotencyKeys.Remove(oldest);
             }
+        }
+
+        private ShadowHostResult GetLastResult(
+            string scenarioKey)
+        {
+            return _lastResultByScenario.TryGetValue(
+                scenarioKey ?? string.Empty,
+                out ShadowHostResult result)
+                ? result
+                : null;
+        }
+
+        private DateTime GetLastBrokerRecheck(
+            string scenarioKey)
+        {
+            return _lastBrokerRecheckUtcByScenario.TryGetValue(
+                scenarioKey ?? string.Empty,
+                out DateTime value)
+                ? value
+                : DateTime.MinValue;
+        }
+
+        private void SetScenarioResult(
+            string scenarioKey,
+            ShadowHostResult result)
+        {
+            string key =
+                scenarioKey ?? string.Empty;
+
+            if (result != null)
+                _lastResultByScenario[key] =
+                    result;
+            else
+                _lastResultByScenario.Remove(key);
+
+            _lastResult = result;
+        }
+
+        private void SetScenarioBrokerRecheck(
+            string scenarioKey,
+            DateTime nowUtc)
+        {
+            _lastBrokerRecheckUtcByScenario[
+                scenarioKey ?? string.Empty] =
+                nowUtc;
+
+        }
+
+        private long GetLastRevision(
+            string scenarioKey)
+        {
+            return _lastAcceptedRevisionByScenario.TryGetValue(
+                scenarioKey ?? string.Empty,
+                out long revision)
+                ? revision
+                : -1;
+        }
+
+        private string GetLastIdempotencyKey(
+            string scenarioKey)
+        {
+            return _lastAcceptedIdempotencyKeyByScenario.TryGetValue(
+                scenarioKey ?? string.Empty,
+                out string key)
+                ? key ?? string.Empty
+                : string.Empty;
         }
 
         private static bool IsTransientBrokerBlock(
