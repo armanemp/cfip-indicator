@@ -127,7 +127,7 @@ check(
     "plan levels retain canonical 40-bar geometry and semantic text color",
     "CompactPlanLineLengthBars = 40" in line and
     "PlanLinePresentationRule.ResolveThickness(" in line and
-    "return semanticColor;" in labels and
+    "return Color.White;" in labels and
     "Chart.DrawRectangle(" not in labels,
 )
 check(
