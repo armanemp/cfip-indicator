@@ -1,3 +1,37 @@
+## 2026-10-04 — Chart-Label Side / Single-Owner Correction
+
+Status: IMPLEMENTED ON CORRECTIVE BRANCH `fix/single-owner-label-left-side-2026-10-04` — automated verification pending.
+
+Root cause:
+- canonical level labels already had an X anchor before the 40-bar line start;
+- using `HorizontalAlignment.Left` made the visible ChartText expand toward the line;
+- PlanLabelRenderer contained two duplicated ChartText create/update blocks.
+
+Canonical correction:
+- keep one PlanLineRenderer owner for line geometry: Solid + 1px + finite 40-bar span;
+- keep one pre-line anchor via GetPlanLineLeftBar + GetCompactPlanLabelAnchorBar;
+- use `HorizontalAlignment.Right` at that pre-line anchor so label text occupies the space to the left of the line;
+- collapse actual ChartText mutation into one `UpsertPlanLabel` owner;
+- retain DrawPlanLabel / DrawCompactPlanLabel only as compatibility wrappers;
+- keep exact price, white text, no background, timeframe and pip-distance formatting unchanged.
+
+No decision, signal, Entry/SL/TP/RR, MTF, risk, broker execution, cBot lifecycle-audio or alert semantics were changed.
+
+Audit alignment:
+- Phase 11.2
+- M3 trade-truth
+- canonical signal-drawing audit
+- Single-Owner / No-Duality audit
+- Source/Architecture audit
+
+All now encode the same label-side and single-owner contract.
+
+Manual terminal acceptance remains required for actual visual placement/readability.
+
+Operator action after merge: `git pull --ff-only`.
+
+---
+
 ## 2026-10-03 — Single-Owner / No-Duality Repair
 
 Status: VERIFIED COMPLETE — merged to `main` via PR #250, merge commit `2e670514e90deeb46a3f140d1383446f0292c64d`.
