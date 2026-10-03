@@ -75,7 +75,9 @@ require(
 )
 require(
     "## 4. Execution-path split matrix" in boundary and
-    "Protection | actual SL/TP mutation" in boundary,
+    "Protection |" in boundary and
+    "broker mutation" in boundary and
+    "ManagementExecutionCoordinator.cs" in boundary,
     "CBOT execution boundary documentation is missing the mutation ownership contract",
 )
 require(
