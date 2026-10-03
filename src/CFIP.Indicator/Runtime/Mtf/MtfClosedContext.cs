@@ -5,6 +5,7 @@ namespace cAlgo
     internal sealed class MtfClosedContext
     {
         public DateTime Reference { get; }
+        public int M2 { get; }
         public int M5 { get; }
         public int M1 { get; }
         public int M15 { get; }
@@ -16,6 +17,7 @@ namespace cAlgo
 
         public MtfClosedContext(
             DateTime reference,
+            int m2,
             int m5,
             int m1,
             int m15,
@@ -26,6 +28,7 @@ namespace cAlgo
             int w1)
         {
             Reference = reference;
+            M2 = m2;
             M5 = m5;
             M1 = m1;
             M15 = m15;
@@ -41,6 +44,7 @@ namespace cAlgo
         {
             return new MtfClosedContext(
                 reference,
+                M2,
                 M5,
                 M1,
                 M15,
