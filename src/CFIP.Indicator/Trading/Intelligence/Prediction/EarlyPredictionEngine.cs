@@ -27,7 +27,7 @@ namespace cAlgo
                                         return p;
                         
                                     EarlyPredictionScoreResult score =
-                                        EarlyPredictionScoreRule.Evaluate(
+                                        MtfEarlyPredictionFusionRule.Evaluate(
                                             new[]
                                             {
                                                 _m1Frame,
