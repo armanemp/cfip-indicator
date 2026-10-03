@@ -2,6 +2,7 @@
 // Single-responsibility broker-protection coordination after a confirmed pending fill.
 
 using System;
+using CFIP.Contracts;
 using cAlgo.API;
 using cAlgo.API.Indicators;
 using cAlgo.API.Internals;
@@ -67,14 +68,16 @@ namespace cAlgo
                     position.EntryPrice) /
                 Math.Max(Symbol.PipSize, 1e-9);
 
-            if (!TryModifyTakeProfitLadder(
+            ManagementCommandRequestStatus ladderStatus =
+                TryModifyTakeProfitLadder(
                     position,
                     firstVolume,
                     firstPips,
                     secondVolume,
                     secondPips,
                     finalPips,
-                    "PENDING FILL • ABSOLUTE TP LADDER"))
+                    "PENDING FILL • ABSOLUTE TP LADDER");
+            if (!ladderStatus.IsBrokerConfirmed())
                 return false;
 
             return AdoptServerSideTakeProfitLadder(position);
