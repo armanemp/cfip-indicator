@@ -27,6 +27,8 @@ checks = {
     "cBot-to-indicator binding accepts stable indicator type":
         "IndicatorIdentity.TypeName" in binding and
         "candidate.Type.Name" in binding,
+    "cBot does not auto-create the local Indicator":
+        "ChartIndicators.Add(" not in read("src/CFIP.cBot/CFIPExecutionBot.cs"),
     "Indicator cBot reader accepts stable cBot type":
         "CbotIdentity.TypeName" in reader and
         "candidate.Type.Name" in reader,
