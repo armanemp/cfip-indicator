@@ -127,11 +127,12 @@ check(
 )
 
 check(
-    "sound and panel rail consume the same queued alert event",
+    "sound and panel rail consume the same canonical queued alert event",
     "_alertDeliveryQueue.Enqueue(" in alert_engine and
-    "ProcessQueuedAlertDelivery();" in calc_cycle and
-    "ProcessQueuedAlertDelivery();" in initialization and
+    "_alertDeliveryQueue.TryDequeue(" in alert_processor and
     "RecordPanelAlertDelivery(next)" in alert_processor and
+    "_alertSoundDeliveryQueue.Enqueue(next)" in alert_processor and
+    "ProcessQueuedAlertSoundDelivery()" in alert_processor and
     "Notifications.PlaySound(" in alert_processor
 )
 
