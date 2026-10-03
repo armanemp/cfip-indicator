@@ -1,3 +1,19 @@
+### 2026-10-04 — Alert Audio Single-Owner / Event-Specific Sound Policy
+
+Status: IMPLEMENTED — repository verification pending; target cTrader audio acceptance remains manual.
+
+- Existing AlertDeliveryQueue → AlertDeliveryProcessor remains the only Indicator alert transport; no second alert/audio path was introduced.
+- Added AlertSoundPolicy as the single source of truth for Indicator alert sound semantics and sound-event grouping.
+- Removed duplicate sound-family classification from AlertDeliveryProcessor; it now consumes the canonical group carried by AlertDelivery.
+- Removed AlertEngine's second sound-mapping function; AlertEngine creates the canonical envelope and stores the policy-selected cue and group in the delivery event.
+- Semantic cues are explicitly mapped by canonical event family: actionable/positive, watch/announcement, reaction/structural, and negative/risk/invalidation, with confirmation as the critical fallback.
+- One causal signal event is audible once even when WATCH/REACTION/ACTION stages coexist; blocked candidates remain silent.
+- Semantic mode prevents the legacy single-file sound setting from overriding event-specific cues.
+- Added a dedicated no-duality audit and phase document.
+- cTrader provides PositiveNotification, NegativeNotification, Announcement, Doorbell, and Confirmation built-in sound types, and PlaySound(fileName) supports custom files. 
+
+---
+
 ## 2026-10-04 — Smart Separated Signal Arrows
 
 Status: VERIFIED COMPLETE — PR #252 merged to main; target-terminal visual acceptance remains the final manual boundary.
