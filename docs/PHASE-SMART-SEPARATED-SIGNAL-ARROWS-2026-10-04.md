@@ -1,5 +1,7 @@
 # CFIP — Smart Separated Signal Arrows — 2026-10-04
 
+Status: VERIFIED COMPLETE — PR #252 merged to main as b095710eb83e7f93017edb1050b20079b27b4371.
+
 ## Purpose
 
 This phase closes the requirement that directional arrows be separated, semantically intelligent, and consistently divided into three real levels inside each of three strength tiers.
@@ -38,13 +40,13 @@ The superseded HtfTrendArrowStrengthRule and unused MtfTrendArrowRenderer were r
 
 ## Verification boundary
 
-Required automated verification:
+Completed automated verification:
 - dedicated smart separated arrow audit;
 - accumulated Source/Architecture audits;
 - Runtime Acceptance contracts;
 - cTrader compile/build.
 
-Required manual boundary:
+Final manual boundary:
 - actual target-terminal arrow spacing;
 - glyph appearance and direction;
 - realtime relocation;
