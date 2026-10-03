@@ -300,9 +300,12 @@ namespace cAlgo
                     closedM5);
 
             double minimumRewardDistanceAtr =
-                Math.Max(
+                RegimeAdaptiveRewardFloorRule.Resolve(
+                    _decision == null
+                        ? "UNKNOWN"
+                        : _decision.Regime,
                     MinimumTpSpacingAtr,
-                    MinimumSlAtr * 0.75);
+                    MinimumSlAtr);
 
             double rewardDistanceAtr =
                 candidateAtr > 0
