@@ -39,8 +39,8 @@ check(
 )
 check(
     "header reads current cBot runtime truth",
-    "IsCbotExecutionStateFresh()" in header and
-    "HasFreshCbotPresence()" in header
+    "IsCbotExecutionStateFresh()" in live_header and
+    "HasFreshCbotPresence()" in live_header
 )
 check(
     "header is refreshed by live panel paths",
