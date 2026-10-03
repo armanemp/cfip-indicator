@@ -154,9 +154,12 @@ namespace CFIP.cBot
 
         private long _lastLoggedRevision = -1;
         private string _lastLoggedReason = "";
+        private const int SignalReloadIntervalMilliseconds = 100;
+
         private long _tickCount;
         private int _sessionExecutions;
         private DateTime _startedUtc;
+        private bool _liveExecutionDisarmed;
         private DateTime _nextBindingCheckUtc = DateTime.MinValue;
         private DateTime _nextSignalReloadUtc = DateTime.MinValue;
         private string _boundIndicatorInstanceId = "";
@@ -178,20 +181,18 @@ namespace CFIP.cBot
                 return;
             }
 
-            if (Account.IsLive && !EnableLiveExecution)
-            {
-                Print(
-                    "CFIP cBot LIVE DISARMED | live account detected | " +
-                    "set Enable Live Execution = true to arm broker execution");
-                Stop();
-                return;
-            }
+            _liveExecutionDisarmed =
+                Account.IsLive &&
+                !EnableLiveExecution;
+
+            SubscribeIndicatorLifecycleEvents();
+            SubscribeBrokerLifecycleEvents();
 
             // Chart timeframe is host-only. CFIP execution is driven by the
             // Indicator's internal M15 analysis clock and does not use Bars.TimeFrame.
             Print(
                 "CFIP cBot START | environment={1} | hostTimeframe={0} | execTimeframe=M15 | state={2} | " +
-                "marketExecution={2} | pendingStopExecution={3} | pendingLimitExecution={4} | aggressiveExecution={5} | managementExecution={6} | " +
+                "marketExecution={3} | pendingStopExecution={4} | pendingLimitExecution={5} | aggressiveExecution={6} | managementExecution={7} | " +
                 "maxSessionExecutions={7} | maxConcurrentScenarios={8} | staleAfter={9}s | managementMaxAge={10}s | maxEntryDrift={11}pips | liveArmed={12} | contractVersion={13}",
                 Bars == null ? "UNKNOWN" : Bars.TimeFrame.ToString(),
                 Account.IsLive ? "LIVE" : "DEMO",
@@ -209,8 +210,6 @@ namespace CFIP.cBot
                 EnableLiveExecution || !Account.IsLive,
                 ContractVersion.Current);
 
-            SubscribeIndicatorLifecycleEvents();
-            SubscribeBrokerLifecycleEvents();
             RefreshIndicatorBinding(true);
             RefreshExecutionSettings(true);
             ReloadSignalStore(true);
@@ -219,7 +218,22 @@ namespace CFIP.cBot
                 _boundIndicatorInstanceId,
                 Server.TimeInUtc);
             ReconcileBrokerState(true);
-            PublishExecutionState("CBOT STARTED", true);
+
+            if (_liveExecutionDisarmed)
+            {
+                _state = ShadowHostState.Blocked;
+                PublishPresence("LIVE DISARMED");
+                PublishExecutionState(
+                    "LIVE EXECUTION DISARMED • RESTART WITH ENABLE LIVE EXECUTION = TRUE",
+                    true);
+                Print(
+                    "CFIP cBot LIVE DISARMED | broker mutation disabled | " +
+                    "restart with Enable Live Execution = true to arm");
+            }
+            else
+            {
+                PublishExecutionState("CBOT STARTED", true);
+            }
         }
 
         protected override void OnTick()
@@ -234,9 +248,20 @@ namespace CFIP.cBot
             }
 
             RefreshExecutionSettings(false);
-            ReloadSignalStore(false);
 
             DateTime nowUtc = Server.TimeInUtc;
+
+            if (_liveExecutionDisarmed)
+            {
+                _state = ShadowHostState.Blocked;
+                PublishPresence("LIVE DISARMED");
+                PublishExecutionState(
+                    "LIVE EXECUTION DISARMED • BROKER MUTATION BLOCKED",
+                    false);
+                return;
+            }
+
+            ReloadSignalStore(false);
             ReconcileBrokerState(false);
             PublishExecutionState("HEARTBEAT", false);
 
@@ -465,7 +490,7 @@ namespace CFIP.cBot
             if (_sessionExecutions >=
                 Math.Max(1, MaxDemoExecutionsPerSession))
             {
-                LogBlockedState("DEMO SESSION EXECUTION CAP REACHED");
+                LogBlockedState("SESSION EXECUTION CAP REACHED");
                 return;
             }
 
@@ -801,7 +826,7 @@ namespace CFIP.cBot
                 return;
 
             _nextSignalReloadUtc =
-                now.AddMilliseconds(500);
+                now.AddMilliseconds(SignalReloadIntervalMilliseconds);
 
             try
             {
