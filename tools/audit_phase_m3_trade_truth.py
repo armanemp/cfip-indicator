@@ -66,7 +66,10 @@ require(
 
 require(
     "Notifications.PlaySound" not in alerts and
-    "ProcessQueuedAlertDelivery();" in cycle,
+    (
+        "ProcessQueuedAlertDelivery();" in cycle or
+        "ProcessQueuedAlertSoundDelivery();" in cycle
+    ),
     "M3: sound must stay transport-owned by the queued delivery processor",
 )
 
