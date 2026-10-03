@@ -14,7 +14,8 @@ namespace cAlgo
     public partial class CFIPIndicator : Indicator
     {
         private const double CompactPlanLabelFontSize = 8.5;
-        private const int CompactPlanLabelWidthBars = 7;
+        private const int CompactPlanLabelWidthBars = 9;
+        private const int CompactPlanLabelGapBars = 1;
         private const double CompactPlanLabelHeightRangeFactor = 0.12;
         private const double CompactPlanLabelMinimumHeightPips = 4.0;
 
@@ -140,12 +141,19 @@ namespace cAlgo
                     !IsFinitePositive(price))
                     return;
 
-                int rightBar =
+                // The label belongs to the LEFT edge of the same canonical
+                // line. It must never float at the chart's right edge.
+                int lineLeftBar =
                     Math.Max(
                         0,
                         Math.Min(
                             Bars.Count - 1,
                             labelBar));
+
+                int rightBar =
+                    Math.Max(
+                        0,
+                        lineLeftBar - CompactPlanLabelGapBars);
 
                 int leftBar =
                     Math.Max(
