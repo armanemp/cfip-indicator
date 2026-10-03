@@ -40,7 +40,7 @@ namespace cAlgo
                     ResetPendingInvalidationHysteresis();
 
                     ManagementCommandRequestStatus cancelStatus =
-                        TryCancelPendingOrder(
+                        RequestCancelPendingOrder(
                             order,
                             "STALE PENDING ORDER");
                     if (!cancelStatus.IsAccepted())
@@ -117,7 +117,7 @@ namespace cAlgo
                             : "PENDING POLICY SUPERSEDED";
 
                 ManagementCommandRequestStatus cancelStatus =
-                    TryCancelPendingOrder(
+                    RequestCancelPendingOrder(
                         order,
                         reason);
                 if (!cancelStatus.IsAccepted())
