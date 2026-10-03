@@ -1700,3 +1700,8 @@ Then begin at checklist item 1.1 and record every disposition in this document o
 M2.177/M2.178 were root-corrected by making OnTimer the sole realtime transport/management consumer and removing signal/management consumption plus protection sweeping from OnTick. The timer now uses the canonical non-forced transport reload cadence after startup. M2.183 was root-corrected by keeping scenario recovery reconciliation local rather than copying it into global execution context during scenario sweeping. M2.184 was corrected by replacing the single global realtime revision tracker with per-scenario revision tracking keyed by ScenarioId, with reset on indicator rebinding.
 
 Acceptance remains open pending authoritative CI/build and target-terminal validation; no compile PASS is claimed from static source edits alone.
+
+
+## M2 continuation evidence — 2026-10-04
+
+The management command path has been root-corrected during M2: request submission now exposes an explicit status contract; queued/pending/confirmed states are distinct; broker-confirmed protection is adopted only from confirmation; request-time LocalStorage write/flush and report reads were removed from the hot path; deferred command persistence uses the existing BufferedPersistenceCoordinator; and management helper names use Request* semantics. The Indicator broker lifecycle observer set was audited and retained because each handler has a required read-only consumer for broker-confirmed lifecycle/protection reconciliation. These changes do not alter the single-owner law or cBot sole-mutation authority. CI/runtime closure remains pending.
