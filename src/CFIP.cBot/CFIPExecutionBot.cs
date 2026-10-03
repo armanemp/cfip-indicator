@@ -219,15 +219,10 @@ namespace CFIP.cBot
                 Account.IsLive
                     ? MaxLiveExecutionsPerSession
                     : MaxDemoExecutionsPerSession);
-
         private int EffectiveConcurrentScenarioLimit =>
             Math.Max(
                 1,
-                Math.Min(
-                    Math.Max(1, MaxConcurrentScenarios),
-                    _executionSettings == null
-                        ? 1
-                        : Math.Max(1, _executionSettings.MaximumOpenPositions)));
+                MaxConcurrentScenarios);
 
         private string EffectiveAccountMode =>
             Account.IsLive ? "LIVE" : "DEMO";
