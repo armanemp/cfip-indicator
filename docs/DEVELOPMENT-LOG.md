@@ -1,6 +1,7 @@
 ## 2026-10-04 — Smart Separated Signal Arrows
 
 Status: VERIFIED COMPLETE — PR #252 merged to main; target-terminal visual acceptance remains the final manual boundary.
+Merge: PR #252, commit b095710eb83e7f93017edb1050b20079b27b4371.
 
 Completed for this user-requested item:
 - Removed the duplicate HTF arrow-strength owner. The canonical strength source is now MtfTrendStrengthRule.
