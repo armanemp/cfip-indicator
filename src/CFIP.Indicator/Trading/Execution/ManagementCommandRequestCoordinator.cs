@@ -21,6 +21,12 @@ namespace cAlgo
         private readonly Queue<string> _confirmedManagementOrder =
             new Queue<string>();
 
+        private readonly HashSet<string> _expiredManagementKeys =
+            new HashSet<string>(StringComparer.Ordinal);
+
+        private readonly Queue<string> _expiredManagementOrder =
+            new Queue<string>();
+
         private long _managementCommandRevision;
 
         private ManagementCommand[] _managementCommands =
@@ -159,6 +165,9 @@ namespace cAlgo
             if (_confirmedManagementKeys.Contains(key))
                 return ManagementCommandRequestStatus.AlreadyConfirmed;
 
+            if (_expiredManagementKeys.Contains(key))
+                return ManagementCommandRequestStatus.AlreadyExpired;
+
             ManagementCommand[] current = LoadManagementCommands();
             for (int i = 0; i < current.Length; i++)
             {
@@ -283,7 +292,7 @@ namespace cAlgo
                     new List<ManagementCommand>(LoadManagementCommands());
 
                 bool changed = false;
-                bool newConfirmation = false;
+                bool newTerminalReport = false;
 
                 for (int i = 0; i < reports.Length; i++)
                 {
@@ -294,13 +303,16 @@ namespace cAlgo
                          report.Status != BrokerReportStatus.Expired))
                         continue;
 
-                    if (_confirmedManagementKeys.Add(report.CommandIdempotencyKey))
+                    if (report.Status == BrokerReportStatus.Confirmed)
                     {
-                        _confirmedManagementOrder.Enqueue(report.CommandIdempotencyKey);
-                        newConfirmation = true;
-
-                        if (report.Status == BrokerReportStatus.Confirmed)
+                        if (_confirmedManagementKeys.Add(report.CommandIdempotencyKey))
                         {
+                            _expiredManagementKeys.Remove(
+                                report.CommandIdempotencyKey);
+                            _confirmedManagementOrder.Enqueue(
+                                report.CommandIdempotencyKey);
+                            newTerminalReport = true;
+
                             ApplyBrokerConfirmedProtectionState(
                                 report.BrokerPositionId,
                                 report.ConfirmedEntry,
@@ -308,6 +320,15 @@ namespace cAlgo
                                 report.ConfirmedTarget,
                                 true);
                         }
+                    }
+                    else if (_expiredManagementKeys.Add(
+                                 report.CommandIdempotencyKey))
+                    {
+                        _confirmedManagementKeys.Remove(
+                            report.CommandIdempotencyKey);
+                        _expiredManagementOrder.Enqueue(
+                            report.CommandIdempotencyKey);
+                        newTerminalReport = true;
                     }
 
                     for (int j = pending.Count - 1; j >= 0; j--)
@@ -327,8 +348,9 @@ namespace cAlgo
                     PersistManagementCommands(pending);
 
                 TrimConfirmedKeys();
+                TrimExpiredKeys();
 
-                if (newConfirmation)
+                if (newTerminalReport)
                     MarkBrokerStateDirty();
             }
             catch (Exception ex)
@@ -386,6 +408,17 @@ namespace cAlgo
             {
                 string oldest = _confirmedManagementOrder.Dequeue();
                 _confirmedManagementKeys.Remove(oldest);
+            }
+        }
+
+        private void TrimExpiredKeys()
+        {
+            while (_expiredManagementKeys.Count >
+                   MaxRememberedManagementConfirmations &&
+                   _expiredManagementOrder.Count > 0)
+            {
+                string oldest = _expiredManagementOrder.Dequeue();
+                _expiredManagementKeys.Remove(oldest);
             }
         }
 
