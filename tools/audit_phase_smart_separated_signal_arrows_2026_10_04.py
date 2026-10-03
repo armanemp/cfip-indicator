@@ -74,14 +74,13 @@ check(
     "snapshot.MtfTrendStrengthLevel" in stack and
     "snapshot.MtfTrendDirection" in stack and
     "((strength - 1) % 3) + 1" in stack and
-    "strength <= 3" in stack and
-    "strength <= 6" in stack,
+    "snapshot.MtfTrendStrengthTier" in stack,
 )
 
 check(
     "three arrows are physically separated",
     "Symbol.PipSize * 3" in stack and
-    "offset * 0.75" in stack and
+    "offset * 1.5" in stack and
     "separation * i" in stack,
 )
 
@@ -103,6 +102,20 @@ check(
     "M1 precision marker is not a competing directional arrow",
     "P + " + chr(34) + "M1_TRIGGER" + chr(34) in signal and
     "ChartIconType.Circle" in signal,
+)
+
+check(
+    "trade-direction conflict cannot produce a contradictory trend arrow",
+    "decisionOwnsDirection" in stack and
+    "decisionDirection != direction" in stack and
+    "RemoveStackedSignalArrows();" in stack,
+)
+
+check(
+    "non-canonical event/history/opportunity markers are not directional arrows",
+    "ChartIconType.UpTriangle" in read("src/CFIP.Indicator/Trading/Alerts/ContextAlertEmitter.cs") and
+    "ChartIconType.UpTriangle" in read("src/CFIP.Indicator/UI/Chart/ParallelOpportunityRenderer.cs") and
+    "ChartIconType.UpTriangle" in read("src/CFIP.Indicator/UI/Historical/HistoricalRenderer.cs"),
 )
 
 check(
