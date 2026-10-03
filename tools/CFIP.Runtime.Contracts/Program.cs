@@ -10673,14 +10673,14 @@ namespace cAlgo
         {
             Assert(
                 PlanLinePresentationRule.ResolveThickness(1) == 1 &&
-                PlanLinePresentationRule.ResolveThickness(2) == 2 &&
-                PlanLinePresentationRule.ResolveThickness(3) == 3,
-                "G3 configured thickness 1/2/3 maps to actual thickness 1/2/3");
+                PlanLinePresentationRule.ResolveThickness(2) == 1 &&
+                PlanLinePresentationRule.ResolveThickness(3) == 1,
+                "G3 signal/plan line presentation is always one pixel");
 
             Assert(
                 PlanLinePresentationRule.ResolveThickness(0) == 1 &&
-                PlanLinePresentationRule.ResolveThickness(4) == 3,
-                "G3 thickness resolver clamps only outside the public 1..3 contract");
+                PlanLinePresentationRule.ResolveThickness(4) == 1,
+                "G3 resolver remains deterministic outside the legacy configurable range");
         }
 
         private static void VerifyTargetObstacleCacheKeyHashSemantics()
