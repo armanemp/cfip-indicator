@@ -3100,8 +3100,8 @@ label_code = label_renderer.read_text(encoding="utf-8")
 if "GetReadableLabelTextColor(" not in label_code:
     raise SystemExit("Plan labels must use the canonical text-color resolver")
 compact_label_color = label_code[label_code.find("private void DrawCompactPlanLabel("):]
-if "return semanticColor;" not in compact_label_color:
-    raise SystemExit("Plan labels must reuse the exact semantic line color")
+if "return Color.White;" not in label_code:
+    raise SystemExit("Plan labels must use the canonical white text contract")
 compact_label_start = label_code.find("private void DrawCompactPlanLabel(")
 compact_label_code = label_code[compact_label_start:] if compact_label_start >= 0 else ""
 if "Chart.DrawRectangle(" in compact_label_code:
