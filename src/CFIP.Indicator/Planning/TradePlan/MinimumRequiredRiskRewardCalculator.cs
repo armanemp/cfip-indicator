@@ -39,10 +39,12 @@ namespace cAlgo
                     regime,
                     "RANGE",
                     StringComparison.OrdinalIgnoreCase))
+                // Range setups are edge/reversal trades, so the canonical
+                // actionable TP1 floor must never be relaxed below the
+                // dedicated range-quality contract.
                 return Math.Max(
-                    1.75,
-                    Tp1MinimumRR -
-                    step * 0.50);
+                    2.25,
+                    Tp1MinimumRR);
 
             return Tp1MinimumRR;
         }
