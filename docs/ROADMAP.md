@@ -9,6 +9,7 @@ Closed:
 - SL/BreakEven protection mutation is blocked when broker protection is disabled, while startup safety recovery remains fail-closed;
 - TP advance requires both live-exit management and broker TP sync;
 - broker protection/TP mutations are throttled by a position-scoped BrokerModifyCooldownMs;
+- cooldown is a transient deferment only: deferred management commands remain queued and retryable, with no synthetic broker acknowledgment;
 - full close and pending cancellation remain available for safety lifecycle operations;
 - deterministic cBot behavioral coverage and Source/Architecture audit are added.
 
