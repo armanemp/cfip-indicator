@@ -6,7 +6,8 @@ namespace CFIP.Contracts
         Queued = 1,
         AlreadyPending = 2,
         AlreadyConfirmed = 3,
-        WriteFailed = 4
+        AlreadyExpired = 4,
+        WriteFailed = 5
     }
 
     public static class ManagementCommandRequestStatusPolicy
