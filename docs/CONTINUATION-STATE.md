@@ -1,3 +1,24 @@
+## 2026-10-03 — Current Integrated User-Requirement Hardening
+
+Status: IMPLEMENTED — verification pending on branch `phase/mtf-realtime-all-engines-smart-arrows-2026-10-03`.
+
+Completed in the current continuation unit:
+- all-timeframe realtime intelligence remains active across M1/M5/M15/M30/H1/H4/D1/W1, with M15 as canonical decision/reference, M5 as trigger/entry precision, M1 optional confirmation and HTF frames supporting structure/reward;
+- current ActionableNow scenarios remain the only market-entry path; FutureOrderReady scenarios remain pending Stop/Limit plans;
+- bounded concurrent ScenarioIds, persistent idempotency and per-scenario reconciliation remain cBot-owned;
+- live account execution is prepared with separate market/pending/aggressive/management arms and remains fail-closed until explicitly armed;
+- stagnant-market reward magnitude and RANGE quality/RR protection remain active;
+- nine-level HTF trend-strength arrow stack remains active with 1/2/3 arrows for WATCH/CONFIRMED/STRONG tiers;
+- cBot lifecycle/execution audio is now isolated in `CbotLifecycleAudioService`;
+- panel header realtime truth is now isolated in `PanelHeaderRenderer` and refreshed on live panel paths;
+- P7R attachment audit was corrected to accept the actual null-safe cTrader type-inspection pattern.
+
+Verification boundary:
+- cTrader Compile, Runtime Acceptance and Source/Architecture must pass on the exact integrated head;
+- target-terminal evidence remains mandatory for audible playback, exact cBot/Indicator attachment, same-tick execution handoff, simultaneous scenarios, pending lifecycle, restart/reconnect and live-account behavior.
+
+Operator action after verified merge: `git pull --ff-only`.
+
 ## Current focus — REALTIME LIVE EXECUTION + SIGNAL TRUTH UNIFICATION — 2026-10-03
 
 Status: IMPLEMENTATION COMPLETE — verification pending; target-terminal acceptance required.
