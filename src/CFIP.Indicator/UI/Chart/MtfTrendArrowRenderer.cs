@@ -56,11 +56,8 @@ namespace cAlgo
                 ((level - 1) % 3) + 1;
 
             string state =
-                level <= 3
-                    ? "WATCH"
-                    : level <= 6
-                        ? "CONFIRMED"
-                        : "STRONG";
+                MtfTrendStrengthRule.ResolveMtfTrendStrengthState(
+                    level);
 
             double atr =
                 Atr(
