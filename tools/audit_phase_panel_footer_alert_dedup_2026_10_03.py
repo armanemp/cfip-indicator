@@ -94,7 +94,7 @@ constants = read("UI/Panel/PanelConstants.cs")
 mtf_arrows = read("UI/Chart/MtfTrendArrowRenderer.cs")
 
 check(
-    "PanelFooterMinHeight = 40" in constants and
+    "PanelFooterMinHeight = 36" in constants and
     "ResolvePanelFooterAreaHeight(" in layout and
     "ResolvePanelFooterAreaHeight(" in panel and
     "ResolvePanelFooterAreaHeight(" in visual and
@@ -122,6 +122,7 @@ check(
     "PanelStatusLampFontSize" in lamp and
     "PanelStatusLampFontSize" in heartbeat and
     "PanelAlertMessageVisibleCapacity = 2" in read("UI/Panel/PanelAlertMessageRenderer.cs") and
+    "PanelAlertMessageRowHeight = 18" in read("UI/Panel/PanelAlertMessageRenderer.cs") and
     "TextWrapping = TextWrapping.NoWrap" in read("UI/Panel/PanelAlertMessageRenderer.cs") and
     "TextTrimming = TextTrimming.None" in read("UI/Panel/PanelAlertMessageRenderer.cs"),
     "header and MTF lamps must share the enlarged status-lamp geometry",
@@ -170,7 +171,7 @@ check(
 
 check(
     "footer is compact and does not double-count outer padding",
-    "PanelFooterMinHeight = 40" in constants and
+    "PanelFooterMinHeight = 36" in constants and
     "return contentHeight;" in layout and
     "PanelTrendTimeframeLampRowHeight = 38" in lamp and
     "PanelTrendTimeframeLampIndicatorHeight = 22" in lamp,
