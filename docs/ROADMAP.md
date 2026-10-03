@@ -3296,3 +3296,27 @@ Completed in the phase branch:
 - cTrader Local/Cloud behavior remains a terminal synchronization boundary; the source project keeps stable algorithm identity and introduces no Cloud transport.
 
 Phase audit: tools/audit_phase_ui_signal_alert_quality_2026_10_03.py.
+
+
+## 2026-10-03 — Final UI / Signal / Alert Quality Phase Closeout
+
+Status: **IMPLEMENTATION COMPLETE — PR #245 awaiting final Source/Architecture completion; cTrader Compile and Runtime Acceptance are green on the current head; target-terminal validation remains manual.**
+
+This integrated phase closes the user-reported UI/signal/alert quality path rather than adding isolated patches:
+- Footer minimum geometry is 36px with 18px compact alert rows and no phantom final-row spacing.
+- MTF lamp and text state share PanelTimeframePresentationRule; the panel render key tracks the underlying presentation inputs.
+- Alert deduplication is canonical at AlertEngine -> AlertDeliveryQueue; rebuilds do not use volatile SignalId as event identity, and popup/sound consume the same queued AlertEnvelope.
+- Confirmed arrows require canonical ActionableNow; early/watch arrows require strong-watch evidence plus meaningful reward/RR presentation when concrete geometry exists.
+- Presentation-only primary M15/H1 candidates are filtered before any public chart marker is drawn, preventing diagnostic weak source context from looking like a trade signal.
+- Signal level lines remain Solid, one-pixel and compact, with labels left of the line and background-free canonical text.
+- Trade-facing opportunity candidates retain regime-aware reward-distance and TP1-RR validation; the phase does not solve weak signals by blindly raising a global threshold.
+- cTrader Local/Cloud selection remains a terminal synchronization/instance-state boundary. Source identity is stable and the indicator does not introduce Cloud transport.
+
+Regression discipline:
+- accumulated Source/Architecture, Runtime Acceptance and cTrader Compile gates remain mandatory;
+- no broker execution owner moved back into the Indicator;
+- M15 canonical decision/reference, M5 trigger/entry precision and optional M1 confirmation roles remain intact;
+- target-terminal startup/restart/reconnect, exact attachment, audible playback and same-tick handoff require direct cTrader evidence.
+
+Final follow-up commit on this phase branch: d40cff97baa37a36a78fbbf22e487ae15930ac0f.
+Operator action after verified merge: `git pull --ff-only` on local `main`.
