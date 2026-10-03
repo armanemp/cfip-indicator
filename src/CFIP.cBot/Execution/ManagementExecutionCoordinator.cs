@@ -135,9 +135,9 @@ namespace CFIP.cBot.Execution
                         out string cooldownReason))
                 {
                     // Keep the command queued. A cooldown is a temporary execution
-                    // deferment, not an Accepted broker fact. Persisting Accepted here
-                    // would move the command into the confirmation-only branch and
-                    // could prevent it from ever reaching broker mutation.
+                    // deferment, not a broker mutation fact. Recording a synthetic
+                    // acknowledgment here would move the command into the
+                    // confirmation-only branch and could freeze the request.
                     status = cooldownReason;
                     return true;
                 }
