@@ -55,12 +55,8 @@ namespace cAlgo
                 !ShowSignalLabels)
                 return;
 
-            int lineLeft =
-                GetPlanLineLeftBar();
-
             int labelBar =
-                GetCompactPlanLabelAnchorBar(
-                    lineLeft);
+                GetCompactPlanLabelAnchorBar();
 
             string typeText =
                 snapshot.PendingOrderType;
