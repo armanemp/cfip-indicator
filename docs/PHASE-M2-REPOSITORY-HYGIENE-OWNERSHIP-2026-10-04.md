@@ -455,3 +455,16 @@ Evidence commits for M2.169/M2.175: daf856bc98f249f5208c37f16c1b235fa028f353, 1b
 **ROOT-CORRECTED.** Broker `Expired` reports are no longer stored in the confirmation set. `AlreadyExpired` is a distinct request status with bounded FIFO retention, so an expired command can never be reported to a consumer as broker-confirmed. Confirmed and expired terminal identities remain deterministic and separately owned.
 
 Evidence commits: b00e744a1bf055bf4d6248124323a8cfd5b6751a, 5a8cbb627b8e3bebb2dc2a10059912ccf885b653.
+
+
+### M2.185 — stale current-owner documentation
+
+**ROOT-CORRECTED.** `docs/CBOT-0-BOUNDARY-INVENTORY.md` and `docs/ARCHITECTURE.md` contained pre-cutover Indicator broker-owner paths in sections presented as current architecture. They now identify the cBot owners as current authority. `docs/CBOT-P0-EXECUTION-DEPENDENCY-CLOSURE.md` is explicitly classified as historical extraction evidence, not a current owner registry.
+
+### M2.186 — stale audit exception for deleted broker owner
+
+**ROOT-CORRECTED.** `tools/audit_exit_geometry.py` had an exception allowing the deleted `BrokerTakeProfitMutation.cs` owner to be treated specially. The exception is removed; any management TP request path is now checked uniformly against the current request-owner contract.
+
+### M2.187 — duplicate/parallel-owner sweep
+
+**AUDIT RESULT.** Targeted executable-owner sweep found one canonical production owner for market broker mutation, pending broker mutation, management request coordination, plan line rendering, plan label rendering, and realtime signal envelope consumption. No second production executor/renderer was introduced by M2. Remaining same-name matches are either canonical consumers/builders or historical/audit guards, not competing owners. Full repository-wide semantic duplicate scan remains part of the M2 closure gate and is not being declared complete from this targeted pass.
