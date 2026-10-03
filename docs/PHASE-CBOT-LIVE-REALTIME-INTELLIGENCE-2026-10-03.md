@@ -39,13 +39,13 @@ The intended runtime flow remains:
 - The attachment reader retains exact InstanceId + fresh heartbeat as execution-liveness truth.
 - Attachment diagnostics now expose chart-indicator count when the expected CFIP indicator is not resolved.
 - Sound-bearing alerts are preserved under bounded queue pressure by evicting an older normal diagnostic event before dropping the audio-bearing event.
-- The existing queued alert delivery owner remains the sole `Notifications.PlaySound` owner.
+- The existing queued alert delivery owner remains the sole `Notifications.PlaySound` owner, with playback bound to the Indicator realtime `Calculate()`/`IsLastBar` path.
 
 ## Safety and live-arm contract
 
 - `Enable Live Execution` defaults to **false**.
-- A live account with live execution disarmed is stopped before broker mutation.
-- Demo accounts can continue to run through the same mutation path.
+- A live account with live execution disarmed remains attached/observable but is blocked before any broker mutation.
+- Demo and live accounts use the same broker mutation path once the explicit live arm and execution-mode gates permit it.
 - Broker-side margin, capacity, geometry, spread/plan-risk, protection and reconciliation gates remain mandatory.
 - Missing/invalid broker protection remains fail-closed.
 - Indicator remains broker-mutation-free.
