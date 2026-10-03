@@ -152,6 +152,19 @@ namespace cAlgo
                             : _decision.Regime)))
                 return false;
 
+            double minimumRewardDistanceAtr =
+                Math.Max(
+                    MinimumTpSpacingAtr,
+                    MinimumSlAtr * 0.75);
+
+            double rewardDistanceAtr =
+                Math.Abs(
+                    target -
+                    entry) /
+                Math.Max(
+                    atr,
+                    1e-9);
+
             int baseQuality =
                 mode == ExecutionMode.ContinuationStop
                     ? Math.Max(
@@ -235,6 +248,10 @@ namespace cAlgo
                                 Math.Max(
                                     baseQuality,
                                     score))),
+                     RewardDistanceAtr =
+                         rewardDistanceAtr,
+                     MinimumRequiredRewardDistanceAtr =
+                         minimumRewardDistanceAtr,
                     Risk =
                         Math.Abs(
                             entry -
