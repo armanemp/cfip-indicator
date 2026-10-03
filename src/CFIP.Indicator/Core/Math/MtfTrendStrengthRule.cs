@@ -46,7 +46,7 @@ namespace cAlgo
         {
             if (frames == null ||
                 frames.Length == 0 ||
-                !IsFinitePositive(livePrice))
+                !NumericGuards.IsFinitePositive(livePrice))
                 return new MtfTrendStrengthResult(0, 0, 0, 0, 0);
 
             double weightedBull = 0;
@@ -214,13 +214,6 @@ namespace cAlgo
                 score,
                 htfScore,
                 htfDirection);
-        }
-
-        private static bool IsFinitePositive(double value)
-        {
-            return !double.IsNaN(value) &&
-                   !double.IsInfinity(value) &&
-                   value > 0;
         }
     }
 }
