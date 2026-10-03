@@ -51,9 +51,9 @@ for api in mutation_apis:
         errors.append("Indicator direct broker mutation remains: " + api + "(")
 
 for token in (
-    "TryCancelPendingOrder(", "TryClosePosition(", "TryModifyStopLoss(",
-    "TryModifyTakeProfit(", "TryModifyTakeProfitPips(",
-    "TryModifyTakeProfitLadder(", "RequestManagementCommand(",
+    "RequestCancelPendingOrder(", "RequestClosePosition(", "RequestModifyStopLoss(",
+    "RequestModifyTakeProfit(", "RequestModifyTakeProfitPips(",
+    "RequestModifyTakeProfitLadder(", "RequestManagementCommand(",
     "ProcessManagementReports(",
 ):
     if token not in management_ind:
