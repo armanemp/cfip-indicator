@@ -3632,3 +3632,12 @@ The Indicator remains the sole owner of analysis, trigger, entry, SL, TP and tra
 - Replay tuning must modify existing canonical owners from measured failure clusters; it must not add parallel gates.
 
 Operator action after merge: git pull --ff-only, then run Release build + planning contracts + cTrader runtime/replay acceptance.
+
+
+### 2026-10-04 — Final Signal-Line / Label Geometry Correction
+
+- Kept PlanLineRenderer as the single line owner; no parallel renderer was added.
+- Locked the production visual to Solid, 1 px, finite 40-chart-bar geometry ending at the latest candle.
+- Corrected the label placement so the filled cTrader-style tag is outside the line, to the left of its left endpoint, with a fixed two-bar gap.
+- The tag uses the exact semantic line color as its filled background and white centered text.
+- Line and label now use one canonical level state/color path and cannot overlap by construction.
