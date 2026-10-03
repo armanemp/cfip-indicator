@@ -64,6 +64,13 @@ check(
 )
 
 check(
+    'case "CONFIRMED":' in signal_state and
+    'return prefix + "CONFIRMED";' in signal_state and
+    'return prefix + "READY";' not in signal_state,
+    "authoritative signal stage CONFIRMED must not be relabeled as READY",
+)
+
+check(
     "private string DirectionText(int direction)" in signal_state and
     "private string DirectionText(TradeType tradeType)" in signal_state,
     "panel action-direction text helpers must have one source file owner",
