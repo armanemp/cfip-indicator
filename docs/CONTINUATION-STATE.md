@@ -2616,3 +2616,16 @@ Operator action after merge: git pull --ff-only.
 
 ### Realtime / Live Execution + Volume Profile Intelligence
 Current continuation: this consolidated branch carries realtime/live execution unification together with all-timeframe intelligence, future pending scenarios, smart arrows and panel/audio hardening.
+
+
+## 2026-10-04 — M2 full forensic restart checkpoint
+
+M2 has been intentionally restarted as a **full project-from-baseline forensic audit**. Do not continue from an assumed partial checklist. The audit must proceed sequentially from M2-A repository/build truth through M2-I documentation/test/CI closure, with every finding assigned an owner, root cause, remediation, evidence and verification state.
+
+Permanent audit law: one behavior = one logic + one owner + one source of truth. No duplicate/parallel calculation, rendering, audio, execution, persistence, state machine or contract is permitted. Historical records may remain only when explicitly historical and cannot act as current architecture authority.
+
+Canonical restart/checkpoint document: docs/M2-FULL-FORENSIC-RESTART-CHECKPOINT-2026-10-04.md.
+
+Current restart HEAD: 42e9566dd2ed2ce1e564de99ff55d16c85e73186 on phase/M2-repository-hygiene-ownership-current, PR #257. PR is open/non-draft/mergeable=false; CI status is not claimed because no usable workflow/status result was returned for the inspected HEAD.
+
+**Next exact work item:** M2-A.1 — repository/build truth. Do not jump to strategy tuning or a new feature until the sequential forensic audit reaches that gate.
