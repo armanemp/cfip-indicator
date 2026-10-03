@@ -87,6 +87,24 @@ namespace cAlgo
                     ? "BUY"
                     : "SELL";
 
+            SignalVisualSnapshot watchSnapshot =
+                BuildSignalVisualSnapshot(closedM5);
+
+            string watchTrend =
+                watchSnapshot != null &&
+                watchSnapshot.MtfTrendStrengthLevel > 0 &&
+                !string.IsNullOrWhiteSpace(watchSnapshot.MtfTrendStrengthTier)
+                    ? " | TREND " +
+                      watchSnapshot.MtfTrendStrengthTier.ToUpperInvariant() +
+                      " L" +
+                      watchSnapshot.MtfTrendStrengthLevel
+                    : "";
+
+            if (watchSnapshot != null &&
+                watchSnapshot.MtfTrendDirection != 0 &&
+                watchSnapshot.MtfTrendDirection != direction)
+                return;
+
             if (SendUnifiedAlert(
                     WatchReactionAlertRule.BuildWatchAlertKey(
                         closedM5,
@@ -97,6 +115,7 @@ namespace cAlgo
                     _decision.Confidence +
                     " | SMART " +
                     _decision.SmartQuality +
+                    watchTrend +
                     " | " +
                     _decision.Reason,
                     direction,
@@ -398,6 +417,16 @@ namespace cAlgo
                     ? "BUY"
                     : "SELL";
 
+            string trendTag =
+                canonicalSnapshot != null &&
+                canonicalSnapshot.MtfTrendStrengthLevel > 0 &&
+                !string.IsNullOrWhiteSpace(canonicalSnapshot.MtfTrendStrengthTier)
+                    ? " | TREND " +
+                      canonicalSnapshot.MtfTrendStrengthTier.ToUpperInvariant() +
+                      " L" +
+                      canonicalSnapshot.MtfTrendStrengthLevel
+                    : "";
+
             string message =
                 "CFIP ACTIONABLE " +
                 directionText +
@@ -415,6 +444,7 @@ namespace cAlgo
                 Price(_plan.Tp1) +
                 " | RR " +
                 _plan.Tp1RR.ToString("F2") +
+                trendTag +
                 " | CONF " +
                 _decision.Confidence +
                 " | LOC " +
