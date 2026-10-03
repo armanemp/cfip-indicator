@@ -126,9 +126,8 @@ namespace cAlgo
                                                 : "WAITING";
 
                                     string prefix =
-                                        direction == 1
-                                            ? "BUY "
-                                            : "SELL ";
+                                        DirectionText(direction) +
+                                        " ";
 
                                     switch (snapshot.Stage)
                                     {
@@ -182,11 +181,9 @@ namespace cAlgo
 
                                     return
                                         "STATE " +
-                                        (direction == 1
-                                            ? "BUY"
-                                            : direction == -1
-                                                ? "SELL"
-                                                : "WAIT") +
+                                        (direction == 0
+                                            ? "WAIT"
+                                            : DirectionText(direction)) +
                                         " | " +
                                         (aligned
                                             ? "ALIGNED"
