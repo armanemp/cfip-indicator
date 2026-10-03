@@ -54,6 +54,8 @@ namespace cAlgo
                 snapshot.PendingOrder ? "1" : "0",
                 snapshot.LivePosition ? "1" : "0",
                 FramePresentationKey(_m1Frame),
+                FramePresentationKey(_m2Frame),
+                M2PrecisionPresentationKey(),
                 FramePresentationKey(_m5Frame),
                 FramePresentationKey(_m15Frame),
                 FramePresentationKey(_m30Frame),
@@ -117,6 +119,20 @@ namespace cAlgo
                 // Retain the legacy saved setting in the presentation key
                 // without allowing it to expand canonical signal geometry.
                 FullWidthLevelLines ? "1" : "0");
+        }
+
+        private string M2PrecisionPresentationKey()
+        {
+            if (_m2PrecisionSnapshot == null)
+                return "NULL";
+
+            return string.Join(
+                ":",
+                _m2PrecisionSnapshot.ClosedIndex,
+                _m2PrecisionSnapshot.Direction,
+                _m2PrecisionSnapshot.Quality,
+                _m2PrecisionSnapshot.IsUsable ? "1" : "0",
+                _m2PrecisionSnapshot.AlignsWithM5 ? "1" : "0");
         }
 
         private string FramePresentationKey(
