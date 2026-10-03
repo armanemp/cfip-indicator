@@ -3567,3 +3567,31 @@ Verification boundary:
 - If later we want more than these five built-in timbres, that must be designed as one canonical per-event custom-file mapping rather than adding another playback path.
 
 Operator action: `git pull --ff-only`, then run the Release build and test each alert family in cTrader.
+
+
+## 2026-10-04 — Signal Quality / Useful TP / Entry-Risk Contract Hardening
+
+Status: **IMPLEMENTED — local Release build and target-terminal/replay verification remain required.**
+
+Deep audit found a real contract split in the signal-quality chain:
+- canonical TP1 minimum is 2.00 by default, but the regime RR calculator was lowering RANGE to 1.75;
+- the RANGE classifier contained a duplicated 2.25 RR gate, but its evaluator supplied Tp1RR = 0, so that gate was effectively fail-open;
+- candidate reward-distance policy for RANGE was only 1.00 ATR, allowing geometrically small targets to survive upstream despite the stronger intended range-quality contract.
+
+Root-level correction:
+- MinimumRequiredRiskRewardCalculator now keeps RANGE TP1 RR at at least 2.25 when adaptive structural RR is enabled; it can no longer lower the canonical floor to 1.75.
+- RegimeAdaptiveRewardFloorRule now requires 2.25 ATR minimum candidate reward distance for RANGE candidates.
+- RangeSignalQualityRule no longer owns a duplicate/stale TP1 RR gate. Actual TP1/RR validation remains at the canonical reward-risk/actionability boundary using the real materialized Entry/SL/TP geometry.
+- Obsolete Tp1RR = 0 plumbing and the dead LOW-RR branch were removed from the range classifier contract and decision-contract fixtures.
+
+This is a root-contract correction, not a new parallel signal filter. Entry quality, M15 canonical decision authority, M5 trigger precision, structural evidence, divergence/trap checks, spread/news/session safeguards and final reward-risk validation remain part of the existing chain.
+
+cTrader supports server-side multi-level TP/protection plans, but no broker/execution architecture was changed in this phase. citeturn0search0turn0search1
+
+Verification:
+- Source changes committed.
+- No local dotnet build was available in this environment.
+- Decision-contract compile/test execution is still required locally.
+- Target-terminal and historical replay verification are required to measure whether weak signals disappear without eliminating valid low-risk/high-reward setups. cTrader supports visual backtesting/Market Replay and custom optimisation criteria for this type of validation. citeturn3search0turn1search0
+
+Operator action: git pull --ff-only, then run the Release build and the decision-contract test project before chart/runtime validation.
