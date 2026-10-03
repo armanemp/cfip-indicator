@@ -47,7 +47,7 @@ namespace cAlgo
 
             if (!signalPresentationAllowed)
             {
-                Chart.RemoveObject(P + "WATCH_ARROW");
+                RemoveStackedSignalArrows();
                 Chart.RemoveObject(P + "REACTION_ARROW");
                 return;
             }
@@ -63,7 +63,7 @@ namespace cAlgo
 
             if (visualDirection == 0)
             {
-                Chart.RemoveObject(P + "WATCH_ARROW");
+                RemoveStackedSignalArrows();
                 Chart.RemoveObject(P + "REACTION_ARROW");
                 return;
             }
