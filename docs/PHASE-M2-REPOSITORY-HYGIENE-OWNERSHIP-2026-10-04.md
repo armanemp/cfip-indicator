@@ -391,3 +391,9 @@ When a non-trivial decision can benefit from current research, use current offic
 Optimization must remove unnecessary work at its owner/source. Extra throttles, duplicate caches, parallel implementations and workaround gates are not accepted as substitutes for architectural correction.
 
 M2 closure now additionally requires a modernization disposition for each touched area: what is current/optimal, what was improved, what was deliberately retained, and why no materially safer or more efficient practical design was ignored.
+
+### M2.172 remediation — broker lifecycle ownership
+
+**ROOT-CORRECTED.** The cBot broker/PendingOrder lifecycle subscriptions now have one explicit owner with named handlers, an idempotent subscription guard, and deterministic unsubscribe in OnStop(). This follows the current cTrader event contract and removes the anonymous-handler lifecycle leak without introducing another event layer.
+
+Evidence commit: e09b07f79a718f24dc72733d5bd91184393946ec.
