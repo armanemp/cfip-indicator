@@ -23,6 +23,12 @@ namespace cAlgo
 
         private long _managementCommandRevision;
 
+        private ManagementCommand[] _managementCommands =
+            Array.Empty<ManagementCommand>();
+
+        private bool _managementCommandsLoaded;
+        private bool _managementCommandsPersistenceDirty;
+
         private ManagementCommandRequestStatus TryCancelPendingOrder(PendingOrder order, string context)
         {
             if (order == null)
@@ -194,25 +200,18 @@ namespace cAlgo
             while (commands.Count > MaxManagementCommands)
                 commands.RemoveAt(0);
 
-            try
-            {
-                LocalStorage.SetString(
-                    ManagementBusKey.CommandKeyForInstance(InstanceId),
-                    ManagementCommandCodec.Serialize(commands.ToArray()),
-                    LocalStorageScope.Device);
-                LocalStorage.Flush(LocalStorageScope.Device);
-            }
-            catch (Exception ex)
-            {
-                Print("CFIP MANAGEMENT COMMAND WRITE FAILED | {0}", ex.Message);
-                return ManagementCommandRequestStatus.WriteFailed;
-            }
+            _managementCommands = commands.ToArray();
+            _managementCommandsLoaded = true;
+            _managementCommandsPersistenceDirty = true;
 
             return ManagementCommandRequestStatus.Queued;
         }
 
         private ManagementCommand[] LoadManagementCommands()
         {
+            if (_managementCommandsLoaded)
+                return _managementCommands;
+
             try
             {
                 string payload =
@@ -238,12 +237,16 @@ namespace cAlgo
                     unique.Add(command);
                 }
 
-                return unique.ToArray();
+                _managementCommands = unique.ToArray();
+                _managementCommandsLoaded = true;
+                return _managementCommands;
             }
             catch (Exception ex)
             {
                 Print("CFIP MANAGEMENT COMMAND READ FAILED | {0}", ex.Message);
-                return Array.Empty<ManagementCommand>();
+                _managementCommands = Array.Empty<ManagementCommand>();
+                _managementCommandsLoaded = true;
+                return _managementCommands;
             }
         }
 
@@ -322,18 +325,38 @@ namespace cAlgo
 
         private void PersistManagementCommands(List<ManagementCommand> commands)
         {
+            _managementCommands =
+                (commands ?? new List<ManagementCommand>()).ToArray();
+            _managementCommandsLoaded = true;
+            _managementCommandsPersistenceDirty = true;
+        }
+
+        private bool HasPendingManagementCommandPersistence()
+        {
+            return _managementCommandsPersistenceDirty;
+        }
+
+        private bool FlushManagementCommandPersistenceToLocalStorage()
+        {
+            if (!_managementCommandsPersistenceDirty)
+                return true;
+
             try
             {
                 LocalStorage.SetString(
                     ManagementBusKey.CommandKeyForInstance(InstanceId),
-                    ManagementCommandCodec.Serialize(
-                        (commands ?? new List<ManagementCommand>()).ToArray()),
+                    ManagementCommandCodec.Serialize(_managementCommands),
                     LocalStorageScope.Device);
-                LocalStorage.Flush(LocalStorageScope.Device);
+
+                _managementCommandsPersistenceDirty = false;
+                return true;
             }
             catch (Exception ex)
             {
-                Print("CFIP MANAGEMENT COMMAND COMPACT FAILED | {0}", ex.Message);
+                Print(
+                    "CFIP MANAGEMENT COMMAND WRITE FAILED | {0}",
+                    ex.Message);
+                return false;
             }
         }
 
