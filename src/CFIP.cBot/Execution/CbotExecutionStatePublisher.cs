@@ -25,8 +25,7 @@ namespace CFIP.cBot.Execution
                 CbotPresenceSnapshot snapshot =
                     new CbotPresenceSnapshot(
                         ContractVersion.Current,
-                        (robot.GetType().Name ?? string.Empty) + "|" +
-                        (robot.SymbolName ?? string.Empty),
+                        robot.InstanceId ?? string.Empty,
                         robot.GetType().Name ?? string.Empty,
                         CbotIdentity.DisplayName,
                         robot.SymbolName ?? string.Empty,

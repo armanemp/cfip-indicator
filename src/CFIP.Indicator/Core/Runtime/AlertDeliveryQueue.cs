@@ -36,10 +36,13 @@ namespace cAlgo
 
                 if (_normal.Count > 0)
                     _normal.Dequeue();
-                else if (_critical.Count > 0)
-                    _critical.Dequeue();
                 else
+                {
+                    // Keep already-buffered critical alerts intact. Under a burst
+                    // of critical/sound events, reject the new event rather than
+                    // silently dropping an existing signal/audio delivery.
                     return false;
+                }
             }
 
             if (delivery.Critical)

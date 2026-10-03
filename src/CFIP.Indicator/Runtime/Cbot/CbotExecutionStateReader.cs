@@ -81,6 +81,25 @@ namespace cAlgo
 
             if (count > 1)
             {
+                if (HasFreshCbotPresenceForCurrentIndicator())
+                {
+                    for (int i = 0; i < ChartRobots.Count; i++)
+                    {
+                        ChartRobot candidate = ChartRobots[i];
+                        if (candidate == null)
+                            continue;
+
+                        if (string.Equals(
+                                candidate.InstanceId,
+                                _cBotPresence.CbotInstanceId,
+                                StringComparison.Ordinal))
+                        {
+                            robot = candidate;
+                            return true;
+                        }
+                    }
+                }
+
                 robot = null;
                 reason = "CBOT AMBIGUOUS • MULTIPLE INSTANCES";
                 return false;
@@ -244,6 +263,12 @@ namespace cAlgo
                     "CBOT CONNECTED • HEARTBEAT LIVE • " +
                     CbotExecutionStatePanelText();
 
+            if (HasFreshCbotPresenceForCurrentIndicator())
+                return
+                    "CBOT CONNECTED • ATTACHED • " +
+                    (_cBotPresence.State ?? "RUNNING") +
+                    " • HEARTBEAT PENDING";
+
             if (HasFreshCbotPresence())
                 return
                     "CBOT DETECTED • " +
@@ -325,9 +350,29 @@ namespace cAlgo
             return IsCbotExecutionStateFresh();
         }
 
+        private bool HasFreshCbotPresenceForCurrentIndicator()
+        {
+            return
+                HasFreshCbotPresence() &&
+                string.Equals(
+                    _cBotPresence.BoundIndicatorInstanceId,
+                    InstanceId,
+                    StringComparison.Ordinal);
+        }
+
         private bool HasFreshCbotPresence()
         {
             if (_cBotPresence == null)
+                return false;
+
+            if (!string.Equals(
+                    _cBotPresence.Symbol,
+                    SymbolName,
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    _cBotPresence.CbotTypeName,
+                    CbotIdentity.TypeName,
+                    StringComparison.Ordinal))
                 return false;
 
             double ageSeconds =
