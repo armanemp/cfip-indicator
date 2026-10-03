@@ -50,10 +50,9 @@ namespace cAlgo
             bool structuralUpdate,
             bool structuralOnly,
             bool useSwingStructure,
-            double slRepriceStartRR,
-            double smartTrailMinimumRR,
+            double trailStartRewardAtr,
             double trailDistanceAtr,
-            double smartTrailTightenAtRR,
+            double tightenRewardAtr,
             double smartTrailMomentumBonusAtr,
             double slRepriceBreathingAtr,
             int exitPressure,
@@ -105,13 +104,16 @@ namespace cAlgo
                         riskPips,
                         tp1Pips,
                         Math.Max(0, spreadPips),
-                        Math.Max(0, breakEvenTriggerRR),
+                        Math.Max(
+                            0,
+                            breakEvenTriggerRewardAtr /
+                            Math.Max(1e-12, risk / atr)),
                         Math.Max(0, breakEvenBufferPips),
                         Math.Max(0, riskFreeLockPips),
                         spreadAwareBreakEven);
 
                 if (be.Allowed &&
-                    peakRR * (risk / Math.Max(SymbolTickFloor(), atr)) >= breakEvenTriggerRewardAtr)
+                    peakRR * risk / atr >= breakEvenTriggerRewardAtr)
                 {
                     double breakEven =
                         direction == 1
@@ -292,11 +294,6 @@ namespace cAlgo
                 ? stop <= market - room
                 : direction == -1 &&
                   stop >= market + room;
-        }
-
-        private static double SymbolTickFloor()
-        {
-            return Math.Max(1e-12, 1e-12);
         }
 
         private static bool IsFiniteProtectionPrice(double value)
