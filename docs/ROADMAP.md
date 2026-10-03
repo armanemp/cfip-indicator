@@ -3466,3 +3466,20 @@ The panel alert rail now performs an immediate lightweight footer geometry refre
 Current panel correction is now based on actual visible geometry rather than a large fixed footer reserve. The Footer content minimum is 40px, the two-line MTF rail is 38px, outer panel padding is counted only once, and alert text is no-wrap/ellipsis within the audit-required 20px row. Signal-family sound is deduplicated across semantic stages for one closed-M5 event, and MTF arrows have their own chart-object namespace.
 
 cTrader Local/Cloud: the repository does not add Cloud execution. cTrader documentation states that cloud synchronisation makes created/installed algorithms and updates available across apps; Windows/Mac can adjust synchronisation, while custom indicators execute locally on Windows/Mac and cBot local/cloud execution is selectable. This makes repeated Local/Cloud reconciliation a terminal synchronization/instance-state issue rather than a CFIP source-code execution path.
+
+
+## 2026-10-04 — Smart trend arrows: single-owner 9-level strength + non-overlap
+
+Status: IMPLEMENTED — repository verification pending; target-terminal visual acceptance remains manual.
+
+This phase completes the requested arrow behavior without introducing a parallel signal path:
+- MtfTrendStrengthRule is the sole owner of MTF trend direction, strength score, nine-level strength and WEAK/MEDIUM/STRONG tier.
+- The previous preferred-direction override was removed so arrow strength cannot be recalculated around a second direction source.
+- SignalVisualSnapshot carries the canonical tier; SignalStackedArrowRenderer only renders the canonical result.
+- Levels 1-3 are WEAK, 4-6 MEDIUM, 7-9 STRONG; each tier has three distinct intensity levels represented by one, two or three arrows.
+- Arrow separation was increased from the previous 0.75-offset spacing to at least 1.5x the base offset (with tick/pip floor), preventing stacked glyph overlap while retaining the existing canonical renderer/lifecycle.
+- M1 remains a trigger/precision marker and is not promoted into a second directional arrow source.
+
+No second arrow-strength calculator or parallel renderer was added. Existing signal-arrow lifecycle remains the single presentation owner.
+
+Manual acceptance after local pull: verify the actual cTrader chart at levels 1..9, both BUY/SELL directions, tier transitions, arrow separation, stale-object removal and M1 marker non-overlap.
