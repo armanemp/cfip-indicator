@@ -40,6 +40,14 @@ History/outcomes -> pre-analysis -> M15 canonical decision -> M5 trigger/tuning/
 - Indicator remains broker-mutation-free.
 - No prediction or profitability guarantee is introduced.
 
+## Latest verification correction — 2026-10-03
+
+- The M3 sound-ownership audit was using a superseded method name (`ProcessQueuedAlertDelivery`).
+- The production owner is `ProcessQueuedAlertSoundDelivery` inside `AlertDeliveryProcessor`, reached from the Indicator Calculate finally boundary and guarded by `IsLastBar`.
+- Audit correction commit: `111b124857fb98061d3c31e0f6d889c19ea4176f`.
+- Targeted inspection of the exact branch head confirms the AlertEngine has no direct `Notifications.PlaySound` call and the realtime Calculate path services the queued sound processor.
+- GitHub did not start a new aggregate Source/Architecture workflow for the API-created audit-only commit; therefore aggregate CI is not claimed green here.
+
 ## Verification
 
 Repository:
