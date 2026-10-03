@@ -33,13 +33,6 @@ namespace cAlgo
                             Bars.Count - 2,
                             right)));
 
-            double boxHalfHeight =
-                Math.Max(
-                    Symbol.PipSize * 3,
-                    atr > 0
-                        ? atr * 0.055
-                        : Symbol.PipSize * 4);
-
             HashSetCurrentOpportunityVisuals();
 
             bool primaryM15Rendered = false;
@@ -180,25 +173,9 @@ namespace cAlgo
                     (ShowLevelPriceLabels ||
                      ShowSignalLabels))
                 {
-                    int baseLabelBar =
+                    int labelBar =
                         GetCompactPlanLabelAnchorBar(
                             left);
-
-                    int labelBar =
-                        Math.Max(
-                            left,
-                            Math.Min(
-                                right,
-                                baseLabelBar +
-                                i * 8));
-
-                    int boxRight =
-                        Math.Max(
-                            labelBar,
-                            Math.Min(
-                                right,
-                                labelBar +
-                                CompactPlanLabelWidthBars));
 
                     RenderOpportunityLabel(
                         baseName + "_ENTRY_LABEL",
@@ -212,10 +189,7 @@ namespace cAlgo
                             displayNumber),
                         candidate.Entry,
                         EntryLineColor,
-                        left,
-                        labelBar,
-                        boxRight,
-                        boxHalfHeight);
+                        labelBar);
 
                     RenderOpportunityLabel(
                         baseName + "_SL_LABEL",
@@ -229,10 +203,7 @@ namespace cAlgo
                             displayNumber),
                         candidate.Stop,
                         SlLineColor,
-                        left,
-                        labelBar,
-                        boxRight,
-                        boxHalfHeight);
+                        labelBar);
 
                     RenderOpportunityLabel(
                         baseName + "_TP1_LABEL",
@@ -246,10 +217,7 @@ namespace cAlgo
                             displayNumber),
                         candidate.Tp1,
                         TpLineColor,
-                        left,
-                        labelBar,
-                        boxRight,
-                        boxHalfHeight);
+                        labelBar);
 
                     RenderOpportunityLabel(
                         baseName + "_TP2_LABEL",
@@ -263,10 +231,7 @@ namespace cAlgo
                             displayNumber),
                         candidate.Tp2,
                         Tp2LineColor,
-                        left,
-                        labelBar,
-                        boxRight,
-                        boxHalfHeight);
+                        labelBar);
 
                     RenderOpportunityLabel(
                         baseName + "_TP3_LABEL",
@@ -280,10 +245,7 @@ namespace cAlgo
                             displayNumber),
                         candidate.Tp3,
                         Tp3LineColor,
-                        left,
-                        labelBar,
-                        boxRight,
-                        boxHalfHeight);
+                        labelBar);
 
                     RenderOpportunityLabel(
                         baseName + "_TP4_LABEL",
@@ -297,10 +259,7 @@ namespace cAlgo
                             displayNumber),
                         candidate.Tp4,
                         Tp4LineColor,
-                        left,
-                        labelBar,
-                        boxRight,
-                        boxHalfHeight);
+                        labelBar);
                 }
                 else
                 {
@@ -337,10 +296,7 @@ namespace cAlgo
             string text,
             double price,
             Color color,
-            int lineLeft,
-            int labelBar,
-            int boxRightBar,
-            double boxHalfHeight)
+            int labelBar)
         {
             RenderCompactPlanLabel(
                 name,
@@ -348,10 +304,7 @@ namespace cAlgo
                 price,
                 color,
                 true,
-                lineLeft,
-                labelBar,
-                boxRightBar,
-                boxHalfHeight);
+                labelBar);
         }
 
         private string LaneLabel(

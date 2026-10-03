@@ -99,15 +99,13 @@ require(
 
 require(
     'public void PlayStarted(' in audio and
-    'public void PlayLiveDisarmed(' in audio and
     'public void PlayBlocked(' in audio and
     'public void PlayStopped(' in audio and
     'public void PlayExecutionConfirmed(' in audio and
     'public void PlayExecutionRejected(' in audio and
     "_audio.PlayStarted(" in bot and
     "_audio.PlayStopped(" in bot and
-    "_audio.PlayBlocked(" in bot and
-    "_audio.PlayLiveDisarmed(" in bot,
+    "_audio.PlayBlocked(" in bot,
     "cBot lifecycle/block/execution audio must have one modular owner",
 )
 

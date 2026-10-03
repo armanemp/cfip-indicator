@@ -62,68 +62,56 @@ namespace cAlgo
                 GetCompactPlanLabelAnchorBar(
                     lineLeft);
 
-            int boxRightBar =
-                GetLabelBoxRightBar(
-                    lineLeft);
-
-            double labelAtr =
-                Bars.Count >= 3
-                    ? Atr(
-                        Bars,
-                        Math.Max(
-                            1,
-                            Math.Min(
-                                Bars.Count - 2,
-                                labelBar)))
-                    : 0;
-
-            double boxHalfHeight =
-                Math.Max(
-                    Symbol.PipSize * 3,
-                    labelAtr > 0
-                        ? labelAtr * 0.055
-                        : Symbol.PipSize * 4);
-
             string typeText =
                 snapshot.PendingOrderType;
 
             RenderCompactPlanLabel(
                 P + "PENDING_ENTRY_LABEL",
-                "PENDING " +
-                typeText +
-                " " +
-                Price(snapshot.PendingEntry),
+                BuildCanonicalLevelLabel(
+                    "PENDING " + typeText,
+                    "ENTRY",
+                    snapshot.PendingEntry,
+                    snapshot.PendingEntry,
+                    false,
+                    false,
+                    0,
+                    PlanTimeframeTag()),
                 snapshot.PendingEntry,
                 TriggerLineColor,
                 ShowTrigger,
-                lineLeft,
-                labelBar,
-                boxRightBar,
-                boxHalfHeight);
+                labelBar);
 
             RenderCompactPlanLabel(
                 P + "PENDING_SL_LABEL",
-                "SL " +
-                Price(snapshot.PendingStop),
+                BuildCanonicalLevelLabel(
+                    "PENDING " + typeText,
+                    "SL",
+                    snapshot.PendingStop,
+                    snapshot.PendingEntry,
+                    true,
+                    false,
+                    0,
+                    PlanTimeframeTag()),
                 snapshot.PendingStop,
                 SlLineColor,
                 ShowSL,
-                lineLeft,
-                labelBar,
-                boxRightBar,
-                boxHalfHeight);
+                labelBar);
 
             RenderCompactPlanLabel(
                 P + "PENDING_TP_LABEL",
-                "TP " +
-                Price(snapshot.PendingTarget),
+                BuildCanonicalLevelLabel(
+                    "PENDING " + typeText,
+                    "TP",
+                    snapshot.PendingTarget,
+                    snapshot.PendingEntry,
+                    true,
+                    false,
+                    0,
+                    PlanTimeframeTag()),
                 snapshot.PendingTarget,
                 TpLineColor,
                 ShowTP1,
-                lineLeft,
-                labelBar,
-                boxRightBar,
-                boxHalfHeight);
+                labelBar);
         }
 
         private void RemoveManagedPendingOrderObjects()

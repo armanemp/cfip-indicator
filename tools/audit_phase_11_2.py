@@ -58,8 +58,8 @@ require(
 )
 require(
     LABEL,
-    r"double verticalGap\s*=\s*\n\s*Math\.Max\([\s\S]*?price \+ verticalGap",
-    "vertical level-label gap",
+    r"double labelPrice\s*=\s*\n\s*NormalizePrice\(price\)",
+    "exact-price level-label alignment",
 )
 require(LAMP, r'ForegroundColor\s*=\s*Color\.FromArgb', "processing lamp pulse color")
 require(LAMP, r'_processingLampPulseIndex\s*=\s*\(_processingLampPulseIndex \+ 1\) % 6', "processing lamp pulse state")

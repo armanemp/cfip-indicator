@@ -257,7 +257,7 @@ separate implementation owners.
 | AUTO ORDERS quick control uses a direct operator click action | PASS | Required |
 | Programmatic toggle synchronization cannot execute operator actions | PASS | Required |
 | Setup preview renders Entry/Trigger/SL/TP compact labels | PASS | Required |
-| Compact level label is background-free and text exactly matches the semantic line color | PASS | Required |
+| Compact level label is background-free, white, exact-price aligned and horizontally separated from the line | PASS | Required |
 | Structural trailing cannot chase raw market price through final distance clamping | PASS | Required |
 | Structural trailing progression is closed-M5 gated | PASS | Required |
 | No new public parameter introduced | PASS | Required |

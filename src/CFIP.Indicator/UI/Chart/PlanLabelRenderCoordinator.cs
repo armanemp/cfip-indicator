@@ -40,28 +40,6 @@ namespace cAlgo
                 GetCompactPlanLabelAnchorBar(
                     lineLeft);
 
-            int boxRightBar =
-                GetLabelBoxRightBar(
-                    lineLeft);
-
-            double atr =
-                Bars.Count >= 3
-                    ? Atr(
-                        Bars,
-                        Math.Max(
-                            1,
-                            Math.Min(
-                                Bars.Count - 2,
-                                labelBar)))
-                    : 0;
-
-            double boxHalfHeight =
-                Math.Max(
-                    Symbol.PipSize * 4,
-                    atr > 0
-                        ? atr * 0.065
-                        : Symbol.PipSize * 5);
-
             double entry =
                 preview
                     ? snapshot.SetupEntry
@@ -114,10 +92,7 @@ namespace cAlgo
                     entry,
                     EntryLineColor,
                     true,
-                    lineLeft,
-                    labelBar,
-                    boxRightBar,
-                    boxHalfHeight);
+                    labelBar);
             }
             else
             {
@@ -144,10 +119,7 @@ namespace cAlgo
                 idealEntry,
                 PanelAccentColor,
                 ShowEntry && idealDistinct,
-                    lineLeft,
-                    labelBar,
-                    boxRightBar,
-                    boxHalfHeight);
+                    labelBar);
 
             bool triggerDistinct =
                 IsFinitePositive(trigger) &&
@@ -171,10 +143,7 @@ namespace cAlgo
                 ShowTrigger &&
                 triggerDistinct &&
                 !snapshot.LivePosition,
-                    lineLeft,
-                    labelBar,
-                    boxRightBar,
-                    boxHalfHeight);
+                    labelBar);
 
             double displayStop = stop;
 
@@ -188,10 +157,7 @@ namespace cAlgo
                 displayStop,
                 SlLineColor,
                 ShowSL,
-                    lineLeft,
-                    labelBar,
-                    boxRightBar,
-                    boxHalfHeight);
+                    labelBar);
 
             bool tp1Distinct =
                 IsFinitePositive(tp1) &&
@@ -213,10 +179,7 @@ namespace cAlgo
                 TpLineColor,
                 ShowTP1 &&
                 tp1Distinct,
-                    lineLeft,
-                    labelBar,
-                    boxRightBar,
-                    boxHalfHeight);
+                    labelBar);
 
             bool tp2Distinct =
                 IsFinitePositive(tp2) &&
@@ -242,10 +205,7 @@ namespace cAlgo
                 Tp2LineColor,
                 ShowTP2 &&
                 tp2Distinct,
-                    lineLeft,
-                    labelBar,
-                    boxRightBar,
-                    boxHalfHeight);
+                    labelBar);
 
             bool tp3Distinct =
                 IsFinitePositive(tp3) &&
@@ -271,10 +231,7 @@ namespace cAlgo
                 Tp3LineColor,
                 ShowTP3 &&
                 tp3Distinct,
-                    lineLeft,
-                    labelBar,
-                    boxRightBar,
-                    boxHalfHeight);
+                    labelBar);
 
             bool tp4Distinct =
                 IsFinitePositive(tp4) &&
@@ -300,10 +257,7 @@ namespace cAlgo
                 Tp4LineColor,
                 ShowTP4 &&
                 tp4Distinct,
-                    lineLeft,
-                    labelBar,
-                    boxRightBar,
-                    boxHalfHeight);
+                    labelBar);
 
             double activeBrokerTarget =
                 snapshot.BrokerTarget;
@@ -340,10 +294,7 @@ namespace cAlgo
                  ShowTP3 ||
                  ShowTP4) &&
                 activeBrokerTargetDistinct,
-                    lineLeft,
-                    labelBar,
-                    boxRightBar,
-                    boxHalfHeight);
+                    labelBar);
         }
     }
 }

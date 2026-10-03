@@ -396,7 +396,7 @@ Current canonical UI boundary:
 Current chart presentation contract:
 - BUY and SELL share one geometry/rendering path;
 - all plan/level lines remain Solid and finite with the canonical 40-bar compact span;
-- labels are background-free and reuse the exact semantic line color.
+- labels are background-free white text, aligned to the exact signal price and positioned left of the line with the canonical horizontal gap.
 
 Current cBot handoff:
 - Indicator publishes the canonical SignalEnvelope;

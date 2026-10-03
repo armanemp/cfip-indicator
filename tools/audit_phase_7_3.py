@@ -116,9 +116,10 @@ check(
 )
 
 check(
-    "phase document exists and closes the G3 scope without behavior retuning",
+    "phase document records the superseding one-pixel presentation contract",
     "Status: **VERIFIED COMPLETE" in phase and
-    "values 1/2/3 produce actual thickness 1/2/3" in phase and
+    "superseded" in phase and
+    "one-pixel" in phase and
     "no public parameter name/type/DefaultValue changed" in phase
 )
 

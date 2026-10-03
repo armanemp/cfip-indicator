@@ -1425,7 +1425,7 @@ if "Chart.FirstVisibleBarIndex" in visual_line_code or "Chart.LastVisibleBarInde
 if "as ChartText" not in plan_label_renderer_code:
     raise SystemExit("Plan labels must reuse existing ChartText objects")
 if 'name + "_BOX"' not in plan_label_renderer_code:
-    raise SystemExit("Plan labels must have attached compact box objects")
+    raise SystemExit("Plan labels must retain legacy box cleanup compatibility")
 if 'RemovePlanLabel(P + "ENTRY_LABEL")' not in plan_label_remover_code:
     raise SystemExit("Plan label remover must clean the compact label entry")
 if 'RemovePlanLabel(P + "ACTIVE_TP_LABEL")' not in plan_label_remover_code:
