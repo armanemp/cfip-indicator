@@ -111,10 +111,13 @@ check(
 )
 
 check(
-    "dynamic broker safety can be rechecked without consuming revision",
+    "dynamic broker safety can be rechecked without consuming a ScenarioId revision",
     "RevalidateBrokerSafety(" in shadow and
     "SINGLE-PLAN CAPACITY BLOCKED" in shadow and
-    "_lastResult = rechecked" in shadow,
+    "_lastResultByScenario" in shadow and
+    "_lastBrokerRecheckUtcByScenario" in shadow and
+    "GetLastBrokerRecheck(scenarioKey)" in shadow and
+    "SetScenarioBrokerRecheck(" in shadow,
 )
 
 check(
