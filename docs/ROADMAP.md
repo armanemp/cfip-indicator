@@ -16,7 +16,10 @@ Canonical correction:
 
 - same-scenario replay/conflict semantics remain strict;
 
+- last revision/idempotency state is keyed by ScenarioId;
+- cached shadow result/recheck timing is also keyed by ScenarioId;
 - global last-accepted values remain telemetry only;
+- ScenarioBatch materialization is restricted to the current closed M5 so stale registry candidates cannot enter the execution handoff;
 
 - cBot still processes every scenario from the batch and broker mutation ownership remains unchanged.
 
