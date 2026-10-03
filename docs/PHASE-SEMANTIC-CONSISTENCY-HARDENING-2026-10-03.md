@@ -45,12 +45,18 @@ Performance remains presentation-only because the new consumers use already-calc
 
 Obsolete duplicate panel-header formatting/color helpers left behind by the realtime header ownership change were removed; the remaining header wrapper only delegates to the canonical realtime owner.
 
-## Verification boundary
+## Verification
 
-Required:
-- Source/Architecture CI on the exact branch head.
-- Runtime Acceptance.
-- cTrader Compile/Build.
-- Target-terminal inspection of MTF lamps, MTF text, Market Bias, header, Top-Down, WaveTrend conflict presentation and alert readability.
+Implementation branch head: ad60b6090b65fb05caa3cb31905c49da2cdad52d
+Merged to main via PR #247 with merge commit 5933386c26a787ee3297fc6af825d1d85b74a0c3.
 
-Operator action after merge: git pull --ff-only.
+Automated verification on the exact final head:
+- Source / Architecture: PASS (154 successful steps, including the new semantic-consistency audit and the corrected legacy ownership audits).
+- Runtime Acceptance Contracts: PASS.
+- cTrader Compile: PASS.
+- Branch-local semantic consistency audit: PASS.
+
+Target-terminal acceptance remains a separate manual boundary. No live cTrader terminal observation was performed in this phase, so visual/runtime behavior in the target terminal is not claimed as manually verified.
+
+Operator action after merge:
+git pull --ff-only
