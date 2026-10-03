@@ -111,7 +111,7 @@ if "ExecutionControlPresentationRule.IsInteractive" not in production_source:
 if "ApplyAutoTradingQuickToggleClick" in production_source or "ApplyAutomaticOrdersQuickToggleClick" in production_source:
     raise SystemExit("Legacy interactive execution toggle handlers must be absent")
 
-presentation_rule = read("Core/Math/PlanLinePresentationRule.cs")
+presentation_rule = read("UI/Chart/PlanLinePresentationRule.cs")
 
 if "return LineStyle.Solid" not in line:
     raise SystemExit("Plan lines must remain Solid")
