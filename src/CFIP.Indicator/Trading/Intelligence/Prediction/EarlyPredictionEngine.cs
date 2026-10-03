@@ -28,10 +28,30 @@ namespace cAlgo
                         
                                     EarlyPredictionScoreResult score =
                                         EarlyPredictionScoreRule.Evaluate(
-                                            _m5Frame.BullScore,
-                                            _m5Frame.BearScore,
-                                            _m15Frame.BullScore,
-                                            _m15Frame.BearScore,
+                                            new[]
+                                            {
+                                                _m1Frame,
+                                                _m5Frame,
+                                                _m15Frame,
+                                                _m30Frame,
+                                                _h1Frame,
+                                                _h4Frame,
+                                                _d1Frame,
+                                                _w1Frame
+                                            },
+                                            new[]
+                                            {
+                                                0.0,
+                                                Math.Max(1.0, M5Weight),
+                                                Math.Max(1.0, M15Weight),
+                                                Math.Max(0.0, M30Weight),
+                                                Math.Max(0.0, H1Weight),
+                                                Math.Max(0.0, H4Weight),
+                                                Math.Max(0.0, D1Weight),
+                                                SmartWeeklyContext
+                                                    ? Math.Max(0.0, W1Weight)
+                                                    : 0.0
+                                            },
                                             UseLiquidityForecast,
                                             _m5Frame.LiquidityBull,
                                             _m5Frame.LiquidityBear,
