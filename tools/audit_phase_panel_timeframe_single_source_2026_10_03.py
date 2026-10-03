@@ -27,9 +27,10 @@ check(
 
 check(
     "ResolvePanelTimeframeState(frame)" in lamp and
-    "FrameDirection(frame)" not in lamp and
-    "ResolveFrameTrendStrength(" not in lamp,
-    "timeframe lamps must consume the canonical presentation state without local direction/strength logic",
+    "PanelTimeframePresentationState" in lamp and
+    "state.Direction" in lamp and
+    "state.Strength" in lamp,
+    "timeframe lamps must consume the canonical presentation state without local direction/strength ownership",
 )
 
 check(
