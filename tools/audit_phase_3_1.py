@@ -47,8 +47,9 @@ checks = {
         "swingLow" not in structural
     ),
     "structural exit records success only after broker mutation success": (
-        "bool closeAccepted" in structural and
-        "if (!closeAccepted)" in structural and
+        "ManagementCommandRequestStatus closeStatus" in structural and
+        "if (!closeStatus.IsAccepted())" in structural and
+        "closeStatus.IsBrokerConfirmed()" in structural and
         "LiveInvalidationRule.RecordExitM5(" in structural
     ),
     "generic live-plan exit cannot advance bookkeeping on rejection": (
