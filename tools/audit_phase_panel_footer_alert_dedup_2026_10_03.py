@@ -183,6 +183,7 @@ check(
 check(
     "_lastRenderedPanelAlertRevision" in read("UI/Panel/PanelAlertMessageRenderer.cs") and
     "if (_lastRenderedPanelAlertRevision ==" in read("UI/Panel/PanelAlertMessageRenderer.cs") and
+    "Visibility follows current panel lifecycle" in read("UI/Panel/PanelAlertMessageRenderer.cs") and
     "RefreshPanelAlertFooterGeometry();" in read("UI/Panel/PanelAlertMessageRenderer.cs") and
     "ResolvePanelFooterAreaHeight(" in read("UI/Panel/PanelAlertMessageRenderer.cs") and
     "_buttonStack.Height" in read("UI/Panel/PanelAlertMessageRenderer.cs"),
