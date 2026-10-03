@@ -133,9 +133,10 @@ namespace cAlgo
                 Bars.Count < 2)
                 return 0;
 
-            if (FullWidthLevelLines)
-                return 0;
-
+            // Signal/plan lines have a fixed visual contract:
+            // exactly 40 chart bars from the latest candle. The legacy
+            // FullWidthLevelLines setting is retained elsewhere for
+            // compatibility but must not expand signal-level geometry.
             return Math.Max(
                 0,
                 GetPlanLineRightBar() -
