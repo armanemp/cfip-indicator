@@ -26,7 +26,7 @@ namespace cAlgo
             {
                 _status =
                     "WAITING FOR MTF DATA";
-                RenderPanel();
+                RequestPanelContentRefresh();
                 return false;
             }
 
