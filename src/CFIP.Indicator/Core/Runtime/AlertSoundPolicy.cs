@@ -23,7 +23,7 @@ namespace cAlgo
             public string GroupKey { get; }
         }
 
-        public static Decision Resolve(
+        public static Decision ResolveAlertSound(
             string key,
             bool useSemanticSounds,
             SoundType configuredSoundType,
