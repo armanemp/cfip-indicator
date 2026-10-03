@@ -306,6 +306,14 @@ namespace cAlgo
                 reason);
         }
 
+        private static bool IsFinitePositive(double value)
+        {
+            return
+                !double.IsNaN(value) &&
+                !double.IsInfinity(value) &&
+                value > 0;
+        }
+
         private static bool IsScenarioPriceClose(
             double left,
             double right,
