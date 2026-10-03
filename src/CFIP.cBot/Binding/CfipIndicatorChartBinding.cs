@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using cAlgo.API;
 using CFIP.Contracts;
 
@@ -26,7 +27,36 @@ namespace CFIP.cBot.Binding
             ChartIndicator match = null;
             int count = 0;
 
-            foreach (ChartIndicator candidate in robot.ChartIndicators)
+            List<ChartIndicator> candidates =
+                new List<ChartIndicator>();
+
+            try
+            {
+                foreach (ChartIndicator candidate in robot.ChartIndicators.Custom)
+                {
+                    if (candidate != null &&
+                        !candidates.Contains(candidate))
+                        candidates.Add(candidate);
+                }
+            }
+            catch
+            {
+            }
+
+            try
+            {
+                foreach (ChartIndicator candidate in robot.ChartIndicators)
+                {
+                    if (candidate != null &&
+                        !candidates.Contains(candidate))
+                        candidates.Add(candidate);
+                }
+            }
+            catch
+            {
+            }
+
+            foreach (ChartIndicator candidate in candidates)
             {
                 if (candidate == null)
                     continue;
@@ -35,7 +65,11 @@ namespace CFIP.cBot.Binding
                     string.Equals(
                         candidate.Name,
                         DisplayName,
-                        StringComparison.Ordinal);
+                        StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(
+                        candidate.Name,
+                        TypeName,
+                        StringComparison.OrdinalIgnoreCase);
 
                 string candidateTypeName =
                     candidate.Type == null
@@ -51,14 +85,14 @@ namespace CFIP.cBot.Binding
                     string.Equals(
                         candidateTypeName,
                         TypeName,
-                        StringComparison.Ordinal) ||
+                        StringComparison.OrdinalIgnoreCase) ||
                     string.Equals(
                         candidateTypeText,
                         TypeName,
-                        StringComparison.Ordinal) ||
+                        StringComparison.OrdinalIgnoreCase) ||
                     candidateTypeText.EndsWith(
                         "." + TypeName,
-                        StringComparison.Ordinal);
+                        StringComparison.OrdinalIgnoreCase);
 
                 if (!instanceNameMatches &&
                     !typeNameMatches)
@@ -70,8 +104,32 @@ namespace CFIP.cBot.Binding
 
             if (count == 0)
             {
-                reason = "CFIP SMART INDICATOR NOT ATTACHED TO THIS CHART • chartIndicators=" +
-                         robot.ChartIndicators.Count;
+                List<string> diagnostics =
+                    new List<string>();
+
+                for (int i = 0;
+                     i < candidates.Count && i < 8;
+                     i++)
+                {
+                    ChartIndicator candidate = candidates[i];
+                    diagnostics.Add(
+                        (candidate.Name ?? "NAME?") +
+                        "/" +
+                        (candidate.Type == null
+                            ? "TYPE?"
+                            : candidate.Type.ToString()));
+                }
+
+                reason =
+                    "CFIP SMART INDICATOR NOT ATTACHED TO THIS CHART" +
+                    " • custom=" +
+                    SafeCount(robot.ChartIndicators.Custom) +
+                    " • total=" +
+                    candidates.Count +
+                    (diagnostics.Count == 0
+                        ? ""
+                        : " • seen=" +
+                          string.Join(" | ", diagnostics));
                 return false;
             }
 
@@ -89,6 +147,21 @@ namespace CFIP.cBot.Binding
 
             indicator = match;
             return true;
+        }
+
+        private static int SafeCount(
+            IReadOnlyList<ChartIndicator> indicators)
+        {
+            try
+            {
+                return indicators == null
+                    ? 0
+                    : indicators.Count;
+            }
+            catch
+            {
+                return 0;
+            }
         }
     }
 }
