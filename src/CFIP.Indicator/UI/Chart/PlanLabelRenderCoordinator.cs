@@ -34,7 +34,7 @@ namespace cAlgo
             }
 
             int labelBar =
-                GetPlanLineRightBar();
+                GetCompactPlanLabelAnchorBar();
 
             PlanLevelVisualState state =
                 BuildPlanLevelVisualState(
