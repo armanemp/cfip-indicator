@@ -26,7 +26,7 @@ namespace CFIP.cBot.Binding
             ChartIndicator match = null;
             int count = 0;
 
-            foreach (ChartIndicator candidate in robot.ChartIndicators.Custom)
+            foreach (ChartIndicator candidate in robot.ChartIndicators)
             {
                 if (candidate == null)
                     continue;
@@ -37,11 +37,27 @@ namespace CFIP.cBot.Binding
                         DisplayName,
                         StringComparison.Ordinal);
 
+                string candidateTypeName =
+                    candidate.Type == null
+                        ? string.Empty
+                        : candidate.Type.Name ?? string.Empty;
+
+                string candidateTypeText =
+                    candidate.Type == null
+                        ? string.Empty
+                        : candidate.Type.ToString() ?? string.Empty;
+
                 bool typeNameMatches =
-                    candidate.Type != null &&
                     string.Equals(
-                        candidate.Type.Name,
+                        candidateTypeName,
                         TypeName,
+                        StringComparison.Ordinal) ||
+                    string.Equals(
+                        candidateTypeText,
+                        TypeName,
+                        StringComparison.Ordinal) ||
+                    candidateTypeText.EndsWith(
+                        "." + TypeName,
                         StringComparison.Ordinal);
 
                 if (!instanceNameMatches &&
@@ -54,7 +70,8 @@ namespace CFIP.cBot.Binding
 
             if (count == 0)
             {
-                reason = "CFIP SMART INDICATOR NOT ATTACHED TO THIS CHART";
+                reason = "CFIP SMART INDICATOR NOT ATTACHED TO THIS CHART • chartIndicators=" +
+                         robot.ChartIndicators.Count;
                 return false;
             }
 
