@@ -209,7 +209,7 @@ if "PlaceLimitOrder(" not in pending_cbot:
 print("Runtime UI audit PASS")
 print("Plan lines: 40-bar compact geometry anchored to latest chart candle")
 print("All level/prediction signal lines: solid-only")
-print("Level labels: white text, background-free, exact-price alignment")
+print("Level labels: white text inside canonical line-colored filled boxes, exact-price alignment")
 print("Alerts: unified panel rail + optional sound, no popup UI")
 print("Indicator execution controls: broker-action UI removed; analysis panel is canonical")
 print("Market / Market-Range broker mutation: owned by CFIP.cBot")
