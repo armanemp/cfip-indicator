@@ -134,7 +134,7 @@ namespace cAlgo
                             }
 
                             int strength =
-                                HtfTrendArrowStrengthRule.Resolve(
+                                HtfTrendArrowStrengthRule.ResolveStrength(
                                     _h1Frame,
                                     _h4Frame,
                                     _d1Frame,
