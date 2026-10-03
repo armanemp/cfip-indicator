@@ -33,66 +33,31 @@ namespace cAlgo
                     Bars.Count < 2)
                     return;
 
-                int safeBar =
+                int anchor =
                     Math.Max(
                         0,
                         Math.Min(
                             Bars.Count - 1,
                             bar));
 
-                double labelPrice =
-                    NormalizePrice(price);
+                // Prediction lines use their own configured backward span.
+                // Convert the prediction anchor into the exact line-left
+                // position, then delegate to the same compact tag renderer
+                // used by canonical plan/pending/parallel labels.
+                int lineLeft =
+                    Math.Max(
+                        0,
+                        anchor -
+                        Math.Max(
+                            1,
+                            LineLengthBars));
 
-                Color labelTextColor =
-                    GetReadableLabelTextColor(color);
-
-                ChartText label =
-                    Chart.FindObject(name)
-                    as ChartText;
-
-                if (label == null)
-                {
-                    ChartObject existing =
-                        Chart.FindObject(name);
-
-                    if (existing != null)
-                        Chart.RemoveObject(name);
-
-                    label =
-                        Chart.DrawText(
-                            name,
-                            text,
-                            Bars.OpenTimes[safeBar],
-                            labelPrice,
-                            labelTextColor);
-                }
-
-                if (label == null)
-                    return;
-
-                label.Text =
-                    text;
-                label.Time =
-                    Bars.OpenTimes[safeBar];
-                label.Y =
-                    labelPrice;
-                label.Color =
-                    labelTextColor;
-                label.FontSize =
-                    CompactPlanLabelFontSize;
-                label.FontFamily =
-                    string.IsNullOrWhiteSpace(
-                        PanelFontFamily)
-                        ? "Arial"
-                        : PanelFontFamily;
-                label.IsBold =
-                    false;
-                label.HorizontalAlignment =
-                    HorizontalAlignment.Left;
-                label.VerticalAlignment =
-                    VerticalAlignment.Center;
-                label.IsInteractive =
-                    false;
+                DrawCompactPlanLabel(
+                    name,
+                    text,
+                    price,
+                    color,
+                    lineLeft);
             }
             catch (Exception ex)
             {
