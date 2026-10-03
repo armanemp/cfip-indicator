@@ -3536,3 +3536,12 @@ Canonical presentation re-audited end-to-end. Final contract: one MTF trend-arro
 - Re-verified plan-level geometry: Solid, fixed 1px, finite 40-bar span ending at the latest chart candle; compact labels use a filled semantic-color box with white regular text and the exact line endpoint as the right edge.
 - Removed obsolete arrow calculations from the non-owner signal renderer and consolidated arrow-color resolution under the canonical stacked-arrow owner; no parallel renderer was introduced.
 - Runtime/build verification remains pending on the user's local cTrader environment.
+
+
+### 2026-10-04 — Unified trend-strength / signal-presentation consistency
+- The MTF trend remains the single strength source: 9 levels, grouped into WEAK/MEDIUM/STRONG with 3 levels each; the arrow stack maps level 1/2/3 within each tier to 1/2/3 arrows.
+- Canonical arrows are now decision-aware: when an active/actionable canonical trade direction conflicts with the MTF trend direction, contradictory directional arrows are suppressed rather than presenting BUY/SELL visually at the same time.
+- Event, opportunity, and historical markers no longer use the canonical UpArrow/DownArrow glyphs; they use triangle markers so directional arrows remain uniquely owned by the live MTF trend presentation.
+- Canonical watch/action alerts and Entry box text now expose the same MTF trend tier/level, keeping audio/event delivery, chart arrows, signal levels and box text tied to the same snapshot context.
+- The signal-level geometry contract remains unchanged: Solid, 1px, finite 40-bar span ending at the latest candle; labels remain filled semantic-color boxes with white regular text.
+- Local Release build/runtime verification is still required.
