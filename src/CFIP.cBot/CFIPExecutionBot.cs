@@ -163,6 +163,9 @@ namespace CFIP.cBot
         private readonly Risk.CbotDailyLossGuard _dailyLossGuard =
             new Risk.CbotDailyLossGuard();
 
+        private readonly CbotLifecycleAudioService _audio =
+            new CbotLifecycleAudioService();
+
         private CbotIndicatorExecutionSettings _executionSettings;
 
         private CbotBrokerReconciliationResult _reconciliation;
@@ -237,6 +240,10 @@ namespace CFIP.cBot
             PublishPresence("STARTING");
             _tickCount = 0;
             _sessionExecutions = 0;
+
+            _audio.PlayStarted(
+                this,
+                Account.IsLive);
 
             // Chart timeframe is host-only. CFIP execution is driven by the
             // Indicator's internal M15 analysis clock and does not use Bars.TimeFrame.
@@ -566,6 +573,11 @@ namespace CFIP.cBot
                     PublishExecutionState(
                         "RECOVERY REQUIRED",
                         true);
+                    _audio.PlayRecoveryRequired(
+                        this,
+                        envelope.Identity == null
+                            ? ""
+                            : envelope.Identity.ScenarioId);
                     return;
                 }
             }
@@ -671,6 +683,12 @@ namespace CFIP.cBot
                             : "PENDING SUBMISSION RESULT • " +
                               pendingReport.Status,
                         true);
+
+                    PlayBrokerOutcomeAudio(
+                        pendingReport.Status,
+                        envelope.Identity == null
+                            ? ""
+                            : envelope.Identity.ScenarioId);
                 }
 
                 return;
@@ -730,7 +748,38 @@ namespace CFIP.cBot
                         : "MARKET SUBMISSION RESULT • " +
                           report.Status,
                     true);
+
+                PlayBrokerOutcomeAudio(
+                    report.Status,
+                    envelope.Identity == null
+                        ? ""
+                        : envelope.Identity.ScenarioId);
             }
+        }
+
+        private void PlayBrokerOutcomeAudio(
+            BrokerReportStatus status,
+            string scenarioId)
+        {
+            if (status == BrokerReportStatus.Confirmed)
+            {
+                _audio.PlayExecutionConfirmed(
+                    this,
+                    scenarioId);
+                return;
+            }
+
+            if (status == BrokerReportStatus.RecoveryRequired)
+            {
+                _audio.PlayRecoveryRequired(
+                    this,
+                    scenarioId);
+                return;
+            }
+
+            _audio.PlayExecutionRejected(
+                this,
+                scenarioId);
         }
 
         private void TrackScenarioEnvelope(
@@ -1434,6 +1483,10 @@ namespace CFIP.cBot
                 true);
 
             UnsubscribeIndicatorLifecycleEvents();
+
+            _audio.PlayStopped(
+                this,
+                Account.IsLive);
 
             Print(
                 "CFIP cBot STOP | account={0} | state={1} | executions={2} | " +
