@@ -13,6 +13,7 @@ The goal is not to remove legitimate semantic distinctions. Trade direction, tim
 3. The WaveTrend row displayed its own BULL/BEAR evidence text while its color depended on agreement with the separate trade direction. A directional evidence statement could therefore appear in a neutral color without an explicit conflict state.
 4. The Top-Down row exposed raw numeric direction values, creating a second visual vocabulary for direction.
 5. The Decision row could show READY when EntryAllowed was true while the Entry Gate row simultaneously showed BLOCKED whenever ActionableNow was false. Those fields represent different stages, but the wording made them appear contradictory.
+6. PredictionReadinessText could show ENTRY CONFIRMED for any EntryAllowed decision even when the current entry was still waiting on trigger or actionability. The wording mixed setup qualification with current entry execution readiness.
 
 ## Corrections
 
