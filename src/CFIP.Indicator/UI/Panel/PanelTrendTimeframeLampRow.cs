@@ -162,37 +162,30 @@ namespace cAlgo
                         ? frames[i]
                         : null;
 
-                int direction =
-                    frame == null
-                        ? 0
-                        : FrameDirection(frame);
-
-                int strength =
-                    ResolveFrameTrendStrength(
-                        frame,
-                        direction);
+                PanelTimeframePresentationState state =
+                    ResolvePanelTimeframeState(frame);
 
                 indicator.Text = "●";
                 indicator.FontSize =
-                    strength >= 3
+                    state.Strength >= 3
                         ? PanelStatusLampFontSize
-                        : strength == 2
+                        : state.Strength == 2
                             ? PanelStatusLampFontSize - 1
                             : PanelStatusLampFontSize - 2;
 
                 label.Text = labels[i];
 
                 Color lampColor =
-                    direction == 1
-                        ? (strength >= 3
+                    state.Direction == 1
+                        ? (state.Strength >= 3
                             ? StrongBuyArrowColor
-                            : strength == 2
+                            : state.Strength == 2
                                 ? ConfirmedBuyArrowColor
                                 : CautionBuyArrowColor)
-                        : direction == -1
-                            ? (strength >= 3
+                        : state.Direction == -1
+                            ? (state.Strength >= 3
                                 ? StrongSellArrowColor
-                                : strength == 2
+                                : state.Strength == 2
                                     ? ConfirmedSellArrowColor
                                     : CautionSellArrowColor)
                             : PanelSecondaryTextColor;
@@ -200,35 +193,6 @@ namespace cAlgo
                 indicator.ForegroundColor = lampColor;
                 label.ForegroundColor = lampColor;
             }
-        }
-
-        private int ResolveFrameTrendStrength(
-            Frame frame,
-            int direction)
-        {
-            if (frame == null ||
-                direction == 0 ||
-                !frame.NativeIndicatorsReady)
-                return 0;
-
-            int score =
-                direction == 1
-                    ? frame.BullScore
-                    : frame.BearScore;
-
-            double adx =
-                double.IsNaN(frame.Adx) ||
-                double.IsInfinity(frame.Adx)
-                    ? 0
-                    : frame.Adx;
-
-            if (score >= 70 || adx >= 25)
-                return 3;
-
-            if (score >= 55 || adx >= 20)
-                return 2;
-
-            return 1;
         }
 
         private void RemovePanelTrendTimeframeLampRow()
