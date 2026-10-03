@@ -93,9 +93,10 @@ checks = {
     "protected stop becomes plan state only after mutation confirmation": (
         "_pendingProtectedStopCandidate" in live and
         "_pendingProtectedStopCandidate" in bound and
-        "stopMutationSucceeded" in bound and
+        "stopMutationStatus" in bound and
         "RequestModifyStopLoss(" in bound and
         "ApplyBrokerConfirmedProtectionState(" in bound and
+        "stopMutationStatus.IsBrokerConfirmed()" in bound and
         "NormalizePrice(desiredStop)" in bound
     ),
     "broker stop rejection does not overwrite plan stop": (
