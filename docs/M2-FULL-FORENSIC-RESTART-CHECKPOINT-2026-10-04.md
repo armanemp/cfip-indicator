@@ -155,7 +155,7 @@ Current branch:
 `phase/M2-repository-hygiene-ownership-current`
 
 Current audited HEAD:
-`14be58c6082ae82395ec791f8a3ec2e423470eb2`
+`5fecbb52fc40c3266c8d91c6041b3303785fbdbb`
 
 PR:
 `#257`
@@ -186,7 +186,7 @@ Already root-corrected during the current M2 effort and must be re-verified, not
 
 ## Current forensic progress
 
-**M2-A.1 and M2-A.2 are audited and remain OPEN.** Findings are recorded in `docs/M2-A1-REPOSITORY-BUILD-TRUTH-2026-10-04.md` and `docs/M2-A2-DUPLICATE-PARTIAL-REACHABILITY-2026-10-04.md`.
+**M2-A.1 and M2-A.2 are audited and remain OPEN; M2-A.1 also contains one root-corrected CI build-gap finding awaiting workflow verification.** Findings are recorded in `docs/M2-A1-REPOSITORY-BUILD-TRUTH-2026-10-04.md` and `docs/M2-A2-DUPLICATE-PARTIAL-REACHABILITY-2026-10-04.md`.
 
 Key open build-architecture findings: the primary solution excludes verification projects; 52 platform-neutral source files are compiled into multiple contract harness assemblies; the Runtime Contracts harness has 168 explicit source includes; and the Indicator CI mirror separately compiles the full Indicator tree. These are architecture/build findings, not yet remediated.
 
