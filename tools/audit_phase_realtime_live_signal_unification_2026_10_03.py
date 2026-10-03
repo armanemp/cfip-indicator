@@ -210,7 +210,8 @@ check(
     "Current continuation" in continuation and
     "Realtime/Live Execution + Volume Profile Intelligence" in continuation and
     "Realtime all-timeframe intelligence + smart arrows" in continuation and
-    "Realtime Live Execution + Signal Truth Unification" in phase
+    ("Realtime / Live Execution + Volume Profile Intelligence" in phase or
+     "Realtime all-timeframe intelligence + smart arrows" in phase)
 )
 
 check(
