@@ -127,10 +127,11 @@ namespace cAlgo
                                         
                                                     _panelHeaderTitle.ForegroundColor =
                                                         GetCanonicalSignalPanelStatusColor();
-                                        
-                                                    _panelHeaderTitle.Text =
-                                                        "CFIP SMART  •  " +
-                                                        GetCanonicalSignalPanelStatus();
+
+                                                    // Header content is owned by the lightweight live-header
+                                                    // presentation service so geometry updates never freeze its
+                                                    // realtime state.
+                                                    UpdatePanelHeaderLiveState();
                                         
                                                     _panelHeaderTitle.LineHeight =
                                                         Math.Max(
