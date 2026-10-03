@@ -1438,10 +1438,10 @@ if "PlanLinePresentationRule.ResolveThickness(" not in visual_line_code:
     raise SystemExit("Plan-level thickness must consume the canonical presentation rule")
 if "MinimumThickness = 1" not in visual_line_presentation_rule_code:
     raise SystemExit("Plan-line presentation rule must preserve minimum thickness 1")
-if "MaximumThickness = 3" not in visual_line_presentation_rule_code:
-    raise SystemExit("Plan-line presentation rule must preserve maximum thickness 3")
-if "Math.Min(1" in visual_line_code:
-    raise SystemExit("Plan-line renderer must not force configured thickness back to one")
+if "return MinimumThickness;" not in visual_line_presentation_rule_code:
+    raise SystemExit("Plan-line presentation rule must keep the one-pixel visual contract")
+if "line.Thickness = 1" in visual_line_code:
+    raise SystemExit("Plan-line renderer must consume the canonical one-pixel thickness rule")
 
 # Runtime UI responsiveness hotfix contract.
 PANEL_VISIBILITY = ROOT / "UI" / "Panel" / "PanelVisibility.cs"
@@ -2666,8 +2666,8 @@ PLAN_LABEL_RENDERER_CODE = PLAN_LABEL_RENDERER.read_text(encoding="utf-8")
 if "GetReadableLabelTextColor(" not in PLAN_LABEL_RENDERER_CODE:
     raise SystemExit("Compact plan labels must resolve a canonical text color")
 compact_label_color = PLAN_LABEL_RENDERER_CODE[PLAN_LABEL_RENDERER_CODE.find("private void DrawCompactPlanLabel("):]
-if "return semanticColor;" not in compact_label_color:
-    raise SystemExit("Compact plan labels must reuse the exact semantic line color")
+if "return Color.White;" not in compact_label_color:
+    raise SystemExit("Compact plan labels must use the canonical white text contract")
 if "Chart.DrawRectangle(" in PLAN_LABEL_RENDERER_CODE:
     raise SystemExit("Compact plan labels must remain background-free")
 compact_label_start = PLAN_LABEL_RENDERER_CODE.find("private void DrawCompactPlanLabel(")
