@@ -2,7 +2,7 @@ using System;
 
 namespace cAlgo
 {
-    public partial class CFIPIndicator : cAlgo.API.Indicator
+    public partial class CFIPIndicator
     {
         private void ApplyOpportunityIntelligenceRanking(
             TradeOpportunityCandidate candidate,
