@@ -44,12 +44,10 @@ namespace cAlgo
                             0,
                             Symbol.Ask - Symbol.Bid)
                         : 0,
-                    Math.Max(
-                        Tp1MinimumRR,
-                        MinimumRequiredRRForRegime(
+                    MinimumRequiredRRForRegime(
                             _decision == null
                                 ? "UNKNOWN"
-                                : _decision.Regime)),
+                                : _decision.Regime),
                     PreferredStopRiskAtr,
                     StructuralStopRiskRule.EffectiveMaximumStopRiskAtr(
                         MinimumSlAtr,
