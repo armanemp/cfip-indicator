@@ -24,7 +24,10 @@ def require(condition, message):
 reader = read("src/CFIP.Indicator/Runtime/Cbot/CbotExecutionStateReader.cs")
 binding = read("src/CFIP.cBot/Binding/CfipIndicatorChartBinding.cs")
 alerts = read("src/CFIP.Indicator/Runtime/Calculation/CalculationDecisionAlerts.cs")
-signal_renderer = read("src/CFIP.Indicator/UI/Chart/SignalRenderer.cs")
+signal_renderer = (
+    read("src/CFIP.Indicator/UI/Chart/SignalRenderer.cs") +
+    read("src/CFIP.Indicator/UI/Chart/MtfTrendArrowRenderer.cs")
+)
 watch_renderer = read("src/CFIP.Indicator/UI/Chart/SignalPresentationRenderer.cs")
 labels = read("src/CFIP.Indicator/UI/Chart/PlanLabelFormatting.cs")
 label_renderer = read("src/CFIP.Indicator/UI/Chart/PlanLabelRenderer.cs")
@@ -39,7 +42,10 @@ for source, display, label in (
     (binding, "DisplayName", "Indicator binding"),
 ):
     require("candidate.Name" in source, label + " must inspect chart instance name")
-    require("candidate.Type.Name" in source and ("candidate.Type == null" in source or "candidate.Type != null" in source), label + " must inspect chart object type")
+    require(\
+        ("candidate.Type != null" in source or "candidate.Type == null" in source),\
+        label + " must inspect chart object type safely",\
+    )
     require("candidate.Type.Name" in source, label + " must support type-name matching")
     require(display in source, label + " identity constant missing")
 
