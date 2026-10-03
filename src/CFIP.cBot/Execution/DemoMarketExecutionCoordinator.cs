@@ -348,13 +348,30 @@ namespace CFIP.cBot.Execution
                 return false;
             }
 
-            reason = "POSITION #" + result.Position.Id;
+            bool protectionConfirmed =
+                result.Position.StopLoss.HasValue &&
+                result.Position.TakeProfit.HasValue &&
+                IsFinitePositive(
+                    result.Position.StopLoss.Value) &&
+                IsFinitePositive(
+                    result.Position.TakeProfit.Value);
+
+            BrokerReportStatus confirmationStatus =
+                protectionConfirmed
+                    ? BrokerReportStatus.Confirmed
+                    : BrokerReportStatus.RecoveryRequired;
+
+            reason =
+                protectionConfirmed
+                    ? "POSITION #" + result.Position.Id
+                    : "POSITION #" + result.Position.Id +
+                      " • BROKER PROTECTION INCOMPLETE";
 
             Remember(key);
 
             report = BuildReport(
                 envelope,
-                BrokerReportStatus.Confirmed,
+                confirmationStatus,
                 nowUtc,
                 result,
                 reason);
