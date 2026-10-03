@@ -364,3 +364,17 @@ No production changes from the stale branch are being carried forward automatica
 - [ ] M2.181 **Indicator binding refresh and execution-settings refresh have different cache semantics.** `RefreshIndicatorBinding()` can detect a changed instance and clear/reload state, while `RefreshExecutionSettings(false)` simply returns whenever settings are non-null. The audit must prove that settings cannot become stale when the same Indicator instance's parameters/configuration change, especially because ChartIndicator Modified events can occur between the two clocks.
 - [ ] M2.182 **`ReloadSignalStore(true)` is forced on every cBot timer cycle.** The 100ms timer bypasses the 100ms next-reload cache by design, while OnTick uses the non-forced path. This makes signal-store access frequency dependent on timer scheduling and duplicates the transport polling path; one canonical transport refresh cadence is required.
 - [ ] M2.183 **Scenario protection can mutate shared execution context while iterating scenarios.** `SweepScenarioProtectionStates()` changes `_activeManagedExecutionLabel`, `_lastSignalEnvelope`, and `_reconciliation` when recovering a scenario. Those are also global cBot fields used by general execution/state publishing, so one scenario's recovery can temporarily become the global active context of another scenario. Scenario-local recovery state must remain scenario-scoped until explicitly promoted by a canonical policy.
+
+### M2 implementation progress — realtime/cross-scenario ownership correction
+
+- M2.177/M2.178 root correction implemented: realtime signal/management consumption is now owned by the 100ms OnTimer() path. OnTick() no longer reads signal transport, processes envelopes, processes management commands, or sweeps scenario protection. This removes the duplicate realtime execution-consumption clock rather than adding another guard.
+- ReloadSignalStore(false) now uses the existing canonical reload cadence from the timer; startup remains the only forced initial load.
+- M2.183 root correction implemented: scenario protection recovery no longer promotes a scenario's reconciliation/envelope/label into global execution context during the scenario sweep. Recovery receives the scenario-local reconciliation result explicitly.
+- M2.184 confirmed/fixed: realtime revision tracking was previously global to one scenario. It is now keyed by ScenarioId, so a multi-scenario batch cannot cause scenario A to be reprocessed merely because scenario B advanced the global revision tracker. Binding/reset paths clear the per-scenario revision map.
+- ShouldProcessRealtimeTimerEnvelope() remains the single canonical duplicate-consumption guard for the timer-owned transport consumer.
+- These corrections are architectural, not threshold/latency patches: one realtime consumer owner, one transport refresh policy, and scenario-local recovery truth.
+
+### Verification state for this implementation
+- Source-level review completed for the modified cBot paths.
+- GitHub combined status for the documentation-only preceding commit was empty; no passing build gate was claimed.
+- cTrader compile/runtime acceptance remains open until the branch can pass the repository's authoritative build/audit workflow and target-terminal checks.
