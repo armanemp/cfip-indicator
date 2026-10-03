@@ -274,8 +274,29 @@ namespace CFIP.cBot.Execution
         private string StoreKey()
         {
             return KeyPrefix +
-                   ContractBusKeyHash.Hash(
-                       _instanceId);
+                   ComputeStableHash(_instanceId);
+        }
+
+        private static string ComputeStableHash(
+            string value)
+        {
+            const ulong offsetBasis =
+                14695981039346656037UL;
+            const ulong prime =
+                1099511628211UL;
+
+            ulong hash = offsetBasis;
+
+            foreach (char character in
+                     value ?? string.Empty)
+            {
+                hash ^= character;
+                hash *= prime;
+            }
+
+            return hash.ToString(
+                "X16",
+                CultureInfo.InvariantCulture);
         }
     }
 }
