@@ -18,12 +18,36 @@ namespace CFIP.cBot.Execution
             TimeSpan.FromMilliseconds(1500);
 
         public void PlayStarted(
+            Robot robot,
+            bool liveArmed)
+        {
+            Play(
+                robot,
+                liveArmed
+                    ? "CBOT STARTED • LIVE ARMED"
+                    : "CBOT STARTED • EXECUTION DISARMED",
+                liveArmed
+                    ? SoundType.PositiveNotification
+                    : SoundType.Confirmation);
+        }
+
+        public void PlayLiveDisarmed(
             Robot robot)
         {
             Play(
                 robot,
-                "CBOT STARTED",
-                SoundType.PositiveNotification);
+                "LIVE EXECUTION DISARMED",
+                SoundType.NegativeNotification);
+        }
+
+        public void PlayBlocked(
+            Robot robot,
+            string reason)
+        {
+            Play(
+                robot,
+                "EXECUTION BLOCKED|" + (reason ?? "UNKNOWN"),
+                SoundType.NegativeNotification);
         }
 
         public void PlayStopped(
