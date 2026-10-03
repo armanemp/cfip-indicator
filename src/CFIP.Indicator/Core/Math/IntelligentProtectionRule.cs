@@ -41,7 +41,7 @@ namespace cAlgo
             double spreadPips,
             double pipSize,
             double minimumDistance,
-            double breakEvenTriggerRR,
+            double breakEvenTriggerRewardAtr,
             double breakEvenBufferPips,
             double riskFreeLockPips,
             bool moveToBreakEven,
@@ -111,7 +111,7 @@ namespace cAlgo
                         spreadAwareBreakEven);
 
                 if (be.Allowed &&
-                    peakRR * riskPips >= be.TriggerPips)
+                    peakRR * (risk / Math.Max(SymbolTickFloor(), atr)) >= breakEvenTriggerRewardAtr)
                 {
                     double breakEven =
                         direction == 1
@@ -133,9 +133,8 @@ namespace cAlgo
                 enableStructuralRepricing &&
                 useSwingStructure &&
                 (structuralUpdate || !structuralOnly) &&
-                peakRR >= Math.Max(
-                    Math.Max(0, slRepriceStartRR),
-                    Math.Max(0, smartTrailMinimumRR)) &&
+                peakRR * (risk / Math.Max(SymbolTickFloor(), atr)) >=
+                Math.Max(0, trailStartRewardAtr) &&
                 IsFiniteProtectionPrice(structuralStop);
 
             if (structuralAllowed)
@@ -163,9 +162,8 @@ namespace cAlgo
 
             if (structuralUpdate &&
                 useSwingStructure &&
-                peakRR >= Math.Max(
-                    1.0,
-                    Math.Max(0, smartTrailTightenAtRR)) &&
+                peakRR * (risk / Math.Max(SymbolTickFloor(), atr)) >=
+                Math.Max(0, tightenRewardAtr) &&
                 IsFiniteProtectionPrice(structuralStop))
             {
                 double pressureTighten =
@@ -294,6 +292,11 @@ namespace cAlgo
                 ? stop <= market - room
                 : direction == -1 &&
                   stop >= market + room;
+        }
+
+        private static double SymbolTickFloor()
+        {
+            return Math.Max(1e-12, 1e-12);
         }
 
         private static bool IsFiniteProtectionPrice(double value)
