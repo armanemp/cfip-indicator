@@ -16,7 +16,8 @@ namespace cAlgo
             int level,
             int score,
             int higherTimeframeScore,
-            int higherTimeframeDirection)
+            int higherTimeframeDirection,
+            string tier)
         {
             Direction = direction;
             Level = level;
@@ -25,6 +26,7 @@ namespace cAlgo
             HigherTimeframeDirection = higherTimeframeDirection;
             Tier = tier ?? "NONE";
         }
+
     }
 
     internal static class MtfTrendStrengthRule
@@ -44,14 +46,6 @@ namespace cAlgo
         private const double ScoreNormalizationMaximum = 70.0;
         private const double LevelStartScore = 55.0;
         private const double LevelStepScore = 5.0;
-
-        public static MtfTrendStrengthResult Evaluate(
-            Frame[] frames,
-            double[] weights,
-            double livePrice)
-        {
-            return Evaluate(frames, weights, livePrice);
-        }
 
         public static MtfTrendStrengthResult Evaluate(
             Frame[] frames,
