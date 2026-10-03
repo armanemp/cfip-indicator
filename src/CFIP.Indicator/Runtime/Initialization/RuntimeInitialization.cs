@@ -222,6 +222,7 @@ namespace cAlgo
         }
 
         private bool _tradingLifecycleEventsHooked;
+        private bool _runtimeShuttingDown;
 
         private void HookTradingLifecycleEvents()
         {
@@ -534,7 +535,8 @@ namespace cAlgo
                 {
                     _startupCalculationSeedQueued = false;
 
-                    if (!_initializationReady ||
+                    if (_runtimeShuttingDown ||
+                        !_initializationReady ||
                         _startupCalculationSeedDone)
                         return;
 
@@ -554,8 +556,7 @@ namespace cAlgo
 
         protected override void OnDestroy()
                                 {
-                                    DisposeEconomicNewsClient();
-                                    FlushBufferedPersistenceOnShutdown();
+                                    _runtimeShuttingDown = true;
 
                                     try
                                     {
@@ -589,8 +590,11 @@ namespace cAlgo
                                             ex.ToString());
                                     }
 
+                                    DisposeEconomicNewsClient();
+
                                     PersistOutcomeHistory();
                                     PersistPortableMemorySnapshot();
+                                    FlushBufferedPersistenceOnShutdown();
 
                                     RemoveAllChartObjects();
                                     RemovePanel();
