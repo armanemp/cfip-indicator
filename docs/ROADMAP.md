@@ -3595,3 +3595,40 @@ Verification:
 - Target-terminal and historical replay verification are required to measure whether weak signals disappear without eliminating valid low-risk/high-reward setups. cTrader supports visual backtesting/Market Replay and custom optimisation criteria for this type of validation. citeturn3search0turn1search0
 
 Operator action: git pull --ff-only, then run the Release build and the decision-contract test project before chart/runtime validation.
+
+
+## 2026-10-04 — Adaptive Trigger / Entry / Stop / TP / Break-Even / Trailing + cBot Protection
+
+Status: **IMPLEMENTED ON PHASE BRANCH — local build and target-terminal/replay verification pending.**
+
+This phase supersedes the earlier idea that a fixed RR value should be the strategy target. RR is now treated as an observed consequence of live Entry/SL/TP geometry, not a fixed trading objective.
+
+### Canonical architecture
+
+- Trigger remains owned by the canonical entry/actionability path. Trigger reach, zone/retest state, breakout state and lateness are evaluated from live quote geometry; no second trigger engine was introduced.
+- Entry remains structural and adaptive. M15 remains the canonical decision clock; M5 refines trigger/entry precision; M1 remains optional confirmation.
+- Stop remains structural-first and adaptive. Existing IntelligentProtectionRule combines structural swing evidence, ATR breathing room, momentum, exit pressure and profit state. It never widens a protective stop.
+- TP: AdaptiveRewardRiskProfileRule is now the canonical reward profile. It derives TP1..TP4 requirements from stop risk in ATR, regime, opportunity lane, confidence, smart quality, target quality and structural quality. RR is not fixed.
+- Target selection now receives live resolved risk/ATR context instead of a constant StructuralTpRrStep. Fixed fallback RR precedence was removed from execution/lifecycle target selection.
+- Break-even: the adaptive protection profile now permits earlier risk-free protection, while spread/buffer safety and TP1 collision protection remain mandatory. The previous hard 0.50 RR trigger floor was removed.
+- Trailing: IntelligentProtectionRule remains the single trailing owner. It advances only when the proposed structural stop is more protective and sufficiently separated from live price; momentum and exit pressure can tighten breathing, while the stop never moves backward.
+- cBot market and pending execution now consume the Indicator-produced adaptive protection profile. When a valid server-side TP ladder is supplied, the robot submits the ladder and break-even protection directly through cTrader server-side Advanced Protection; legacy execution remains only as a compatibility fallback when the adaptive profile is unavailable. No second strategy calculation is created in the robot.
+- cTrader's current Algo API supports server-side relative SL, multi-level TP ladders and break-even in a single trade/order request, with protections enforced by the server rather than an algo polling loop. See official cTrader documentation. citeturn1search0turn1search2turn2search2
+
+### Quality principle
+
+The objective is not maximum RR at all costs: protect capital with the smallest structurally valid stop; enter close to the high-quality structural trigger/zone; choose targets from real forward levels/obstacles across timeframe context; require enough forward reward for the actual risk and current setup quality; move to risk-free at the first safe opportunity; let structural trailing capture additional movement; never widen risk and never move TP/SL backward.
+
+### Robot boundary
+
+The Indicator remains the sole owner of analysis, trigger, entry, SL, TP and trailing decisions. The cBot is the sole broker execution/protection actuator. The cBot must not invent an independent signal, RR, SL, TP or trailing strategy.
+
+### Verification boundary
+
+- Source implementation is committed on the phase branch.
+- No local Release build has been run in this environment.
+- cTrader target-terminal validation is still required.
+- Replay validation is required before declaring the quality objective achieved: measure entry excursion, stop distance, TP obstruction, realized R, time-to-BE, maximum favorable excursion, maximum adverse excursion and trailing giveback across M15/M5 scenarios.
+- Replay tuning must modify existing canonical owners from measured failure clusters; it must not add parallel gates.
+
+Operator action after merge: git pull --ff-only, then run Release build + planning contracts + cTrader runtime/replay acceptance.
