@@ -2616,3 +2616,6 @@ Operator action after merge: git pull --ff-only.
 
 ### Realtime / Live Execution + Volume Profile Intelligence
 Current continuation: this consolidated branch carries realtime/live execution unification together with all-timeframe intelligence, future pending scenarios, smart arrows and panel/audio hardening.
+
+
+- 2026-10-04 smart trend arrow recovery: MTF trend direction/strength is independent of ActionableNow/DecisionEntryAllowed; one canonical lifecycle renders the 9-level arrows and M1 remains a Circle precision marker.
