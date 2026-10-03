@@ -9,20 +9,24 @@ namespace cAlgo
         public int Score { get; }
         public int HigherTimeframeScore { get; }
         public int HigherTimeframeDirection { get; }
+        public string Tier { get; }
 
         public MtfTrendStrengthResult(
             int direction,
             int level,
             int score,
             int higherTimeframeScore,
-            int higherTimeframeDirection)
+            int higherTimeframeDirection,
+            string tier)
         {
             Direction = direction;
             Level = level;
             Score = score;
             HigherTimeframeScore = higherTimeframeScore;
             HigherTimeframeDirection = higherTimeframeDirection;
+            Tier = tier ?? "NONE";
         }
+
     }
 
     internal static class MtfTrendStrengthRule
@@ -40,36 +44,18 @@ namespace cAlgo
         };
 
         private const double ScoreNormalizationMaximum = 70.0;
-        private const double LevelStartScore = 55.0;
-        private const double LevelStepScore = 5.0;
+        private const int LevelMinimumScore = 35;
+        private const int LevelBandSize = 5;
 
         public static MtfTrendStrengthResult Evaluate(
             Frame[] frames,
             double[] weights,
             double livePrice)
         {
-            return Evaluate(
-                frames,
-                weights,
-                livePrice,
-                0);
-        }
-
-        public static MtfTrendStrengthResult Evaluate(
-            Frame[] frames,
-            double[] weights,
-            double livePrice,
-            int preferredDirection)
-        {
             if (frames == null ||
                 frames.Length == 0 ||
                 !NumericGuards.IsFinitePositive(livePrice))
-                return new MtfTrendStrengthResult(0, 0, 0, 0, 0);
-
-            preferredDirection =
-                preferredDirection == 1 || preferredDirection == -1
-                    ? preferredDirection
-                    : 0;
+                return EmptyResult();
 
             double weightedBull = 0;
             double weightedBear = 0;
@@ -135,7 +121,7 @@ namespace cAlgo
             }
 
             if (weightedTotal <= 0)
-                return new MtfTrendStrengthResult(0, 0, 0, 0, 0);
+                return new MtfTrendStrengthResult(0, 0, 0, 0, 0, "NONE");
 
             double bullAverage =
                 NumericGuards.ClampDouble(
@@ -154,10 +140,7 @@ namespace cAlgo
                     bullAverage,
                     bearAverage);
 
-            int arrowDirection =
-                preferredDirection != 0
-                    ? preferredDirection
-                    : overallDirection;
+            int arrowDirection = overallDirection;
 
             double selectedStrength =
                 arrowDirection == 1
@@ -204,10 +187,7 @@ namespace cAlgo
                     htfBullAverage,
                     htfBearAverage);
 
-            int higherScoreDirection =
-                preferredDirection != 0
-                    ? preferredDirection
-                    : htfDirection;
+            int higherScoreDirection = htfDirection;
 
             double htfSelectedStrength =
                 higherScoreDirection == 1
@@ -240,9 +220,22 @@ namespace cAlgo
                     htfScore,
                     0,
                     100),
-                htfDirection);
+                htfDirection,
+                ResolveTier(level));
         }
 
+        private static MtfTrendStrengthResult EmptyResult()
+        {
+            return new MtfTrendStrengthResult(0, 0, 0, 0, 0, "NONE");
+        }
+
+        private static string ResolveTier(int level)
+        {
+            if (level <= 0) return "NONE";
+            if (level <= 3) return "WEAK";
+            if (level <= 6) return "MEDIUM";
+            return "STRONG";
+        }
 
         private static int ResolveDominantDirection(
             double bull,
@@ -294,13 +287,13 @@ namespace cAlgo
         private static int ResolveNineLevel(
             int score)
         {
-            if (score < LevelStartScore)
+            if (score < LevelMinimumScore)
                 return 0;
 
             return NumericGuards.ClampInt(
-                (int)Math.Ceiling(
-                    (score - 50.0) /
-                    LevelStepScore),
+                1 +
+                (score - LevelMinimumScore) /
+                LevelBandSize,
                 1,
                 9);
         }
