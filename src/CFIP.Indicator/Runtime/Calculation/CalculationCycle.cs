@@ -72,7 +72,9 @@ namespace cAlgo
                     closedM5,
                     newClosedBar);
 
-                ProcessQueuedAlertDelivery();
+                // Keep sound playback on the realtime Indicator Calculate /
+                // IsLastBar boundary; timer-driven work handles panel rendering.
+                ProcessQueuedAlertSoundDelivery();
 
                 CompleteRuntimeFaultCycle();
             }
