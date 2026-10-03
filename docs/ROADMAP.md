@@ -3,11 +3,12 @@
 Status: IMPLEMENTED ON MAIN — pending Source/Runtime/Build verification and manual cTrader visual acceptance.
 
 Completed:
-- Footer uses one shared 132px minimum content height and is fully reserved before ScrollViewer budgeting.
-- Minimum fixed geometry is enforced so constrained PanelMaxHeight values cannot clip the footer.
+- Footer content minimum is 40px; outer PanelPadding is counted exactly once.
+- The two-line MTF lamp rail is 38px and remains outside the scrolling content.
 - Eight timeframe lamps divide the real panel content width into equal cells with no narrow-panel overflow.
-- Lamp/label spacing is tightened; lamp strength tiers are 18/17/16px.
-- Header heartbeat lamp uses the same 18px font and 28px geometry.
+- Lamp/label spacing is compact; lamp labels inherit the exact semantic lamp color.
+- Shared panel status lamps are 30x30 with a 20px base font; MTF lamp tiers are 20/19/18px.
+- Alert rail keeps five events in memory but renders the two latest rows, with no-wrap + ellipsis for guaranteed readable bounds.
 - Canonical primary ScenarioId is suppressed from the parallel user-facing alert loop, preventing canonical ACTION/WATCH duplication while preserving independent simultaneous scenarios.
 - SendUnifiedAlert now acknowledges delivery only after successful queue acceptance; cooldown and alert-state commits, plus local WATCH/REACTION/ACTION/RESTRICTION retry guards, follow that acknowledgement.
 - Existing blocked-alert silence, bounded queue and single production sound owner remain intact.

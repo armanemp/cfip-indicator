@@ -37,13 +37,7 @@ The Release build exposed CS0649 on `TradeOpportunityCandidate.RewardDistanceAtr
 
 ## Second-pass correction — 2026-10-03
 
-The footer now has a shared minimum-height owner of 132px and the full footer reserve is applied before
-ScrollViewer sizing. The maximum-height resolver also protects a minimum renderable viewport so the footer
-cannot be clipped merely because PanelMaxHeight is configured low.
-
-The M1/M5/M15/M30/H1/H4/D1/W1 rail now uses the exact real content width divided into eight equal cells.
-Lamp-to-label spacing is tighter, lamp strength tiers are 18/17/16px, and the header heartbeat lamp uses
-the same 18px font and 28px geometry.
+The footer content minimum is now 40px, while outer panel padding is charged exactly once. The M1/M5/M15/M30/H1/H4/D1/W1 rail is a compact two-line 38px area and uses the exact real content width divided into eight equal cells. Lamp-to-label spacing is compact, labels inherit lamp colors, and the shared status-lamp geometry is 30x30 with a 20px base font.
 
 The deep alert review found that the canonical primary ScenarioId could be announced twice: once by the
 parallel scenario alert owner and again by the generic canonical ACTION/WATCH owner. The primary canonical
@@ -60,7 +54,7 @@ retryable instead of being incorrectly remembered as a delivered event.
 
 Implemented on `main` after live visual/audio feedback:
 
-- Footer reserve reduced from 132px to 48px content-height minimum; with the default 9px panel padding this produces a 66px footer area instead of the oversized previous reserve.
+- Footer content reserve reduced to 40px; the outer panel padding is no longer double-counted.
 - The five-message in-memory alert history is retained, while only the two latest messages are rendered in the compact footer rail so the panel footer stays visible.
 - The actual MTF rail geometry is now included in the final panel-height equation; previously the height budget reserved the rail for scroll calculation but omitted it from the final panel height.
 - M1/M5/M15/M30/H1/H4/D1/W1 labels now inherit the exact semantic color of their lamp. Status lamps were enlarged slightly through the shared panel constants.
@@ -85,3 +79,8 @@ The previous 132px footer reserve was not actually eliminated because the visibl
 - Signal-family audio is one event per symbol/closed-M5/direction across WATCH/REACTION/ACTION/SMART/EARLY variants.
 - MTF trend arrows use a dedicated `MTF_ARROW_1..3` namespace and therefore cannot overwrite/remove canonical signal arrows.
 - The repeated Local/Cloud prompt was traced to cTrader's synchronization/algorithm-source behavior, not to a repository Cloud transport; local-first operation must be selected at the terminal level.
+
+
+## Third-pass terminal synchronization note — 2026-10-03
+
+The repository does not introduce a Cloud execution path for the Indicator. cTrader's current documentation states that cloud synchronisation makes created/installed algorithms and their updates available across cTrader apps, while custom indicators execute locally on Windows/Mac and cloud execution applies to cBots. For this local-first CFIP workflow, repeated Local/Cloud reconciliation is therefore treated as a cTrader terminal synchronization/instance-state concern, not a CFIP source-code transport feature. Target terminal cleanup must keep one intended CFIP local instance and remove stale duplicate instances before evaluating realtime sound/panel behavior.

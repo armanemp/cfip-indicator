@@ -15,7 +15,7 @@ Verified by construction:
 - cBot lifecycle/block/execution audio under one modular owner;
 - nine-level HTF smart arrows;
 - dedicated realtime panel header owner;
-- fixed one-row MTF trend lamps outside panel scrolling content;
+- fixed two-line MTF trend lamps outside panel scrolling content;
 - final integration audit and phase documentation.
 
 Current verification boundary: CI must pass on the exact final head; terminal acceptance remains mandatory for actual cTrader sound, attachment, same-tick handoff, pending lifecycle, restart/reconnect and live broker mutation.
