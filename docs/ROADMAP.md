@@ -3208,3 +3208,5 @@ The panel now distinguishes **NOT ATTACHED**, **STOPPED/RESTARTING**, **CONNECTI
 No strategy threshold, RR/Entry/SL/TP policy, position capacity or Cloud transport was changed. The cBot remains demo-only.
 
 Target-terminal startup/restart/reconnect, panel latency and broker synchronization remain manual acceptance boundaries until evidenced.
+### Realtime all-timeframe intelligence + smart arrows
+This current hardening includes the all-timeframe realtime intelligence path, M15 canonical decision/reference, M5 entry refinement, optional M1 confirmation, future pending-order scenarios, nine-level HTF smart arrows, realtime panel truth and modular audio ownership.
