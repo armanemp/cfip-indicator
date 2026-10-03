@@ -204,7 +204,5 @@ namespace cAlgo
                     ? "ACTIONABLE • HIDDEN DIVERGENCE CONFIRM"
                     : "ACTIONABLE");
         }
-
-        }
     }
 }
