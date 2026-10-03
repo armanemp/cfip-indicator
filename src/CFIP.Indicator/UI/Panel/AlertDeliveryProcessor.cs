@@ -47,8 +47,13 @@ namespace cAlgo
                         ex.Message);
                 }
 
-                if (!ShouldQueueAlertSound(next) ||
-                    _alertSoundDeliveryQueue == null)
+                if (_alertSoundDeliveryQueue == null)
+                    continue;
+
+                string soundGroupKey;
+                if (!ShouldQueueAlertSound(
+                        next,
+                        out soundGroupKey))
                     continue;
 
                 if (!_alertSoundDeliveryQueue.Enqueue(next))
@@ -58,7 +63,11 @@ namespace cAlgo
                         next.Envelope == null
                             ? ""
                             : next.Envelope.AlertId);
+                    continue;
                 }
+
+                RememberSignalSoundGroup(
+                    soundGroupKey);
             }
         }
 
@@ -115,8 +124,10 @@ namespace cAlgo
         }
 
         private bool ShouldQueueAlertSound(
-            AlertDelivery delivery)
+            AlertDelivery delivery,
+            out string groupKey)
         {
+            groupKey = string.Empty;
             if (!delivery.PlaySound)
                 return false;
 
@@ -138,8 +149,6 @@ namespace cAlgo
             if (string.IsNullOrWhiteSpace(signalId) ||
                 createdClosedM5 < 0)
                 return true;
-
-            string groupKey;
 
             bool signalFamily =
                 IsSignalSoundAlertKey(
@@ -177,14 +186,12 @@ namespace cAlgo
                     (delivery.Key ?? string.Empty);
             }
 
-            if (_rememberedSignalSoundGroups.Contains(groupKey))
-            {
-                Print(
-                    "CFIP ALERT SOUND SUPPRESSED | group={0} | priority={1} | alreadyPlayed=true",
-                    groupKey,
-                    priority);
-                return false;
-            }
+        private void RememberSignalSoundGroup(
+            string groupKey)
+        {
+            if (string.IsNullOrWhiteSpace(groupKey) ||
+                _rememberedSignalSoundGroups.Contains(groupKey))
+                return;
 
             _rememberedSignalSoundGroups.Add(groupKey);
             _rememberedSignalSoundGroupOrder.Enqueue(groupKey);
@@ -197,6 +204,16 @@ namespace cAlgo
 
                 _rememberedSignalSoundGroups.Remove(
                     expiredGroup);
+            }
+        }
+
+            if (_rememberedSignalSoundGroups.Contains(groupKey))
+            {
+                Print(
+                    "CFIP ALERT SOUND SUPPRESSED | group={0} | priority={1} | alreadyPlayed=true",
+                    groupKey,
+                    priority);
+                return false;
             }
 
             return true;
