@@ -148,7 +148,7 @@ namespace cAlgo
                     CloseActiveBeforeHighImpactNews)
                 {
                     ManagementCommandRequestStatus closeStatus =
-                        TryClosePosition(
+                        RequestClosePosition(
                             position,
                             "HIGH IMPACT NEWS PRE-PROTECTION");
                     if (closeStatus.IsAccepted())
