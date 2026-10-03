@@ -41,15 +41,15 @@ check(
 )
 
 check(
-    "canonical presentation rule exists with one thickness owner",
+    "canonical presentation rule exists with one-pixel thickness owner",
     "class PlanLinePresentationRule" in rule and
     "MinimumThickness = 1" in rule and
-    "MaximumThickness = 3" in rule and
+    "return MinimumThickness;" in rule and
     "ResolveThickness(" in rule
 )
 
 check(
-    "configured thickness is consumed without the former forced-one clamp",
+    "configured thickness resolves through the canonical one-pixel rule",
     "PlanLinePresentationRule.ResolveThickness(" in renderer and
     "LevelLineThickness" in renderer and
     "Math.Min(1" not in renderer and
