@@ -37,15 +37,38 @@ namespace cAlgo
                     0))
                 return RejectPlanRewardStructure("TP1 DIRECTION INVALID");
 
+            double atr =
+                _m5Frame != null && _m5Frame.Atr > 0
+                    ? _m5Frame.Atr
+                    : (_m5Bars != null && plan.CreatedM5 > 20
+                        ? Atr(_m5Bars, Math.Min(plan.CreatedM5, _m5Bars.Count - 1))
+                        : 0);
+
+            double riskAtr =
+                plan.Risk /
+                Math.Max(Symbol.PipSize, atr);
+
+            AdaptiveRewardRiskProfile rewardProfile =
+                AdaptiveRewardRiskProfileRule.Resolve(
+                    _decision == null ? "UNKNOWN" : _decision.Regime,
+                    plan.Lane,
+                    riskAtr,
+                    _decision == null ? 0 : _decision.Confidence,
+                    _decision == null ? 0 : _decision.SmartQuality,
+                    Math.Max(0, plan.Tp1Quality),
+                    Math.Max(0, plan.StopQuality),
+                    Math.Max(1.0, MaximumTargetExtensionAtr));
+
             double minimumRR =
-                Math.Max(
-                    Tp1MinimumRR,
-                    MinimumRequiredRR());
+                rewardProfile.RequiredTp1RR;
 
             double maximumRR =
                 Math.Max(
                     minimumRR,
-                    MaximumRewardRR);
+                    Math.Min(
+                        Math.Max(minimumRR, MaximumRewardRR),
+                        rewardProfile.MaximumExtensionAtr /
+                        Math.Max(0.20, riskAtr)));
 
             if (!IsFinitePositive(minimumRR) ||
                 !IsFinitePositive(maximumRR))
@@ -82,12 +105,7 @@ namespace cAlgo
             if (plan.Tp2 > 0)
             {
                 double requiredTp2RR =
-                    Math.Max(
-                        Tp2MinimumRR,
-                        tp1RR +
-                        Math.Max(
-                            0.10,
-                            StructuralTpRrStep));
+                    rewardProfile.RequiredTp2RR;
 
                 RiskRewardMathResult tp2Geometry =
                     RiskRewardMathRule.Evaluate(
@@ -132,12 +150,7 @@ namespace cAlgo
                         : tp1RR;
 
                 double requiredTp3RR =
-                    Math.Max(
-                        Tp3MinimumRR,
-                        previousRR +
-                        Math.Max(
-                            0.10,
-                            StructuralTpRrStep));
+                    rewardProfile.RequiredTp3RR;
 
                 RiskRewardMathResult tp3Geometry =
                     RiskRewardMathRule.Evaluate(
@@ -154,13 +167,7 @@ namespace cAlgo
 
                 if (!IsFinitePositive(rr) ||
                     !IsFinitePositive(previousRR) ||
-                    rr <
-                        Math.Max(
-                            Tp3MinimumRR,
-                            previousRR +
-                            Math.Max(
-                                0.10,
-                                StructuralTpRrStep)) ||
+                    rr < requiredTp3RR ||
                     rr > maximumRR)
                     return RejectPlanRewardStructure("TP3 RR OUT OF RANGE");
 
@@ -196,12 +203,7 @@ namespace cAlgo
                             : tp1RR;
 
                 double requiredTp4RR =
-                    Math.Max(
-                        Tp4MinimumRR,
-                        previousRR +
-                        Math.Max(
-                            0.10,
-                            StructuralTpRrStep));
+                    rewardProfile.RequiredTp4RR;
 
                 RiskRewardMathResult tp4Geometry =
                     RiskRewardMathRule.Evaluate(
@@ -218,13 +220,7 @@ namespace cAlgo
 
                 if (!IsFinitePositive(rr) ||
                     !IsFinitePositive(previousRR) ||
-                    rr <
-                        Math.Max(
-                            Tp4MinimumRR,
-                            previousRR +
-                            Math.Max(
-                                0.10,
-                                StructuralTpRrStep)) ||
+                    rr < requiredTp4RR ||
                     rr > maximumRR)
                     return RejectPlanRewardStructure("TP4 RR OUT OF RANGE");
 
