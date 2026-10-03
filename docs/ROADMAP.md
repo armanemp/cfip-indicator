@@ -3519,3 +3519,8 @@ Verification:
 - Target-terminal visual acceptance remains required for actual chart appearance, label spacing and stale-object behavior.
 
 Operator action after merge: git pull --ff-only.
+
+
+## 21B. 2026-10-04 — Smart Trend Arrow Recovery / Single-Owner Lifecycle
+
+The canonical MTF trend-arrow path was recovered on main. Trend arrows are independent of trade actionability, use one nine-level strength owner, and render once per calculation cycle. Weak/medium/strong remain three levels each; M1 remains a Circle precision marker. See docs/PHASE-SMART-TREND-ARROWS-RECOVERY-2026-10-04.md.
