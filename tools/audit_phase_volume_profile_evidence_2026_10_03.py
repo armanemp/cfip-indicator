@@ -86,7 +86,9 @@ check(
     "VolumeProfileEvidenceRule.Evaluate(" in builder and
     "candidate.VolumeProfileQuality" in builder and
     "candidate.VolumeProfileConfluence" in builder and
-    "candidate.Quality +=" in builder and
+    "candidate.Quality" in builder and
+    "Math.Min(" in builder and
+    "volumeProfileEvidence.Quality" in builder and
     "candidate.VolumeProfileConfluence" in ranking
 )
 
