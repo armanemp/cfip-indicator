@@ -40,9 +40,7 @@ namespace cAlgo
                                                         PanelHeaderHeight;
                                         
                                                     int buttonMargin =
-                                                        Math.Max(
-                                                            0,
-                                                            PanelPadding);
+                                                        PanelFooterButtonInternalMargin;
                                         
                                                     int toggleHeight =
                                                         Math.Max(
