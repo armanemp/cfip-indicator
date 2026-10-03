@@ -30,6 +30,7 @@ namespace CFIP.cBot.Shadow.Tests
             RevisionRules();
             ProviderRevisionMismatch();
             CoordinatorRecheck();
+            MultiScenarioSameRevision();
             Console.WriteLine("CBOT-P3 shadow host behavioral contracts PASS");
         }
 
@@ -254,6 +255,85 @@ namespace CFIP.cBot.Shadow.Tests
                 same.State == ShadowHostState.Ready &&
                 c.LastAcceptedRevision == 6,
                 "transient broker block must recheck and dedupe thereafter");
+        }
+
+        private static void MultiScenarioSameRevision()
+        {
+            ShadowHostCoordinator coordinator =
+                new ShadowHostCoordinator();
+
+            SignalEnvelope first =
+                Build(
+                    22,
+                    TradeDirection.Buy,
+                    ExecutionAction.Market,
+                    "K22-A",
+                    Now.AddMinutes(5),
+                    100,
+                    99,
+                    101,
+                    SignalStage.Confirmed);
+
+            ContractIdentity secondIdentity =
+                new ContractIdentity(
+                    ContractVersion.Current,
+                    "SIGNAL-22-B",
+                    "SCENARIO-22-B",
+                    "PLAN-22-B",
+                    "XAUUSD",
+                    TradeDirection.Sell,
+                    OpportunityLane.Tactical,
+                    "M15",
+                    Now.AddMinutes(-1),
+                    10,
+                    Now.AddMinutes(5),
+                    22,
+                    "CORR-22-B",
+                    "K22-B");
+
+            ExecutionIntent secondIntent =
+                new ExecutionIntent(
+                    secondIdentity,
+                    ExecutionAction.Market,
+                    100,
+                    101,
+                    99,
+                    1000,
+                    "UNIT",
+                    Now,
+                    Now.AddMinutes(5),
+                    "fixture");
+
+            SignalEnvelope second =
+                new SignalEnvelope(
+                    secondIdentity,
+                    SignalStage.Confirmed,
+                    first.Plan,
+                    secondIntent,
+                    Now);
+
+            ShadowHostResult firstResult =
+                coordinator.Observe(
+                    first,
+                    Safe,
+                    ContractVersion.Current,
+                    22,
+                    Now);
+
+            ShadowHostResult secondResult =
+                coordinator.Observe(
+                    second,
+                    Safe,
+                    ContractVersion.Current,
+                    22,
+                    Now.AddMilliseconds(10));
+
+            Assert(
+                firstResult.State == ShadowHostState.Ready &&
+                secondResult.State == ShadowHostState.Ready &&
+                firstResult.ScenarioId != secondResult.ScenarioId &&
+                coordinator.LastAcceptedRevision == 22,
+                "independent ScenarioIds sharing one provider revision must both pass shadow validation");
         }
 
         private static void VerifyMarginBudget()
