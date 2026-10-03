@@ -13,6 +13,7 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
+        // Canonical presentation contract: native text, line semantic color, exact 2-pip clearance, no marker/box.
         private const double CompactPlanLabelFontSize = 8.5;
         private const double CompactPlanLabelGapPips = 2.0;
 
