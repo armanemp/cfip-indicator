@@ -3,6 +3,7 @@
 // ============================================================================
 
 using System;
+using CFIP.Contracts;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -49,9 +50,11 @@ namespace cAlgo
                                                 LifecycleState.ExitRequested,
                                                 "PLAN INTEGRITY FAILURE");
                         
-                                            if (!TryClosePosition(
+                                            ManagementCommandRequestStatus closeStatus =
+                                                TryClosePosition(
                                                     integrityPosition,
-                                                    "PLAN INTEGRITY FAILURE"))
+                                                    "PLAN INTEGRITY FAILURE");
+                                            if (!closeStatus.IsAccepted())
                                             {
                                                 SetLifecycleState(
                                                     LifecycleState.RecoveryRequired,
