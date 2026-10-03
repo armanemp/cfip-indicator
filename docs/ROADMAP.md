@@ -3545,3 +3545,25 @@ Canonical presentation re-audited end-to-end. Final contract: one MTF trend-arro
 - Canonical watch/action alerts and Entry box text now expose the same MTF trend tier/level, keeping audio/event delivery, chart arrows, signal levels and box text tied to the same snapshot context.
 - The signal-level geometry contract remains unchanged: Solid, 1px, finite 40-bar span ending at the latest candle; labels remain filled semantic-color boxes with white regular text.
 - Local Release build/runtime verification is still required.
+
+
+## 2026-10-04 — Semantic Alert Sound Diversity / Single Audio Owner
+
+Status: **IMPLEMENTED — local Release build and target-terminal audio acceptance remain required.**
+
+Completed:
+- Kept `AlertDeliveryProcessor` as the single physical audio playback owner; no second sound engine or playback path was introduced.
+- Expanded the canonical `AlertEngine.ResolveAlertSoundType` mapping across the five cTrader built-in notification cues: `PositiveNotification`, `NegativeNotification`, `Announcement`, `Confirmation`, and `Doorbell`.
+- Semantic families now distinguish important events: WATCH/EARLY, REACTION/AUTO-REACTION, ACTION/HIGH/SMART, TP, SL/INVALID/RESTRICT, REVERSAL, pending/fill/execution outcomes and the remaining critical/general alerts.
+- Sound deduplication no longer collapses WATCH/REACTION/ACTION stages into one audible cue for the same M5 event. The canonical `AlertKey` is now part of the bounded sound fingerprint, so distinct semantic stages can have distinct sounds while exact repeats remain suppressed.
+- Existing custom `SoundFilePath` fallback behavior remains intact; it was not turned into a second per-event audio owner.
+- Added the semantic sound-diversity checks to the existing alert/footer architecture audit.
+
+**Source of the sounds:** these semantic cues are not downloaded from a third-party sound library. They are the five built-in `cAlgo.API.SoundType` notification sounds provided by cTrader Algo itself. The implementation calls cTrader's `Notifications.PlaySound(SoundType)` at the existing canonical delivery boundary. cTrader's official documentation lists these built-in types and the `PlaySound(SoundType)` API.
+
+Verification boundary:
+- Source changes are committed, but no local `dotnet build` was run in this environment.
+- Actual audibility and whether the five cues are sufficiently distinct must be confirmed in the user's target cTrader terminal.
+- If later we want more than these five built-in timbres, that must be designed as one canonical per-event custom-file mapping rather than adding another playback path.
+
+Operator action: `git pull --ff-only`, then run the Release build and test each alert family in cTrader.
