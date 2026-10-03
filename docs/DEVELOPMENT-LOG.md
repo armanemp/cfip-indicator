@@ -1,6 +1,6 @@
 ## 2026-10-03 — Cross-Layer Semantic & Visual Consistency Hardening
 
-Branch: `phase/semantic-consistency-hardening-2026-10-03`.
+Branch: `phase/semantic-consistency-hardening-2026-10-03`; merged to `main` via PR #247 as `5933386c26a787ee3297fc6af825d1d85b74a0c3`.
 
 Finding:
 The panel already had a canonical MTF presentation state, but several consumers translated the same state again. This created avoidable contradictions such as BULL/BEAR BIAS in one surface and BUY/SELL in another. WaveTrend also mixed its own evidence text with a color derived from a separate trade-direction state.
