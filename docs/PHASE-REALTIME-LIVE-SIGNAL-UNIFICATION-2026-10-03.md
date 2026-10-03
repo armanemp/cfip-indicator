@@ -51,7 +51,7 @@ Added a volatility-relative OpportunityMagnitudeRule.
 
 Current and future opportunities are rejected when the planned TP1 movement is too small for the active market regime. The gate is independent of position sizing, so it does not confuse a deliberately small risk amount with a weak setup.
 
-Additional RANGE filtering raises the low-RR floor from the previous 1.80 structural check to 2.00.
+Additional RANGE filtering raises the low-RR floor from the previous 2.00 implementation state to 2.25.
 
 COMPRESSION remains no-trade in the existing range-quality rule and now also receives the magnitude guard on future candidates.
 
@@ -88,6 +88,40 @@ The execution contract is explicitly multi-timeframe:
 6. The final Entry/SL/TP selection is therefore a constrained optimization problem over multi-timeframe evidence: reject invalid/wrong-side/high-risk candidates first, then prefer valid geometry with stronger structural support and attainable reward path. No timeframe may bypass the common safety gates.
 
 This corrects the earlier overly narrow interpretation that M15 was the only analysis layer. M15 is the final tuning/reference layer inside a simultaneous multi-timeframe engine.
+
+## New realtime intelligence/display hardening — 2026-10-03 follow-up
+
+### 7. All-timeframe early prediction fusion
+The early-prediction score now has a dedicated MTF fusion owner. M5/M15/M30/H1/H4/D1/W1
+are fused with their configured weights and per-frame quality; M1 remains deliberately
+excluded from forecast authority and stays a precision/confirmation layer.
+
+The forecast path remains separate from the execution authority: the canonical M15 decision
+and M5/M1 actionability gates still decide whether a current Market execution is allowed.
+
+### 8. Nine-level smart HTF trend arrows
+The chart now derives a presentation-only MTF trend-strength level from the active M1/M5/M15/M30/H1/H4/D1/W1
+frames plus the live bid/ask midpoint. H1+ has explicit higher-timeframe authority.
+
+Levels are grouped as:
+- 1-3: weak color, 1/2/3 stacked arrows;
+- 4-6: medium color, 1/2/3 stacked arrows;
+- 7-9: strong color, 1/2/3 stacked arrows.
+
+The stack is bounded to three visible arrows; level intensity is encoded by color tier plus
+arrow count. It cannot authorize a trade by itself.
+
+### 9. cBot binding hardening
+Same-chart binding now preserves a previously known Indicator InstanceId when multiple CFIP
+instances exist, instead of losing the known-good attachment. When binding still fails, the cBot
+logs every custom chart indicator name/type/instance for deterministic diagnosis rather than only
+reporting a generic NOT ATTACHED state.
+
+### 10. Stagnant-market trade-size/magnitude discipline
+The volatility-relative TP1 magnitude floor is now more defensive:
+COMPRESSION 0.85 ATR, RANGE 0.75 ATR, TRANSITION 0.55 ATR, TREND/default 0.50 ATR,
+HIGH_VOLATILITY 0.45 ATR and EXPANSION 0.40 ATR. This filters tiny operationally insignificant
+setups without changing position sizing itself.
 
 ## Safety invariants retained
 
