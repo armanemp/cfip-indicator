@@ -135,7 +135,7 @@ namespace cAlgo
                 enableStructuralRepricing &&
                 useSwingStructure &&
                 (structuralUpdate || !structuralOnly) &&
-                peakRR * (risk / Math.Max(SymbolTickFloor(), atr)) >=
+                peakRR * risk / atr >=
                 Math.Max(0, trailStartRewardAtr) &&
                 IsFiniteProtectionPrice(structuralStop);
 
