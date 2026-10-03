@@ -81,7 +81,7 @@ namespace cAlgo
 
             try
             {
-                RenderPanel();
+                RequestPanelContentRefresh();
             }
             catch (Exception ex)
             {
