@@ -283,7 +283,7 @@ namespace CFIP.cBot.Execution
                             targetPips,
                             aggressiveAction
                                 ? robot.Account.IsLive ? "CFIP LIVE AGGRESSIVE" : "CFIP DEMO AGGRESSIVE"
-                                : "CFIP DEMO",
+                                : robot.Account.IsLive ? "CFIP LIVE" : "CFIP DEMO",
                             false);
             }
             catch (Exception ex)
