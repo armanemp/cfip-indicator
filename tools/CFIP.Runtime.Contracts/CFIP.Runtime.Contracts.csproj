@@ -91,7 +91,6 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ExecutionIntentGeometryRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ActionabilityThresholdPolicy.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/EntryActionabilityPolicy.cs" />
-    <Compile Include="../../src/CFIP.Indicator/Core/Math/PlanLinePresentationRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ExecutionProtectionPanelStateRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ExecutionPanelPresentationIdentityRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/ExecutionControlPresentationRule.cs" />
