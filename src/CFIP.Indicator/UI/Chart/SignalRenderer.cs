@@ -91,19 +91,13 @@ namespace cAlgo
                         0.02,
                         ArrowOffsetAtr));
 
-            string arrowState =
-                ResolveSignalArrowState(
-                    snapshot,
-                    visualDirection);
-
             if (ShowSignalArrow)
             {
                 RenderStackedSignalArrows(
                     snapshot,
                     visualDirection,
                     arrowBar,
-                    offset,
-                    arrowState);
+                    offset);
             }
             else
             {
@@ -226,32 +220,6 @@ namespace cAlgo
                                 return "STRONG";
 
                             if (score >= required)
-                                return "CONFIRMED";
-
-                            return "WATCH";
-                        }
-
-        private string ResolveSignalArrowState(
-                            SignalVisualSnapshot snapshot,
-                            int direction)
-                        {
-                            if (snapshot == null ||
-                                direction == 0)
-                                return "WATCH";
-
-                            if (snapshot.LivePosition ||
-                                snapshot.ActionableNow)
-                            {
-                                return
-                                    snapshot.SmartQuality >=
-                                    SmartStrongSetupQuality ||
-                                    snapshot.Confidence >=
-                                    HighConfidenceThreshold
-                                        ? "STRONG"
-                                        : "CONFIRMED";
-                            }
-
-                            if (snapshot.DecisionEntryAllowed)
                                 return "CONFIRMED";
 
                             return "WATCH";
