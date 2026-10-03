@@ -25,19 +25,50 @@ namespace cAlgo
         }
 
         private double[] BuildTargetSelectionRequiredRR(
-            double rrStep,
+            double risk,
+            double atr,
             OpportunityLane lane)
         {
+            double riskAtr =
+                risk > 0 &&
+                atr > 0
+                    ? risk / Math.Max(Symbol.PipSize, atr)
+                    : 0;
+
+            int confidence =
+                _decision == null
+                    ? 0
+                    : _decision.Confidence;
+
+            int smartQuality =
+                _decision == null
+                    ? 0
+                    : _decision.SmartQuality;
+
+            int targetQuality =
+                Math.Max(
+                    0,
+                    SmartTargetQuality);
+
+            int structuralQuality =
+                _plan != null
+                    ? Math.Max(0, _plan.StopQuality)
+                    : 60;
+
+            string regime =
+                _decision == null
+                    ? "UNKNOWN"
+                    : _decision.Regime;
+
             return TargetSelectionRequiredRrRule.BuildRequiredRrLadder(
-                rrStep,
+                regime,
                 lane,
-                Tp1MinimumRR,
-                Tp2MinimumRR,
-                Tp3MinimumRR,
-                Tp4MinimumRR,
-                MinimumRequiredRR(),
-                MinimumTradeRR,
-                TacticalOpportunityMinimumRR);
+                riskAtr,
+                confidence,
+                smartQuality,
+                targetQuality,
+                structuralQuality,
+                Math.Max(1.0, MaximumTargetExtensionAtr));
         }
 
         private bool RequiresHtfRewardForTargetStage(
