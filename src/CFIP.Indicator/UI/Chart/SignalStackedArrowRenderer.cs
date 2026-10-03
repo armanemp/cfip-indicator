@@ -21,56 +21,44 @@ namespace cAlgo
                 return;
             }
 
+            // One canonical strength owner: the snapshot already contains the
+            // 9-level MTF trend result calculated for the authoritative direction.
             int strength =
-                HtfTrendArrowStrengthRule.ResolveStrength(
-                    _h1Frame,
-                    _h4Frame,
-                    _d1Frame,
-                    _w1Frame,
-                    direction);
+                NumericGuards.ClampInt(
+                    snapshot.MtfTrendStrengthLevel,
+                    0,
+                    9);
 
-            // Preserve the previous one-arrow behavior when the
-            // higher-timeframe stack has no usable directional evidence.
-            if (strength <= 0)
+            if (strength <= 0 ||
+                snapshot.MtfTrendDirection != direction)
             {
-                strength =
-                    fallbackState == "STRONG"
-                        ? 7
-                        : fallbackState == "CONFIRMED"
-                            ? 4
-                            : 1;
+                RemoveStackedSignalArrows();
+                return;
             }
-
-            strength =
-                Math.Max(
-                    1,
-                    Math.Min(
-                        9,
-                        strength));
 
             int arrowCount =
                 ((strength - 1) % 3) + 1;
 
-            int tier =
-                (strength - 1) / 3;
+            string state =
+                strength <= 3
+                    ? "WATCH"
+                    : strength <= 6
+                        ? "CONFIRMED"
+                        : "STRONG";
 
             Color arrowColor =
-                tier == 0
-                    ? (direction == 1
-                        ? CautionBuyArrowColor
-                        : CautionSellArrowColor)
-                    : tier == 1
-                        ? (direction == 1
-                            ? ConfirmedBuyArrowColor
-                            : ConfirmedSellArrowColor)
-                        : (direction == 1
-                            ? StrongBuyArrowColor
-                            : StrongSellArrowColor);
+                SignalArrowColorFor(
+                    direction,
+                    state);
 
+            // Keep every glyph outside the candle body and ensure the visible
+            // arrow glyphs have a real vertical clearance from each other.
             double separation =
                 Math.Max(
-                    Symbol.PipSize * 0.75,
-                    offset * 0.55);
+                    Symbol.PipSize * 3,
+                    Math.Max(
+                        offset * 0.75,
+                        Symbol.TickSize * 8));
 
             for (int i = 0;
                  i < 3;
