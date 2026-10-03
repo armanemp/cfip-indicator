@@ -7,6 +7,7 @@ Current closure:
 - Timeframe consumers no longer turn canonical BULL BIAS/BEAR BIAS states back into BUY/SELL.
 - Top-Down HTF/MID direction display no longer leaks raw 1/-1 values.
 - Decision, Entry Gate and readiness presentation now distinguish setup qualification from current actionability.
+- Authoritative snapshot stage CONFIRMED now remains CONFIRMED in panel state text.
 - WaveTrend evidence text and color share one evidence-direction owner, and disagreement with trade direction is explicitly marked CONFLICT.
 - Trading/business rules were not changed; this phase is presentation-semantics hardening.
 
