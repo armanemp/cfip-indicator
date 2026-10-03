@@ -138,9 +138,10 @@ if plan_method and "_lastAutoPlanAttemptM5 == closedM5" in plan_method.group(0):
 
 require(
     LABEL_RENDERER,
-    r"double\s+verticalGap\s*=\s*Math\.Max\([\s\S]*?price\s*\+\s*verticalGap",
-    "vertical label separation from level line",
+    r"double\s+labelPrice\s*=\s*\n\s*NormalizePrice\(price\)",
+    "exact-price label alignment with level line",
 )
+
 require(
     PORTABLE,
     r'HistoryLocationMarkerFileName\s*=\s*"CFIP_HISTORY_LOCATION\.txt"',
