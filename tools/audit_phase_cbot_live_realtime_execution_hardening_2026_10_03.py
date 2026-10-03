@@ -40,6 +40,12 @@ check("100 ms signal-store handoff cadence",
       "SignalReloadIntervalMilliseconds = 100" in bot and
       "SignalReloadIntervalMilliseconds" in bot)
 
+live_opportunity = read("src/CFIP.Indicator/Analysis/Market/FuturePendingOpportunityRuntime.cs")
+
+check("100 ms live opportunity refresh cadence",
+      "LiveOpportunityRefreshIntervalMilliseconds = 100" in live_opportunity and
+      "LiveOpportunityRefreshIntervalMilliseconds" in live_opportunity)
+
 reader = read("src/CFIP.Indicator/Runtime/Cbot/CbotExecutionStateReader.cs")
 
 check("200 ms cBot state visibility cadence and case-insensitive discovery",
