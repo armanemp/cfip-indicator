@@ -5,7 +5,7 @@ namespace cAlgo
 {
     internal sealed class MarketRegimeFrameCache
     {
-        private const int Capacity = 8;
+        private const int Capacity = 9;
 
         private readonly MarketRegimeFrameCacheEntry[] _entries =
             new MarketRegimeFrameCacheEntry[Capacity];
