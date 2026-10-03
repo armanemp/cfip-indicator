@@ -852,7 +852,7 @@ namespace CFIP.cBot
                 return;
 
             _nextSignalReloadUtc =
-                now.AddMilliseconds(500);
+                now.AddMilliseconds(100);
 
             try
             {
