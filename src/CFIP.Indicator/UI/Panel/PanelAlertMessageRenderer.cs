@@ -47,7 +47,7 @@ namespace cAlgo
                             VerticalAlignment = VerticalAlignment.Center,
                             TextAlignment = TextAlignment.Left,
                             TextWrapping = TextWrapping.NoWrap,
-                            TextTrimming = TextTrimming.Ellipsis,
+                            TextTrimming = TextTrimming.None,
                             LineHeight =
                                 Math.Max(
                                     12,
@@ -350,19 +350,66 @@ namespace cAlgo
             UpdatePanelAlertMessageRail();
         }
 
+        private int ResolvePanelAlertMessageCharacterLimit()
+        {
+            int contentWidth =
+                EffectivePanelContentWidth();
+
+            int toggleWidth =
+                Math.Max(
+                    22,
+                    Math.Min(
+                        40,
+                        PanelToggleWidth));
+
+            int gap =
+                Math.Max(
+                    2,
+                    PanelButtonGap);
+
+            int availableWidth =
+                contentWidth -
+                (ShowPanelToggleButton
+                    ? toggleWidth + gap
+                    : 0);
+
+            double averageCharacterWidth =
+                Math.Max(
+                    5.0,
+                    Math.Max(
+                        10,
+                        PanelFontSize - 1) *
+                    0.55);
+
+            return Math.Max(
+                24,
+                Math.Min(
+                    PanelAlertMessageMaxCharacters,
+                    (int)(
+                        Math.Max(
+                            120,
+                            availableWidth) /
+                        averageCharacterWidth)));
+        }
+
         private string FormatPanelAlertMessage(
             AlertDelivery delivery)
         {
             string message =
                 (delivery.Message ?? string.Empty).Trim();
 
+            int maxCharacters =
+                ResolvePanelAlertMessageCharacterLimit();
+
             if (message.Length >
-                PanelAlertMessageMaxCharacters)
+                maxCharacters)
             {
                 message =
                     message.Substring(
                         0,
-                        PanelAlertMessageMaxCharacters - 1) +
+                        Math.Max(
+                            1,
+                            maxCharacters - 1)) +
                     "…";
             }
 

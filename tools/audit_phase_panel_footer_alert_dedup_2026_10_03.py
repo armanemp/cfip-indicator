@@ -120,7 +120,8 @@ check(
     "PanelStatusLampFontSize" in lamp and
     "PanelStatusLampFontSize" in heartbeat and
     "PanelAlertMessageVisibleCapacity = 2" in read("UI/Panel/PanelAlertMessageRenderer.cs") and
-    "TextTrimming = TextTrimming.Ellipsis" in read("UI/Panel/PanelAlertMessageRenderer.cs"),
+    "TextWrapping = TextWrapping.NoWrap" in read("UI/Panel/PanelAlertMessageRenderer.cs") and
+    "TextTrimming = TextTrimming.None" in read("UI/Panel/PanelAlertMessageRenderer.cs"),
     "header and MTF lamps must share the enlarged status-lamp geometry",
 )
 
