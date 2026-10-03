@@ -867,6 +867,7 @@ namespace CFIP.cBot
 
             if (!CfipIndicatorChartBinding.TryFind(
                     this,
+                    _boundIndicatorInstanceId,
                     out ChartIndicator indicator,
                     out string reason))
             {
@@ -892,11 +893,19 @@ namespace CFIP.cBot
 
                             if (CfipIndicatorChartBinding.TryFind(
                                     this,
+                                    attached.InstanceId,
                                     out indicator,
                                     out reason))
                             {
                                 _indicatorAutoAttachAttempted = false;
                             }
+                        }
+                        else
+                        {
+                            Print(
+                                "CFIP ANALYSIS BIND | auto-attach returned null | displayName={0} | typeName={1}",
+                                CfipIndicatorChartBinding.DisplayName,
+                                CfipIndicatorChartBinding.TypeName);
                         }
                     }
                     catch (Exception attachException)
@@ -909,6 +918,23 @@ namespace CFIP.cBot
 
                 if (indicator == null)
                 {
+                    Print(
+                        "CFIP ANALYSIS BIND | unresolved | reason={0} | chart={1}",
+                        reason,
+                        SymbolName);
+
+                    foreach (ChartIndicator candidate in ChartIndicators.Custom)
+                    {
+                        if (candidate == null)
+                            continue;
+
+                        Print(
+                            "CFIP ANALYSIS BIND | chart indicator | name={0} | type={1} | instance={2}",
+                            candidate.Name ?? "",
+                            candidate.Type == null ? "" : candidate.Type.Name,
+                            candidate.InstanceId ?? "");
+                    }
+
                     _boundIndicatorInstanceId = "";
                     _activeManagedExecutionLabel = "";
                     _executionSettings = null;
@@ -975,6 +1001,7 @@ namespace CFIP.cBot
 
             if (!CfipIndicatorChartBinding.TryFind(
                     this,
+                    _boundIndicatorInstanceId,
                     out ChartIndicator indicator,
                     out string reason))
             {
