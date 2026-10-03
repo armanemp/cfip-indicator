@@ -25,7 +25,6 @@ namespace CFIP.cBot.Shadow
         private readonly Dictionary<string, ShadowHostResult> _lastResultByScenario =
             new Dictionary<string, ShadowHostResult>(StringComparer.Ordinal);
 
-        private DateTime _lastBrokerRecheckUtc = DateTime.MinValue;
         private ShadowHostResult _lastResult;
 
         public long LastAcceptedRevision =>
@@ -66,6 +65,9 @@ namespace CFIP.cBot.Shadow
                     nowUtc);
             }
 
+            string scenarioKey =
+                identity.ScenarioId ?? string.Empty;
+
             if (providerRevision != identity.Revision)
             {
                 ShadowHostResult mismatch =
@@ -84,9 +86,6 @@ namespace CFIP.cBot.Shadow
                     mismatch);
                 return mismatch;
             }
-
-            string scenarioKey =
-                identity.ScenarioId ?? string.Empty;
 
             long lastScenarioRevision =
                 GetLastRevision(scenarioKey);
@@ -123,8 +122,6 @@ namespace CFIP.cBot.Shadow
                         ShadowHostValidator.RevalidateBrokerSafety(
                             envelope,
                             broker);
-
-                _lastBrokerRecheckUtc = nowUtc;
 
                 SetScenarioBrokerRecheck(
                     scenarioKey,
