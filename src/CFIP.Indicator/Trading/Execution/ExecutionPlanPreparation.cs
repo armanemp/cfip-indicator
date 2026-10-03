@@ -74,11 +74,6 @@ namespace cAlgo
                                         selected[i].Price);
                             }
                 
-                            double rrStep =
-                                Math.Max(
-                                    0.10,
-                                    StructuralTpRrStep);
-
                             double[] requiredRR =
                                 BuildTargetSelectionRequiredRR(
                                     risk,
