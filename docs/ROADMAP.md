@@ -1,5 +1,11 @@
 ## Current focus — LIVE REALTIME EXECUTION / ATTACHMENT / AUDIO / QUALITY HARDENING — 2026-10-03
 
+Verification note — 2026-10-03:
+- cTrader Compile: PASS (run #3584 / 37125403700).
+- Runtime Acceptance Contracts: PASS (run #3400 / 37125403702).
+- Source/Architecture run #3591 exposed two stale/static-audit assumptions; both were corrected on the phase branch. The latest correction is committed as `28d67d7a2b1a248290f8ed91c18f5aaf664fffdf`; no new PR workflow was observed for that API-created commit, so Source/Architecture is not marked green until GitHub re-runs it.
+
+
 Status: IMPLEMENTED — automated verification pending; target-terminal validation pending.
 
 Purpose:
@@ -13,7 +19,7 @@ Purpose:
 
 Completed:
 - live-unarmed cBot stays attached and publishes a visible LIVE DISARMED state;
-- shared signal-store reload is bounded to 100 ms while Indicator intrabar opportunity refresh remains 200 ms;
+- shared signal-store reload is bounded to 100 ms while Indicator intrabar opportunity refresh is 100 ms;
 - cBot market/pending execution modes are the broker execution authority;
 - cBot effective execution state is reflected back to the Indicator panel without the old Indicator-setting false blocker;
 - CFIP binding scans Custom indicators first and reports candidate/type diagnostics when discovery fails;
