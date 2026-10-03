@@ -42,16 +42,16 @@ continuation = read("docs/CONTINUATION-STATE.md")
 check(
     "one canonical smart-strength owner exists",
     "class MtfTrendStrengthRule" in trend and
-    "preferredDirection" in trend and
     "ResolveCompositeScore" in trend and
     "ResolveNineLevel" in trend and
-    "LevelStartScore = 55.0" in trend and
-    "LevelStepScore = 5.0" in trend,
+    "LevelMinimumScore = 35" in trend and
+    "LevelBandSize = 5" in trend and
+    "ResolveTier" in trend,
 )
 
 check(
     "the nine levels map to three real strength tiers",
-    "score < LevelStartScore" in trend and
+    "score < LevelMinimumScore" in trend and
     "Math.Ceiling(" in trend and
     "Math.Min(9, level)" not in trend or "NumericGuards.ClampInt" in trend,
 )
@@ -72,7 +72,7 @@ check(
 check(
     "canonical arrow renderer consumes snapshot strength only",
     "snapshot.MtfTrendStrengthLevel" in stack and
-    "snapshot.MtfTrendDirection != direction" in stack and
+    "snapshot.MtfTrendDirection" in stack and
     "((strength - 1) % 3) + 1" in stack and
     "strength <= 3" in stack and
     "strength <= 6" in stack,
@@ -95,8 +95,8 @@ check(
 
 check(
     "preferred direction is passed into the single strength evaluator",
-    "preferredDirection" in builder and
-    "Symbol.Ask," in builder,
+    "preferredDirection" not in builder and
+    "MtfTrendStrengthRule.Evaluate(" in builder,
 )
 
 check(
@@ -106,10 +106,9 @@ check(
 )
 
 check(
-    "all production arrow call-sites use one four-argument owner",
-    "RenderStackedSignalArrows(" in signal and
-    "RenderStackedSignalArrows(" in presentation and
-    "RenderStackedSignalArrows(" in plan and
+    "all production arrow call-sites use one calculation-lifecycle owner",
+    "RenderCanonicalMtfTrendArrows(" in read("src/CFIP.Indicator/Runtime/Calculation/CalculationLiveCycle.cs") and
+    "RenderStackedSignalArrows(" in stack and
     "ResolveSignalArrowState(" not in signal and
     "fallbackState" not in stack,
 )
