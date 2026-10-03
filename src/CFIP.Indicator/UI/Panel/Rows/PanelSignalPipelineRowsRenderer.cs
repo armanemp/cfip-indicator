@@ -15,9 +15,7 @@ namespace cAlgo
             string direction =
                 decision == null || decision.Direction == 0
                     ? "WAIT"
-                    : decision.Direction == 1
-                        ? "BUY"
-                        : "SELL";
+                    : DirectionText(decision.Direction);
 
             bool decisionAllowed =
                 decision != null &&
