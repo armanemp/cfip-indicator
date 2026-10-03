@@ -20,6 +20,11 @@ namespace cAlgo
         public bool TopDownEligible;
         public string TopDownStage;
         public int ReactionDirection;
+        public int MtfTrendDirection;
+        public int MtfTrendStrengthLevel;
+        public int MtfTrendStrengthScore;
+        public int HtfTrendDirection;
+        public int HtfTrendStrengthScore;
         public string Stage;
         public bool DecisionReady;
         public bool DecisionEntryAllowed;
