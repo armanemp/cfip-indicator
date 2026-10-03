@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using cAlgo.API;
 using CFIP.cBot.Execution;
 
@@ -84,6 +85,13 @@ namespace CFIP.cBot.Recovery
             string scopedSuffix =
                 InstanceMarker +
                 indicatorInstanceId.Trim();
+
+            if (string.IsNullOrWhiteSpace(preferred))
+            {
+                return EvaluateAggregate(
+                    robot,
+                    scopedSuffix);
+            }
 
             Position managedPosition = null;
             PendingOrder managedPending = null;
@@ -253,6 +261,246 @@ namespace CFIP.cBot.Recovery
                 0,
                 null,
                 null);
+        }
+
+        private static CbotBrokerReconciliationResult EvaluateAggregate(
+            Robot robot,
+            string scopedSuffix)
+        {
+            int managedPositions = 0;
+            int managedPendingOrders = 0;
+            Position firstPosition = null;
+            PendingOrder firstPending = null;
+            string firstLabel = string.Empty;
+            bool allProtectionHealthy = true;
+            string protectionReason = "OK";
+
+            HashSet<string> positionLabels =
+                new HashSet<string>(StringComparer.Ordinal);
+            HashSet<string> pendingLabels =
+                new HashSet<string>(StringComparer.Ordinal);
+
+            foreach (Position position in robot.Positions)
+            {
+                if (position == null ||
+                    !MatchesScope(
+                        position.SymbolName,
+                        robot.SymbolName) ||
+                    !CbotManagedObjectIdentityRule.MatchesInstanceScope(
+                        position.Label,
+                        scopedSuffix))
+                    continue;
+
+                string logicalLabel =
+                    position.Label ?? string.Empty;
+
+                if (!positionLabels.Add(logicalLabel))
+                {
+                    return Result(
+                        "RECOVERY REQUIRED",
+                        "AMBIGUOUS",
+                        true,
+                        "DUPLICATE MANAGED POSITION SCENARIO",
+                        logicalLabel,
+                        managedPositions + 1,
+                        managedPendingOrders,
+                        position.Id,
+                        firstPending == null
+                            ? (long?)null
+                            : firstPending.Id);
+                }
+
+                managedPositions++;
+
+                if (firstPosition == null)
+                {
+                    firstPosition = position;
+                    firstLabel = logicalLabel;
+                }
+
+                if (!HasHealthyProtection(
+                        robot,
+                        position,
+                        out string currentProtectionReason))
+                {
+                    allProtectionHealthy = false;
+                    protectionReason =
+                        currentProtectionReason;
+                }
+            }
+
+            string pendingScope =
+                scopedSuffix + "-PENDING";
+
+            foreach (PendingOrder order in robot.PendingOrders)
+            {
+                if (order == null ||
+                    !MatchesScope(
+                        order.SymbolName,
+                        robot.SymbolName) ||
+                    !CbotManagedObjectIdentityRule.MatchesInstanceScope(
+                        order.Label,
+                        pendingScope))
+                    continue;
+
+                string label =
+                    order.Label ?? string.Empty;
+
+                const string pendingSuffix = "-PENDING";
+                string logicalLabel =
+                    label.EndsWith(
+                        pendingSuffix,
+                        StringComparison.Ordinal)
+                        ? label.Substring(
+                            0,
+                            label.Length - pendingSuffix.Length)
+                        : label;
+
+                if (!pendingLabels.Add(logicalLabel))
+                {
+                    return Result(
+                        "RECOVERY REQUIRED",
+                        "AMBIGUOUS",
+                        true,
+                        "DUPLICATE MANAGED PENDING SCENARIO",
+                        logicalLabel,
+                        managedPositions,
+                        managedPendingOrders + 1,
+                        firstPosition == null
+                            ? (long?)null
+                            : firstPosition.Id,
+                        order.Id);
+                }
+
+                managedPendingOrders++;
+
+                if (firstPending == null)
+                {
+                    firstPending = order;
+                    if (string.IsNullOrWhiteSpace(firstLabel))
+                        firstLabel = logicalLabel;
+                }
+            }
+
+            foreach (string positionLabel in positionLabels)
+            {
+                if (!pendingLabels.Contains(positionLabel))
+                    continue;
+
+                return Result(
+                    "RECOVERY REQUIRED",
+                    "AMBIGUOUS",
+                    true,
+                    "POSITION AND PENDING STATE COEXIST FOR SAME SCENARIO",
+                    positionLabel,
+                    managedPositions,
+                    managedPendingOrders,
+                    firstPosition == null
+                        ? (long?)null
+                        : firstPosition.Id,
+                    firstPending == null
+                        ? (long?)null
+                        : firstPending.Id);
+            }
+
+            if (managedPositions == 0 &&
+                managedPendingOrders == 0)
+            {
+                return Result(
+                    "READY / RECONCILED",
+                    "N/A",
+                    false,
+                    "NO MANAGED BROKER OBJECT",
+                    string.Empty,
+                    0,
+                    0,
+                    null,
+                    null);
+            }
+
+            if (!allProtectionHealthy)
+            {
+                return Result(
+                    "RECOVERY REQUIRED",
+                    "MISSING / INVALID",
+                    true,
+                    protectionReason,
+                    firstLabel,
+                    managedPositions,
+                    managedPendingOrders,
+                    firstPosition == null
+                        ? (long?)null
+                        : firstPosition.Id,
+                    firstPending == null
+                        ? (long?)null
+                        : firstPending.Id);
+            }
+
+            int scenarioCount =
+                new HashSet<string>(
+                    positionLabels,
+                    StringComparer.Ordinal).Count;
+
+            scenarioCount +=
+                managedPendingOrders -
+                CountIntersection(
+                    positionLabels,
+                    pendingLabels);
+
+            string lifecycle;
+            if (managedPositions > 0)
+            {
+                lifecycle =
+                    scenarioCount > 1
+                        ? "ACTIVE / MULTI-SCENARIO"
+                        : "ACTIVE / RECONCILED";
+            }
+            else
+            {
+                lifecycle =
+                    scenarioCount > 1
+                        ? "PENDING / MULTI-SCENARIO"
+                        : "PENDING / RECONCILED";
+            }
+
+            string protection =
+                managedPositions > 0
+                    ? managedPendingOrders > 0
+                        ? "PROTECTED / PENDING"
+                        : "PROTECTED"
+                    : "N/A";
+
+            return Result(
+                lifecycle,
+                protection,
+                false,
+                scenarioCount > 1
+                    ? "BROKER MULTI-SCENARIO STATE RECONCILED"
+                    : "BROKER STATE RECONCILED",
+                firstLabel,
+                managedPositions,
+                managedPendingOrders,
+                firstPosition == null
+                    ? (long?)null
+                    : firstPosition.Id,
+                firstPending == null
+                    ? (long?)null
+                    : firstPending.Id);
+        }
+
+        private static int CountIntersection(
+            HashSet<string> first,
+            HashSet<string> second)
+        {
+            int count = 0;
+
+            foreach (string value in first)
+            {
+                if (second.Contains(value))
+                    count++;
+            }
+
+            return count;
         }
 
         private static bool HasHealthyProtection(
