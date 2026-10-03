@@ -99,17 +99,17 @@ check(
     "M1 remains a precision/confirmation layer" in mtf_prediction
 )
 check(
-    "nine-level HTF smart arrow model exists",
+    "nine-level smart arrow model has one owner and separated rendering",
     "internal static class MtfTrendStrengthRule" in trend and
     "One owner for the complete nine-level trend model" in trend and
     "normalizedStrength * 9.0" in trend and
-    "quality * 0.40" in trend and
-    "directionalScore * 0.40" in trend and
-    "int count" in arrows and
-    '"WATCH_ARROW"' in arrows and
-    '"WATCH_ARROW_2"' in arrows and
-    '"WATCH_ARROW_3"' in arrows
+    '"TREND_ARROW_1"' in arrows and
+    '"TREND_ARROW_2"' in arrows and
+    '"TREND_ARROW_3"' in arrows and
+    "double spacing" in arrows and
+    "RenderStackedSignalArrows(" not in arrows
 )
+
 
 # Stagnant-market quality / magnitude.
 check(
