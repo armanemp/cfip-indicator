@@ -114,7 +114,7 @@ check(
 # Stagnant-market quality / magnitude.
 check(
     "small reward excursions are rejected by regime-aware magnitude",
-    "internal static bool IsMeaningful(" in magnitude and
+    "public static bool IsMeaningful(" in magnitude and
     "OpportunityMagnitudeRule.IsMeaningful(" in read("src/CFIP.Indicator/Analysis/Market/FuturePendingOpportunityRuntime.cs")
 )
 check(
