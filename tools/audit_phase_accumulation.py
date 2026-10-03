@@ -94,6 +94,8 @@ if "_serverSideTakeProfitLadderActive" not in partial_tp:
 
 quality_rule = read("Core/Math/ActionableSignalQualityRule.cs")
 evaluator = read("Trading/Validation/TradeActionabilityEvaluator.cs")
+# Extracted decision-gate owner keeps the staged threshold logic cohesive.
+decision_gate = read("Trading/Validation/TradeActionabilityDecisionGate.cs")
 telemetry = read("Trading/Execution/SubmissionGateCoordinator.cs")
 outcome_telemetry = read("Trading/Intelligence/OutcomeTelemetryEngine.cs")
 outcome_model = read("Trading/Intelligence/OutcomeObservation.cs")
@@ -104,7 +106,7 @@ if "AllowsQualityRecovery(" not in quality_rule:
     raise SystemExit("high-quality signal recovery gate is missing")
 if "ActionabilityThresholdPolicy.QualityRecoveryDeficitAllowance" not in quality_rule:
     raise SystemExit("quality-recovery threshold ownership is missing")
-if "EffectiveUpstreamEntryLocationQuality(" not in evaluator or "EffectiveUpstreamEntryTimingQuality()" not in evaluator:
+if "EffectiveUpstreamEntryLocationQuality(" not in decision_gate or "EffectiveUpstreamEntryTimingQuality()" not in decision_gate:
     raise SystemExit("actionability staging threshold ownership is missing")
 if "UpstreamEntryLocationQualityFloor = 64" not in policy or "UpstreamEntryTimingQualityFloor = 64" not in policy:
     raise SystemExit("actionability upstream 64/64 threshold owner is missing")
