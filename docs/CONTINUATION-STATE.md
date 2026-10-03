@@ -2397,3 +2397,17 @@ Verification status:
 Operator action after merge: git pull --ff-only on local main.
 
 Phase records: docs/PHASE-REALTIME-LIVE-SIGNAL-UNIFICATION-2026-10-03.md, docs/PHASE-VOLUME-PROFILE-EVIDENCE-2026-10-03.md.
+
+
+## 2026-10-03 — True Multi-Timeframe Decision / Entry / Risk-Reward Contract
+
+The timeframe architecture was corrected to match the intended behavior:
+- all aligned analysis frames M1/M5/M15/M30/H1/H4/D1/W1 participate simultaneously in the analysis stack;
+- M15 is the final signal-tuning/reference layer, not the sole analysis timeframe;
+- M5 provides lower-timeframe entry geometry and live precision; M1 remains lower-weight/optional and can refine micro-entry;
+- structural stop candidates now include M1 micro structure in addition to M5 and M15/M30/H1/H4/D1/W1;
+- target candidates now include bounded M1 micro targets in addition to M5 and M15/M30/H1/H4/D1/W1;
+- all final Entry/SL/TP choices remain subject to the common RR, obstacle, structural-risk, actionability and normalization gates.
+
+This supersedes the older interpretation that described M15 as the only execution analysis source. Existing M15 canonical identity/clock semantics are retained where required for traceability and history, while analysis/planning consumes the full multi-timeframe context.
+
