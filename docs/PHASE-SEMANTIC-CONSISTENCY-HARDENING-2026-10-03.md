@@ -12,6 +12,7 @@ The goal is not to remove legitimate semantic distinctions. Trade direction, tim
 2. MARKET BIAS, primary M15/H1 alignment and the realtime panel header contained this re-encoding seam.
 3. The WaveTrend row displayed its own BULL/BEAR evidence text while its color depended on agreement with the separate trade direction. A directional evidence statement could therefore appear in a neutral color without an explicit conflict state.
 4. The Top-Down row exposed raw numeric direction values, creating a second visual vocabulary for direction.
+5. The Decision row could show READY when EntryAllowed was true while the Entry Gate row simultaneously showed BLOCKED whenever ActionableNow was false. Those fields represent different stages, but the wording made them appear contradictory.
 
 ## Corrections
 
@@ -19,6 +20,7 @@ The goal is not to remove legitimate semantic distinctions. Trade direction, tim
 - Primary M15/H1 alignment uses the same canonical timeframe labels while retaining numeric direction only for the actual alignment calculation.
 - The realtime header uses the same canonical timeframe labels.
 - Top-Down HTF and MID directions are rendered through DirectionText; raw numeric directions are no longer displayed. ENTRY retains only its alignment/strength fields because Decision has no separate EntryFrameDirection owner.
+- Decision and Entry Gate statuses now distinguish ACTIONABLE, BLOCKED, WATCH, WAITING TRIGGER and WAITING ENTRY instead of using READY/BLOCKED in overlapping ways.
 - WaveTrend text and color now share WaveTrend's own direction. When it opposes the trade direction, CONFLICT is made explicit and the row uses the warning semantic.
 - No strategy threshold, decision authority, M15/M5/M1 role, risk rule, execution rule, broker ownership or calculation cadence changed.
 
