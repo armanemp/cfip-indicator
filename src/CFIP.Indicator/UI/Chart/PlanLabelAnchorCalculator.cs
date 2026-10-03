@@ -5,15 +5,23 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
+        private const int CompactPlanLabelGapBars = 2;
+        private const int CompactPlanLabelWidthBars = 7;
+
         private int GetCompactPlanLabelAnchorBar()
         {
             if (Bars == null ||
                 Bars.Count < 2)
                 return 0;
 
-            // Canonical plan labels share the exact right endpoint of the
-            // canonical plan-level line geometry.
-            return GetPlanLineRightBar();
+            int lineLeft =
+                GetPlanLineLeftBar();
+
+            return Math.Max(
+                0,
+                lineLeft -
+                CompactPlanLabelGapBars -
+                (CompactPlanLabelWidthBars / 2));
         }
     }
 }
