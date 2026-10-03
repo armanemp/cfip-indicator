@@ -1,3 +1,15 @@
+## Corrective seam closed — cooldown deferment
+
+A focused review found that a cooldown denial was being represented as an intermediate broker acknowledgment. That could move an unexecuted management command into the broker-confirmation path and leave it queued indefinitely.
+
+Correction:
+- cooldown is now a transient deferment only;
+- the command remains queued and retryable after the position-scoped cooldown expires;
+- no synthetic broker acknowledgment is persisted for a skipped mutation;
+- a dedicated regression assertion protects this invariant.
+
+This changes no signal, RR, risk, capacity or broker-authority policy.
+
 # CBOT Management Policy Hardening — 2026-10-03
 
 Status: IMPLEMENTATION COMPLETE — verification pending.
