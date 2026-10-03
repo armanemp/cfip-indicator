@@ -1705,3 +1705,8 @@ Acceptance remains open pending authoritative CI/build and target-terminal valid
 ## M2 continuation evidence — 2026-10-04
 
 The management command path has been root-corrected during M2: request submission now exposes an explicit status contract; queued/pending/confirmed states are distinct; broker-confirmed protection is adopted only from confirmation; request-time LocalStorage write/flush and report reads were removed from the hot path; deferred command persistence uses the existing BufferedPersistenceCoordinator; and management helper names use Request* semantics. The Indicator broker lifecycle observer set was audited and retained because each handler has a required read-only consumer for broker-confirmed lifecycle/protection reconciliation. These changes do not alter the single-owner law or cBot sole-mutation authority. CI/runtime closure remains pending.
+
+
+### Management terminal-state hardening evidence — 2026-10-04
+
+Expired management reports are now represented separately from broker-confirmed identities (`AlreadyExpired`), with bounded FIFO retention. This prevents terminal expiry from being reinterpreted as broker confirmation and preserves the single request/confirmation truth across the Indicator → Contracts → cBot boundary.
