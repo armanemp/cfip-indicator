@@ -123,7 +123,7 @@ namespace cAlgo
             _lastServerTpLadderMutationKind = "SERVER-LADDER-AFTER-TP1";
 
                 ManagementCommandRequestStatus tp1Status =
-                    TryModifyTakeProfitLadder(
+                    RequestModifyTakeProfitLadder(
                         position,
                         tp2Volume,
                         tp2Pips,
@@ -276,7 +276,7 @@ namespace cAlgo
             _lastServerTpLadderMutationKind = "SERVER-LADDER";
 
                 ManagementCommandRequestStatus ladderStatus =
-                    TryModifyTakeProfitLadder(
+                    RequestModifyTakeProfitLadder(
                         position,
                         tp1Volume,
                         tp1Pips,
@@ -419,7 +419,7 @@ namespace cAlgo
             _lastServerTpLadderMutationKind = "SERVER-LADDER-AFTER-TP2";
 
             ManagementCommandRequestStatus finalTargetStatus =
-                TryModifyTakeProfitPips(
+                RequestModifyTakeProfitPips(
                     position,
                     targetPips,
                     "POST-TP2 FINAL TARGET");
