@@ -67,3 +67,14 @@ Final repository verification on merge head `2e670514e90deeb46a3f140d1383446f029
 Source/Architecture PASS; Runtime Acceptance PASS; cTrader Compile PASS.
 
 Manual cTrader terminal acceptance remains required for the actual audible startup cue and exact visual line/label rendering.
+
+
+## Post-closeout visual correction — 2026-10-04
+
+A target-side presentation review found that the production label owner still used HorizontalAlignment.Left even though its X anchor had already been moved before the line start. In cTrader, chart-object horizontal alignment is relative to that anchor point; using Left alignment makes the text extend toward the line. The canonical fix is therefore to keep the existing pre-line anchor and use HorizontalAlignment.Right, so the visible text occupies the space to the left of the line. (cTrader Algo ChartText and HorizontalAlignment reference.)
+
+The duplicated ChartText mutation code was also collapsed into one UpsertPlanLabel owner. DrawPlanLabel and DrawCompactPlanLabel remain thin compatibility wrappers so existing call paths do not fork.
+
+The audit contracts were updated together with production code so the old alignment semantics cannot be reintroduced by CI. No analysis, decision, Entry/SL/TP, RR, risk, execution, cBot audio, or MTF role behavior was changed.
+
+Automated repository verification for this corrective branch remains subject to the GitHub Actions run and final target-cTrader visual acceptance.
