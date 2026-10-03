@@ -4,6 +4,7 @@
 // ============================================================================
 
 using System;
+using CFIP.Contracts;
 using System.Collections.Generic;
 using System.Linq;
 using cAlgo.API;
@@ -60,9 +61,11 @@ namespace cAlgo
                         "REVERSAL PROTECTION");
                 }
 
-                if (!RequestClosePosition(
+                ManagementCommandRequestStatus closeStatus =
+                    RequestClosePosition(
                         position,
-                        "REVERSAL PROTECTION"))
+                        "REVERSAL PROTECTION");
+                if (!closeStatus.IsAccepted())
                 {
                     if (_plan != null &&
                         _plan.IsLivePosition)
