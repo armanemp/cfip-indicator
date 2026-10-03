@@ -93,6 +93,7 @@ namespace cAlgo
                 }
 
                 UpdatePanelAlertMessageRail();
+                RefreshPanelAlertFooterGeometry();
             }
             catch (Exception ex)
             {

@@ -152,3 +152,11 @@ check(
     "CreatedClosedM5" in processor,
     "signal sound dedup must retain multiple recent event fingerprints rather than only the last group",
 )
+
+check(
+    "alert rail relayouts immediately when a timer-delivered alert arrives",
+    "RefreshPanelAlertFooterGeometry();" in read("UI/Panel/PanelAlertMessageRenderer.cs") and
+    "ResolvePanelFooterAreaHeight(" in read("UI/Panel/PanelAlertMessageRenderer.cs") and
+    "_buttonStack.Height" in read("UI/Panel/PanelAlertMessageRenderer.cs"),
+    "panel alert delivery must resize the live footer without waiting for a full panel render",
+)
