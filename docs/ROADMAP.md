@@ -3477,7 +3477,7 @@ Completed in this phase:
 - RenderLevelLines and RenderPlanLabels now consume the same level state instead of independently recalculating visibility/distinctness.
 - Trigger visibility now has one canonical rule for line and label presentation, preventing line/label disagreement.
 - All signal/plan lines retain the established visual contract: Solid, 1px, finite 40-bar span ending at the latest candle, no infinite extension.
-- Semantic colors remain intact with one canonical full-opacity cTrader-like treatment (255) applied uniformly to every signal/plan line; background-free labels remain unchanged. Modernization is achieved through one consistent, uncluttered presentation path rather than a parallel visual language.
+- Semantic colors remain intact with one canonical full-opacity cTrader-like treatment (255) applied uniformly to every signal/plan line. Plan labels are now white text inside compact filled boxes using the exact associated line color; the box is attached to the line's exact right endpoint. Modernization remains one consistent presentation path rather than a parallel visual language.
 - Pending and parallel opportunity lines continue to delegate to PlanLineRenderer; no alternate geometry owner was added.
 - Routine single-owner / no-duality audit remains part of the phase acceptance.
 
