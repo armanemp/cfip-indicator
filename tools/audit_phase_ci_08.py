@@ -115,7 +115,7 @@ check(
     "_decision =" not in prediction and
     "_plan =" not in prediction and
     "SetLifecycleState(" not in prediction and
-    "TryClosePosition(" not in prediction
+    "RequestClosePosition(" not in prediction
 )
 
 check(
