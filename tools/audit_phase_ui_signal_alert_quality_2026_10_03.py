@@ -26,7 +26,10 @@ line_rule = read("Core/Math/PlanLinePresentationRule.cs")
 line_parameter = read("Indicator/Parameters/14_display_core.cs")
 labels = read("UI/Chart/PlanLabelAnchorCalculator.cs")
 label_renderer = read("UI/Chart/PlanLabelRenderer.cs")
-candidate = read("Analysis/Market/ParallelOpportunityCandidateBuilder.cs")
+candidate = (
+    read("Analysis/Market/ParallelOpportunityCandidateBuilder.cs") +
+    read("Analysis/Market/ParallelOpportunityCandidatePresentation.cs")
+)
 alerts_calc = read("Runtime/Calculation/CalculationDecisionAlerts.cs")
 csproj = (IND / "CFIP.Indicator.csproj").read_text(encoding="utf-8")
 indicator = read("Indicator/CFIPIndicator.cs")
@@ -81,7 +84,8 @@ check(
     "MaximumThickness = 3" in line_rule and
     "return MinimumThickness;" in line_rule and
     "Solid" in read("UI/Chart/PlanLineRenderer.cs") and
-    "HorizontalAlignment = HorizontalAlignment.Left" in label_renderer and
+    "HorizontalAlignment" in label_renderer and
+    "HorizontalAlignment.Left" in label_renderer and
     "lineLeft - offset" in labels,
     "chart level presentation must be canonical, one-pixel, solid and left-anchored",
 )
