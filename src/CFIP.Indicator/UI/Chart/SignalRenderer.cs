@@ -47,7 +47,7 @@ namespace cAlgo
 
             if (!signalPresentationAllowed)
             {
-                Chart.RemoveObject(P + "WATCH_ARROW");
+                RemoveStackedSignalArrows();
                 Chart.RemoveObject(P + "REACTION_ARROW");
                 return;
             }
@@ -63,7 +63,7 @@ namespace cAlgo
 
             if (visualDirection == 0)
             {
-                Chart.RemoveObject(P + "WATCH_ARROW");
+                RemoveStackedSignalArrows();
                 Chart.RemoveObject(P + "REACTION_ARROW");
                 return;
             }
@@ -96,28 +96,18 @@ namespace cAlgo
                     snapshot,
                     visualDirection);
 
-            bool showCurrentStateArrow =
-                ShowSignalArrow;
-
-            if (showCurrentStateArrow)
+            if (ShowSignalArrow)
             {
-                DrawIcon(
-                    P + "WATCH_ARROW",
-                    visualDirection == 1
-                        ? ChartIconType.UpArrow
-                        : ChartIconType.DownArrow,
+                RenderStackedSignalArrows(
+                    snapshot,
+                    visualDirection,
                     arrowBar,
-                    visualDirection == 1
-                        ? Bars.LowPrices[arrowBar] - offset
-                        : Bars.HighPrices[arrowBar] + offset,
-                    SignalArrowColorFor(
-                        visualDirection,
-                        arrowState));
+                    offset,
+                    arrowState);
             }
             else
             {
-                Chart.RemoveObject(
-                    P + "WATCH_ARROW");
+                RemoveStackedSignalArrows();
             }
 
             Chart.RemoveObject(
@@ -401,8 +391,7 @@ namespace cAlgo
         
         private void ClearWatchObjects()
                         {
-                            Chart.RemoveObject(
-                                P + "WATCH_ARROW");
+                            RemoveStackedSignalArrows();
                 
                             Chart.RemoveObject(
                                 P + "REACTION_ARROW");

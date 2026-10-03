@@ -125,17 +125,12 @@ namespace cAlgo
                                                             9,
                                                             PanelFontSize);
                                         
-                                                    _panelHeaderTitle.ForegroundColor =
-                                                        GetCanonicalSignalPanelStatusColor();
-                                        
-                                                    _panelHeaderTitle.Text =
-                                                        "CFIP SMART  •  " +
-                                                        GetCanonicalSignalPanelStatus();
-                                        
                                                     _panelHeaderTitle.LineHeight =
                                                         Math.Max(
                                                             14,
                                                             PanelFontSize + 2);
+
+                                                    UpdatePanelHeaderLiveState();
                                         
                                                     _panelHeaderStack.BackgroundColor =
                                                         Color.FromArgb(

@@ -69,6 +69,7 @@ namespace cAlgo
                                     _panelStack = null;
                                     _panelHeaderStack = null;
                                     _panelHeaderTitle = null;
+                                    _lastPanelHeaderLiveKey = "";
                                     _processingLamp = null;
                                     _processingLampPulseIndex = 0;
                                     _panelRowsStack = null;

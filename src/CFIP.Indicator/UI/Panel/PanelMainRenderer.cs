@@ -52,6 +52,7 @@ namespace cAlgo
                                                         Server.TimeInUtc;
 
                                                     UpdateProcessingHeartbeatLamp();
+                                                    UpdatePanelHeaderLiveState();
                                         
                                                     ownsVisualSnapshot =
                                                         _renderSignalVisualSnapshot == null;

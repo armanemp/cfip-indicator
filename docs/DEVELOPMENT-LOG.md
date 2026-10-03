@@ -1,3 +1,31 @@
+## 2026-10-03 — Smart Realtime UI / Audio / Signal Presentation Hardening
+
+Status: implementation complete; automated verification pending; target-terminal validation pending.
+
+Implemented:
+- canonical nine-level HTF trend arrow strength presentation (weak/medium/strong × 1/2/3 arrows);
+- one stacked-arrow owner with stale marker cleanup and fallback to previous single-arrow behavior when HTF evidence is unavailable;
+- live panel header owner and 500 ms lightweight refresh independent from full panel layout optimization;
+- cBot lifecycle/execution audio owner covering Start/Stop, live-disarmed, broker execution success/failure and blocked state;
+- corrected cBot execution/session logging placeholders;
+- dedicated Source/Architecture audit added.
+
+Full-chain review:
+history/outcomes -> MTF evidence -> M15 decision -> M5 tuning/trigger -> M1 optional -> current quote -> current/future opportunity -> cBot -> broker -> protection -> outcome/history.
+
+Safety unchanged:
+- live execution explicit and OFF by default;
+- current vs future scenario semantics remain separate;
+- existing risk/RR/quality/spread/margin/daily-loss/protection gates remain mandatory;
+- no threshold was lowered to increase trade count;
+- Indicator remains broker-mutation-free.
+
+Target-terminal evidence still required for actual cTrader audio, chart attachment/restart, same-tick handoff, live-arm and simultaneous-scenario behavior.
+
+Phase record: docs/PHASE-SMART-REALTIME-UI-AUDIO-HARDENING-2026-10-03.md.
+
+Operator action after merge: git pull --ff-only.
+
 ## 2026-10-03 — Live realtime cBot / attachment / audio / stagnant-market hardening
 
 Implemented:

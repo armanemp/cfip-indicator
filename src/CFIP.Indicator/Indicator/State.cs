@@ -282,6 +282,7 @@ namespace cAlgo
                 private StackPanel _panelStack;
                 private StackPanel _panelHeaderStack;
                 private TextBlock _panelHeaderTitle;
+                private string _lastPanelHeaderLiveKey = "";
                 private StackPanel _panelRowsStack;
                 private ScrollViewer _panelScroll;
                 private readonly List<TextBlock> _panelRows =
