@@ -24,10 +24,10 @@ check("plan thickness contract is one pixel", "return MinimumThickness;" in line
 check("plan labels use canonical filled line-colored boxes", "Chart.DrawRectangle(" in labels and "box.IsFilled" in labels and 'name + "_BOX"' in labels and "PlanLinePresentationRule.ResolveColor(" in labels)
 check("plan labels are white", "return Color.White;" in labels)
 check("labels share the exact signal price and sit left with a deterministic gap", "NormalizePrice(price)" in labels and "lineLeft - offset" in anchor and "CompactPlanLabelMinimumGapBars = 3" in anchor)
-check("active plan uses canonical stacked-arrow renderer", "RenderStackedSignalArrows(" in plan and 'P + "ARROW"' not in plan)
+check("active plan does not create a second arrow lifecycle", "RenderStackedSignalArrows(" not in plan and 'P + "ARROW"' not in plan)
 check("legacy active arrow is cleaned", 'P + "ARROW"' in arrows and 'P + "ARROW"' in clearer)
 check("directional arrows are explicit UpArrow/DownArrow", "ChartIconType.UpArrow" in arrows and "ChartIconType.DownArrow" in arrows)
-check("directional marker lifecycle has one owner", "RenderStackedSignalArrows(" in plan and "RenderStackedSignalArrows(" in (ROOT / "src/CFIP.Indicator/UI/Chart/SignalPresentationRenderer.cs").read_text(encoding="utf-8"))
+check("directional marker lifecycle has one owner", "RenderCanonicalMtfTrendArrows(" in (ROOT / "src/CFIP.Indicator/Runtime/Calculation/CalculationLiveCycle.cs").read_text(encoding="utf-8") and "RenderStackedSignalArrows(" in arrows)
 check("legacy alert mirror cannot create second signal marker", 'P + "ALERT_SIGNAL"' in alert_marker and "Chart.DrawIcon" not in alert_marker)
 
 if errors:
