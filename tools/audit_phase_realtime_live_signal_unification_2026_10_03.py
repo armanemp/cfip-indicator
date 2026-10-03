@@ -108,7 +108,7 @@ check(
 
 check(
     "range-market RR floor was strengthened",
-    "input.Tp1RR < 2.00" in range_rule
+    "input.Tp1RR < 2.25" in range_rule
 )
 
 check(
@@ -166,6 +166,34 @@ check(
     "ExecutionAccountMode" in snapshot and
     "ExecutionAccountMode =" in publisher and
     "ExecutionAccountMode" in reader
+)
+
+check(
+    "all-timeframe MTF early prediction fusion is explicit",
+    "class MtfEarlyPredictionFusionRule" in read("src/CFIP.Indicator/Core/Math/MtfEarlyPredictionFusionRule.cs") and
+    "MtfEarlyPredictionFusionRule.Evaluate(" in read("src/CFIP.Indicator/Trading/Intelligence/Prediction/EarlyPredictionEngine.cs") and
+    "_w1Frame" in read("src/CFIP.Indicator/Trading/Intelligence/Prediction/EarlyPredictionEngine.cs")
+)
+
+check(
+    "nine-level HTF-strength arrow stack is presentation-only and bounded",
+    "class MtfTrendStrengthRule" in read("src/CFIP.Indicator/Core/Math/MtfTrendStrengthRule.cs") and
+    "MtfTrendStrengthLevel" in read("src/CFIP.Indicator/UI/Chart/SignalVisualSnapshot.cs") and
+    "MtfTrendStrengthRule.Evaluate(" in read("src/CFIP.Indicator/UI/Chart/SignalVisualSnapshotBuilder.cs") and
+    "((level - 1) % 3) + 1" in read("src/CFIP.Indicator/UI/Chart/SignalRenderer.cs") and
+    "levels 1..3" not in read("src/CFIP.Indicator/UI/Chart/SignalRenderer.cs")
+)
+
+check(
+    "all eight timeframe frames are analyzed on each closed-M5 canonical cycle",
+    "_m1Frame" in read("src/CFIP.Indicator/Runtime/Calculation/CalculationClosedBar.cs") and
+    "_m5Frame" in read("src/CFIP.Indicator/Runtime/Calculation/CalculationClosedBar.cs") and
+    "_m15Frame" in read("src/CFIP.Indicator/Runtime/Calculation/CalculationClosedBar.cs") and
+    "_m30Frame" in read("src/CFIP.Indicator/Runtime/Calculation/CalculationClosedBar.cs") and
+    "_h1Frame" in read("src/CFIP.Indicator/Runtime/Calculation/CalculationClosedBar.cs") and
+    "_h4Frame" in read("src/CFIP.Indicator/Runtime/Calculation/CalculationClosedBar.cs") and
+    "_d1Frame" in read("src/CFIP.Indicator/Runtime/Calculation/CalculationClosedBar.cs") and
+    "_w1Frame" in read("src/CFIP.Indicator/Runtime/Calculation/CalculationClosedBar.cs")
 )
 
 check(
