@@ -35,34 +35,7 @@ namespace cAlgo
             else
                 RemovePlanLabels();
 
-            if (!ShowSignalArrow ||
-                Bars == null ||
-                Bars.Count < 2)
-            {
-                RemoveStackedSignalArrows();
-            }
-            else
-            {
-                int hostBar = Bars.Count - 1;
-                double atr =
-                    Atr(
-                        Bars,
-                        Math.Max(
-                            1,
-                            Math.Min(
-                                Bars.Count - 1,
-                                hostBar)));
-                double offset =
-                    Math.Max(
-                        Symbol.PipSize * 2,
-                        atr * 0.18);
-
-                RenderStackedSignalArrows(
-                    snapshot,
-                    snapshot.PlanDirection,
-                    hostBar,
-                    offset);
-            }
+            // Canonical MTF trend arrows are rendered once by CalculationLiveCycle.
         }
 
         private void RenderSetupPreview(
