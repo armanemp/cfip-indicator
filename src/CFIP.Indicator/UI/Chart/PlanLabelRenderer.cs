@@ -216,8 +216,8 @@ namespace cAlgo
         private Color GetReadableLabelTextColor(
             Color semanticColor)
         {
-            // Compact level labels have no background, so the only visual
-            // styling authority is the exact color of the corresponding line.
+            // Compact level labels have no background; the current
+            // presentation contract uses white text for every signal level.
             return Color.White;
         }
 
