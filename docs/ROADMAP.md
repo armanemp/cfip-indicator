@@ -1,3 +1,19 @@
+
+
+## 2026-10-04 — M2 micro-precision completion
+
+Implemented on `phase/m2-timeframe-clean-complete-2026-10-04`.
+
+- Added native cTrader M2 loading through `TimeFrame.Minute2`.
+- Added M2 closed-bar mapping and stable-cache participation.
+- Added one canonical `M2PrecisionRule` and immutable `M2PrecisionSnapshot`.
+- M2 is calculated from the same canonical Frame analysis pipeline and compared only against the canonical M5 direction for micro alignment.
+- M2 does not vote in DecisionScore, does not replace M5, and does not create a second execution clock.
+- Added M2 to the existing panel owner with explicit MICRO-ALIGNED / MICRO-CONFLICT / WAIT semantics.
+- Fixed a real integration bug found during implementation: the stable-cache StoreStableContext signature initially missed the new M2 parameter; corrected before closure.
+- Updated the CI-07 closed-index audit from eight to nine because M2 is now part of the closed context while the eight-frame decision contract remains unchanged.
+
+Verification boundary: source-side consistency reviewed; local Release build and target cTrader runtime validation are still required.
 ## 2026-10-04 — Native No-Box Signal Label Refinement
 
 The previous filled ChartRectangle label was rejected visually: it did not resemble native cTrader chart presentation and could make text appear outside/offset as zoom and price-range geometry changed. Official cTrader API documentation confirms ChartText is the native chart-bound text object with explicit horizontal/vertical anchoring, while rectangles are independent chart shapes. The canonical presentation is therefore changed to ChartText only, right-aligned against the line-start anchor, with the legacy rectangle explicitly removed. A single tiny native Circle ChartIcon marks the exact line/label junction; no panel/box is created. This minimizes chart objects and avoids a second price/time geometry surface.
