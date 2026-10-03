@@ -122,12 +122,37 @@ namespace cAlgo
             if (frame == null)
                 return "NULL";
 
+            PanelTimeframePresentationState presentation =
+                PanelTimeframePresentationRule.Resolve(
+                    frame);
+
             return string.Join(
                 ":",
                 frame.Index,
                 frame.Direction,
                 frame.Quality,
-                frame.Evidence);
+                frame.Evidence,
+                frame.NativeIndicatorsReady ? "1" : "0",
+                frame.BullScore,
+                frame.BearScore,
+                frame.TrendBull ? "1" : "0",
+                frame.TrendBear ? "1" : "0",
+                frame.Adx.ToString(
+                    "G17",
+                    System.Globalization.CultureInfo.InvariantCulture),
+                frame.FvgBull ? "1" : "0",
+                frame.FvgBullQuality,
+                frame.FvgBear ? "1" : "0",
+                frame.FvgBearQuality,
+                frame.ObBull ? "1" : "0",
+                frame.ObBullQuality,
+                frame.ObBear ? "1" : "0",
+                frame.ObBearQuality,
+                frame.FvgObBullConfluence ? "1" : "0",
+                frame.FvgObBearConfluence ? "1" : "0",
+                presentation.Direction,
+                presentation.Strength,
+                presentation.Label);
         }
 
         private string PriceKey(
