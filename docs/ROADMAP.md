@@ -1,4 +1,4 @@
-# Current focus — CBOT BROKER-CONFIRMED EXECUTION FACTS — 2026-10-03
+## Current focus — CBOT BROKER-CONFIRMED EXECUTION FACTS — 2026-10-03
 
 Status: IMPLEMENTATION COMPLETE — verification pending.
 
@@ -6,7 +6,7 @@ Closed:
 - successful market execution now publishes actual broker Entry/SL/TP through the existing BrokerExecutionReport fields;
 - a broker-created Position without valid SL/TP is surfaced as RecoveryRequired rather than a clean execution confirmation;
 - market/pending submission results immediately trigger broker reconciliation and cBot state republish;
-- pending-order requests do not masquerade as broker-confirmed fill facts;
+- pending-order requests are not mislabeled as broker-confirmed fill facts;
 - pending fill lifecycle events continue to derive active state from the real broker Position.
 
 Full-chain audit:
