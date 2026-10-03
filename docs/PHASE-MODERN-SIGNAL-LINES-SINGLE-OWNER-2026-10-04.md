@@ -25,7 +25,7 @@ The phase removes that dual interpretation at the shared presentation-state boun
 - Fixed 1px thickness.
 - Exactly 40 chart bars, ending at the latest chart candle.
 - No infinite extension.
-- Existing semantic line colors are preserved.
+- Semantic line colors remain intact, with one canonical restrained alpha treatment (220) applied uniformly to every signal/plan line.
 - Labels remain white, background-free and horizontally separated from the line start.
 - Expired/invalid objects continue to be removed by the existing lifecycle owners.
 
