@@ -3646,3 +3646,10 @@ See `docs/PHASE-SIGNAL-LABEL-COLOR-2PIP-2026-10-04.md`.
 
 Verification: repository-side source/audit changes implemented; local Release build and target cTrader visual acceptance remain required.
 Operator action after merge: `git pull --ff-only`.
+
+
+## 2026-10-04 — Exact 2-Pip Signal Label Clearance
+
+The canonical `PlanLabelRenderer` now anchors each label at the exact left edge of its line and offsets the label price by exactly 2 pips using `Symbol.PipSize`. This removes the previous one-bar approximation that could visually place text on top of the line. No rectangle, circle, duplicate renderer, signal logic, or execution logic was introduced.
+
+Verification: source/audit updated; local Release build and target cTrader visual acceptance remain required.
