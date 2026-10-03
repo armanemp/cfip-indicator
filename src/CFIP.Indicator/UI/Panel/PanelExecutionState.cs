@@ -153,7 +153,7 @@ namespace cAlgo
                 return "CBOT CONNECTED • AUTO TRADE OFF • MARKET DISARMED";
 
             if (!_cBotExecutionState.EffectiveAutoTradingEnabled &&
-                !_cBotExecutionState.IsDemoAccount &&
+                !_cBotExecutionState.DemoAccount &&
                 string.Equals(
                     _cBotExecutionState.RuntimeState,
                     "BLOCKED",
@@ -206,7 +206,7 @@ namespace cAlgo
                 return "CBOT CONNECTED • AUTO ORDERS OFF • PENDING DISARMED";
 
             if (!_cBotExecutionState.EffectiveAutomaticOrdersEnabled &&
-                !_cBotExecutionState.IsDemoAccount &&
+                !_cBotExecutionState.DemoAccount &&
                 string.Equals(
                     _cBotExecutionState.RuntimeState,
                     "BLOCKED",
