@@ -10,6 +10,7 @@ namespace cAlgo
     public partial class CFIPIndicator : Indicator
     {
         private Bars _m1Bars;
+                private Bars _m2Bars;
                 private Bars _m5Bars;
                 private Bars _m15Bars;
                 private Bars _m30Bars;
@@ -23,6 +24,7 @@ namespace cAlgo
                 private readonly M5RegimeCoreCache _m5RegimeCoreCache = new M5RegimeCoreCache();
 
                 private Frame _m1Frame;
+                private Frame _m2Frame;
                 private Frame _m5Frame;
                 private Frame _m15Frame;
                 private Frame _m30Frame;
