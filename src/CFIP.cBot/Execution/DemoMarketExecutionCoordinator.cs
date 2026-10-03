@@ -386,6 +386,20 @@ namespace CFIP.cBot.Execution
                     ? result.Position.EntryPrice
                     : (double?)null;
 
+            double? confirmedStop =
+                result != null &&
+                result.Position != null &&
+                result.Position.StopLoss.HasValue
+                    ? result.Position.StopLoss.Value
+                    : (double?)null;
+
+            double? confirmedTarget =
+                result != null &&
+                result.Position != null &&
+                result.Position.TakeProfit.HasValue
+                    ? result.Position.TakeProfit.Value
+                    : (double?)null;
+
             string reference =
                 positionId.HasValue
                     ? positionId.Value.ToString()
@@ -414,8 +428,8 @@ namespace CFIP.cBot.Execution
                 positionId,
                 null,
                 entryPrice,
-                null,
-                null,
+                confirmedStop,
+                confirmedTarget,
                 reference,
                 errorCode,
                 reason,
