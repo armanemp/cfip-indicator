@@ -18,7 +18,7 @@ The repository had multiple valid states but the presentation and actionability 
 
 1. Preserve directional Decision state in SignalVisualSnapshotBuilder even when the setup is not yet actionable. This affects presentation only; it does not authorize a trade.
 2. Add an explicit MARKET BIAS panel state derived from the primary M15/H1/M5 directional presentation path, separate from SIGNAL readiness.
-3. Reuse FrameDirection(...) for primary M15/H1 panel rows so BULL/BEAR bias is represented consistently.
+3. Reuse ResolvePanelTimeframeState(...) for primary M15/H1 panel rows so the same DirectionLabel/readiness/color owner is shared with the MTF lamp rail.
 4. Expose trigger lifecycle score, required score, M1 direction and runtime reason in the panel.
 5. Move M5OnlyConfirmedTrigger enforcement out of decision-level EntryAllowed filtering and into the mode-specific actionability evaluator. Retest remains zone-driven; trigger-dependent modes retain the trigger requirement.
 6. Make an in-zone Retest take precedence over generic continuation waiting in EntryGeometryRule.
