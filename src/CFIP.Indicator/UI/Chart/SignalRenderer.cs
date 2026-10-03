@@ -210,7 +210,7 @@ namespace cAlgo
                         {
                             RemoveMtfTrendStrengthArrowStack();
 
-                            if (!ShowMtfStrengthArrowStack ||
+                            if (!ShowSignalArrow ||
                                 snapshot == null ||
                                 direction == 0 ||
                                 snapshot.MtfTrendStrengthLevel <= 0)
@@ -239,7 +239,7 @@ namespace cAlgo
                                     baseOffset *
                                     Math.Max(
                                         0.35,
-                                        MtfArrowStackSpacingAtr /
+                                        0.09 /
                                         Math.Max(
                                             0.02,
                                             ArrowOffsetAtr)));
