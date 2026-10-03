@@ -4,7 +4,7 @@ using cAlgo.API;
 
 namespace cAlgo
 {
-    internal sealed partial class ParallelOpportunityBuilder
+    public partial class CFIPIndicator : Indicator
     {
 private TradeOpportunityCandidate BuildLaneCandidate(
             int closedM5,
