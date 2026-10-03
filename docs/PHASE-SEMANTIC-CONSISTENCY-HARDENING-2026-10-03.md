@@ -41,6 +41,8 @@ Analysis -> MTF -> Decision -> Signal -> Alert -> cBot execution -> Broker confi
 
 Performance remains presentation-only because the new consumers use already-calculated frame state and do not create another market-data or execution loop.
 
+Obsolete duplicate panel-header formatting/color helpers left behind by the realtime header ownership change were removed; the remaining header wrapper only delegates to the canonical realtime owner.
+
 ## Verification boundary
 
 Required:
