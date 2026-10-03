@@ -1,6 +1,6 @@
 ## 2026-10-03 — Current Integrated User-Requirement Hardening
 
-Status: IMPLEMENTED — automated verification pending on branch phase/final-realtime-live-smart-system-2026-10-03.
+Status: MERGED TO MAIN — PR #243 — merge commit `7af17f4fa65142468c76501399ee5082bf0f0f42`. Pre-merge Compile/Runtime/Source verification passed.
 
 This is now the consolidated continuation branch for the current realtime/live work. The indicator remains analysis/signal only and the cBot remains the broker-mutation owner.
 
@@ -20,7 +20,7 @@ Verified by construction:
 
 Current verification boundary: CI must pass on the exact final head; terminal acceptance remains mandatory for actual cTrader sound, attachment, same-tick handoff, pending lifecycle, restart/reconnect and live broker mutation.
 
-Operator action after verified merge: git pull --ff-only.
+Operator action: git pull --ff-only.
 
 ---
 
