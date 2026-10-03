@@ -381,7 +381,6 @@ namespace cAlgo
                     m5AdverseEvidenceKnown ||
                     m1AdverseEvidenceKnown);
 
-
             // Live actionability must consume the same indicator-fusion quality
             // that guards confirmed Decision/automatic execution. A stale M5
             // fusion snapshot is fail-closed so an old indicator state cannot
