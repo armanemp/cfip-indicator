@@ -2205,7 +2205,7 @@ namespace cAlgo
                     true, true, true,
                     true, true, false,
                     72, 6, 3,
-                    89, 84, 8, 2.0);
+                    89, 84, 8, 2.50);
 
             RangeSignalQualityResult reversalResult =
                 RangeSignalQualityRule.Evaluate(
