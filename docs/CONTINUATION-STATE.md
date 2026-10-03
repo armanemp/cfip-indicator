@@ -1,6 +1,6 @@
 ## 2026-10-03 — cBot Shadow Multi-Scenario Truth
 
-Status: implementation complete, verification pending.
+Status: implementation complete, automated verification PASS; target-terminal acceptance pending.
 
 Closed a multi-scenario execution bottleneck in ShadowHostCoordinator:
 
@@ -14,9 +14,9 @@ Closed a multi-scenario execution bottleneck in ShadowHostCoordinator:
 
 No execution/risk/quality threshold was lowered.
 
-Verification required:
+Automated verification: Source/Architecture, Runtime Acceptance and cTrader Compile/Build PASS.
 
-Source/Architecture, Runtime Acceptance, cTrader Compile/Build, dedicated shadow audit and target-terminal two-scenario/replay/reconnect evidence.
+Remaining acceptance: target-terminal two-scenario/replay/reconnect evidence.
 
 Phase record: docs/PHASE-CBOT-SHADOW-MULTISCENARIO-TRUTH-2026-10-03.md.
 
