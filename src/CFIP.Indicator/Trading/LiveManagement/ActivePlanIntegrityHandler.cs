@@ -51,7 +51,7 @@ namespace cAlgo
                                                 "PLAN INTEGRITY FAILURE");
                         
                                             ManagementCommandRequestStatus closeStatus =
-                                                TryClosePosition(
+                                                RequestClosePosition(
                                                     integrityPosition,
                                                     "PLAN INTEGRITY FAILURE");
                                             if (!closeStatus.IsAccepted())
