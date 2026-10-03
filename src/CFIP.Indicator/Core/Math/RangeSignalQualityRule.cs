@@ -175,7 +175,7 @@ namespace cAlgo
                     "RANGE NO-TRADE • NO DISPLACEMENT");
 
             if (IsRangeFinitePositive(input.Tp1RR) &&
-                input.Tp1RR < 1.80)
+                input.Tp1RR < 2.00)
                 return new RangeSignalQualityResult(
                     false,
                     "RANGE NO-TRADE • LOW RR");
