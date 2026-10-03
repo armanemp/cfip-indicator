@@ -43,48 +43,68 @@ namespace cAlgo
                                                     true,
                                                     contentWidth);
                                     
+                                                PanelTimeframePresentationState m1FrameState =
+                                                    ResolvePanelTimeframeState(_m1Frame);
+
                                                 AddPanelRow(
                                                     ref slot,
                                                     "M1   " +
-                                                    FrameText(_m1Frame),
-                                                    PanelDirectionColor(
-                                                        FrameDirection(_m1Frame)),
+                                                    FrameText(
+                                                        _m1Frame,
+                                                        m1FrameState),
+                                                    m1FrameState.Color,
                                                     false,
                                                     contentWidth);
                                     
+                                                PanelTimeframePresentationState m5FrameState =
+                                                    ResolvePanelTimeframeState(_m5Frame);
+
                                                 AddPanelRow(
                                                     ref slot,
                                                     "M5   " +
-                                                    FrameText(_m5Frame),
-                                                    PanelDirectionColor(
-                                                        FrameDirection(_m5Frame)),
+                                                    FrameText(
+                                                        _m5Frame,
+                                                        m5FrameState),
+                                                    m5FrameState.Color,
                                                     false,
                                                     contentWidth);
                                     
+                                                PanelTimeframePresentationState m15FrameState =
+                                                    ResolvePanelTimeframeState(_m15Frame);
+
                                                 AddPanelRow(
                                                     ref slot,
                                                     "M15  " +
-                                                    FrameText(_m15Frame),
-                                                    PanelDirectionColor(
-                                                        FrameDirection(_m15Frame)),
+                                                    FrameText(
+                                                        _m15Frame,
+                                                        m15FrameState),
+                                                    m15FrameState.Color,
                                                     false,
                                                     contentWidth);
                                     
+                                                PanelTimeframePresentationState m30FrameState =
+                                                    ResolvePanelTimeframeState(_m30Frame);
+
                                                 AddPanelRow(
                                                     ref slot,
                                                     "M30  " +
-                                                    FrameText(_m30Frame),
-                                                    PanelDirectionColor(
-                                                        FrameDirection(_m30Frame)),
+                                                    FrameText(
+                                                        _m30Frame,
+                                                        m30FrameState),
+                                                    m30FrameState.Color,
                                                     false,
                                                     contentWidth);
                                     
+                                                PanelTimeframePresentationState h1FrameState =
+                                                    ResolvePanelTimeframeState(_h1Frame);
+
                                                 AddPanelRow(
                                                     ref slot,
                                                     "H1   " +
-                                                    FrameText(_h1Frame),
-                                                    PanelDirectionColor(
-                                                        FrameDirection(_h1Frame)),
+                                                    FrameText(
+                                                        _h1Frame,
+                                                        h1FrameState),
+                                                    h1FrameState.Color,
                                                     false,
                                                     contentWidth);
                                     
@@ -126,12 +146,16 @@ namespace cAlgo
                                                     true,
                                                     contentWidth);
 
+                                                PanelTimeframePresentationState h4FrameState =
+                                                    ResolvePanelTimeframeState(_h4Frame);
+
                                                 AddPanelRow(
                                                     ref slot,
                                                     "H4   " +
-                                                    FrameText(_h4Frame),
-                                                    PanelDirectionColor(
-                                                        FrameDirection(_h4Frame)),
+                                                    FrameText(
+                                                        _h4Frame,
+                                                        h4FrameState),
+                                                    h4FrameState.Color,
                                                     false,
                                                     contentWidth);
                                     
