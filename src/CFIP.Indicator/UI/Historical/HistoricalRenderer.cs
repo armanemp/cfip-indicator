@@ -1,6 +1,6 @@
 // ============================================================================
 // CFIP Indicator — HistoricalRenderer.cs
-// Historical signal arrows are presentation-only; they are not live-signal,
+// Historical signal markers are presentation-only; they are not live-signal,
 // replay or backtest outcome claims.
 // ============================================================================
 
@@ -188,8 +188,7 @@ namespace cAlgo
                         Chart.DrawIcon(
                             name,
                             presentation.Direction == 1
-                                ? ChartIconType.UpArrow
-                                : ChartIconType.DownArrow,
+                                ? ChartIconType.UpTriangle : ChartIconType.DownTriangle,
                             i,
                             presentation.Price,
                             presentation.Direction == 1
