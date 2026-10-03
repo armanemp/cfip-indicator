@@ -51,7 +51,7 @@ namespace cAlgo
             if (frames == null ||
                 frames.Length == 0 ||
                 !NumericGuards.IsFinitePositive(livePrice))
-                return Empty();
+                return CreateEmptyTrendStrengthResult();
 
             double signedEvidence = 0;
             double absoluteEvidence = 0;
@@ -79,19 +79,19 @@ namespace cAlgo
                     continue;
 
                 double quality =
-                    Clamp01(frame.Quality / 100.0);
+                    ClampMtfTrend01(frame.Quality / 100.0);
 
                 double bullScore =
-                    Clamp01(frame.BullScore / 100.0);
+                    ClampMtfTrend01(frame.BullScore / 100.0);
 
                 double bearScore =
-                    Clamp01(frame.BearScore / 100.0);
+                    ClampMtfTrend01(frame.BearScore / 100.0);
 
                 int structuralDirection =
                     ResolveStructuralDirection(frame);
 
                 double pressure =
-                    ClampSigned(
+                    ClampMtfTrendSigned(
                         (livePrice - frame.EmaFast) /
                         Math.Max(frame.Atr, 1e-9));
 
@@ -112,7 +112,7 @@ namespace cAlgo
                 // A direction without evidence therefore cannot manufacture a
                 // strong arrow merely by winning a percentage comparison.
                 double magnitude =
-                    Clamp01(
+                    ClampMtfTrend01(
                         quality * 0.40 +
                         directionalScore * 0.40 +
                         Math.Abs(pressureDirection) * 0.20);
@@ -123,7 +123,7 @@ namespace cAlgo
                 double signedContribution =
                     weight *
                     magnitude *
-                    ClampSigned(pressureDirection);
+                    ClampMtfTrendSigned(pressureDirection);
 
                 signedEvidence += signedContribution;
                 absoluteEvidence +=
@@ -140,7 +140,7 @@ namespace cAlgo
             }
 
             if (absoluteEvidence <= 0)
-                return Empty();
+                return CreateEmptyTrendStrengthResult();
 
             double normalizedStrength =
                 Math.Min(
@@ -149,7 +149,7 @@ namespace cAlgo
                     Math.Max(1e-9, absoluteEvidence));
 
             int direction =
-                ResolveDirection(
+                ResolveMtfTrendStrengthDirection(
                     signedEvidence,
                     htfSignedEvidence,
                     htfAbsoluteEvidence);
@@ -226,7 +226,7 @@ namespace cAlgo
             return 0;
         }
 
-        private static int ResolveDirection(
+        private static int ResolveMtfTrendStrengthDirection(
             double signedEvidence,
             double htfSignedEvidence,
             double htfAbsoluteEvidence)
@@ -241,7 +241,7 @@ namespace cAlgo
             return 0;
         }
 
-        private static double Clamp01(double value)
+        private static double ClampMtfTrend01(double value)
         {
             if (double.IsNaN(value) ||
                 double.IsInfinity(value))
@@ -254,7 +254,7 @@ namespace cAlgo
                     value));
         }
 
-        private static double ClampSigned(double value)
+        private static double ClampMtfTrendSigned(double value)
         {
             if (double.IsNaN(value) ||
                 double.IsInfinity(value))
@@ -267,7 +267,7 @@ namespace cAlgo
                     value));
         }
 
-        private static MtfTrendStrengthResult Empty()
+        private static MtfTrendStrengthResult CreateEmptyTrendStrengthResult()
         {
             return new MtfTrendStrengthResult(
                 0,
