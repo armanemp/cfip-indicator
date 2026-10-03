@@ -40,10 +40,6 @@ namespace cAlgo
                 GetCompactPlanLabelAnchorBar(
                     lineLeft);
 
-            int boxRightBar =
-                GetLabelBoxRightBar(
-                    lineLeft);
-
             double entry =
                 preview
                     ? snapshot.SetupEntry
