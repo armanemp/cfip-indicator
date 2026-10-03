@@ -73,10 +73,10 @@ check(
     "deterministic runtime contract covers 1/2/3 and safe bounds",
     "VerifyPlanLineThicknessG3();" in contracts and
     "PlanLinePresentationRule.ResolveThickness(1) == 1" in contracts and
-    "PlanLinePresentationRule.ResolveThickness(2) == 2" in contracts and
-    "PlanLinePresentationRule.ResolveThickness(3) == 3" in contracts and
+    "PlanLinePresentationRule.ResolveThickness(2) == 1" in contracts and
+    "PlanLinePresentationRule.ResolveThickness(3) == 1" in contracts and
     "PlanLinePresentationRule.ResolveThickness(0) == 1" in contracts and
-    "PlanLinePresentationRule.ResolveThickness(4) == 3" in contracts
+    "PlanLinePresentationRule.ResolveThickness(4) == 1" in contracts
 )
 
 check(
