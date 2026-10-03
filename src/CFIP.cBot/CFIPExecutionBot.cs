@@ -188,6 +188,9 @@ namespace CFIP.cBot
         private string _activeManagedExecutionLabel = "";
         private SignalEnvelope _lastSignalEnvelope;
         private long _stateRevision;
+        private long _lastObservedEnvelopeRevision = -1;
+        private string _lastObservedEnvelopeScenarioId = "";
+        private string _lastObservedEnvelopeInstanceId = "";
 
         private bool EffectiveMarketExecutionEnabled =>
             Account.IsLive
@@ -266,6 +269,13 @@ namespace CFIP.cBot
                 Server.TimeInUtc);
             ReconcileBrokerState(true);
             PublishExecutionState("CBOT STARTED", true);
+
+            // Signal transport is independently polled so execution does not
+            // depend on the arrival of the next broker tick in low-liquidity
+            // markets. cTrader supports one timer per algo and runs OnTimer at
+            // the requested interval on both live and backtest environments.
+            Timer.Start(
+                TimeSpan.FromMilliseconds(100));
         }
 
         protected override void OnTick()
@@ -378,6 +388,105 @@ namespace CFIP.cBot
             return;
         }
 
+        private bool ShouldProcessRealtimeTimerEnvelope(
+            SignalEnvelope envelope)
+        {
+            if (envelope == null ||
+                envelope.Identity == null)
+                return false;
+
+            string scenarioId =
+                envelope.Identity.ScenarioId ?? "";
+
+            string instanceId =
+                envelope.Identity.IndicatorInstanceId ?? "";
+
+            if (string.Equals(
+                    instanceId,
+                    _lastObservedEnvelopeInstanceId,
+                    StringComparison.Ordinal) &&
+                string.Equals(
+                    scenarioId,
+                    _lastObservedEnvelopeScenarioId,
+                    StringComparison.Ordinal) &&
+                envelope.Identity.Revision <=
+                    _lastObservedEnvelopeRevision)
+                return false;
+
+            return true;
+        }
+
+        protected override void OnTimer()
+        {
+            if (!RefreshIndicatorBinding(false))
+                return;
+
+            RefreshExecutionSettings(false);
+            ReloadSignalStore(true);
+
+            DateTime nowUtc =
+                Server.TimeInUtc;
+
+            if (CfipDeviceSignalTransport.TryReadScenarioBatch(
+                    this,
+                    _boundIndicatorInstanceId,
+                    out SignalScenarioBatch scenarioBatch,
+                    out _))
+            {
+                if (scenarioBatch == null ||
+                    scenarioBatch.ContractVersion != ContractVersion.Current ||
+                    !string.Equals(
+                        scenarioBatch.IndicatorInstanceId,
+                        _boundIndicatorInstanceId,
+                        StringComparison.Ordinal) ||
+                    !string.Equals(
+                        scenarioBatch.Symbol,
+                        SymbolName,
+                        StringComparison.Ordinal))
+                    return;
+
+                SignalEnvelope[] scenarios =
+                    scenarioBatch.Scenarios ??
+                    Array.Empty<SignalEnvelope>();
+
+                for (int i = 0;
+                     i < scenarios.Length;
+                     i++)
+                {
+                    SignalEnvelope scenario =
+                        scenarios[i];
+
+                    if (!ShouldProcessRealtimeTimerEnvelope(
+                            scenario))
+                        continue;
+
+                    ProcessSignalEnvelope(
+                        scenario,
+                        nowUtc);
+                }
+
+                SweepScenarioProtectionStates(nowUtc);
+                return;
+            }
+
+            if (!CfipDeviceSignalTransport.TryRead(
+                    this,
+                    _boundIndicatorInstanceId,
+                    out SignalEnvelope envelope,
+                    out _))
+                return;
+
+            if (!ShouldProcessRealtimeTimerEnvelope(
+                    envelope))
+                return;
+
+            ProcessSignalEnvelope(
+                envelope,
+                nowUtc);
+
+            SweepScenarioProtectionStates(nowUtc);
+        }
+
         private void ProcessSignalEnvelope(
             SignalEnvelope envelope,
             DateTime nowUtc)
@@ -398,6 +507,13 @@ namespace CFIP.cBot
             }
 
             TrackScenarioEnvelope(envelope);
+
+            _lastObservedEnvelopeRevision =
+                envelope.Identity.Revision;
+            _lastObservedEnvelopeScenarioId =
+                envelope.Identity.ScenarioId ?? "";
+            _lastObservedEnvelopeInstanceId =
+                envelope.Identity.IndicatorInstanceId ?? "";
 
             _lastSignalEnvelope = envelope;
             _activeManagedExecutionLabel =
@@ -1283,6 +1399,8 @@ namespace CFIP.cBot
 
         protected override void OnStop()
         {
+            Timer.Stop();
+
             PublishPresence("STOPPED");
             PublishExecutionState(
                 "CBOT STOPPED",
