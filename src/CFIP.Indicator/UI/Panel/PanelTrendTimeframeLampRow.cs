@@ -76,9 +76,21 @@ namespace cAlgo
                 "H1", "H4", "D1", "W1"
             };
 
+            double rowWidth =
+                _panelTrendTimeframeLampRow == null
+                    ? 336
+                    : Math.Max(224, _panelTrendTimeframeLampRow.Width);
+
+            double cellWidth =
+                Math.Max(
+                    28,
+                    rowWidth /
+                    Math.Max(1, _panelTrendTimeframeLampCells.Count));
+
             for (int i = 0; i < _panelTrendTimeframeLampCells.Count; i++)
             {
                 TextBlock cell = _panelTrendTimeframeLampCells[i];
+                cell.Width = cellWidth;
                 Frame frame = i < frames.Length ? frames[i] : null;
 
                 int direction =
