@@ -19,6 +19,7 @@ def require(condition, message):
 
 rule = read("src/CFIP.cBot/Execution/CbotExecutionLifecycleRule.cs")
 publisher = read("src/CFIP.cBot/Execution/CbotExecutionStatePublisher.cs")
+sync = read("src/CFIP.Indicator/UI/Controls/ExecutionControlsSynchronizer.cs")
 test = read("tools/CFIP.cBot.Shadow.Tests/Program.cs")
 csproj = read("tools/CFIP.cBot.Shadow.Tests/CFIP.cBot.Shadow.Tests.csproj")
 workflow = read(".github/workflows/source-check.yml")
@@ -30,8 +31,8 @@ for state in ("READY", "ACTIVE", "PENDING"):
         "lifecycle rule missing family: " + state,
     )
 require(
-    'state.StartsWith(
-                    prefix + " /"' in rule,
+    "state.StartsWith(" in rule and
+    'prefix + " /"' in rule,
     "lifecycle variants are not accepted by a prefix-aware rule",
 )
 require(
@@ -43,10 +44,10 @@ require(
     "publisher does not consume canonical lifecycle rule",
 )
 require(
-    "                            autoTrading" in read("src/CFIP.Indicator/UI/Controls/ExecutionControlsSynchronizer.cs") and
-    "                        autoTrading" in read("src/CFIP.Indicator/UI/Controls/ExecutionControlsSynchronizer.cs") and
-    "                            autoOrders" in read("src/CFIP.Indicator/UI/Controls/ExecutionControlsSynchronizer.cs") and
-    "                        autoOrders" in read("src/CFIP.Indicator/UI/Controls/ExecutionControlsSynchronizer.cs"),
+    "                            autoTrading" in sync and
+    "                        autoTrading" in sync and
+    "                            autoOrders" in sync and
+    "                        autoOrders" in sync,
     "execution status styling is not derived from the authoritative effective cBot state",
 )
 require(
