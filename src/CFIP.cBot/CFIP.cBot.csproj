@@ -6,8 +6,6 @@
     <AlgoName>CFIP Smart Execution Bot</AlgoName>
     <RootNamespace>CFIP.cBot</RootNamespace>
     <Nullable>disable</Nullable>
-    <ImplicitUsings>disable</ImplicitUsings>
-    <Deterministic>true</Deterministic>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="cTrader.Automate" Version="1.0.21" />
