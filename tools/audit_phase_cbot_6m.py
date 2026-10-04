@@ -73,8 +73,8 @@ check(
 )
 check(
     "candidate carries the execution mode and requested volume",
-    "public ExecutionMode ExecutionMode;" in candidate and
-    "public double RequestedVolume;" in candidate and
+    "public ExecutionMode ExecutionMode" in candidate and
+    "public double RequestedVolume" in candidate and
     "ExecutionMode = execution.Mode" in parallel
 )
 check(
