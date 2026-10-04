@@ -49,7 +49,6 @@ required = {
             "LocalStorageScope.Type",
             "EconomicNewsSharedStateSchema",
             "PersistSharedEconomicNewsState(",
-            "TryReadSharedEconomicNewsAttempt(",
         ],
     "src/CFIP.Indicator/Trading/Intelligence/EconomicNewsFeedCoordinator.cs":
         [
