@@ -5,7 +5,7 @@
 
 > **STATUS: ACTIVE / CANONICAL**
 >
-> This file is the only active development roadmap for CFIP.
+> This file is the only active development roadmap for CFIP. Its executable work units are defined by the atomic package map in `docs/CFIP-LIST.md`.
 > Historical roadmaps, old phase numbering, review plans, hotfix plans and previous sequencing are archival only.
 > A new chat/account must read this file and \`docs/CFIP_GATE.md\`, inspect actual current \`main\`, and continue from the first phase marked **NEXT**.
 
@@ -461,13 +461,17 @@ The following are P0 defects if reintroduced:
 
 # 17. Current state
 
-**Current phase: P0 — NEXT**
+**Current macro phase: P0**
 
-**Canonical companion:** \`docs/CFIP_GATE.md\`
+**Current executable package: WP-00 — NEXT**
 
-**Execution unit:** one complete phase per implementation response.
+**Canonical inspection inventory:** \`docs/CFIP-LIST.md\`
 
-**Roadmap authority:** this file only.
+**Canonical gate:** \`docs/CFIP_GATE.md\`
+
+**Execution unit:** one complete atomic work package per response.
+
+**Roadmap authority:** this file for macro order; CFIP-LIST for atomic scope.
 
 
 # 18. CFIP operator/product contract
@@ -646,3 +650,47 @@ After the change, re-check the same graph. No phase is closed on file-local evid
 **Execution unit:** one complete phase per implementation response.
 
 **Roadmap authority:** this file only.
+
+
+# 23. Atomic execution model
+
+The P0–P24 items are macro domains. They are never assumed to be one-message implementation tasks.
+
+The executable unit is an atomic work package in \`docs/CFIP-LIST.md\`.
+
+Rules:
+- one response = one complete atomic work package;
+- every package has bounded paths, explicit gates and a closeout;
+- a package cannot be closed with a hidden remainder;
+- if a package is too large, split it into smaller packages before implementation;
+- \`docs/CFIP_GATE.md\` is updated at package closeout;
+- \`docs/CFIP-LIST.md\` records package/file inspection state;
+- this roadmap records macro progress and the next package.
+
+## Atomic package ordering
+
+**WP-00 → WP-01 → WP-02 → … → WP-69**
+
+Dependencies may block progression, but cannot silently reorder or skip a package. A package may be marked N/A only with an architecture-approved evidence record in CFIP_GATE.
+
+## Package status
+
+Only one atomic package may be \`NEXT\`.
+
+The macro phase status may remain \`IN PROGRESS\` while its atomic packages are being completed.
+
+# 24. File-level review depth
+
+Roadmap phase closure requires the inspection depth defined by \`CFIP-LIST.md\`:
+
+**directory → file → declaration → method → branch → dependency → side effect → lifecycle → verification**
+
+For a file actively changed or found to contain a material defect, line-by-line source inspection is mandatory.
+
+# 25. Control-plane separation
+
+- \`CFIP-ROADMAP.md\` answers **what order and why**.
+- \`CFIP-LIST.md\` answers **what exact files/work units**.
+- \`CFIP_GATE.md\` answers **how we know it is complete**.
+
+No fourth planning document may become an active authority.
