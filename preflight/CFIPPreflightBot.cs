@@ -18,6 +18,7 @@ namespace cAlgo.Robots
         private DateTime _lastHeartbeatUtc;
         private int _lastObservedProbeRevision;
         private string _result = "NOT RUN";
+        private const double MaxProbeAgeSeconds = 15;
 
         protected override void OnStart()
         {
@@ -119,6 +120,20 @@ namespace cAlgo.Robots
                 !double.IsInfinity(Symbol.Ask) &&
                 Symbol.Ask > 0 &&
                 Symbol.Bid > 0;
+            double probeAgeSeconds =
+                _probe.LastCalculatedUtc == DateTime.MinValue
+                    ? double.PositiveInfinity
+                    : Math.Max(0, (now - _probe.LastCalculatedUtc).TotalSeconds);
+            bool probeHealthy =
+                _probe.Revision > 0 &&
+                _probe.Scope == SymbolName + "|" + TimeFrame &&
+                !double.IsNaN(value) &&
+                !double.IsInfinity(value) &&
+                probeAgeSeconds <= MaxProbeAgeSeconds &&
+                finiteQuote;
+
+            if (!probeHealthy)
+                _result = "BLOCKED";
             double spreadPips =
                 Symbol.PipSize > 0 && finiteQuote
                     ? Math.Abs(Symbol.Ask - Symbol.Bid) / Symbol.PipSize
@@ -133,12 +148,13 @@ namespace cAlgo.Robots
                         : (now - _probe.LastCalculatedUtc).TotalMilliseconds;
 
                 Print(
-                    "PREFLIGHT HEARTBEAT | result={0} | tickCount={1} | probeRevision={2} | probe={3} | probeCalcAgeMs={4} | bid={5} | ask={6} | spreadPips={7} | bars={8} | latestBarOpenUtc={9}",
+                    "PREFLIGHT HEARTBEAT | result={0} | tickCount={1} | probeRevision={2} | probe={3} | probeCalcAgeMs={4} | probeHealthy={5} | bid={6} | ask={7} | spreadPips={8} | bars={9} | latestBarOpenUtc={10}",
                     _result,
                     _tickCount,
                     _probe.Revision,
                     value,
                     calcAgeMs,
+                    probeHealthy,
                     Symbol.Bid,
                     Symbol.Ask,
                     spreadPips,
