@@ -55,7 +55,7 @@ contracts = read(
 workflow = read(
     ".github/workflows/source-check.yml"
 )
-roadmap = read("docs/ROADMAP.md")
+roadmap = read("docs/CFIP-ROADMAP.md")
 continuation = read("docs/CONTINUATION-STATE.md")
 review = read("docs/CLAUDE-REVIEW-REMEDIATION-ROADMAP.md")
 phase_doc = read("docs/PHASE-CR4-8-TP1-DIRECTIONAL-DEFENCE.md")
