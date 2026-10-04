@@ -935,9 +935,9 @@ Historical documents are evidence/archive only.
 
 **Canonical gate:** \`docs/CFIP_GATE.md\`
 
-**Current phase:** P3
+**Current phase:** P4
 
-**Current status:** IN PROGRESS
+**Current status:** NEXT
 
 **Execution unit:** one complete atomic work package per implementation response.
 
@@ -1187,7 +1187,7 @@ For any material code file being changed or flagged:
 
 **Macro phase:** P3
 
-**Executable package:** WP-03 — IN PROGRESS
+**Executable package:** WP-04 — NEXT
 
 **Roadmap:** \`docs/CFIP-ROADMAP.md\`
 
@@ -1227,3 +1227,18 @@ Target-terminal behavior remains outside this repository-only package. `DEF-P0-0
 
 ### Next package
 **WP-03 — Canonical control plane — NEXT.**
+
+
+# 35.4 P3 / WP-03 closeout — 2026-10-04
+
+**Status:** PASS  
+**PR:** #283  
+**Merge commit:** `e42e57f7bd425c535ecef57c0835d9d22d84313b`
+
+Canonical planning, inventory and acceptance authority was normalized across ROADMAP/LIST/GATE. WORKFLOW continuity was aligned to the canonical bootstrap sequence. README ownership wording was aligned to the current Indicator-analysis / cBot-execution boundary.
+
+**Verification:** Source and Architecture PASS; Runtime Acceptance PASS; cTrader Compile PASS; no runtime/trading/broker logic changed.
+
+**Residual risk:** `DEF-P0-002` remains OPEN and is the explicit WP-04 migration target. No blind deletion of legacy documents was performed.
+
+**Next:** WP-04 — Legacy control-plane migration and stale-document isolation.
