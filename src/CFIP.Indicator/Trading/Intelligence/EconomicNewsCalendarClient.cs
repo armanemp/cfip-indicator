@@ -12,7 +12,7 @@ namespace cAlgo
             "CFIP EconomicNews Shared Metadata";
         private const string EconomicNewsSharedPayloadKey =
             "CFIP EconomicNews Shared Payload";
-        private const int EconomicNewsSharedReloadSeconds = 5;
+        private const int EconomicNewsSharedReloadSeconds = 15;
 
         private readonly object _economicNewsSync =
             new object();
