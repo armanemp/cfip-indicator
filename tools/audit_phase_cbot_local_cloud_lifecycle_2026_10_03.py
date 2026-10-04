@@ -19,6 +19,7 @@ binding = read("src/CFIP.cBot/Binding/CfipIndicatorChartBinding.cs")
 indicator = read("src/CFIP.Indicator/Indicator/CFIPIndicator.cs")
 indicator_project = read("src/CFIP.Indicator/CFIP.Indicator.csproj")
 root_build_props = read("Directory.Build.props")
+root_build_targets = read("Directory.Build.targets")
 cbot_project = read("src/CFIP.cBot/CFIP.cBot.csproj")
 identity = read("src/CFIP.Contracts/IndicatorIdentity.cs")
 cbot_identity = read("src/CFIP.Contracts/CbotIdentity.cs")
@@ -69,6 +70,13 @@ check(
     "<AlgoName>CFIP Smart Indicator</AlgoName>" in indicator_project and
     "<Deterministic>true</Deterministic>" in root_build_props,
     "Indicator build identity must remain stable and deterministic",
+)
+check(
+    "CFIP_OverrideAlgoOutputIdentity" in root_build_targets and
+    "BeforeTargets="_ExtractMetadata"" in root_build_targets and
+    "CFIPIndicator" in root_build_targets and
+    "CFIPExecutionBot" in root_build_targets,
+    "cTrader algo output naming must be forced at the canonical build boundary",
 )
 check(
     "<AssemblyName>CFIPExecutionBot</AssemblyName>" in cbot_project and
