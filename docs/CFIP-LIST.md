@@ -159,7 +159,7 @@ If a proposed package cannot close in one response, split it into smaller packag
 | WP-05 | Preflight | probe/host/compile/safety boundary |
 | WP-06 | Contracts | all CFIP.Contracts models/enums/codecs/identity/bus |
 | WP-07 | cBot host | main robot/project boundary |
-| WP-08 | cBot binding | Indicator/chart/device binding |
+| WP-08 | cBot binding | Indicator/chart/device binding; remove Indicator-owned execution/auto-trading settings and migrate the binding to the cBot/Contracts authority without a compatibility mirror |
 | WP-09 | cBot execution | market/pending/management mutation paths |
 | WP-10 | cBot risk | preflight/risk/margin/capacity |
 | WP-11 | cBot recovery/shadow | recovery/reconciliation/shadow |

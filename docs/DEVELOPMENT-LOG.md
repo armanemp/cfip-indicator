@@ -4030,3 +4030,12 @@ Verification on implementation head `eb01b6faa716988018d90af2e690020cb8feaf68`:
 - cTrader Compile #4363: PASS.
 
 Target-terminal evidence remains genuinely pending. No broker mutation was introduced. WP-06 must not start until the target-terminal acceptance boundary is satisfied.
+
+
+## 2026-10-04 — Indicator/cBot Execution-Boundary Audit
+
+Status: **OPEN DEFECT REGISTERED — implementation intentionally not started while WP-05 target-terminal acceptance remains pending.**
+
+The forensic boundary audit found that `CFIP.Indicator` still exposes execution/auto-trading configuration (`EnableAutoTrading`, `EnableAutomaticOrders`, pending/execution/risk/management settings) and maintains Indicator-side runtime execution state, while cBot binding reads those values from the Indicator. This contradicts the canonical Indicator = analysis/signal and cBot = broker-mutation/execution authority boundary.
+
+Registered as `DEF-P0-003`, owner **WP-08 cBot binding**. The eventual repair must migrate execution authority to the cBot/Contracts boundary and remove the Indicator-side execution-settings owner, with no compatibility mirror or parallel authority. No trading behavior was changed by this audit registration.
