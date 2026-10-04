@@ -169,8 +169,7 @@ if "Chart.DrawText(" not in compact_label_renderer:
     raise SystemExit("Plan label renderer must own the native ChartText")
 if "Chart.DrawRectangle(" in compact_label_renderer:
     raise SystemExit("Plan label renderer must remain background-free")
-if "GetReadableLabelTextColor(" not in compact_label_renderer or
-        "return Color.White;" not in compact_label_renderer:
+if "GetReadableLabelTextColor(" not in compact_label_renderer or "return Color.White;" not in compact_label_renderer:
     raise SystemExit("Plan label renderer must use the canonical white text resolver")
 if "CompactPlanLabelGapBars = 1" not in compact_label_renderer:
     raise SystemExit("Plan labels must keep exactly one chart-bar left clearance")
