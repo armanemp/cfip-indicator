@@ -2658,3 +2658,7 @@ Implementation branch: phase/f3-price-time-closedbar-mtf-integrity-2026-10-04.
 F3 corrected the closed-M5 temporal boundary used by downstream MTF/M1 consumers. IndexMath.ClosedBarBoundaryReference is the single reusable owner and affected consumers no longer use the opening timestamp of the closed M5 bar for closed-index resolution. Added the F3 static integrity gate and CI wiring.
 
 Status: verification pending on the exact branch head.
+
+
+## 2026-10-04 — F4 Closeout
+Status: VERIFIED COMPLETE. Final implementation head 62f69dc703887486392fbfd59f0f726deea4bba4. The 152 CS0649 Runtime.Contracts warnings were corrected at the existing model owners with explicit equivalent defaults. No suppression or parallel path was introduced. Source/Architecture, Runtime Acceptance and cTrader Compile all PASS. PR #279 is the merge boundary. Next phase: F5 — Indicators / Structure / Swing / FVG / OB / Divergence / WaveTrend / Volume.
