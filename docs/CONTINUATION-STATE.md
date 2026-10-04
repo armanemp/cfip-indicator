@@ -2640,3 +2640,5 @@ No strategy, signal threshold, MTF role, M2 path, broker mutation, cBot authorit
 
 Final closure requires the F1 branch's Source/Architecture, Runtime Acceptance and cTrader Compile workflows to pass. Target-terminal verification is not a required boundary for F1.
 
+
+- F1 also removed three dead public display parameters with no production consumer; current public parameter inventory is 545. No replacement UI path was introduced.
