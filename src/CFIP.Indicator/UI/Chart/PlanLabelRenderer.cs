@@ -32,7 +32,7 @@ namespace cAlgo
                     return;
 
                 int lineLeft =
-                    GetPlanLineLeftBar();
+                    GetCompactPlanLabelAnchorBar();
 
                 DrawCompactPlanLabel(
                     name,
