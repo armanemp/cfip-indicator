@@ -31,3 +31,5 @@ print("Historical control-plane isolation: PASS")
 print("Canonical files: PASS")
 print("Legacy active roadmap: absent")
 print("Legacy reference scan: PASS")
+
+# Regression guard: active legacy roadmap references are forbidden outside the archive.
