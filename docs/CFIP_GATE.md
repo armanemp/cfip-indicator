@@ -937,7 +937,7 @@ Historical documents are evidence/archive only.
 
 **Current phase:** P3
 
-**Current status:** NEXT
+**Current status:** IN PROGRESS
 
 **Execution unit:** one complete atomic work package per implementation response.
 
@@ -1185,9 +1185,9 @@ For any material code file being changed or flagged:
 
 # 45. Current executable control state
 
-**Macro phase:** P0
+**Macro phase:** P3
 
-**Executable package:** WP-02 — NEXT
+**Executable package:** WP-03 — IN PROGRESS
 
 **Roadmap:** \`docs/CFIP-ROADMAP.md\`
 
