@@ -195,10 +195,15 @@ if (SuppressDuplicateAlerts)
                                 EnableSoundAlerts &&
                                 !blockedCandidateAlert;
 
-                            SoundType soundType =
-                                ResolveAlertSoundType(
+                            AlertSoundDecision soundDecision =
+                                AlertSoundPolicy.Resolve(
                                     normalizedKey,
-                                    critical);
+                                    UseSemanticAlertSounds,
+                                    AlertSoundType,
+                                    envelope,
+                                    SymbolName);
+
+                            SoundType soundType = soundDecision.SoundType;
 
                             // Every eligible canonical alert is delivered to the same bounded transport.
                             // The panel rail is now the sole visual message surface; sound remains optional.
@@ -209,7 +214,8 @@ if (SuppressDuplicateAlerts)
                                         direction,
                                         playSound,
                                         soundType.ToString(),
-                                        SoundFilePath));
+                                        SoundFilePath,
+                                        soundDecision.GroupKey));
 
                             Print(
                                 "CFIP ALERT QUEUED | id={0} | key={1} | stage={2} | critical={3} | sound={4} | soundType={5} | queue={6}",
@@ -329,87 +335,18 @@ if (SuppressDuplicateAlerts)
                         }
 
         private SoundType ResolveAlertSoundType(
-                            string key,
-                            bool critical)
-                        {
-                            if (!UseSemanticAlertSounds)
-                                return AlertSoundType;
+            string key,
+            bool critical)
+        {
+            AlertSoundDecision decision = AlertSoundPolicy.Resolve(
+                key,
+                UseSemanticAlertSounds,
+                AlertSoundType,
+                null,
+                SymbolName);
 
-                            string normalized =
-                                key ?? string.Empty;
+            return decision.SoundType;
+        }
 
-                            // One canonical semantic map: every alert family receives
-                            // a deliberate cTrader built-in cue instead of falling through
-                            // to the same generic sound. The physical playback owner
-                            // remains AlertDeliveryProcessor.
-                            if (normalized.StartsWith(
-                                    "SL|",
-                                    StringComparison.OrdinalIgnoreCase) ||
-                                normalized.StartsWith(
-                                    "INVALID",
-                                    StringComparison.OrdinalIgnoreCase) ||
-                                normalized.StartsWith(
-                                    "RESTRICT|",
-                                    StringComparison.OrdinalIgnoreCase))
-                                return SoundType.NegativeNotification;
-
-                            if (normalized.StartsWith(
-                                    "REVERSAL|",
-                                    StringComparison.OrdinalIgnoreCase))
-                                return SoundType.Doorbell;
-
-                            if (normalized.StartsWith(
-                                    "TP",
-                                    StringComparison.OrdinalIgnoreCase))
-                                return SoundType.PositiveNotification;
-
-                            if (normalized.StartsWith(
-                                    "ACTION|",
-                                    StringComparison.OrdinalIgnoreCase) ||
-                                normalized.StartsWith(
-                                    "HIGH|",
-                                    StringComparison.OrdinalIgnoreCase) ||
-                                normalized.StartsWith(
-                                    "SMART|",
-                                    StringComparison.OrdinalIgnoreCase))
-                                return SoundType.Confirmation;
-
-                            if (normalized.StartsWith(
-                                    "WATCH|",
-                                    StringComparison.OrdinalIgnoreCase) ||
-                                normalized.StartsWith(
-                                    "EARLY|",
-                                    StringComparison.OrdinalIgnoreCase))
-                                return SoundType.Announcement;
-
-                            if (normalized.StartsWith(
-                                    "REACTION|",
-                                    StringComparison.OrdinalIgnoreCase) ||
-                                normalized.StartsWith(
-                                    "AUTO-REACTION|",
-                                    StringComparison.OrdinalIgnoreCase) ||
-                                normalized.StartsWith(
-                                    "FILL-MISMATCH|",
-                                    StringComparison.OrdinalIgnoreCase) ||
-                                normalized.StartsWith(
-                                    "PENDING-",
-                                    StringComparison.OrdinalIgnoreCase))
-                                return SoundType.Doorbell;
-
-                            if (normalized.StartsWith(
-                                    "FILL|",
-                                    StringComparison.OrdinalIgnoreCase) ||
-                                normalized.StartsWith(
-                                    "EXECUTION|",
-                                    StringComparison.OrdinalIgnoreCase) ||
-                                normalized.StartsWith(
-                                    "AUTO|",
-                                    StringComparison.OrdinalIgnoreCase))
-                                return SoundType.Confirmation;
-
-                            return critical
-                                ? SoundType.NegativeNotification
-                                : SoundType.Announcement;
-                        }
     }
 }
