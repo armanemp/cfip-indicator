@@ -572,7 +572,7 @@ These requirements are treated as acceptance targets and must be verified agains
 ## Chart contract
 - One signal produces one canonical visual set.
 - Directional arrows are separated deterministically and use the canonical nine-level strength ladder.
-- Signal/plan line labels are owned by `PlanLabelRenderer`; the label’s visible text end must sit exactly one chart bar before the canonical `PlanLineRenderer` line start.
+- Signal/plan line labels are owned by `PlanLabelRenderer`; the label’s visible text end must sit exactly one chart bar before the canonical `PlanLineRenderer` line start. The renderer must create X geometry only through the bar-index `Chart.DrawText` overload and must not mutate `ChartText.Time` afterward.
 - `PlanLabelAnchorCalculator` is the sole owner of that one-bar gap, and `PlanLineRenderer` is the sole owner of the materialized line color consumed by the label.
 - Label text must use the exact same materialized color as its corresponding line; `Color.White` is forbidden for canonical line labels.
 - Pending, parallel and prediction labels must continue through the same renderer/anchor contract; no secondary label geometry is allowed.
