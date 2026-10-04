@@ -4,9 +4,7 @@
     <OutputType>Library</OutputType>
     <AssemblyName>CFIP.Preflight.Probe</AssemblyName>
     <RootNamespace>cAlgo</RootNamespace>
-    <Deterministic>true</Deterministic>
     <Nullable>disable</Nullable>
-    <ImplicitUsings>disable</ImplicitUsings>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
   <ItemGroup>
