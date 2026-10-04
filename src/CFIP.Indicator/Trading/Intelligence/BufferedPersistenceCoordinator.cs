@@ -17,7 +17,6 @@ namespace cAlgo
         private bool _outcomeMemoryPersistenceDirty;
         private bool _dailyLossPersistenceDirty;
         private bool _dailyLossPersistenceForceFlush;
-        private bool _alertEventDedupPersistenceDirty;
 
         private void MarkOutcomeMemoryPersistenceDirty()
         {
