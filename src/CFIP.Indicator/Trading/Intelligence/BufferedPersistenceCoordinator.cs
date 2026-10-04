@@ -53,8 +53,7 @@ namespace cAlgo
 
             bool localStoragePending =
                 _outcomeMemoryPersistenceDirty ||
-                _dailyLossPersistenceDirty ||
-                _alertEventDedupPersistenceDirty;
+                _dailyLossPersistenceDirty;
 
             if (!force &&
                 !intervalDue &&
@@ -96,7 +95,6 @@ namespace cAlgo
                     _outcomeMemoryPersistenceDirty = false;
                     _dailyLossPersistenceDirty = false;
                     _dailyLossPersistenceForceFlush = false;
-                    _alertEventDedupPersistenceDirty = false;
                 }
                 catch (Exception ex)
                 {
