@@ -31,7 +31,7 @@ penalty = read("src/CFIP.Indicator/Analysis/Market/Decision/HigherTimeframePenal
 calibration = read("src/CFIP.Indicator/Analysis/Market/Decision/ConfidenceCalibrationCollector.cs")
 program = read("tools/CFIP.Decision.Contracts/Program.cs")
 workflow = read(".github/workflows/source-check.yml")
-roadmap = read("docs/ROADMAP.md")
+roadmap = read("docs/CFIP-ROADMAP.md")
 continuation = read("docs/CONTINUATION-STATE.md")
 
 check(
