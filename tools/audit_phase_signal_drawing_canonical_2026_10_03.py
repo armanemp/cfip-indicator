@@ -32,10 +32,12 @@ check("plan labels use the canonical readable font, one-bar left clearance and f
     "GetCompactPlanLabelAnchorTime(" in anchor and
     "HorizontalAlignment.Right" in labels and
     "Chart.DrawText(" in labels and
-    "textBar," in labels and
-    "label.Time != expectedTime" in labels and
+    "expectedTime" in labels and
+    "Chart.BarIndexToX(" in labels and
+    "Chart.TimeToX(" in labels and
     "GetPlanLineLeftBar()" in labels and
-    "gapBars=" in labels)
+    "gapPx=" in labels and
+    "oneBarPx=" in labels)
 check("labels share exact normalized price and canonical text anchor", "NormalizePrice(price)" in labels and
     "GetPlanLineLeftBar" in anchor and
     "targetX = lineX -" in anchor and
