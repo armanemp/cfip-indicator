@@ -797,7 +797,7 @@ cBot shadow host is implemented over the canonical read-only Indicator provider.
 Behavioral tests: `tools/CFIP.cBot.Shadow.Tests`.
 Source audit: `tools/audit_cbot_shadow_host.py`.
 
-Next implementation phase: **CBOT-P4 — Broker Mutation Extraction**, beginning with Market / Market Range.
+Historical continuation snapshot: **CBOT-P4 — Broker Mutation Extraction** was an earlier cBot-separation sequence. It is not the current execution order; current execution state is governed by the three canonical control-plane files.
 
 
 ## CBOT-P2 — Read-Only Indicator Provider — 2026-10-02.
