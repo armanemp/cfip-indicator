@@ -4,17 +4,19 @@
 
 One assistant implementation response = one complete phase.
 
-**Planning and acceptance authority is only:**
-1. `docs/CFIP-ROADMAP.md`
-2. `docs/CFIP_GATE.md`
+**Canonical control plane is only:**
+1. `docs/CFIP-ROADMAP.md` — macro order/objectives
+2. `docs/CFIP-LIST.md` — exact files and atomic work-package scope
+3. `docs/CFIP_GATE.md` — acceptance/evidence/defect closure
 
 When resuming in another chat/account:
-1. Read those two files first.
+1. Read all three canonical files first.
 2. Inspect the actual current `main` branch and latest CI.
-3. Find the first phase marked `NEXT` in `docs/CFIP-ROADMAP.md`.
-4. Use `docs/CFIP_GATE.md` for all acceptance/evidence decisions.
-5. Other documents are implementation/reference material only and cannot override the two canonical files.
-6. Do not repeat a completed phase unless a regression is proven.
+3. Find the first executable work package marked `NEXT` in `docs/CFIP-LIST.md`.
+4. Use `docs/CFIP-ROADMAP.md` for macro order and `docs/CFIP_GATE.md` for acceptance/evidence.
+5. Other documents are implementation/reference material only and cannot override the three canonical files.
+6. Do not repeat a completed package unless a regression is proven.
+7. One response must close exactly one complete atomic work package.
 
 ## Implementation order inside every phase
 
@@ -82,7 +84,7 @@ At the start of a new chat, read:
 - `docs/WORKFLOW.md`;
 - `docs/DEVELOPMENT-LOG.md`.
 
-The first phase marked `NEXT` in `docs/CFIP-ROADMAP.md` is the only implementation phase to execute in that response, and its acceptance is governed by `docs/CFIP_GATE.md`.
+The first executable work package marked `NEXT` in `docs/CFIP-LIST.md` is the only implementation unit to execute in that response; macro objectives come from `docs/CFIP-ROADMAP.md` and acceptance from `docs/CFIP_GATE.md`.
 
 Record every completed phase in `docs/DEVELOPMENT-LOG.md`, including:
 - phase and status;
