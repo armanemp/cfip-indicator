@@ -41,6 +41,7 @@ contracts = read("tools/CFIP.Planning.Contracts/Program.cs")
 contracts_project = read("tools/CFIP.Planning.Contracts/CFIP.Planning.Contracts.csproj")
 workflow = read(".github/workflows/source-check.yml")
 roadmap = read("docs/CFIP-ROADMAP.md")
+historical_roadmap = read("docs/archive/ROADMAP-LEGACY-2026-10-04.md")
 continuation = read("docs/CONTINUATION-STATE.md")
 review = read("docs/CLAUDE-REVIEW-REMEDIATION-ROADMAP.md")
 phase_doc = read("docs/PHASE-CR4-9-LIVE-REVERSAL-SEMANTICS.md")
@@ -151,11 +152,11 @@ check(
 
 check(
     "phase documentation records completion and next transition",
-    "CR4.9" in roadmap
+    "CR4.9" in historical_roadmap
     and "CR4.9" in continuation
     and "CR4.9" in review
     and "CR4.9" in phase_doc
-    and "CR4.10" in roadmap
+    and "CR4.10" in historical_roadmap
     and "CR4.10" in continuation,
 )
 
