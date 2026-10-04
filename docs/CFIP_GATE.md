@@ -63,14 +63,16 @@ Allowed evidence:
 
 Never use "looks fine", screenshot-only code proof, CI as proof of audio, or historical evidence for changed code.
 
-# 4. Baseline record
+# 4. Current baseline record
+
+This record describes the current canonical `main` state. Earlier P0/P1/P2/P3 baseline values remain historical evidence inside their dated closeout sections and are not current execution state.
 
 | Field | Value |
 |---|---|
 | Repository | armanemp/cfip-indicator |
 | Canonical branch | main |
-| Baseline commit | `207e43b7d5293db4445e3f00e9b2b008c95f8dea` |
-| Baseline date/time | `2026-10-04T11:36:56Z` (commit time) |
+| Baseline commit | `5b16b92a7b272e43c71a3bea14c94cc978e7065e` |
+| Baseline date/time | `2026-10-04` — current control-plane verification |
 | Indicator | CFIP.Indicator |
 | Contracts | CFIP.Contracts |
 | cBot | CFIP.cBot |
@@ -80,8 +82,10 @@ Never use "looks fine", screenshot-only code proof, CI as proof of audio, or his
 | M1 | optional confirmation |
 | M2 | FORBIDDEN |
 | Broker mutation | CFIP.cBot only |
-| Current phase | P0 |
-| Current phase status | PASS |
+| Macro phase | P2 — Ownership / Single-Source / Dead-Code Closure |
+| Atomic package | WP-05 — Preflight |
+| Atomic package status | PASS + TERMINAL PENDING |
+| Blocking next package | WP-06 — Contracts, blocked pending target-terminal evidence |
 
 # 5. Master defect register
 
@@ -942,9 +946,13 @@ Historical documents are evidence/archive only.
 
 **Canonical gate:** \`docs/CFIP_GATE.md\`
 
-**Current phase:** P4
+**Macro phase:** P2 — Ownership / Single-Source / Dead-Code Closure
 
-**Current status:** NEXT
+**Current atomic package:** WP-05 — Preflight
+
+**Current status:** PASS + TERMINAL PENDING
+
+**Blocking next package:** WP-06 — Contracts, blocked pending target-terminal evidence.
 
 **Execution unit:** one complete atomic work package per implementation response.
 
@@ -1192,7 +1200,7 @@ For any material code file being changed or flagged:
 
 # 45. Current executable control state
 
-**Macro phase:** P3
+**Macro phase:** P2 — Ownership / Single-Source / Dead-Code Closure
 
 **Executable package:** WP-05 — PASS + TERMINAL PENDING; WP-06 Contracts is BLOCKED pending target-terminal evidence.
 
