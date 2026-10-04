@@ -73,6 +73,16 @@ check(
 )
 
 check(
+    "AlertEventDedupCoordinator.TryClaim(" in root_read("src/CFIP.Indicator/Core/Runtime/AlertEventDedupCoordinator.cs") and
+    "AlertEventDedupCoordinator.Import(" in root_read("src/CFIP.Indicator/Trading/Alerts/AlertEventDedupState.cs") and
+    "TryClaimSharedAlertEvent(" in alerts and
+    "ReleaseSharedAlertEvent(" in alerts and
+    "RefreshSharedAlertEventDedupState(" in root_read("Runtime/Supervision/RuntimePanelHeartbeat.cs") and
+    "AlertEventDedupCoordinatorContracts.Run();" in contracts,
+    "alert causal-event dedup must be shared across Indicator instances, timer-synchronized, persisted and runtime-tested",
+)
+
+check(
     "RewardDistanceAtr =" in read("Analysis/Market/ParallelOpportunityCandidateBuilder.cs") and
     "MinimumRequiredRewardDistanceAtr =" in read("Analysis/Market/ParallelOpportunityCandidateBuilder.cs") and
     "RegimeAdaptiveRewardFloorRule.ResolveAdaptiveRewardFloor(" in read("Analysis/Market/ParallelOpportunityCandidateBuilder.cs"),
