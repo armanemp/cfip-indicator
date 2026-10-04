@@ -94,6 +94,8 @@ namespace cAlgo
                 // No rectangle, panel or marker is created for the label.
                 // labelBar is the exact RIGHT anchor of the label.
                 // PlanLabelAnchorCalculator already applied the one-bar gap.
+                // X geometry is intentionally bar-index based, matching the
+                // signal-line renderer's canonical bar geometry.
                 int textBar =
                     Math.Max(
                         0,
@@ -141,10 +143,16 @@ namespace cAlgo
                         Chart.RemoveObject(name);
 
                     label =
+                    // Use the bar-index overload so the label and the
+                    // canonical signal line share the exact same X coordinate
+                    // system. The RIGHT edge of ChartText is anchored at this
+                    // bar; the anchor calculator has already moved it one full
+                    // chart candle before the line start.
+                    label =
                         Chart.DrawText(
                             name,
                             text,
-                            expectedTime,
+                            textBar,
                             labelPrice,
                             labelTextColor);
                 }
