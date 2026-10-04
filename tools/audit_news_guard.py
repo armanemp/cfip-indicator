@@ -49,7 +49,7 @@ required = {
     "src/CFIP.Indicator/Trading/Intelligence/EconomicNewsFeedCoordinator.cs":
         [
             "ProviderMinimumRefreshMinutes",
-            "TryGetSnapshot(",
+            "TryReadEconomicNewsSnapshot(",
             "TryStart(",
             "CompleteSuccess(",
             "CompleteFailure(",
