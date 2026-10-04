@@ -2685,6 +2685,21 @@ Retained open for later canonical disposition because they contain substantive l
 Program progress remains **5/70 fully PASS = 7.1%**. WP-05 repository scope remains 100% complete with **0/13 target-terminal scenarios** accepted; WP-06 remains BLOCKED.
 
 
+## 2026-10-04 — Economic News Feed Target-Terminal Revalidation
+
+Status: **FIXED — TERMINAL REVALIDATED**
+
+Evidence supplied from the target cTrader terminal:
+- 18:41:07 M1 adopted the shared economic-news snapshot with **20 relevant events** and successUtc **2026-10-04T17:41:09.622Z**.
+- 18:41:10 M1 recorded the explicit HTTP success diagnostic with **20 events** and successUtc **2026-10-04T17:41:09.880Z**.
+- 18:42:47 M5 adopted the shared snapshot with **20 relevant events** and the same successUtc **2026-10-04T18:41:09.880Z**.
+- 18:46:50 M15 adopted the shared snapshot with **20 relevant events** and the same successUtc **2026-10-04T18:41:09.880Z**.
+- The supplied 18:41–18:46 terminal window contains no XML parse failure, HTTP failure, payload-format failure or XML-parser failure.
+
+This closes DEF-P1-002 at the target-terminal boundary. CI-17 remains a broader 13-scenario acceptance gate and is not marked complete by this single defect revalidation.
+
+**Next:** continue WP-05 terminal acceptance with DEF-P1-003 alert/audio cross-instance dedup revalidation and the remaining CI-17 scenarios.
+
 ## 2026-10-04 — Economic News Feed Transport / Multi-Instance Hardening
 
 Status: **REPOSITORY VERIFIED — TARGET-TERMINAL REVALIDATION PENDING**
@@ -2696,7 +2711,7 @@ Completed:
 - `EconomicNewsFeedCoordinator` is the shared async transport/single-flight/cache owner.
 - `EconomicNewsCalendarParser` owns payload parsing and retired-XML-URI normalization to the current JSON feed.
 - `EconomicNewsCalendarClient` remains the per-instance relevance/state consumer; it does not create a second network path.
-- News refresh configuration now enforces a five-minute minimum consistent with the external weekly-feed constraint.
+- News refresh configuration now enforces the canonical provider-safe hourly minimum (60 minutes).
 - HTTP failures now expose the cTrader response status and exception for direct terminal diagnosis.
 - Exact merged `main` Source/Architecture, Runtime Acceptance and cTrader Compile/Build gates are all PASS.
 
