@@ -106,7 +106,7 @@ namespace cAlgo
                         (CompactPlanLabelGapPips * Symbol.PipSize));
 
                 Color labelColor =
-                    ResolvePlanLineColor(semanticColor);
+                    Color.White;
 
                 ChartText label =
                     Chart.FindObject(name)
@@ -172,8 +172,8 @@ namespace cAlgo
         private Color GetReadableLabelTextColor(
             Color semanticColor)
         {
-            // Label text intentionally matches the canonical line color.
-            return ResolvePlanLineColor(semanticColor);
+            // Canonical plan labels are always white, background-free text.
+            return Color.White;
         }
 
         private void RemovePlanLabel(
