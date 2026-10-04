@@ -187,8 +187,8 @@ if "ResolvePanelAlertMessageColor(" not in read("UI/Panel/PanelAlertMessageRende
     raise SystemExit("panel alert semantic color owner is missing")
 if "GetReadableLabelTextColor(" not in labels:
     raise SystemExit("level label renderer must keep one canonical text-color resolver")
-if "PlanLinePresentationRule.ResolveColor(" not in labels:
-    raise SystemExit("level label renderer must reuse the canonical semantic line color")
+if "GetReadableLabelTextColor(" not in labels or "return Color.White;" not in labels:
+    raise SystemExit("level label renderer must use the canonical white text resolver")
 if "Chart.DrawRectangle(" in labels:
     raise SystemExit("level label renderer must remain background-free")
 if "CompactPlanLabelGapBars = 1" not in labels:
