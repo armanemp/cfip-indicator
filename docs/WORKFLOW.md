@@ -208,3 +208,7 @@ BUY uses Bid for TP/SL progression checks; SELL uses Ask. A target that has alre
 passed by market cannot be restored, and a stop cannot become less protective. Server-side
 advanced protection is broker-owned, but its ladder must be reconciled to the same monotonic
 plan geometry after partial realization.
+
+
+## Local execution handoff
+When a work package needs user-local execution, the assistant must hand off the exact commands and their execution context, expected success signal, and required returned output. This is mandatory for every applicable package and must not be inferred from CI status.
