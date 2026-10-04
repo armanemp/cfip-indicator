@@ -18,7 +18,7 @@ namespace cAlgo
 
     internal static class AlertSoundPolicy
     {
-        public static AlertSoundDecision Resolve(
+        public static AlertSoundDecision ResolveDecision(
             string key,
             bool useSemanticSounds,
             SoundType configuredSoundType,
