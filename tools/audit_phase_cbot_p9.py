@@ -128,7 +128,8 @@ check(
     "CompactPlanLineLengthBars = 40" in line and
     "PlanLinePresentationRule.ResolveThickness(" in line and
     "GetReadableLabelTextColor(" in labels and
-    "PlanLinePresentationRule.ResolveColor(" in labels and
+    "return ResolvePlanLineColor(semanticColor);" in labels and
+    "CompactPlanLabelGapPips = 2.0" in labels and
     'name + "_BOX"' in labels,
 )
 check(
