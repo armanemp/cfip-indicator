@@ -149,9 +149,9 @@ check(
 )
 
 check(
-    "roadmap and continuation state record the closeout",
-    "2026-10-04" in roadmap and
-    "smart separated signal arrows" in roadmap.lower() and
+    "phase and continuation state record the closeout",
+    "2026-10-04" in phase and
+    "smart separated signal arrows" in phase.lower() and
     "smart separated signal arrows" in continuation.lower(),
 )
 
