@@ -84,3 +84,7 @@ PR #29 is the implementation PR for this phase.
 - PR: #29
 - Merge commit: `861f15dda5af4599c92acb64bb6793ed2dfc296e`
 - Final pre-merge verification: Source / Architecture PASS; Runtime Acceptance Contracts PASS; cTrader Compile PASS.
+
+## Supersession note — 2026-10-04
+
+The historical Phase 7.2 activation decisions for `LabelLeftOffsetBars` and `ShowEarlyArrow` are superseded by the current canonical UI contracts: compact plan labels use the canonical fixed anchor owner and signal arrows are governed by the current smart signal presentation pipeline. `ShowEarlyWatch` had no production consumer. All three public parameters were removed during F1 rather than retained as dead/no-op settings. This note does not change the historical verification record above.
