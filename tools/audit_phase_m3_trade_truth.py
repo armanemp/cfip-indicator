@@ -22,6 +22,7 @@ snapshot = read("src/CFIP.Indicator/UI/Chart/SignalVisualSnapshot.cs")
 snapshot_builder = read("src/CFIP.Indicator/UI/Chart/SignalVisualSnapshotBuilder.cs")
 visual_identity = read("src/CFIP.Indicator/UI/Chart/SignalVisualIdentityBuilder.cs")
 watch_renderer = read("src/CFIP.Indicator/UI/Chart/SignalPresentationRenderer.cs")
+signal_renderer = read("src/CFIP.Indicator/UI/Chart/SignalRenderer.cs")
 closed = read("src/CFIP.Indicator/Runtime/Calculation/CalculationClosedBar.cs")
 cycle = read("src/CFIP.Indicator/Runtime/Calculation/CalculationCycle.cs")
 stages = read("src/CFIP.Indicator/Runtime/Calculation/CalculationStageIsolation.cs")
@@ -106,9 +107,9 @@ require(
 )
 
 require(
-    "snapshot.DecisionEntryAllowed" in watch_renderer and
-    "!snapshot.PendingOrder" in watch_renderer and
-    "!snapshot.LivePosition" in watch_renderer,
+    "!snapshot.PendingOrder" in signal_renderer and
+    "!snapshot.LivePosition" in signal_renderer and
+    "RemoveStackedSignalArrows();" in watch_renderer,
     "M3: blocked/pending/live states must not draw directional watch marks",
 )
 
