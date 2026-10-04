@@ -29,19 +29,19 @@ check("plan labels use canonical line-owned color", "Chart.DrawText(" in labels 
 check("plan labels use the canonical readable font, one-bar left clearance and follow the moving line anchor",
     "CompactPlanLabelFontSize = 11.0" in labels and
     "CompactPlanLabelGapBars = 1" in anchor and
-    "GetCompactPlanLabelAnchorBar(" in anchor and
+    "GetCompactPlanLabelAnchorTime(" in anchor and
     "HorizontalAlignment.Right" in labels and
     "Chart.DrawText(" in labels and
     "canonicalLabelBar" in labels and
     "label.Time != expectedTime" in labels and
     "label.HorizontalAlignment" in labels and
     "label.VerticalAlignment" in labels and
-    "GetCompactPlanLabelAnchorBar(" in labels)
-check("labels share exact normalized price and canonical bar-index anchor", "NormalizePrice(price)" in labels and
+    "GetCompactPlanLabelAnchorTime(" in labels)
+check("labels share exact normalized price and canonical DateTime/OpenTime anchor", "NormalizePrice(price)" in labels and
     "GetPlanLineLeftBar" in anchor and
-    "GetCompactPlanLabelAnchorBar(" in anchor and
+    "GetCompactPlanLabelAnchorTime(" in anchor and
     "canonicalLineLeftBar -\n                CompactPlanLabelGapBars" in anchor and
-    "GetCompactPlanLabelAnchorBar(" in anchor)
+    "GetCompactPlanLabelAnchorTime(" in anchor)
 check("active plan does not create a second arrow lifecycle", "RenderStackedSignalArrows(" not in plan and 'P + "ARROW"' not in plan)
 check("legacy active arrow is cleaned", 'P + "ARROW"' in arrows and 'P + "ARROW"' in clearer)
 check("directional arrows are explicit UpArrow/DownArrow", "ChartIconType.UpArrow" in arrows and "ChartIconType.DownArrow" in arrows)
