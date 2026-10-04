@@ -130,6 +130,7 @@ jobs:
       - run: python tools/audit_phase_ci_15.py
       - run: python tools/audit_phase_ci_16.py
       - run: python tools/audit_phase_ci_17.py
+      - run: python tools/audit_ci17_target_terminal_evidence.py
       - run: python tools/audit_phase_ci_17a.py
       - run: python tools/audit_phase_ci_18_signal_panel.py
       - run: python tools/audit_phase_ci_19_signal_target_quality.py
