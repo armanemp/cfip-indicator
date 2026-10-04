@@ -504,7 +504,7 @@ The following are P0 defects if reintroduced:
 
 **Current macro phase: P3**
 
-**Current executable package: WP-05 — NEXT**
+**Historical snapshot:** WP-05 was the executable package at the time of this historical entry; the current executable state is recorded at the canonical control-plane header above.
 
 **Canonical inspection inventory:** \`docs/CFIP-LIST.md\`
 
@@ -537,7 +537,7 @@ Evidence:
 Residual control-plane defect:
 - Active tooling still contains references to historical `docs/ROADMAP.md`; this is registered as DEF-P0-002 and is queued for WP-03/WP-04 migration/isolation. Historical documents do not override the canonical control plane.
 
-The current executable package is **WP-05 — Preflight**.
+This historical section records the package that was current when this entry was written; it is not active execution authority.
 
 # 18. CFIP operator/product contract
 
@@ -708,7 +708,7 @@ After the change, re-check the same graph. No phase is closed on file-local evid
 
 # 22. Current state
 
-**Current phase: P0 — NEXT**
+**Historical macro snapshot:** P0 was marked NEXT in this superseded historical section; the active atomic state is recorded in the canonical control-plane header above.
 
 **Canonical companion:** \`docs/CFIP_GATE.md\`
 

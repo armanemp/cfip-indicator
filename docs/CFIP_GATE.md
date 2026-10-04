@@ -1194,7 +1194,7 @@ For any material code file being changed or flagged:
 
 **Macro phase:** P3
 
-**Executable package:** WP-05 — NEXT
+**Executable package:** WP-05 — PASS + TERMINAL PENDING; WP-06 Contracts is BLOCKED pending target-terminal evidence.
 
 **Roadmap:** \`docs/CFIP-ROADMAP.md\`
 
@@ -1248,7 +1248,7 @@ Canonical planning, inventory and acceptance authority was normalized across ROA
 
 **Residual risk:** `DEF-P0-002` remains OPEN and is the explicit WP-04 migration target. No blind deletion of legacy documents was performed.
 
-**Current package:** WP-05 — Preflight — NEXT.
+**Historical package snapshot:** WP-05 — Preflight was NEXT when this historical closeout section was written.
 
 ## Permanent acceptance requirement — Local command handoff
 If a gate requires user-local execution, the gate record must contain the exact command, environment, execution point, expected success signal, and required returned output. A green GitHub workflow does not close a local verification requirement.
@@ -1261,4 +1261,4 @@ If a gate requires user-local execution, the gate record must contain the exact 
 
 **Target-terminal requirement:** None for WP-04; this package is repository/control-plane scope.
 
-**Next:** WP-05 — Preflight.
+**Historical next:** WP-05 — Preflight.

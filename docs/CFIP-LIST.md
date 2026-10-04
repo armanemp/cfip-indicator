@@ -1583,7 +1583,7 @@ At certification:
 
 **Inventory source tree:** `f6ef574355a115393ef5279036724675ac18af4a`
 
-**Current executable package:** **WP-04 — NEXT**
+**Historical executable snapshot:** WP-04 was NEXT when this historical section was written; the active state is recorded in the canonical control-plane header above.
 
 ### WP-02 closeout — GitHub workflows
 
@@ -1639,7 +1639,7 @@ For non-production files, classify whether they are active build/test/audit infr
 
 # 20. Current continuation lock
 
-WP-00 through WP-04 are PASS. WP-05 is the only executable package and is NEXT.
+WP-00 through WP-04 are PASS. WP-05 is PASS + TERMINAL PENDING; WP-06 Contracts is BLOCKED pending target-terminal evidence.
 
 
 ### WP-03 closeout — Canonical control plane
