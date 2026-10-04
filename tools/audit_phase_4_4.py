@@ -41,7 +41,7 @@ contracts_project = read(
 contracts = read("tools/CFIP.Runtime.Contracts/Program.cs")
 benchmark_program = read("tools/CFIP.StockIndicators.Benchmark/Program.cs")
 benchmark_report = read("tools/CFIP.StockIndicators.Benchmark/Benchmark/BenchmarkReport.cs")
-roadmap = read("docs/ROADMAP.md")
+roadmap = read("docs/CFIP-ROADMAP.md")
 
 
 check(
