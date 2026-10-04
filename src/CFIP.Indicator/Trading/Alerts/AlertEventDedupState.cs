@@ -112,15 +112,5 @@ namespace cAlgo
             }
         }
 
-        private bool ConsumeAlertEventDedupPersistenceDirty()
-        {
-            if (!_alertEventDedupPersistenceDirty)
-                return false;
-
-            _alertEventDedupPersistenceDirty =
-                false;
-
-            return true;
-        }
     }
 }
