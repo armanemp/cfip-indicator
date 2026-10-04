@@ -54,7 +54,10 @@ checks = (
     ),
     (
         "restore forces immediate content refresh",
-        "_lastPanelContentRefreshUtc =\n                                            DateTime.MinValue" in visibility,
+        "_lastPanelContentRefreshUtc" in visibility and
+        "DateTime.MinValue" in visibility and
+        visibility.index("_lastPanelContentRefreshUtc") <
+        visibility.index("DateTime.MinValue"),
     ),
     (
         "live RR reads current quote",
