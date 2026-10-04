@@ -4059,3 +4059,14 @@ Verification on final PR head `23a5e7878029ba02d7dd6ead0444a3fc10dccdeb`:
 - Source/Architecture #4400: PASS.
 
 No broker mutation, execution authority, signal scoring, MTF role or trading threshold changed. Target-terminal audio acceptance remains part of the existing manual terminal boundary and was not falsely marked complete.
+
+
+## 2026-10-04 — Open PR disposition cleanup
+
+Status: **VERIFIED — stale/superseded PR cleanup completed; no deferred execution work was merged.**
+
+Closed as superseded after comparison with canonical `main`: PR #253 (smart arrows; canonical implementation already merged via #252), PR #256 (alert audio; canonical owner merged via #296), PR #244 (older integrated UI/signal/alert snapshot), and PR #246 (older final-verification snapshot).
+
+Retained open for later canonical disposition because they contain substantive later-scope Trade/cBot work rather than proven duplicate-only content: PR #226 (actual-entry trade path), #235 (cBot capacity), #239 (live/realtime execution), and #258 (adaptive reward/risk/protection). These are not merged early and do not alter the current WP-05 terminal blocker or WP-06 sequencing.
+
+Program progress remains **5/70 fully PASS = 7.1%**. WP-05 repository scope remains 100% complete with **0/13 target-terminal scenarios** accepted; WP-06 remains BLOCKED.
