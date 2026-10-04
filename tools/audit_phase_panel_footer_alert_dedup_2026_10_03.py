@@ -166,7 +166,7 @@ check(
     "AlertSoundPolicy.ResolveDecision(" in sound_policy and
     "BuildGroupKey(" in sound_policy and
     "CreatedClosedM5" in sound_policy and
-    'key;' in sound_policy,
+    'Direction.ToString() + "|" + key' in sound_policy,
     "signal sound dedup must consume the canonical policy group and preserve distinct semantic alert stages",
 )
 
