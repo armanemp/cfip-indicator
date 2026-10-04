@@ -15,7 +15,7 @@ preflight_probe_project = read("preflight/CFIP.Preflight.Probe.csproj")
 probe = read("preflight/CFIPPreflightProbeIndicator.cs")
 preflight_audit = read("tools/audit_cbot_preflight.py")
 workflow = read(".github/workflows/source-check.yml")
-roadmap = read("docs/ROADMAP.md")
+roadmap = read("docs/CFIP-ROADMAP.md")
 phase = read("docs/PHASE-CI-FULL-STACK-CALCULATION-ANALYTICAL-INTEGRITY.md")
 
 forbidden = (
