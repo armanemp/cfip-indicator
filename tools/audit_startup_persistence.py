@@ -138,8 +138,8 @@ if plan_method and "_lastAutoPlanAttemptM5 == closedM5" in plan_method.group(0):
 
 require(
     LABEL_RENDERER,
-    r"double\s+labelPrice\s*=\s*\n\s*NormalizePrice\(price\)",
-    "exact-price label alignment with level line",
+    r"CompactPlanLabelGapPips\s*=\s*2\.0[\s\S]*?Symbol\.PipSize",
+    "exact 2-pip label clearance from level line",
 )
 
 require(
