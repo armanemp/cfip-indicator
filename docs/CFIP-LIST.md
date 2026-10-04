@@ -17,6 +17,8 @@
 **Atomic package:** WP-05 — Preflight  
 **Status:** PASS + TERMINAL PENDING
 
+**Program progress:** 5/70 atomic packages fully PASS (7.1%). WP-05 repository scope is 100% complete; its 13 target-terminal scenarios remain pending, so WP-05 is not fully closed.
+
 **Scope:** preflight probe/host/compile/safety boundary is repository-verified; target-terminal acceptance remains pending. WP-06 Contracts remains blocked until the target-terminal boundary is satisfied.
 
 # 1. Mission
