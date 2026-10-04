@@ -308,7 +308,6 @@ namespace cAlgo
         {
             if (_plan == null ||
                 candidate == null ||
-                candidate.CreatedM5 != _plan.CreatedM5 ||
                 candidate.Direction != _plan.Direction)
                 return false;
 
@@ -355,6 +354,8 @@ namespace cAlgo
                     tolerance);
         }
 
+        // All seven displayed level prices are compared so a visually identical
+        // scenario cannot survive as a second line/label family.
         private bool SameCanonicalLevel(
             double candidatePrice,
             double canonicalPrice,
