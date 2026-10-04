@@ -1239,6 +1239,10 @@ if "MapM5ToChart(" in visual_line_code or "anchorM5" in visual_line_code:
     raise SystemExit("Plan line geometry must not end at an M5 event-time mapping")
 if "GetPlanLineLeftBar" not in visual_line_code:
     raise SystemExit("Plan line renderer must expose one canonical left-edge calculation")
+if "Chart.DrawTrendLine(" not in visual_line_code or "expectedStartTime" not in visual_line_code or "expectedEndTime" not in visual_line_code:
+    raise SystemExit("Plan signal lines must be created through the canonical DateTime/OpenTime X path")
+if "line.Time1 =" in visual_line_code or "line.Time2 =" in visual_line_code:
+    raise SystemExit("Plan signal line X coordinates must not be reassigned through a second path")
 if "GetCompactPlanLabelAnchorTime(" not in plan_label_coordinator_code:
     raise SystemExit("Plan label/level presentation must consume the canonical label anchor helper")
 if "GetPlanLineLeftBar(" not in (ROOT / "UI" / "Chart" / "PlanLabelAnchorCalculator.cs").read_text(encoding="utf-8"):
