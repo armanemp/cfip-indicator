@@ -280,6 +280,13 @@ namespace cAlgo
                     requestUtc,
                     requestUtc,
                     payload);
+
+                Print(
+                    "CFIP ECONOMIC NEWS FETCH SUCCESS | source=HTTP | events={0} | successUtc={1}",
+                    next.Length,
+                    requestUtc.ToString(
+                        "O",
+                        System.Globalization.CultureInfo.InvariantCulture));
             }
             catch (Exception ex)
             {
