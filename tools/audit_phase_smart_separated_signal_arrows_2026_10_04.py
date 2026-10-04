@@ -36,7 +36,7 @@ presentation = read("src/CFIP.Indicator/UI/Chart/SignalPresentationRenderer.cs")
 plan = read("src/CFIP.Indicator/UI/Chart/PlanRenderCoordinator.cs")
 workflow = read(".github/workflows/source-check.yml")
 phase = read("docs/PHASE-SMART-SEPARATED-SIGNAL-ARROWS-2026-10-04.md")
-roadmap = read("docs/ROADMAP.md")
+roadmap = read("docs/CFIP-ROADMAP.md")
 continuation = read("docs/CONTINUATION-STATE.md")
 
 check(
