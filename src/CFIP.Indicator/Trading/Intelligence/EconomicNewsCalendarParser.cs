@@ -135,7 +135,7 @@ namespace cAlgo
             {
                 CfipEconomicCalendarEventJson[] parsed =
                     JsonSerializer.Deserialize<CfipEconomicCalendarEventJson[]>(
-                        payload,
+                        trimmed,
                         new JsonSerializerOptions
                         {
                             PropertyNameCaseInsensitive = true
@@ -185,7 +185,7 @@ namespace cAlgo
                 {
                     parsed =
                         serializer.Deserialize(
-                            new StringReader(payload))
+                            new StringReader(trimmed))
                         as CfipEconomicCalendar;
                 }
                 catch (Exception ex)
@@ -273,17 +273,39 @@ namespace cAlgo
             if (string.IsNullOrEmpty(payload))
                 return false;
 
+            string candidate =
+                payload.TrimStart();
+
+            if (candidate.StartsWith(
+                    "<?xml",
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                int declarationEnd =
+                    candidate.IndexOf(
+                        "?>",
+                        StringComparison.Ordinal);
+
+                if (declarationEnd < 0)
+                    return false;
+
+                candidate =
+                    candidate.Substring(
+                        declarationEnd + 2)
+                        .TrimStart();
+            }
+
             const string root = "<weeklyevents";
 
-            return payload.StartsWith(
-                       root,
-                       StringComparison.OrdinalIgnoreCase) ||
-                   payload.StartsWith(
-                       "<?xml",
-                       StringComparison.OrdinalIgnoreCase) &&
-                   payload.IndexOf(
-                       root,
-                       StringComparison.OrdinalIgnoreCase) >= 0;
+            if (!candidate.StartsWith(
+                    root,
+                    StringComparison.OrdinalIgnoreCase))
+                return false;
+
+            int rootEnd = root.Length;
+
+            return candidate.Length == rootEnd ||
+                   candidate[rootEnd] == '>' ||
+                   char.IsWhiteSpace(candidate[rootEnd]);
         }
 
         private static string BuildPayloadPrefix(
