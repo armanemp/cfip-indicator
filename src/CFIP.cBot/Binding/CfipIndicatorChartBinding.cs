@@ -41,7 +41,7 @@ namespace CFIP.cBot.Binding
             int count = 0;
 
             IndicatorType registeredType =
-                AlgoRegistry.Get(
+                robot.AlgoRegistry.Get(
                     DisplayName,
                     AlgoKind.CustomIndicator) as IndicatorType;
             string registeredProjectFilePath =
