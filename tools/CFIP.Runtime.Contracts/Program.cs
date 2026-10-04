@@ -6547,13 +6547,11 @@ namespace cAlgo
                 File.ReadAllText(labelAnchorPath);
 
             Assert(
-                labelCoordinator.Contains("GetCompactPlanLabelAnchorTime()") &&
+                labelCoordinator.Contains("GetCompactPlanLabelAnchorBar()") &&
                 labelAnchor.Contains("CompactPlanLabelGapBars = 1") &&
-                labelAnchor.Contains("Chart.BarIndexToX(") &&
-                labelAnchor.Contains("double targetX =") &&
-                labelAnchor.Contains("lineX -") &&
-                labelAnchor.Contains("Chart.XToTime("),
-                "plan labels use the canonical projected chart-space label anchor owner");
+                labelAnchor.Contains("GetCompactPlanLabelAnchorBar(") &&
+                labelAnchor.Contains("canonicalLineLeftBar -"),
+                "plan labels use the canonical bar-index label anchor owner");
 
             Assert(
                 controlFactory.Contains("CreateExecutionToggle(") &&

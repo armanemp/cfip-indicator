@@ -47,7 +47,7 @@ require(
 )
 require(
     ROOT / "src/CFIP.Indicator/UI/Chart/PlanLabelRenderCoordinator.cs",
-    r"GetCompactPlanLabelAnchorTime\(\)",
+    r"GetCompactPlanLabelAnchorBar\(\)",
     "canonical compact label anchor owner",
 )
 require(
@@ -62,25 +62,21 @@ require(
 )
 require(
     LABEL,
-    r"Chart\.DrawText\(\s*\n\s*name,\s*\n\s*text,\s*\n\s*expectedTime,",
+    r"Chart\.DrawText\(\s*\n\s*name,\s*\n\s*text,\s*\n\s*canonicalLabelBar,",
     "chart-space time-based canonical label X creation",
 )
 ANCHOR = ROOT / "src/CFIP.Indicator/UI/Chart/PlanLabelAnchorCalculator.cs"
 require(
     ANCHOR,
-    r"Chart\.BarIndexToX\(\s*\n\s*canonicalLineLeftBar\)",
-    "canonical line X projection consumed by label anchor",
+    r"private int GetCompactPlanLabelAnchorBar\(\)",
+    "canonical bar-index anchor owner",
 )
 require(
     ANCHOR,
-    r"double targetX\s*=\s*\n\s*lineX\s*-",
-    "one actual rendered bar-width is subtracted from the line start X",
+    r"canonicalLineLeftBar\s*-\s*\n\s*CompactPlanLabelGapBars",
+    "exact one-bar gap is owned by the canonical bar-index anchor",
 )
-require(
-    ANCHOR,
-    r"Chart\.XToTime\(\s*\n\s*targetX\)",
-    "projected X resolves to the canonical ChartText DateTime anchor",
-)
+
 if re.search(r"label\.Time\s*=", LABEL.read_text(encoding="utf-8")):
     raise SystemExit("canonical signal labels must not mutate ChartText.Time after creation")
 require(LAMP, r'ForegroundColor\s*=\s*Color\.FromArgb', "processing lamp pulse color")

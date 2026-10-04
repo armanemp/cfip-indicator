@@ -170,8 +170,8 @@ namespace cAlgo
                     (ShowLevelPriceLabels ||
                      ShowSignalLabels))
                 {
-                    DateTime labelTime =
-                        GetCompactPlanLabelAnchorTime();
+                    int labelBar =
+                        GetCompactPlanLabelAnchorBar();
 
                     RenderOpportunityLabel(
                         baseName + "_ENTRY_LABEL",
@@ -185,7 +185,7 @@ namespace cAlgo
                             displayNumber),
                         candidate.Entry,
                         EntryLineColor,
-                        labelTime);
+                        labelBar);
 
                     RenderOpportunityLabel(
                         baseName + "_SL_LABEL",
@@ -199,7 +199,7 @@ namespace cAlgo
                             displayNumber),
                         candidate.Stop,
                         SlLineColor,
-                        labelTime);
+                        labelBar);
 
                     RenderOpportunityLabel(
                         baseName + "_TP1_LABEL",
@@ -213,7 +213,7 @@ namespace cAlgo
                             displayNumber),
                         candidate.Tp1,
                         TpLineColor,
-                        labelTime);
+                        labelBar);
 
                     RenderOpportunityLabel(
                         baseName + "_TP2_LABEL",
@@ -227,7 +227,7 @@ namespace cAlgo
                             displayNumber),
                         candidate.Tp2,
                         Tp2LineColor,
-                        labelTime);
+                        labelBar);
 
                     RenderOpportunityLabel(
                         baseName + "_TP3_LABEL",
@@ -241,7 +241,7 @@ namespace cAlgo
                             displayNumber),
                         candidate.Tp3,
                         Tp3LineColor,
-                        labelTime);
+                        labelBar);
 
                     RenderOpportunityLabel(
                         baseName + "_TP4_LABEL",
@@ -255,7 +255,7 @@ namespace cAlgo
                             displayNumber),
                         candidate.Tp4,
                         Tp4LineColor,
-                        labelTime);
+                        labelBar);
                 }
                 else
                 {
@@ -292,7 +292,7 @@ namespace cAlgo
             string text,
             double price,
             Color color,
-            DateTime labelTime)
+            int labelBar)
         {
             RenderCompactPlanLabel(
                 name,
@@ -300,7 +300,7 @@ namespace cAlgo
                 price,
                 color,
                 true,
-                labelTime);
+                labelBar);
         }
 
         private bool IsSameAsCanonicalPlan(

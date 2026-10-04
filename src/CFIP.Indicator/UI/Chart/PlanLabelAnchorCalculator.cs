@@ -5,23 +5,24 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        // One candle of actual chart-space clearance is measured from the
-        // canonical signal-line left endpoint. The distance is derived from
-        // cTrader's real X projection, not from a guessed pixel or price offset.
+        // The canonical line and label share the same X coordinate system:
+        // integer chart bar indices. The visible right edge of the native
+        // right-aligned ChartText is anchored exactly one chart bar before
+        // the canonical line start.
         private const int CompactPlanLabelGapBars = 1;
 
-        private DateTime GetCompactPlanLabelAnchorTime()
+        private int GetCompactPlanLabelAnchorBar()
         {
-            return GetCompactPlanLabelAnchorTime(
+            return GetCompactPlanLabelAnchorBar(
                 GetPlanLineLeftBar());
         }
 
-        private DateTime GetCompactPlanLabelAnchorTime(
+        private int GetCompactPlanLabelAnchorBar(
             int lineLeftBar)
         {
             if (Bars == null ||
                 Bars.Count < 2)
-                return DateTime.MinValue;
+                return 0;
 
             int canonicalLineLeftBar =
                 Math.Max(
@@ -30,39 +31,10 @@ namespace cAlgo
                         Bars.Count - 1,
                         lineLeftBar));
 
-            double lineX =
-                Chart.BarIndexToX(
-                    canonicalLineLeftBar);
-
-            double previousBarX =
-                Chart.BarIndexToX(
-                    canonicalLineLeftBar - 1);
-
-            double barWidth =
-                Math.Abs(
-                    lineX -
-                    previousBarX);
-
-            if (double.IsNaN(lineX) ||
-                double.IsInfinity(lineX) ||
-                double.IsNaN(barWidth) ||
-                double.IsInfinity(barWidth) ||
-                barWidth <= 0)
-            {
-                return Bars.OpenTimes[
-                    Math.Max(
-                        0,
-                        canonicalLineLeftBar -
-                        CompactPlanLabelGapBars)];
-            }
-
-            double targetX =
-                lineX -
-                (barWidth *
-                 CompactPlanLabelGapBars);
-
-            return Chart.XToTime(
-                targetX);
+            return Math.Max(
+                0,
+                canonicalLineLeftBar -
+                CompactPlanLabelGapBars);
         }
     }
 }

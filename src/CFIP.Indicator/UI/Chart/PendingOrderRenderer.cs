@@ -55,8 +55,8 @@ namespace cAlgo
                 !ShowSignalLabels)
                 return;
 
-            DateTime labelTime =
-                GetCompactPlanLabelAnchorTime();
+            int labelBar =
+                GetCompactPlanLabelAnchorBar();
 
             string typeText =
                 snapshot.PendingOrderType;
@@ -75,7 +75,7 @@ namespace cAlgo
                 snapshot.PendingEntry,
                 TriggerLineColor,
                 ShowTrigger,
-                labelTime);
+                labelBar);
 
             RenderCompactPlanLabel(
                 P + "PENDING_SL_LABEL",
@@ -91,7 +91,7 @@ namespace cAlgo
                 snapshot.PendingStop,
                 SlLineColor,
                 ShowSL,
-                labelTime);
+                labelBar);
 
             RenderCompactPlanLabel(
                 P + "PENDING_TP_LABEL",
@@ -107,7 +107,7 @@ namespace cAlgo
                 snapshot.PendingTarget,
                 TpLineColor,
                 ShowTP1,
-                labelTime);
+                labelBar);
         }
 
         private void RemoveManagedPendingOrderObjects()
