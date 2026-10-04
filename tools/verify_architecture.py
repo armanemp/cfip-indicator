@@ -1010,6 +1010,18 @@ if "2.0" not in PLAN_LABEL_RENDERER_CODE:
     raise SystemExit("Compact plan labels must keep the exact 2-pip clearance contract")
 if "Chart.RemoveObject(" not in compact_label_code:
     raise SystemExit("Compact plan label must clean legacy chart objects")
+RUNTIME_INIT = ROOT / "Runtime" / "Initialization" / "RuntimeInitialization.cs"
+PANEL_HEARTBEAT = ROOT / "Runtime" / "Supervision" / "RuntimePanelHeartbeat.cs"
+SAFETY_SUPERVISOR = ROOT / "Runtime" / "Supervision" / "RuntimeSafetySupervisor.cs"
+MTF_CONTEXT_BUILDER = ROOT / "Runtime" / "Mtf" / "MtfContextBuilder.cs"
+M1_CLOSED_STAGE = ROOT / "Runtime" / "Calculation" / "CalculationClosedBar.cs"
+M5_REGIME_ANALYZER = ROOT / "Analysis" / "Market" / "MarketRegimeAnalyzer.cs"
+M5_REGIME_CACHE = ROOT / "Analysis" / "Market" / "M5RegimeCoreCache.cs"
+FVG_DETECTION = ROOT / "Analysis" / "Structure" / "Zones" / "FvgDetectionAnalyzer.cs"
+FVG_MITIGATION = ROOT / "Analysis" / "Structure" / "Zones" / "FvgMitigationEvaluator.cs"
+OB_DETECTION = ROOT / "Analysis" / "Structure" / "Zones" / "OrderBlockAnalyzer.cs"
+OB_MITIGATION = ROOT / "Analysis" / "Structure" / "Zones" / "OrderBlockMitigationGuard.cs"
+
 PROTECTION_MANAGER = ROOT / "Trading" / "LiveManagement" / "ProtectionManager.cs"
 
 for required_path in (
