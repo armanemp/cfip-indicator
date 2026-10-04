@@ -87,7 +87,7 @@ if (
     raise SystemExit("G5 phase document does not record implementation and G6A continuation")
 
 for document, name in (
-    (roadmap, "ROADMAP G6A continuation"),
+    (historical_roadmap, "ROADMAP G6A continuation"),
     (continuation, "CONTINUATION G6A continuation"),
     (review, "remediation G6A continuation"),
 ):
