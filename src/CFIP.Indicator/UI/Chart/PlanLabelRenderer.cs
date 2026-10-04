@@ -116,7 +116,7 @@ namespace cAlgo
                 bool recreate =
                     label == null ||
                     label.Time != expectedTime ||
-                    label.HorizontalAlignment != HorizontalAlignment.Right ||
+                    label.HorizontalAlignment != HorizontalAlignment.Left ||
                     label.VerticalAlignment != VerticalAlignment.Center ||
                     label.FontSize != CompactPlanLabelFontSize ||
                     label.IsBold;
@@ -132,9 +132,6 @@ namespace cAlgo
                     if (existing != null)
                         Chart.RemoveObject(name);
 
-                    // IMPORTANT: use the same integer bar-index X coordinate
-                    // system as PlanLineRenderer. Do not assign label.Time
-                    // after creation; doing so creates a second DateTime X path.
                     label =
                         Chart.DrawText(
                             name,
@@ -163,14 +160,12 @@ namespace cAlgo
                 label.IsBold =
                     false;
                 label.HorizontalAlignment =
-                    HorizontalAlignment.Right;
+                    HorizontalAlignment.Left;
                 label.VerticalAlignment =
                     VerticalAlignment.Center;
                 label.IsInteractive =
                     false;
 
-                // Keep a precise runtime record of the shared bar-index geometry.
-                // Remove every legacy companion shape deterministically.
                 Chart.RemoveObject(name + "_BOX");
                 Chart.RemoveObject(name + "_ANCHOR");
             }
