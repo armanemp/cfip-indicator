@@ -15,9 +15,9 @@
 # Current execution state
 
 **Atomic package:** WP-05 — Preflight  
-**Status:** NEXT
+**Status:** PASS + TERMINAL PENDING
 
-**Scope:** old roadmap isolation, obsolete phase/tooling dependency migration, KEEP/MIGRATE/ARCHIVE/DELETE proof.
+**Scope:** preflight probe/host/compile/safety boundary is repository-verified; target-terminal acceptance remains pending. WP-06 Contracts remains blocked until the target-terminal boundary is satisfied.
 
 # 1. Mission
 
