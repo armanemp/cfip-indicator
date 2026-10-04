@@ -21,7 +21,7 @@ Canonical contract:
 - `PlanLabelAnchorCalculator` is the sole owner of the horizontal gap and places the visible end of right-aligned label text exactly one chart bar before the canonical line start.
 - `PlanLabelRenderer` is the sole native `ChartText` label owner; labels are regular-weight, exact-price and background-free. Canonical X creation uses only the bar-index `DrawText` overload; `ChartText.Time` is never assigned after creation, preventing a second DateTime X-geometry path.
 - Label text uses exactly the same materialized color as its corresponding line; `Color.White` is not permitted for canonical line labels.
-- Pending, parallel and prediction label paths reuse the same renderer/anchor contract.
+- Pending, parallel and prediction label paths reuse the same renderer/anchor contract. Parallel opportunities must suppress any candidate whose canonical direction/Entry/SL/TP1 matches the active plan, so one trade plan can never materialize a second visual label set.
 
 Verification:
 - PR #319 merged with Runtime Acceptance, cTrader Compile and Source/Architecture all PASS.

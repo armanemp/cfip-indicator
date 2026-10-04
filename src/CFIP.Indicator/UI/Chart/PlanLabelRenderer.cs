@@ -109,20 +109,16 @@ namespace cAlgo
                     ResolveCanonicalPlanLineColor(
                         semanticColor);
 
-                DateTime expectedTime =
-                    Bars.OpenTimes[textBar];
-
                 ChartText label =
                     Chart.FindObject(name)
                     as ChartText;
 
                 // X geometry is created exclusively with the bar-index overload.
-                // Never recreate/move the object through the DateTime overload or
-                // by assigning ChartText.Time: doing so can remap the visual X
-                // coordinate independently of the canonical bar geometry.
+                // Reuse the existing native object instead of repeatedly removing
+                // and recreating it on every calculation tick. There is no second
+                // DateTime X path and no ChartText.Time mutation.
                 bool recreate =
                     label == null ||
-                    label.Time != expectedTime ||
                     label.HorizontalAlignment != HorizontalAlignment.Right ||
                     label.VerticalAlignment != VerticalAlignment.Center ||
                     label.FontSize != CompactPlanLabelFontSize ||
