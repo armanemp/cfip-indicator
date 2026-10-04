@@ -36,7 +36,7 @@ alerts = read("src/CFIP.Indicator/Runtime/Calculation/CalculationDecisionAlerts.
 alert_engine = read("src/CFIP.Indicator/Trading/Alerts/AlertEngine.cs")
 alert_processor = read("src/CFIP.Indicator/UI/Panel/AlertDeliveryProcessor.cs")
 workflow = read(".github/workflows/source-check.yml")
-roadmap = read("docs/ROADMAP.md")
+roadmap = read("docs/CFIP-ROADMAP.md")
 continuation = read("docs/CONTINUATION-STATE.md")
 phase = read("docs/PHASE-REALTIME-LIVE-SIGNAL-UNIFICATION-2026-10-03.md")
 
