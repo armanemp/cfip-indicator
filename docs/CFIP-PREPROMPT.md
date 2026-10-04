@@ -92,7 +92,9 @@ Executable Package = WP-00 — NEXT
 6. latest CI را بررسی کن.
 7. وضعیت فعلی repository را با سه فایل canonical مقایسه کن.
 8. اولین executable package با وضعیت NEXT را پیدا کن.
-9. هیچ فرض قدیمی را صرفاً به خاطر conversation memory معتبر ندان.
+9. کل repository tree را برای orphan/dead/generated/temporary/duplicate artifacts بررسی کن و هر مورد را KEEP/MIGRATE/ARCHIVE/DELETE طبقه‌بندی کن.
+10. هیچ DELETE/ARCHIVE تصمیمی را بدون dependency trace و بررسی build/CI/test/audit/runtime/release انجام نده.
+11. هیچ فرض قدیمی را صرفاً به خاطر conversation memory معتبر ندان.
 
 # هدف WP-00
 
@@ -124,6 +126,7 @@ WP-00 باید baseline واقعی پروژه را از صفر مشخص کند:
 - active audit infrastructure؛
 - historical documentation dependencies؛
 - terminal-only validation boundaries؛
+- repository-wide orphan/dead/generated/temporary/duplicate artifact inventory؛
 - current OPEN/BLOCKED defects.
 
 WP-00 باید evidence واقعی تولید کند و:
@@ -425,9 +428,21 @@ Package فقط وقتی PASS است که:
 
 PASS را برای حفظ ظاهری وضعیت با ضعیف‌کردن gate حفظ نکن.
 
-# Historical-document rule
+# Historical-document and repository-cleanup rule
 
-فایل‌های قدیمی repository را فقط به‌عنوان evidence/archive ببین.
+فایل‌های قدیمی repository را فقط به‌عنوان evidence/archive ببین، و هر artifact قدیمی/زائد را تا تعیین تکلیف رها نکن.
+
+هر فایل tracked باید یکی از این وضعیت‌ها را داشته باشد:
+**KEEP / MIGRATE / ARCHIVE / DELETE**.
+
+برای DELETE/ARCHIVE:
+- dependency chain را تا active consumer trace کن؛
+- build/CI/audit/test/runtime/release/deployment/continuity را بررسی کن؛
+- اگر دانش معتبر دارد، آن را قبل از حذف به canonical owner منتقل کن؛
+- artifact obsolete را فقط به خاطر ارجاع دیگر obsolete artifact حفظ نکن.
+
+هدف نهایی repository:
+**zero unexplained files + zero duplicate artifacts + zero obsolete active dependencies**.
 
 به‌خصوص:
 - old M0–M45;
