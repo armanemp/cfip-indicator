@@ -46,6 +46,10 @@ required = {
             "EconomicNewsFeedCoordinator.CompleteFailure(",
             "_economicNewsRequestInFlight",
             "_economicNewsRequestGeneration",
+            "LocalStorageScope.Type",
+            "EconomicNewsSharedStateSchema",
+            "PersistSharedEconomicNewsState(",
+            "TryReadSharedEconomicNewsAttempt(",
         ],
     "src/CFIP.Indicator/Trading/Intelligence/EconomicNewsFeedCoordinator.cs":
         [
@@ -63,6 +67,7 @@ required = {
             "StartsWith(",
             "NEWS FEED PAYLOAD FORMAT FAILURE",
             "NEWS FEED XML PARSE FAILURE",
+            "Mozilla/5.0",
             "TryParseEconomicEventTime(",
         ],
     "src/CFIP.Indicator/Trading/Intelligence/EconomicNewsRiskEvaluator.cs":
@@ -134,7 +139,7 @@ parameter_source = read(
 )
 if "DefaultValue = 60, MinValue = 60, MaxValue = 360" not in parameter_source:
     errors.append(
-        "News Refresh Minutes must enforce the provider-safe 5-minute minimum"
+        "News Refresh Minutes must enforce the provider-safe hourly minimum"
     )
 
 if "RefreshEconomicNewsIfNeeded(" in initialization:
