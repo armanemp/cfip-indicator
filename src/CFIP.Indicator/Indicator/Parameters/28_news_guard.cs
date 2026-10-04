@@ -7,7 +7,7 @@ namespace cAlgo
         [Parameter("Enable Economic News Calendar", Group = "28 · NEWS GUARD", DefaultValue = true)]
         public bool EnableEconomicNewsCalendar { get; set; }
 
-        [Parameter("Economic News Data URI", Group = "28 · NEWS GUARD", DefaultValue = "https://nfs.faireconomy.media/ff_calendar_thisweek.xml")]
+        [Parameter("Economic News Data URI", Group = "28 · NEWS GUARD", DefaultValue = "https://nfs.faireconomy.media/ff_calendar_thisweek.json")]
         public string EconomicNewsDataUri { get; set; }
 
         [Parameter("News Refresh Minutes", Group = "28 · NEWS GUARD", DefaultValue = 5, MinValue = 1, MaxValue = 60)]
