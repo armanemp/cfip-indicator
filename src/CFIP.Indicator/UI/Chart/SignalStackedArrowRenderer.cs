@@ -38,7 +38,8 @@ namespace cAlgo
                     Symbol.PipSize * Math.Max(0.5, MinimumArrowOffsetPips),
                     atr * Math.Max(0.02, ArrowOffsetAtr));
 
-            if (!ShowSignalArrow)
+            if (!ShouldRenderCanonicalMtfTrendArrows(
+                    snapshot))
             {
                 RemoveStackedSignalArrows();
                 return;
