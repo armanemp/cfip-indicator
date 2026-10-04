@@ -12,6 +12,13 @@
 >
 > These three files form the canonical planning/inspection/acceptance system. Historical documents cannot override them.
 
+# Current execution state
+
+**Atomic package:** WP-04 — Historical isolation  
+**Status:** IN PROGRESS
+
+**Scope:** old roadmap isolation, obsolete phase/tooling dependency migration, KEEP/MIGRATE/ARCHIVE/DELETE proof.
+
 # 1. Mission
 
 No critical behavior may escape review because the roadmap was too broad. Every relevant file is audited file-by-file; every logic-bearing file is inspected declaration-by-declaration, method-by-method, branch-by-branch and line-by-line where source-level proof is required.
@@ -1632,7 +1639,7 @@ For non-production files, classify whether they are active build/test/audit infr
 
 # 20. Current continuation lock
 
-Do not start WP-01 or any later package until WP-00 has established the real current baseline and updated CFIP_GATE and CFIP-ROADMAP accordingly.
+WP-00, WP-01, WP-02 and WP-03 are PASS. WP-04 is the only executable package and is IN PROGRESS. Do not start WP-05 or any later package until WP-04 closes with dependency, deletion/archive and regression evidence.
 
 
 ### WP-03 closeout — Canonical control plane
