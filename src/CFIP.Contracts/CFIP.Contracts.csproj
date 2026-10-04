@@ -6,6 +6,5 @@
     <RootNamespace>CFIP.Contracts</RootNamespace>
     <Nullable>enable</Nullable>
     <ImplicitUsings>disable</ImplicitUsings>
-    <Deterministic>true</Deterministic>
   </PropertyGroup>
 </Project>
