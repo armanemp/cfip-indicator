@@ -217,7 +217,10 @@ namespace cAlgo
                 int m1Index =
                     ClosedIndex(
                         _m1Bars,
-                        _m5Bars.OpenTimes[closedM5]);
+                        ClosedBarBoundaryReference(
+                            _m5Bars,
+                            closedM5,
+                            Server.TimeInUtc));
 
                 if (m1Index < 10)
                     return atr;

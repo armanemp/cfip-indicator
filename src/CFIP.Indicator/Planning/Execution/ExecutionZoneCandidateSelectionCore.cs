@@ -44,7 +44,10 @@ namespace cAlgo
             int m15Index =
                 ClosedIndex(
                     _m15Bars,
-                    _m5Bars.OpenTimes[closedM5]);
+                    ClosedBarBoundaryReference(
+                            _m5Bars,
+                            closedM5,
+                            Server.TimeInUtc));
 
             double m15Atr =
                 m15Index >= 10
@@ -170,7 +173,10 @@ namespace cAlgo
                     ? -1
                     : ClosedIndex(
                         _h1Bars,
-                        _m5Bars.OpenTimes[closedM5]);
+                        ClosedBarBoundaryReference(
+                            _m5Bars,
+                            closedM5,
+                            Server.TimeInUtc));
 
             double h1Atr =
                 h1Index >= 10

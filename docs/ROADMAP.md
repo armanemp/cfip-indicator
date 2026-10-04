@@ -3844,3 +3844,14 @@ F2 closed an evidenced dead ownership surface in ParallelOpportunityRenderer: re
 No strategy, threshold, MTF, signal, Entry/SL/TP/RR, alert, cBot or broker behavior changed.
 
 Next implementation phase after F2 closeout: **F3 — Price / Time / Closed-Bar / MTF Integrity**.
+
+
+## 2026-10-04 — F3 Price / Time / Closed-Bar / MTF Integrity
+
+Status: **IMPLEMENTATION COMPLETE — verification pending.**
+
+Corrected a concrete temporal-boundary defect: downstream MTF/M1 consumers were resolving closed indices from the opening timestamp of the closed M5 bar. Added one canonical ClosedBarBoundaryReference owner based on the actual next M5 open and migrated the affected consumers. Added the F3 static integrity audit and CI wiring.
+
+No strategy thresholds, RR, alert, rendering, cBot execution or MTF role changed. M15 remains canonical decision/reference; M5 remains trigger/entry precision; M1 remains optional confirmation. No M2 path introduced.
+
+Phase report: docs/PHASE-F3-PRICE-TIME-CLOSEDBAR-MTF-INTEGRITY-2026-10-04.md.

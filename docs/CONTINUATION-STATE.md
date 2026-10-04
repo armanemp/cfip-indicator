@@ -2650,3 +2650,11 @@ Implementation branch: phase/f2-single-owner-dead-code-2026-10-04.
 Removed two dead helpers from ParallelOpportunityRenderer (LaneLabel and the no-op HashSetCurrentOpportunityVisuals) and added an accumulated audit guard against their reintroduction. No parallel owner was created and no trading behavior changed.
 
 Verification is pending on the exact branch head. Operator action after merge: git pull --ff-only.
+
+## F3 — Price / Time / Closed-Bar / MTF Integrity — 2026-10-04
+
+Implementation branch: phase/f3-price-time-closedbar-mtf-integrity-2026-10-04.
+
+F3 corrected the closed-M5 temporal boundary used by downstream MTF/M1 consumers. IndexMath.ClosedBarBoundaryReference is the single reusable owner and affected consumers no longer use the opening timestamp of the closed M5 bar for closed-index resolution. Added the F3 static integrity gate and CI wiring.
+
+Status: verification pending on the exact branch head.

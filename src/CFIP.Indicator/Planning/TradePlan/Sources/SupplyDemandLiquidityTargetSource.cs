@@ -86,7 +86,10 @@ namespace cAlgo
                                                         LiquidityPoolWeight,
                                                         TargetAgeSemanticsRule.ElapsedMinutes(
                                                             _d1Bars.OpenTimes[d1],
-                                                            _m5Bars.OpenTimes[closedM5]));
+                                                            ClosedBarBoundaryReference(
+                                                                _m5Bars,
+                                                                closedM5,
+                                                                Server.TimeInUtc)));
                                                 }
                                             }
                                 

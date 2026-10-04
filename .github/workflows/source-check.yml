@@ -15,6 +15,7 @@ jobs:
           python-version: '3.12'
       - run: python tools/verify_architecture.py
       - run: python tools/audit_phase_f1_repository_build_dependency_truth.py
+      - run: python tools/audit_phase_f3_price_time_closedbar_mtf_integrity.py
       - run: python tools/audit_parameters.py
       - run: python tools/audit_parameter_count.py
       - run: python tools/audit_runtime_ui.py

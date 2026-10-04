@@ -3983,3 +3983,13 @@ Status: implementation complete; verification pending.
 - No strategy, decision, Entry/SL/TP/RR, MTF, alert, execution or broker behavior changed.
 - F2 repository verification must pass before merge; terminal visual acceptance remains manual.
 
+
+## 2026-10-04 — F3 Price / Time / Closed-Bar / MTF Integrity
+
+Implementation branch: phase/f3-price-time-closedbar-mtf-integrity-2026-10-04.
+
+Root correction: downstream MTF/M1 consumers were using the opening timestamp of the closed M5 bar as their lookup reference. A canonical ClosedBarBoundaryReference owner now resolves the actual next M5 open, and affected consumers use it for closed-index/age calculations. Added and CI-wired the F3 integrity audit.
+
+No strategy, threshold, RR, alert, rendering, broker execution or MTF role changed. M15 remains canonical decision/reference; M5 remains trigger/entry precision; M1 remains optional confirmation.
+
+Verification is pending on the exact branch head.

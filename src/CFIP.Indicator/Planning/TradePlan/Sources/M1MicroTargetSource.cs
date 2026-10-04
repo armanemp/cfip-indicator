@@ -21,7 +21,10 @@ namespace cAlgo
                 return;
 
             DateTime reference =
-                _m5Bars.OpenTimes[closedM5];
+                ClosedBarBoundaryReference(
+                    _m5Bars,
+                    closedM5,
+                    Server.TimeInUtc);
 
             int m1Index =
                 ClosedIndex(

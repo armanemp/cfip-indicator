@@ -52,7 +52,10 @@ namespace cAlgo
                 int m15Index =
                     ClosedIndex(
                         _m15Bars,
-                        _m5Bars.OpenTimes[closedM5]);
+                        ClosedBarBoundaryReference(
+                            _m5Bars,
+                            closedM5,
+                            Server.TimeInUtc));
 
                 double m15Atr =
                     m15Index >= 20

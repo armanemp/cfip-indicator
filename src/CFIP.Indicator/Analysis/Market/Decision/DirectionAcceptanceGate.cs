@@ -90,7 +90,10 @@ namespace cAlgo
                                         int m15Index =
                                             ClosedIndex(
                                                 _m15Bars,
-                                                _m5Bars.OpenTimes[closedM5]);
+                                                ClosedBarBoundaryReference(
+                            _m5Bars,
+                            closedM5,
+                            Server.TimeInUtc));
                         
                                         if (m15Index >= 0 &&
                                             !StableDirection(
