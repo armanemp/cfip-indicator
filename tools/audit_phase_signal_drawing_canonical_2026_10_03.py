@@ -26,7 +26,7 @@ check("plan labels use canonical line-owned color", "Chart.DrawText(" in labels 
     "ResolveCanonicalPlanLineColor(" in line and
     "ResolveCanonicalPlanLineColor(" in labels and
     "semanticColor" in labels)
-check("plan labels use the canonical readable font and one-bar left clearance", "CompactPlanLabelFontSize = 10.0" in labels and
+check("plan labels use the canonical readable font and one-bar left clearance", "CompactPlanLabelFontSize = 11.0" in labels and
     "CompactPlanLabelGapBars = 1" in anchor and
     "GetCompactPlanLabelAnchorBar(" in anchor and
     "HorizontalAlignment.Right" in labels)
