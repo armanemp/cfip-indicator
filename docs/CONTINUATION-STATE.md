@@ -2797,14 +2797,3 @@ Target-terminal revalidation remains required before DEF-P1-003 can be closed an
 PR #312 merged to `main` as `ca7d9844b1a312651d4ce073393d666d59b12cda`. Post-merge Source/Architecture, Runtime Acceptance and cTrader Compile are all PASS.
 
 The implementation removes the redundant per-instance causal-event memory and uses the canonical shared `AlertEventDedupCoordinator` + `LocalStorageScope.Type` state. Terminal revalidation is still required to prove that the same M5/M15 causal event produces exactly one queue acceptance and one sound delivery.
-
-## 2026-10-04 — Alert/Audio Regression Deferred
-
-Status: **DEFERRED — DEDICATED ALERT/AUDIO REVIEW REQUIRED**
-
-The 18:59 M5/M15 terminal reloads showed healthy startup, history persistence and audio configuration, but no alert queue/delivery events. This is not accepted as proof of a fixed cross-instance dedup path and is not being modified in the current non-alert workstream.
-
-Current main: `902180754ce6f15df9a512cf5411de1f41b534e3`.
-Post-merge repository gates on that head: Source/Architecture PASS, Runtime Acceptance PASS, cTrader Compile PASS.
-
-The next non-alert workstream may proceed from repository truth while this Alert/Audio regression remains explicitly isolated for a later dedicated phase.
