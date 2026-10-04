@@ -2769,7 +2769,7 @@ if "CompactPlanLabelGapBars = 1" not in PLAN_LABEL_ANCHOR_CODE or "GetCompactPla
     raise SystemExit("Compact plan label gap must be owned by the canonical anchor calculator")
 if "canonicalLineLeftBar -\n                CompactPlanLabelGapBars" not in PLAN_LABEL_ANCHOR_CODE:
     raise SystemExit("Compact plan label anchor must use exactly one canonical bar before line start")
-if "HorizontalAlignment.Left" not in compact_label_code:
+if "HorizontalAlignment.Right" not in compact_label_code:
     raise SystemExit("Compact plan labels must terminate at the left-of-line anchor")
 if "Chart.RemoveObject(" not in compact_label_code:
     raise SystemExit("Compact plan labels must clean legacy chart objects")
