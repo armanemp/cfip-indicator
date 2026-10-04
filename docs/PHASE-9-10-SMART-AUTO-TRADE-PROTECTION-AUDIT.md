@@ -55,7 +55,7 @@ When the broker confirms server-owned break-even, the local polling-based break-
 
 All plan/signal level lines now use `LineStyle.Solid`.
 
-Level annotations remain white text with no generated rectangle background.
+Level annotations use exact corresponding signal-line color, regular-weight native ChartText, no generated rectangle/background, and the visible text end remains one chart bar before the canonical line start.
 
 ### Accumulated audit
 

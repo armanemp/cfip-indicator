@@ -13,9 +13,7 @@ Local Release build completed with zero errors but two warnings.
 
 ### Level-label separation
 
-The previous fix was incomplete because compact labels could still share the line's right endpoint and use right alignment, while prediction labels used a separate renderer.
-
-This phase preserves the canonical latest-candle line endpoint. Separation is now enforced in price space for both compact and prediction labels with a bounded pip/tick/ATR-based offset, while text remains white inside the canonical filled line-colored label box. Horizontal text alignment is left-aligned so the annotation does not pull its visible text back across the anchor.
+The historical implementation described below is superseded by the current canonical label contract: native right-aligned ChartText, exact line color, no background/box, and exactly one chart-bar gap between the visible text end and the line start. Current behavior is owned by PlanLineRenderer + PlanLabelAnchorCalculator + PlanLabelRenderer; no price-space pip/ATR offset or alternate label renderer is permitted.
 
 ### Signal pipeline diagnostics
 

@@ -21,16 +21,19 @@ def check(name, ok):
 check("plan lines are solid and canonical", "return LineStyle.Solid;" in line)
 check("plan line geometry is fixed to 40 bars from latest candle", "CompactPlanLineLengthBars = 40" in line and "GetPlanLineRightBar()" in line and "GetPlanLineRightBar() -" in line and "if (FullWidthLevelLines)" not in line.split("private int GetPlanLineLeftBar", 1)[1])
 check("plan thickness contract is one pixel", "return MinimumThickness;" in line_rule and "MinimumThickness = 1" in line_rule)
-check("plan labels use canonical background-free line-colored text", "Chart.DrawText(" in labels and
+check("plan labels use canonical line-owned color", "Chart.DrawText(" in labels and
     "Chart.DrawRectangle(" not in labels and
-    "GetReadableLabelTextColor(" in labels and
-    "return Color.White;" in labels)
+    "ResolveCanonicalPlanLineColor(" in line and
+    "ResolveCanonicalPlanLineColor(" in labels and
+    "semanticColor" in labels)
 check("plan labels use the canonical readable font and one-bar left clearance", "CompactPlanLabelFontSize = 10.0" in labels and
-    "CompactPlanLabelGapBars = 1" in labels and
+    "CompactPlanLabelGapBars = 1" in anchor and
+    "GetCompactPlanLabelAnchorBar(" in anchor and
     "HorizontalAlignment.Right" in labels)
-check("labels share exact normalized price without a second geometry owner", "NormalizePrice(price)" in labels and
+check("labels share exact normalized price and canonical text anchor", "NormalizePrice(price)" in labels and
     "GetPlanLineLeftBar" in anchor and
-    "return GetPlanLineLeftBar();" in anchor)
+    "canonicalLineLeftBar -" in anchor and
+    "return GetCompactPlanLabelAnchorBar(" in anchor)
 check("active plan does not create a second arrow lifecycle", "RenderStackedSignalArrows(" not in plan and 'P + "ARROW"' not in plan)
 check("legacy active arrow is cleaned", 'P + "ARROW"' in arrows and 'P + "ARROW"' in clearer)
 check("directional arrows are explicit UpArrow/DownArrow", "ChartIconType.UpArrow" in arrows and "ChartIconType.DownArrow" in arrows)

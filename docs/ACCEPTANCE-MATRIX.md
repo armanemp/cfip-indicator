@@ -257,7 +257,7 @@ separate implementation owners.
 | AUTO ORDERS quick control uses a direct operator click action | PASS | Required |
 | Programmatic toggle synchronization cannot execute operator actions | PASS | Required |
 | Setup preview renders Entry/Trigger/SL/TP compact labels | PASS | Required |
-| Compact level label is a filled line-colored box, white, exact-price aligned and attached to the line endpoint | PASS | Required |
+| Compact level label uses exact line color, exact-price alignment and a one-bar left-of-line text gap | PASS | Required |
 | Structural trailing cannot chase raw market price through final distance clamping | PASS | Required |
 | Structural trailing progression is closed-M5 gated | PASS | Required |
 | No new public parameter introduced | PASS | Required |
@@ -291,7 +291,7 @@ Manual cTrader validation remains required for actual button interaction, observ
 | Plan lines terminate at the latest chart candle | PASS | Required |
 | Plan-line geometry is independent of M5 event-time mapping | PASS | Required |
 | Pending level rendering has no disposable M5 anchor dependency | PASS | Required |
-| Label placement reuses the canonical line left edge | PASS | Required |
+| Label placement uses the canonical one-bar-before-line anchor | PASS | Required |
 | AUTO TRADE is a non-interactive switch-style status indicator | PASS | Required |
 | AUTO ORDERS is a non-interactive switch-style status indicator | PASS | Required |
 | Execution status is synchronized from EnableAutoTrading / EnableAutomaticOrders | PASS | Required |
@@ -419,7 +419,7 @@ CI evidence on head `41a578ba72fec2219447ddc1ceff12b96ee353e7`: Runtime PASS; Bu
 | Live target progression yields while server ladder is active | Source | Required |
 | Protection sync does not overwrite a server-owned TP ladder | Source | Required |
 | Pending fills adopt the confirmed server TP ladder | Source | Required |
-| Level-label renderer uses white text | Source | Required |
+| Level-label renderer uses the exact canonical line color | Source | Required |
 | Level-label renderer/coordinator does not create text-background rectangles | Source | Required |
 | 535-parameter production contract remains unchanged | Source gate | Required |
 | No second decision/execution authority introduced | Source / architecture | Required |

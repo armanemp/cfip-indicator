@@ -82,8 +82,7 @@ namespace cAlgo
                             normalized,
                             right,
                             normalized,
-                            Color.FromArgb(
-                                PlanLinePresentationRule.SignalLineAlpha,
+                            ResolveCanonicalPlanLineColor(
                                 color),
                             thickness,
                             lineStyle);
@@ -101,8 +100,7 @@ namespace cAlgo
                 line.Y2 =
                     normalized;
                 line.Color =
-                    Color.FromArgb(
-                        PlanLinePresentationRule.SignalLineAlpha,
+                    ResolveCanonicalPlanLineColor(
                         color);
                 line.Thickness =
                     thickness;
@@ -120,6 +118,16 @@ namespace cAlgo
                     name,
                     ex.Message);
             }
+        }
+
+        private Color ResolveCanonicalPlanLineColor(
+            Color semanticColor)
+        {
+            // The line renderer is the single owner of chart-level color
+            // materialization. Labels consume this exact same result.
+            return Color.FromArgb(
+                PlanLinePresentationRule.SignalLineAlpha,
+                semanticColor);
         }
 
         private int GetPlanLineRightBar()

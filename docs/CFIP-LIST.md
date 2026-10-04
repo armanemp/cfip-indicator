@@ -416,6 +416,19 @@ For an actively repaired file:
 → performance audits
 → benchmark/replay tools
 
+## Current visual work scope — Signal-line labels
+
+Canonical owners and acceptance:
+- PlanLineRenderer.cs: sole signal-line geometry and materialized line-color owner.
+- PlanLabelAnchorCalculator.cs: sole one-bar horizontal-gap owner.
+- PlanLabelRenderer.cs: sole native ChartText label owner.
+- Pending, parallel and prediction labels reuse the same label renderer/anchor contract.
+- Label text is exact-price, regular-weight, no background/rectangle, and uses the exact corresponding line color.
+- The visible end of right-aligned label text is exactly one chart bar before the canonical line start.
+- Color.White is forbidden for canonical signal/plan line labels.
+- Source/Architecture, Runtime UI, accumulated and single-owner guards enforce the contract.
+- Target-terminal G7 visual acceptance remains required.
+
 # 14. Historical artifacts
 
 Old M0–M45, CR/CI numbering, former cBot sequencing, hotfix sequencing and superseded visual contracts are evidence/archive only. They do not define current work order.

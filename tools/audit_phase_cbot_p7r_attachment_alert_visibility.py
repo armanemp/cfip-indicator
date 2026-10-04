@@ -136,16 +136,18 @@ require(
 )
 
 require(
-    "GetReadableLabelTextColor(" in label_renderer and
-    "return Color.White;" in label_renderer,
-    "compact level labels must use the canonical semantic line-color contract",
+    "ResolveCanonicalPlanLineColor(" in plan_lines and
+    "ResolveCanonicalPlanLineColor(" in label_renderer and
+    "semanticColor" in label_renderer,
+    "compact level labels must use the exact canonical semantic line color",
 )
 require(
     "CompactPlanLabelFontSize = 10.0" in label_renderer and
     "label.IsBold" in label_renderer and
     "Chart.DrawText(" in label_renderer and
     "Chart.DrawRectangle(" not in label_renderer and
-    "CompactPlanLabelGapBars = 1" in label_renderer and
+    "CompactPlanLabelGapBars = 1" in read("src/CFIP.Indicator/UI/Chart/PlanLabelAnchorCalculator.cs") and
+    "GetCompactPlanLabelAnchorBar(" in label_renderer and
     "HorizontalAlignment.Right" in label_renderer,
     "compact level labels must retain the canonical text-only presentation with one-bar left clearance",
 )
