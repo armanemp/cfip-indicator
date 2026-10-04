@@ -32,6 +32,16 @@ Production source must be version-neutral.
 
 Versioned/historical source identifiers may appear only in roadmap/workflow material when they are necessary to identify the behavioral baseline. They must not appear in production C#, configuration, broker comments, class names, file names, namespaces, labels, or runtime identities.
 
+## Permanent repository artifact hygiene rule
+
+Every implementation phase and every global checkpoint must inspect the entire tracked repository for unnecessary artifacts, not only source code and `docs/`.
+
+Every tracked file must be classified as **KEEP / MIGRATE / ARCHIVE / DELETE**. This applies to source, tests, tools, audits, configuration, documentation, logs, screenshots, generated files, and temporary/debug artifacts.
+
+A DELETE/ARCHIVE decision requires active consumer/dependency tracing plus project-inclusion, build, CI, audit, test, runtime, release, deployment, and continuity checks. Valid knowledge/dependencies must be migrated to the canonical owner before deletion.
+
+No artifact may remain solely because it is old, familiar, or referenced by another obsolete artifact. The final repository must contain no unexplained tracked artifact and no duplicate artifact representing the same behavior, authority, or contract.
+
 ## Modularity rule
 
 Every indicator, analyzer, detector, model, enum, execution policy, lifecycle handler and renderer gets one clear source-file owner.
