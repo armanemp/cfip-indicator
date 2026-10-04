@@ -29,18 +29,18 @@ check("plan labels use canonical line-owned color", "Chart.DrawText(" in labels 
 check("plan labels use the canonical readable font, one-bar left clearance and follow the moving line anchor",
     "CompactPlanLabelFontSize = 11.0" in labels and
     "CompactPlanLabelGapBars = 1" in anchor and
-    "GetCompactPlanLabelAnchorTime(" in anchor and
+    "GetCompactPlanLabelAnchorBar(" in anchor and
     "HorizontalAlignment.Right" in labels and
     "Chart.DrawText(" in labels and
     "expectedTime" in labels and
-    "Chart.BarIndexToX(" in labels and
+    "GetCompactPlanLabelAnchorBar(" in labels and
     "Chart.TimeToX(" in labels and
     "GetPlanLineLeftBar()" in labels and
     "gapPx=" in labels and
     "oneBarPx=" in labels)
 check("labels share exact normalized price and projected chart-space anchor", "NormalizePrice(price)" in labels and
     "GetPlanLineLeftBar" in anchor and
-    "Chart.BarIndexToX(" in anchor and
+    "GetCompactPlanLabelAnchorBar(" in anchor and
     "double targetX =\n                lineX -" in anchor and
     "Chart.XToTime(" in anchor and
     "return Chart.XToTime(" in anchor)
