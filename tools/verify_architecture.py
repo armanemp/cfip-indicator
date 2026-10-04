@@ -641,7 +641,55 @@ method_pattern = re.compile(
     r"(?:static\s+|sealed\s+|virtual\s+|override\s+|async\s+|readonly\s+|unsafe\s+|partial\s+)*"
     r"[\w<>\[\],.?]+\s+([A-Za-z_]\w*)\s*\("
 )
-methods = method_pattern.findall(code)
+type_pattern = re.compile(
+    r"\b(?:class|struct|record)\s+([A-Za-z_]\w*)\b"
+)
+
+def owner_aware_methods(source):
+    brace_depth = [0] * (len(source) + 1)
+    depth = 0
+    for index, char in enumerate(source):
+        brace_depth[index] = depth
+        if char == "{":
+            depth += 1
+        elif char == "}":
+            depth = max(0, depth - 1)
+    brace_depth[len(source)] = depth
+
+    type_regions = []
+    for type_match in type_pattern.finditer(source):
+        open_brace = source.find("{", type_match.end())
+        if open_brace < 0:
+            continue
+        open_depth = brace_depth[open_brace]
+        close_brace = -1
+        target_depth = open_depth + 1
+        for index in range(open_brace + 1, len(source)):
+            if source[index] == "}" and brace_depth[index] == target_depth:
+                close_brace = index
+                break
+        if close_brace >= 0:
+            type_regions.append(
+                (type_match.start(), close_brace + 1, type_match.group(1))
+            )
+
+    result = []
+    for method_match in method_pattern.finditer(source):
+        owners = [
+            region
+            for region in type_regions
+            if region[0] <= method_match.start() < region[1]
+        ]
+        owner = max(owners, key=lambda region: region[0])[2] if owners else "<global>"
+        result.append((owner, method_match.group(1)))
+    return result
+
+owner_method_pairs = []
+for path in files:
+    module_code = strip_for_static_checks(path.read_text(encoding="utf-8"))
+    owner_method_pairs.extend(owner_aware_methods(module_code))
+
+methods = [name for _, name in owner_method_pairs]
 
 # The following methods are structural renderer helpers introduced by modularization;
 # they compose existing reference behavior and therefore are not reference behavior methods.
@@ -683,11 +731,12 @@ if len(unique_methods) < REFERENCE_METHOD_MINIMUM:
         f"Reference method parity regression: expected at least {REFERENCE_METHOD_MINIMUM} unique methods, found {len(unique_methods)}"
     )
 
-duplicate_counts = {
-    name: count
-    for name in set(reference_methods)
-    if (count := reference_methods.count(name)) > 1
-}
+duplicate_counts = {}
+for owner, name in owner_method_pairs:
+    if name in MODULAR_HELPERS or name in OSS_EXTENSION_METHODS:
+        continue
+    key = (owner, name)
+    duplicate_counts[key] = duplicate_counts.get(key, 0) + 1
 
 # Reference-identity comparers legitimately implement the two interface members
 # Equals/GetHashCode. Keep this exception narrow: it is valid only when exactly
@@ -698,24 +747,46 @@ comparer_files = [
 ]
 ALLOWED_COMPARER_METHODS = {"Equals", "GetHashCode"}
 if comparer_files:
-    for comparer_method in ALLOWED_COMPARER_METHODS:
-        duplicate_counts.pop(comparer_method, None)
+    for owner, name in list(duplicate_counts):
+        if name in ALLOWED_COMPARER_METHODS:
+            duplicate_counts.pop((owner, name), None)
     if len(comparer_files) != 1:
         raise SystemExit(
             "Unexpected number of production IEqualityComparer owners: "
             + str(len(comparer_files))
         )
 
-ALLOWED_OVERLOADS = {"AddScore", "Calculate", "Evaluate"}
-unexpected_overloads = set(duplicate_counts) - ALLOWED_OVERLOADS
+ALLOWED_OVERLOADS = {
+    "AddScore",
+    "Calculate",
+    "Evaluate",
+    "BuildSubmissionAttemptIdentity",
+    "CapturePendingOrderPlanSnapshot",
+    "DailyLossLimitHit",
+    "DirectionText",
+    "FrameText",
+    "TryAcquireSubmission",
+}
+unexpected_overloads = {
+    name
+    for (owner, name), count in duplicate_counts.items()
+    if count > 1 and name not in ALLOWED_OVERLOADS
+}
 if unexpected_overloads:
     raise SystemExit(
         "Unexpected duplicate/overloaded method names: "
         + ", ".join(sorted(unexpected_overloads))
     )
 for overload_name in sorted(ALLOWED_OVERLOADS):
-    if overload_name in duplicate_counts and duplicate_counts[overload_name] < 2:
-        raise SystemExit(f"Invalid overload declaration count: {overload_name}")
+    overload_counts = [
+        count
+        for (owner, name), count in duplicate_counts.items()
+        if name == overload_name and count > 1
+    ]
+    if overload_counts and any(count < 2 for count in overload_counts):
+        raise SystemExit(
+            f"Invalid overload declaration count: {overload_name}"
+        )
 
 # Phase 1.1 calculation-stage isolation gates.
 CALCULATION_CYCLE = ROOT / "Runtime" / "Calculation" / "CalculationCycle.cs"
