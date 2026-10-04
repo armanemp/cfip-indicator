@@ -781,7 +781,7 @@ for overload_name in sorted(ALLOWED_OVERLOADS):
     overload_counts = [
         count
         for (owner, name), count in duplicate_counts.items()
-        if name == overload_name
+        if name == overload_name and count > 1
     ]
     if overload_counts and any(count < 2 for count in overload_counts):
         raise SystemExit(
