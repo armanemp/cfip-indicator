@@ -3970,3 +3970,5 @@ The older wording that described M15 as the execution analysis clock is supersed
 - No trading behavior, MTF contract, M2 surface or broker authority changed.
 - Verification: branch CI pending; no local cTrader terminal claim made.
 
+
+- F1 baseline cleanup removed three dead display parameters (`LabelLeftOffsetBars`, `ShowEarlyArrow`, `ShowEarlyWatch`) after tracing all consumers; obsolete audit references were synchronized to the current canonical owners instead of restoring dead UI paths.
