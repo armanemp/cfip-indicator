@@ -161,16 +161,17 @@ if "CreatePanelAlertMessageRail(" not in alert_rail or "ResolvePanelAlertMessage
     raise SystemExit("Unified panel alert rail is incomplete")
 
 compact_label_renderer = labels_renderer[labels_renderer.find("private void DrawCompactPlanLabel("):]
-if "GetReadableLabelTextColor(" not in compact_label_renderer:
-    raise SystemExit("Plan labels must resolve a canonical semantic text color")
+if "ResolveCanonicalPlanLineColor(" not in line or "ResolveCanonicalPlanLineColor(" not in compact_label_renderer:
+    raise SystemExit("Plan labels must use the exact canonical signal-line color owner")
 if "Chart.DrawText(" not in compact_label_renderer:
     raise SystemExit("Plan label renderer must own the native ChartText")
 if "Chart.DrawRectangle(" in compact_label_renderer:
     raise SystemExit("Plan label renderer must remain background-free")
-if "GetReadableLabelTextColor(" not in compact_label_renderer or "return Color.White;" not in compact_label_renderer:
-    raise SystemExit("Plan label renderer must use the canonical white text resolver")
-if "CompactPlanLabelGapBars = 1" not in labels_renderer:
-    raise SystemExit("Plan labels must keep exactly one chart-bar left clearance")
+if "semanticColor" not in compact_label_renderer or "label.Color =" not in compact_label_renderer:
+    raise SystemExit("Plan label renderer must apply the exact semantic line color")
+anchor = read("UI/Chart/PlanLabelAnchorCalculator.cs")
+if "CompactPlanLabelGapBars = 1" not in anchor or "canonicalLineLeftBar -" not in anchor:
+    raise SystemExit("Plan labels must keep exactly one chart-bar left clearance in the canonical anchor owner")
 if "HorizontalAlignment.Right" not in compact_label_renderer:
     raise SystemExit("Plan labels must terminate at the left-of-line anchor")
 if "CompactPlanLabelFontSize = 10.0" not in labels_renderer:
