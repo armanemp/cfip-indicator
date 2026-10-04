@@ -38,7 +38,7 @@ submission = read("src/CFIP.Indicator/Trading/Execution/SubmissionGateCoordinato
 planning_project = read("tools/CFIP.Planning.Contracts/CFIP.Planning.Contracts.csproj")
 planning_contracts = read("tools/CFIP.Planning.Contracts/Program.cs")
 workflow = read(".github/workflows/source-check.yml")
-roadmap = read("docs/ROADMAP.md")
+roadmap = read("docs/CFIP-ROADMAP.md")
 continuation = read("docs/CONTINUATION-STATE.md")
 phase_doc = read("docs/PHASE-CI-15-EXECUTION-GEOMETRY-BROKER-BOUNDARY.md")
 
