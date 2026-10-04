@@ -35,7 +35,7 @@ prep = read("src/CFIP.Indicator/Runtime/Calculation/CalculationPreparation.cs")
 closed_stage = read("src/CFIP.Indicator/Runtime/Calculation/CalculationClosedBar.cs")
 stage = read("src/CFIP.Indicator/Runtime/Calculation/CalculationStageIsolation.cs")
 workflow = read(".github/workflows/source-check.yml")
-roadmap = read("docs/ROADMAP.md")
+roadmap = read("docs/CFIP-ROADMAP.md")
 continuation = read("docs/CONTINUATION-STATE.md")
 
 check(
