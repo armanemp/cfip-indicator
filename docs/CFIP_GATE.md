@@ -6,7 +6,7 @@
 > **STATUS: ACTIVE / CANONICAL**
 >
 > This is the single acceptance and defect register for CFIP.
-> A phase cannot be PASS because the code merely compiles. All applicable gates and evidence must be closed.
+> A phase/work package cannot be PASS because the code merely compiles. All applicable gates, scoped files and evidence must be closed.
 
 # 1. Gate hierarchy
 
@@ -960,3 +960,88 @@ These gates capture the intended CFIP behavior in addition to architectural inva
 - XGP-005 partial deployment/restart recovery is defined.
 - XGP-006 operator validation checklist exists.
 - XGP-007 release cannot silently pair incompatible contracts.
+
+
+# 40. Atomic work-package gate contract
+
+The canonical executable unit is the work package defined in \`docs/CFIP-LIST.md\`.
+
+For each work package, record:
+- package ID;
+- macro phase;
+- exact scoped paths;
+- files inspected;
+- lines/regions inspected where applicable;
+- canonical owner;
+- caller/consumer graph;
+- defect IDs;
+- gate IDs;
+- tests/audits;
+- build result;
+- runtime result;
+- terminal requirement;
+- performance/safety result;
+- closeout commit;
+- next package.
+
+A package is **PASS** only when its entire declared scope is closed.
+
+No partial package is carried silently into the next response.
+
+# 41. Atomic package gate mapping
+
+| Package range | Default gate focus |
+|---|---|
+| WP-00–05 | RB, SR, TP, OW, XGD, XGF, XGO |
+| WP-06–11 | CB, CT, BR, LC, SR |
+| WP-12–18 | RB, OW, TP, NM, AN |
+| WP-19–25 | TP, AN, EV, DC |
+| WP-26–29 | PL, CT, DC |
+| WP-30–35 | XGC, XGF, UI, TP, CB |
+| WP-36–44 | AL, LC, BR, PL, CT |
+| WP-45–50 | VS, UI, AL |
+| WP-51–56 | RB, SR, XGT, PF |
+| WP-57–64 | OW, TP, CT, VS, AL, CB, LC, OH |
+| WP-65–67 | PF, SR, XGT, QP |
+| WP-68–69 | SR, RB, OW, ALL |
+
+This is the minimum gate set. Cross-phase/global invariants still apply.
+
+# 42. Inventory synchronization gate
+
+- INV-001 current Git tree has been compared with CFIP-LIST.
+- INV-002 every added/deleted/moved file has a classification.
+- INV-003 every production file has an owner or an explicit ARCHIVE/DELETE decision.
+- INV-004 every critical production path has relevant gate IDs.
+- INV-005 no new production file is left UNSEEN.
+- INV-006 inventory source commit is recorded.
+- INV-007 CFIP-LIST and CFIP-ROADMAP identify the same current executable package.
+- INV-008 CFIP-GATE and CFIP-LIST have matching package completion state.
+
+# 43. Global line-audit gate
+
+For any material code file being changed or flagged:
+- LINE-001 all declarations inspected;
+- LINE-002 all relevant methods inspected;
+- LINE-003 all branches/fallbacks inspected;
+- LINE-004 all side effects inspected;
+- LINE-005 all caller/consumer links traced;
+- LINE-006 all applicable error/boundary paths inspected;
+- LINE-007 all changed lines have a reason;
+- LINE-008 suspicious retained lines are classified;
+- LINE-009 test/audit proof is mapped;
+- LINE-010 no second semantic owner is introduced.
+
+# 44. Current executable control state
+
+**Macro phase:** P0
+
+**Executable package:** WP-00 — NEXT
+
+**Roadmap:** \`docs/CFIP-ROADMAP.md\`
+
+**Inventory:** \`docs/CFIP-LIST.md\`
+
+**Gate:** \`docs/CFIP_GATE.md\`
+
+**Rule:** one complete atomic package per response.
