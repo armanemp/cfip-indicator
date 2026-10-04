@@ -278,6 +278,9 @@ namespace cAlgo
                     "IDENTITY CONFIGURATION";
             }
 
+            RefreshSharedAlertEventDedupState(
+                TimeInUtc);
+
             SetLifecycleState(
                 LifecycleState.Flat,
                 "READY");

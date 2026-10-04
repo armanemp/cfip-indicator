@@ -41,6 +41,12 @@ namespace cAlgo
                     RefreshEconomicNewsIfNeeded(
                         now);
 
+                // Cross-instance alert dedup state is timer-owned. It stays
+                // outside the calculation hot path while keeping MTF instances
+                // synchronized for the same causal event.
+                RefreshSharedAlertEventDedupState(
+                    now);
+
                 // Cross-instance DailyLoss storage reload is a timer concern.
                 // Calculate consumes the already-loaded value without disk I/O.
                 if (EnableDailyLossLimit)

@@ -79,6 +79,7 @@ namespace cAlgo
             VerifyRuntimeExplicitRearmSemantics();
             VerifyAlertDeliveryQueueSemantics();
             AlertDeliveryQueueContracts.Run();
+            AlertEventDedupCoordinatorContracts.Run();
             VerifyClosedBarRetryPolicy();
             VerifyUnifiedSubmissionGate();
             VerifyVisualAndExecutionControls();
