@@ -146,8 +146,7 @@ for chart_path in sorted((ROOT / "UI" / "Chart").glob("*.cs")):
             raise SystemExit(f"{chart_path.name}: forbidden non-solid line style {forbidden}")
 
 compact_label_renderer = labels[labels.find("private void DrawCompactPlanLabel("):]
-if "GetReadableLabelTextColor(" not in compact_label_renderer or
-        "return Color.White;" not in compact_label_renderer:
+if "GetReadableLabelTextColor(" not in compact_label_renderer or "return Color.White;" not in compact_label_renderer:
     raise SystemExit("level labels must use the canonical white text resolver")
 if "Chart.DrawText(" not in compact_label_renderer:
     raise SystemExit("level labels must own their native ChartText object")
