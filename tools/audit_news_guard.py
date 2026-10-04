@@ -39,7 +39,10 @@ required = {
     "src/CFIP.Indicator/Trading/Intelligence/EconomicNewsCalendarClient.cs":
         [
             "RefreshEconomicNewsIfNeeded",
-            "Http.GetAsync(",
+            "Http.SendAsync(",
+            "_economicNewsSharedRequestInFlight",
+            "EconomicNewsProviderMinimumRefreshMinutes",
+            "EconomicNewsUserAgent",
             "_economicNewsRequestInFlight",
             "_economicNewsRequestGeneration",
             "EconomicNewsRequestTimeoutSeconds",
