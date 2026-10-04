@@ -136,6 +136,10 @@ PASS requires exact semantic agreement. Any downstream drift is a blocker.
 | panel/chart responsiveness | screenshots + timestamps | PENDING |
 | signal/plan synchronization | runtime trace | PENDING |
 
+## Evidence guard
+
+`tools/audit_ci17_target_terminal_evidence.py` validates the manual evidence table itself: all 13 canonical scenarios must remain present and ordered, results may only be `PENDING` or `PASS`, and a `PASS` row must contain a non-placeholder evidence reference. This guard does **not** manufacture or infer terminal evidence; it only prevents an unsupported repository edit from turning a pending scenario into a false PASS.
+
 ## Boundary
 
 The repository can certify source/build/contract consistency, but it cannot manufacture evidence for a real terminal, broker server, network reconnect or chart renderer.
