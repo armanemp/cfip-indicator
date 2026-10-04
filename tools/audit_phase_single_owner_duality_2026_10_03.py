@@ -74,13 +74,13 @@ require(
     "Chart.DrawRectangle(" not in label and
     "Chart.DrawIcon(" not in label and
     "HorizontalAlignment.Right" in label and
-    "CompactPlanLabelGapBars = 1" in label and
     "CompactPlanLabelFontSize = 10.0" in label and
     'Chart.RemoveObject(name + "_BOX")' in label and
     'Chart.RemoveObject(name + "_ANCHOR")' in label and
     "ResolveCanonicalPlanLineColor(" in line and
     "ResolveCanonicalPlanLineColor(" in label and
-    "semanticColor" in label,
+    "semanticColor" in label and
+    "GetCompactPlanLabelAnchorBar(" in label,
     "canonical chart labels must be native ChartText, background-free and separated one bar left of the line",
 )
 
