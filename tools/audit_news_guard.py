@@ -59,8 +59,10 @@ required = {
     "src/CFIP.Indicator/Trading/Intelligence/EconomicNewsCalendarParser.cs":
         [
             "NormalizePayloadPrefix(",
+            "IsWeeklyEventsXmlPayload(",
             "StartsWith(",
             "NEWS FEED PAYLOAD FORMAT FAILURE",
+            "NEWS FEED XML PARSE FAILURE",
             "TryParseEconomicEventTime(",
         ],
     "src/CFIP.Indicator/Trading/Intelligence/EconomicNewsRiskEvaluator.cs":
