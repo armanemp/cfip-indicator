@@ -6,7 +6,7 @@ One assistant implementation response = one complete phase.
 
 When resuming in another chat:
 
-1. Read `docs/ROADMAP.md`.
+1. Read `docs/CFIP-ROADMAP.md`.
 2. Read `docs/ARCHITECTURE.md`.
 3. Read this workflow.
 4. Inspect the current GitHub main branch.
@@ -74,12 +74,12 @@ Phase 0.1 must keep release-critical documentation aligned with machine-enforced
 The repository itself is the continuity source for development history and next-step state.
 
 At the start of a new chat, read:
-- `docs/ROADMAP.md`;
+- `docs/CFIP-ROADMAP.md`;
 - `docs/ARCHITECTURE.md`;
 - `docs/WORKFLOW.md`;
 - `docs/DEVELOPMENT-LOG.md`.
 
-The first phase marked `next` in `docs/ROADMAP.md` is the only implementation phase to execute in that response.
+The first phase marked `NEXT` in `docs/CFIP-ROADMAP.md` is the only implementation phase to execute in that response, and its acceptance is governed by `docs/CFIP_GATE.md`.
 
 Record every completed phase in `docs/DEVELOPMENT-LOG.md`, including:
 - phase and status;
