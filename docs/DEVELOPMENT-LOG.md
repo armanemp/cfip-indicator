@@ -3993,3 +3993,26 @@ Root correction: downstream MTF/M1 consumers were using the opening timestamp of
 No strategy, threshold, RR, alert, rendering, broker execution or MTF role changed. M15 remains canonical decision/reference; M5 remains trigger/entry precision; M1 remains optional confirmation.
 
 Verification is pending on the exact branch head.
+
+
+## 2026-10-04 — WP-04 Historical Control-Plane Isolation
+
+Status: PASS — PR #284 merged to `main` as `2e98a4b4cd27dd8b083ee8aac1437cf1a3c6271e`.
+
+Completed:
+- migrated active tooling and continuity checks from the superseded roadmap to canonical `docs/CFIP-ROADMAP.md`;
+- isolated the historical roadmap at `docs/archive/ROADMAP-LEGACY-2026-10-04.md` and kept historical checks pointed at that archive;
+- verified the canonical control-plane boundary and repository-integrity continuity;
+- hardened two continuity audits so they validate the correct documentation owner rather than requiring brittle wording in the macro roadmap;
+- recorded the permanent green-and-merge completion rule in `docs/WORKFLOW.md`: no package is declared complete until required CI is green, the verified change is merged to `main`, and merged `main` is re-verified.
+
+Verification on implementation head `3853f3d9708a7b378e8f61edeefb800a52898ee6`:
+- Source/Architecture #4365: PASS;
+- Runtime Acceptance #4174: PASS;
+- cTrader Compile #4358: PASS.
+
+No production trading/runtime logic, strategy threshold, broker authority or MTF contract changed.
+
+Next package: **WP-05 — Preflight**.
+
+Operator action after the merged closeout: pull canonical `main`; local execution commands remain limited to the project's pull/compile handoff when applicable.

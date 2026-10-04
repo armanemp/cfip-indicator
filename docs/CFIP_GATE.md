@@ -11,8 +11,8 @@
 # Current execution state
 
 **Macro phase:** P2 — Ownership / Single-Source / Dead-Code Closure  
-**Atomic package:** WP-04 — Historical isolation  
-**Status:** IN PROGRESS
+**Atomic package:** WP-05 — Preflight  
+**Status:** NEXT
 
 # 1. Gate hierarchy
 
@@ -90,7 +90,7 @@ One row per distinct root cause; do not duplicate rows for symptoms of the same 
 | ID | Domain | Severity | Owner | Symptom | Root cause | Status | Phase | Evidence | Regression guard |
 |---|---|---|---|---|---|---|---|---|---|
 | DEF-P0-001 | Repository inventory | P1 | CFIP-LIST.md | Canonical inventory lagged actual tree by four files | Inventory snapshot predates the current canonical prompt/control-plane additions and `.vscode/extensions.json` indexing | VERIFIED | P0/WP-00 | Git tree `207e43b7...`: 1131 files; CFIP-LIST enumerated 1127; reconciled in WP-00 closeout | CFIP-LIST exact-tree comparison |
-| DEF-P0-002 | Documentation governance | P1 | WP-04 | Active tooling depended on superseded `docs/ROADMAP.md` | Historical audit tooling and documentation used the superseded roadmap as an active dependency; 43 audit files were migrated to `docs/CFIP-ROADMAP.md`, active documentation references were migrated, and the superseded roadmap was moved to `docs/archive/ROADMAP-LEGACY-2026-10-04.md` | IN_PROGRESS | WP-04 | Migration branch; final CI pending | Global legacy-reference scan + post-archive CI/build verification |
+| DEF-P0-002 | Documentation governance | P1 | WP-04 | Active tooling depended on superseded `docs/ROADMAP.md` | Historical audit tooling and documentation used the superseded roadmap as an active dependency; active references were migrated to the canonical control plane and the superseded roadmap was isolated under `docs/archive/ROADMAP-LEGACY-2026-10-04.md` | VERIFIED | WP-04 | PR #284 merged as `2e98a4b4cd27dd8b083ee8aac1437cf1a3c6271e`; Source/Architecture #4365, Runtime #4174, cTrader Compile #4358 all PASS | Global legacy-reference scan + canonical control-plane CI |
 
 Severity:
 - P0 safety/architecture/data-integrity;
@@ -1193,7 +1193,7 @@ For any material code file being changed or flagged:
 
 **Macro phase:** P3
 
-**Executable package:** WP-04 — NEXT
+**Executable package:** WP-05 — NEXT
 
 **Roadmap:** \`docs/CFIP-ROADMAP.md\`
 
@@ -1247,7 +1247,17 @@ Canonical planning, inventory and acceptance authority was normalized across ROA
 
 **Residual risk:** `DEF-P0-002` remains OPEN and is the explicit WP-04 migration target. No blind deletion of legacy documents was performed.
 
-**Current package:** WP-04 — Legacy control-plane migration and stale-document isolation — IN PROGRESS.
+**Current package:** WP-05 — Preflight — NEXT.
 
 ## Permanent acceptance requirement — Local command handoff
 If a gate requires user-local execution, the gate record must contain the exact command, environment, execution point, expected success signal, and required returned output. A green GitHub workflow does not close a local verification requirement.
+
+### WP-04 closeout — Historical control-plane isolation — 2026-10-04
+
+**Status:** PASS
+
+**Evidence:** PR #284 merged to `main` as `2e98a4b4cd27dd8b083ee8aac1437cf1a3c6271e`. Exact implementation head `3853f3d9708a7b378e8f61edeefb800a52898ee6` passed Source/Architecture #4365, Runtime Acceptance #4174 and cTrader Compile #4358. DEF-P0-002 is VERIFIED. The active roadmap authority is now isolated to `docs/CFIP-ROADMAP.md`, with historical continuity preserved in the archive boundary.
+
+**Target-terminal requirement:** None for WP-04; this package is repository/control-plane scope.
+
+**Next:** WP-05 — Preflight.
