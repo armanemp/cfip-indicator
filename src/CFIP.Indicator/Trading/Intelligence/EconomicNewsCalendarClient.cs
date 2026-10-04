@@ -363,11 +363,24 @@ namespace cAlgo
                     throw new InvalidOperationException(
                         transportError);
 
-                if (response == null ||
-                    !response.IsSuccessful)
+                if (response == null)
                 {
                     throw new InvalidOperationException(
-                        "NEWS FEED HTTP FAILURE");
+                        "NEWS FEED HTTP FAILURE | response=null");
+                }
+
+                if (!response.IsSuccessful)
+                {
+                    string httpException =
+                        response.Exception == null
+                            ? ""
+                            : response.Exception.Message ?? "";
+
+                    throw new InvalidOperationException(
+                        "NEWS FEED HTTP FAILURE | status=" +
+                        response.StatusCode +
+                        " | exception=" +
+                        httpException);
                 }
 
                 string xml =
