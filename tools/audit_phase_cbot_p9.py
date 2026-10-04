@@ -130,9 +130,9 @@ check(
     "ResolveCanonicalPlanLineColor(" in line and
     "ResolveCanonicalPlanLineColor(" in labels and
     "semanticColor" in labels and
-    "GetCompactPlanLabelAnchorTime(" in labels and
-    "Chart.BarIndexToX(" in read(IND, "UI/Chart/PlanLabelAnchorCalculator.cs") and
-    "Chart.XToTime(" in read(IND, "UI/Chart/PlanLabelAnchorCalculator.cs")
+    "GetCompactPlanLabelAnchorBar(" in labels and
+    "GetCompactPlanLabelAnchorBar(" in read(IND, "UI/Chart/PlanLabelAnchorCalculator.cs") and
+    "GetCompactPlanLabelAnchorBar(" in read(IND, "UI/Chart/PlanLabelAnchorCalculator.cs")
 )
 check(
     "prediction signal line remains thickness one",
