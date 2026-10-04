@@ -862,7 +862,7 @@ Important residual boundaries:
 - mixed Indicator/cBot ownership until M29+;
 - large-method decomposition and broader constant/parameter ownership audit.
 
-Next phase: **M2 — Repository Hygiene / Dead Code / Ownership**.
+Historical next-phase snapshot: **M2 — Repository Hygiene / Dead Code / Ownership**. This old phase label is retained only as historical evidence; M2 is forbidden as a production timeframe, and current execution order is governed exclusively by the three canonical control-plane files.
 
 # CFIP — Cross-Chat Continuation State
 
