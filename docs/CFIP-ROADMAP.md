@@ -112,6 +112,30 @@ Automatic entry is fail-closed. Recoverable faults may reduce availability but c
 
 Correctness precedes optimization. Optimize only measured hot paths and prove semantic equivalence before/after.
 
+## 2.11 Repository hygiene law
+
+The repository itself is production infrastructure and must remain minimal, intentional and dependency-closed.
+
+During the forensic review, every tracked artifact must be classified as:
+**ACTIVE / REFERENCE / ARCHIVE / DELETE-CANDIDATE**.
+
+Identify and remove, when proven unused:
+- orphan source files;
+- dead or unreachable tooling/audits;
+- obsolete tests/contracts;
+- accidentally tracked generated/build artifacts;
+- temporary/debug files;
+- duplicate configuration;
+- superseded scripts;
+- stale screenshots/logs/reports;
+- redundant documentation;
+- abandoned compatibility shims;
+- empty or meaningless artifacts.
+
+A file is not kept merely because it is historical, familiar, or referenced by another obsolete artifact. Trace dependencies to actual active consumers. Migrate valid knowledge or active dependencies to the canonical owner before deletion. Deletion is allowed only after proving no active build, CI, audit, runtime, test, release, deployment, or continuity path depends on the artifact.
+
+The final repository must have **zero unexplained tracked files** and **zero duplicate artifacts** representing the same behavior, authority, or contract.
+
 # 3. Canonical terminology
 
 | Term | Meaning |
@@ -183,13 +207,13 @@ Exit: reproducible baseline and filled P0 section in \`CFIP_GATE.md\`.
 ## P1 — Repository / Build / Dependency Integrity
 **Status: NEXT**
 
-Audit solution/projects, ProjectReference/PackageReference, target frameworks, source inclusion, generated artifacts, orphan files, Debug/Release parity, CI drift, warnings, assembly/algo names, dependency provenance and reproducible Release.
+Audit solution/projects, ProjectReference/PackageReference, target frameworks, source inclusion, generated/temporary artifacts, orphan/dead files, duplicate configuration, Debug/Release parity, CI drift, warnings, assembly/algo names, dependency provenance and reproducible Release. Every repository artifact must also be classified for KEEP / MIGRATE / ARCHIVE / DELETE; active dependencies must be migrated before deletion.
 
 Exit: build graph is intentional and clean.
 
 ## P2 — Ownership / Single-Source / Dead-Code Closure
 
-Audit calculation, state, decision, actionability, trigger, plan, risk, scenario, contract, visual, label, arrow, alert, sound, execution, broker mutation, lifecycle, persistence and history ownership.
+Audit calculation, state, decision, actionability, trigger, plan, risk, scenario, contract, visual, label, arrow, alert, sound, execution, broker mutation, lifecycle, persistence and history ownership, together with dead production source, duplicate tools, obsolete tests, superseded scripts and redundant documentation.
 
 Exit: one semantic owner per critical concept; competing/dead paths removed.
 
@@ -307,6 +331,12 @@ Audit secrets, access rights, local paths, config, parameter compatibility, depe
 
 Exit: no unsafe environment assumption or undocumented dependency.
 
+## Repository-wide cleanup requirement
+
+P22 performs the final zero-unclassified-artifact sweep across the entire repository, not only `docs/`. Remove every proven-unused source, test, tool, audit, configuration, generated artifact, temporary file, stale report, redundant document, and compatibility shim. Preserve valid evidence only in a clearly marked archive/reference boundary.
+
+No tracked file may remain without a justified status, owner/category, and dependency decision.
+
 ## P22 — Final Repository Cleanup / Certification
 
 Remove or clearly archive legacy roadmap references, dead docs/anchors, stale names, generated artifacts, contradictory contracts and temporary workarounds.
@@ -332,6 +362,7 @@ Prepare a future cloud analysis brain only after local certification. Contracts 
 # 7. Mandatory audit on every phase
 
 Every phase also checks:
+- repository artifact hygiene: new/deleted/moved files, orphan/dead/generated/temporary artifacts, stale docs, duplicate tools/configuration, unreferenced tests, and cleanup deltas;
 - ownership/duplication;
 - BUY/SELL symmetry;
 - current/future semantics;
