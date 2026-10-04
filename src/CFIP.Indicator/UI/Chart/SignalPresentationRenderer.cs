@@ -5,6 +5,38 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
+        private bool ShouldRenderCanonicalMtfTrendArrows(
+            SignalVisualSnapshot snapshot)
+        {
+            if (snapshot == null ||
+                !ShowSignalArrow)
+                return false;
+
+            bool tradeStateOwnsArrows =
+                snapshot.PlanActive ||
+                snapshot.ActionableNow ||
+                snapshot.DecisionEntryAllowed;
+
+            if (tradeStateOwnsArrows)
+                return true;
+
+            if (!ShowEarlyWatch)
+                return false;
+
+            // Early arrows are intentionally subordinate to the confirmed
+            // trade-state visuals. ShowEarlyArrow controls only the weak/early
+            // MTF tier; stronger MTF states remain visible when ShowSignalArrow
+            // is enabled.
+            bool weakOrEarly =
+                string.Equals(
+                    snapshot.MtfTrendStrengthTier,
+                    "WEAK",
+                    StringComparison.OrdinalIgnoreCase) ||
+                snapshot.MtfTrendStrengthLevel <= 3;
+
+            return !weakOrEarly || ShowEarlyArrow;
+        }
+
         private void RenderNonActionableWatchState(
             SignalVisualSnapshot snapshot,
             int visualDirection,
