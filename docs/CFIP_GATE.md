@@ -12,7 +12,7 @@
 
 **Macro phase:** P2 — Ownership / Single-Source / Dead-Code Closure  
 **Atomic package:** WP-05 — Preflight  
-**Status:** NEXT
+**Status:** PASS + TERMINAL PENDING
 
 # 1. Gate hierarchy
 
