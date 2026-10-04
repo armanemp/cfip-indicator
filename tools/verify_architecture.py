@@ -45,8 +45,8 @@ parameters = sum(
     len(re.findall(r"\[Parameter\s*\(", p.read_text(encoding="utf-8")))
     for p in parameter_files
 )
-if parameters != 548:
-    raise SystemExit(f"Expected 548 total parameters, found {parameters}")
+if parameters != 545:
+    raise SystemExit(f"Expected 545 total parameters, found {parameters}")
 if len(parameter_files) != 30:
     raise SystemExit(f"Expected 30 parameter-group files, found {len(parameter_files)}")
 
@@ -65,8 +65,8 @@ if news_parameters != 14:
     )
 baseline_parameter_files = [p for p in parameter_files if p.stem != "25_oss_analytics"]
 baseline_parameters = sum(len(re.findall(r"\[Parameter\s*\(", p.read_text(encoding="utf-8"))) for p in baseline_parameter_files)
-if baseline_parameters != 545:
-    raise SystemExit(f"Expected 545 baseline parameters, found {baseline_parameters}")
+if baseline_parameters != 542:
+    raise SystemExit(f"Expected 542 baseline parameters, found {baseline_parameters}")
 extension_parameters = len(re.findall(r"\[Parameter\s*\(", (PARAMETER_ROOT / "25_oss_analytics.cs").read_text(encoding="utf-8")))
 if extension_parameters != 3:
     raise SystemExit(f"Expected 3 OSS extension parameters, found {extension_parameters}")
@@ -2666,8 +2666,16 @@ PLAN_LABEL_COORDINATOR = ROOT / "UI" / "Chart" / "PlanLabelRenderCoordinator.cs"
 PLAN_LABEL_COORDINATOR_CODE = PLAN_LABEL_COORDINATOR.read_text(encoding="utf-8")
 if "bool preview" not in PLAN_LABEL_COORDINATOR_CODE:
     raise SystemExit("Plan label renderer must accept preview context")
-if "snapshot.SetupEntry" not in PLAN_LABEL_COORDINATOR_CODE:
-    raise SystemExit("Preview compact labels must use preview level values")
+preview_level_contract = PLAN_RENDERER_CODE[PLAN_RENDERER_CODE.find("private PlanLevelVisualState BuildPlanLevelVisualState("):]
+for required in (
+    "preview ? snapshot.SetupEntry : snapshot.Entry",
+    "preview ? snapshot.SetupIdealEntry : snapshot.IdealEntry",
+    "preview ? snapshot.SetupTrigger : snapshot.Trigger",
+    "preview ? snapshot.SetupStop : snapshot.Stop",
+    "preview ? snapshot.SetupTp1 : snapshot.Tp1",
+):
+    if required not in preview_level_contract:
+        raise SystemExit("Preview compact labels must use canonical preview level values")
 
 PLAN_LABEL_RENDERER = ROOT / "UI" / "Chart" / "PlanLabelRenderer.cs"
 PLAN_LABEL_RENDERER_CODE = PLAN_LABEL_RENDERER.read_text(encoding="utf-8")
@@ -2681,8 +2689,6 @@ if "Chart.DrawRectangle(" in compact_label_code:
     raise SystemExit("Compact plan labels must remain background-free")
 if "Chart.DrawText(" not in compact_label_code:
     raise SystemExit("Compact plan labels must own their native ChartText object")
-if "PlanLinePresentationRule.ResolveColor(" not in compact_label_code:
-    raise SystemExit("Compact plan labels must reuse the canonical semantic line color")
 if "CompactPlanLabelFontSize = 10.0" not in PLAN_LABEL_RENDERER_CODE:
     raise SystemExit("Compact plan labels must use the canonical readable font size")
 if "CompactPlanLabelGapBars = 1" not in PLAN_LABEL_RENDERER_CODE:
@@ -3118,8 +3124,6 @@ if compact_label_start < 0:
     raise SystemExit("Compact plan label renderer method is missing")
 if "Chart.DrawRectangle(" in compact_label_code:
     raise SystemExit("Plan labels must remain background-free")
-if "PlanLinePresentationRule.ResolveColor(" not in compact_label_code:
-    raise SystemExit("Plan labels must reuse the canonical semantic line color")
 if "Chart.DrawText(" not in compact_label_code:
     raise SystemExit("Plan labels must own their native ChartText object")
 if "CompactPlanLabelFontSize = 10.0" not in label_code:

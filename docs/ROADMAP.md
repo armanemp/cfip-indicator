@@ -3823,3 +3823,13 @@ Operator action after merge: `git pull --ff-only`.
 The canonical `PlanLabelRenderer` now anchors each label at the exact left edge of its line and offsets the label price by exactly 2 pips using `Symbol.PipSize`. This removes the previous one-bar approximation that could visually place text on top of the line. No rectangle, circle, duplicate renderer, signal logic, or execution logic was introduced.
 
 Verification: source/audit updated; local Release build and target cTrader visual acceptance remain required.
+## 2026-10-04 — F1 Repository / Build / Dependency Truth
+
+Status: **IMPLEMENTATION COMPLETE — CI verification pending on the F1 branch.**
+
+F1 root-corrects the Core/Runtime Contracts boundary: `PlanLinePresentationRule` is now platform-neutral and cTrader color materialization remains solely in `PlanLineRenderer`. Runtime.Contracts retains its deterministic thickness regression without linking platform-dependent source. A new repository/build/dependency audit validates project references, package/framework consistency, platform leakage, Runtime.Contracts links, CI build-matrix coverage and generated-source hygiene.
+
+Phase report: `docs/PHASE-F1-REPOSITORY-BUILD-DEPENDENCY-TRUTH-2026-10-04.md`.
+
+Operator action after merge: `git pull --ff-only`.
+

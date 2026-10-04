@@ -146,14 +146,13 @@ for chart_path in sorted((ROOT / "UI" / "Chart").glob("*.cs")):
             raise SystemExit(f"{chart_path.name}: forbidden non-solid line style {forbidden}")
 
 compact_label_renderer = labels[labels.find("private void DrawCompactPlanLabel("):]
-if "GetReadableLabelTextColor(" not in compact_label_renderer or
-        "return Color.White;" not in compact_label_renderer:
+if "GetReadableLabelTextColor(" not in compact_label_renderer or "return Color.White;" not in compact_label_renderer:
     raise SystemExit("level labels must use the canonical white text resolver")
 if "Chart.DrawText(" not in compact_label_renderer:
     raise SystemExit("level labels must own their native ChartText object")
 if "Chart.DrawRectangle(" in compact_label_renderer:
     raise SystemExit("level labels must remain background-free")
-if "CompactPlanLabelGapBars = 1" not in compact_label_renderer:
+if "CompactPlanLabelGapBars = 1" not in labels:
     raise SystemExit("level labels must keep exactly one chart-bar left clearance")
 if "HorizontalAlignment.Right" not in compact_label_renderer:
     raise SystemExit("level labels must use right-aligned text at the left-of-line anchor")
@@ -187,8 +186,6 @@ if "ResolvePanelAlertMessageColor(" not in read("UI/Panel/PanelAlertMessageRende
     raise SystemExit("panel alert semantic color owner is missing")
 if "GetReadableLabelTextColor(" not in labels:
     raise SystemExit("level label renderer must keep one canonical text-color resolver")
-if "PlanLinePresentationRule.ResolveColor(" not in labels:
-    raise SystemExit("level label renderer must reuse the canonical semantic line color")
 if "Chart.DrawRectangle(" in labels:
     raise SystemExit("level label renderer must remain background-free")
 if "CompactPlanLabelGapBars = 1" not in labels:
@@ -208,7 +205,7 @@ if "GetCanonicalSignalPanelStatus()" not in g4_overview_rows:
 parameter_source = "\n".join(
     p.read_text(encoding="utf-8") for p in PARAM_ROOT.glob("*.cs")
 )
-EXPECTED_CURRENT_PARAMETERS = 548
+EXPECTED_CURRENT_PARAMETERS = 545
 if len(re.findall(r"\[Parameter\s*\(", parameter_source)) != EXPECTED_CURRENT_PARAMETERS:
     raise SystemExit("public parameter contract changed unexpectedly")
 
@@ -218,6 +215,6 @@ print("Smart server TP + break-even ownership: PASS")
 print("Local TP/BE mutation yields to broker-owned advanced protection: PASS")
 print("All signal/plan level lines: Solid")
 print("Plan Level Line Thickness: canonical 1px mapping for all configured values")
-print("All compact level labels: white text inside canonical line-colored filled boxes")
+print("All compact level labels: white text with no background")
 print(f"Public parameter contract: {EXPECTED_CURRENT_PARAMETERS}")
 print("Signal lifecycle / recent calibration / broker telemetry: PASS")

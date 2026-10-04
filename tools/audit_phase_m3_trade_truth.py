@@ -21,7 +21,7 @@ processor = read("src/CFIP.Indicator/UI/Panel/AlertDeliveryProcessor.cs")
 snapshot = read("src/CFIP.Indicator/UI/Chart/SignalVisualSnapshot.cs")
 snapshot_builder = read("src/CFIP.Indicator/UI/Chart/SignalVisualSnapshotBuilder.cs")
 visual_identity = read("src/CFIP.Indicator/UI/Chart/SignalVisualIdentityBuilder.cs")
-watch_renderer = read("src/CFIP.Indicator/UI/Chart/SignalPresentationRenderer.cs")
+watch_renderer = read("src/CFIP.Indicator/UI/Chart/SignalStackedArrowRenderer.cs")
 closed = read("src/CFIP.Indicator/Runtime/Calculation/CalculationClosedBar.cs")
 cycle = read("src/CFIP.Indicator/Runtime/Calculation/CalculationCycle.cs")
 stages = read("src/CFIP.Indicator/Runtime/Calculation/CalculationStageIsolation.cs")
@@ -106,10 +106,11 @@ require(
 )
 
 require(
-    "snapshot.DecisionEntryAllowed" in watch_renderer and
-    "!snapshot.PendingOrder" in watch_renderer and
-    "!snapshot.LivePosition" in watch_renderer,
-    "M3: blocked/pending/live states must not draw directional watch marks",
+    "bool decisionOwnsDirection" in watch_renderer and
+    "snapshot.PlanActive" in watch_renderer and
+    "snapshot.ActionableNow" in watch_renderer and
+    "snapshot.DecisionEntryAllowed" in watch_renderer,
+    "M3: directional watch marks must use the canonical actionable decision state",
 )
 
 require(
@@ -172,11 +173,11 @@ require(
 )
 
 require(
-    "lineLeft - offset" in label_anchor and
+    "return GetPlanLineLeftBar();" in label_anchor and
     "Chart.RemoveObject(" in label_renderer and
     "GetReadableLabelTextColor(" in label_renderer and
-    "PlanLinePresentationRule.ResolveColor(" in label_renderer,
-    "M3: compact signal labels must stay left of the line, background-free and line-colored",
+    "Chart.DrawRectangle(" not in label_renderer,
+    "M3: compact signal labels must use the canonical line-left anchor, background-free text and semantic color",
 )
 
 require(

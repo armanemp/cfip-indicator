@@ -19,9 +19,6 @@ namespace cAlgo
         [Parameter("Show Context Event Marker", Group = "14 · DISPLAY — ADVANCED", DefaultValue = true)]
         public bool ShowContextEventMarker { get; set; }
 
-        [Parameter("Label Left Offset Bars", Group = "14 · DISPLAY — ADVANCED", DefaultValue = 3, MinValue = 3, MaxValue = 10)]
-        public int LabelLeftOffsetBars { get; set; }
-
         [Parameter("Show Prediction Objects", Group = "14 · DISPLAY — ADVANCED", DefaultValue = true)]
         public bool ShowPredictionObjects { get; set; }
 
@@ -30,9 +27,6 @@ namespace cAlgo
 
         [Parameter("Minimum Arrow Offset Pips", Group = "14 · DISPLAY — ADVANCED", DefaultValue = 2.0, MinValue = 0.5, MaxValue = 20)]
         public double MinimumArrowOffsetPips { get; set; }
-
-        [Parameter("Show Early Arrow", Group = "14 · DISPLAY — ADVANCED", DefaultValue = true)]
-        public bool ShowEarlyArrow { get; set; }
 
     }
 }

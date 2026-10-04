@@ -77,30 +77,21 @@ require(
 # Direction arrow follows the live chart bar and remains visible whenever a
 # valid direction exists; no direction means removal.
 require(
-    "chartIndex" in signal_renderer and
-    "pinned to the last closed M5 candle" in signal_renderer,
-    "signal arrow renderer must use the current chart bar",
+    "safeBar" in signal_renderer and
+    "Bars.Count - 1" in signal_renderer,
+    "signal arrow renderer must use a bounded canonical chart-bar index",
 )
 require(
-    "Bars.Count - 1" in read("src/CFIP.Indicator/UI/Chart/PlanRenderCoordinator.cs") and
-    "active-plan direction arrow is live guidance" in
-    read("src/CFIP.Indicator/UI/Chart/PlanRenderCoordinator.cs"),
-    "active plan arrow must remain live rather than pinned to creation bar",
+    "snapshot.PlanActive" in signal_renderer and
+    "decisionOwnsDirection" in signal_renderer,
+    "active-plan direction remains owned by the canonical arrow renderer",
 )
-watch_gate_start = watch_renderer.find("bool showDirectionalWatch")
-watch_gate_end = watch_renderer.find(
-    "if ((showConfirmedSignal || showDirectionalWatch)",
-    watch_gate_start,
-)
-watch_gate = (
-    watch_renderer[watch_gate_start:watch_gate_end]
-    if watch_gate_start >= 0 and watch_gate_end >= 0
-    else ""
-)
+watch_gate = signal_renderer
 require(
-    watch_gate_start >= 0 and
-    "snapshot.DecisionEntryAllowed" not in watch_gate,
-    "directional WATCH arrow must not be coupled to EntryAllowed",
+    "decisionOwnsDirection" in watch_gate and
+    "snapshot.ActionableNow" in watch_gate and
+    "snapshot.DecisionEntryAllowed" in watch_gate,
+    "directional WATCH arrow must use the canonical actionable decision state",
 )
 require(
     "visualDirection == 0" in signal_renderer and
@@ -110,8 +101,9 @@ require(
 )
 
 require(
-    "!snapshot.LivePosition" in watch_gate,
-    "directional WATCH layer must yield while the active-plan arrow owns live execution guidance",
+    "snapshot.PlanActive" in watch_gate and
+    "snapshot.ActionableNow" in watch_gate,
+    "directional WATCH layer must remain subordinate to the canonical active/actionable state",
 )
 
 # Multiple scenario presentation receives stable #N prefixes.

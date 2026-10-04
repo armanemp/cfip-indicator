@@ -67,10 +67,8 @@ if "MapM5ToChart(" in line or "anchorM5" in line:
     raise SystemExit("Plan-line geometry must not be tied to an M5 event-time anchor")
 if "MapM5ToChart(" in pending or "anchorBar" in pending:
     raise SystemExit("Pending level rendering must not discard levels because an M5 anchor cannot be mapped")
-if "GetPlanLineLeftBar(" not in labels:
-    raise SystemExit("Plan labels must reuse the canonical plan-line left edge")
-if "GetCompactPlanLineLeftBar(" in labels:
-    raise SystemExit("Legacy compact-line anchor helper must not remain")
+if "GetCompactPlanLabelAnchorBar(" not in labels:
+    raise SystemExit("Plan labels must use the canonical compact-label anchor owner")
 
 for field in (
     "private ToggleButton _autoTradingQuickToggle;",
@@ -169,10 +167,9 @@ if "Chart.DrawText(" not in compact_label_renderer:
     raise SystemExit("Plan label renderer must own the native ChartText")
 if "Chart.DrawRectangle(" in compact_label_renderer:
     raise SystemExit("Plan label renderer must remain background-free")
-if "GetReadableLabelTextColor(" not in compact_label_renderer or
-        "return Color.White;" not in compact_label_renderer:
+if "GetReadableLabelTextColor(" not in compact_label_renderer or "return Color.White;" not in compact_label_renderer:
     raise SystemExit("Plan label renderer must use the canonical white text resolver")
-if "CompactPlanLabelGapBars = 1" not in compact_label_renderer:
+if "CompactPlanLabelGapBars = 1" not in labels_renderer:
     raise SystemExit("Plan labels must keep exactly one chart-bar left clearance")
 if "HorizontalAlignment.Right" not in compact_label_renderer:
     raise SystemExit("Plan labels must terminate at the left-of-line anchor")

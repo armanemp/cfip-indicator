@@ -3959,3 +3959,16 @@ Implementation:
 - the final trade geometry remains constrained by direction, structural validity, spread, risk, RR, target obstacles, target spacing, actionability and broker preflight.
 
 The older wording that described M15 as the execution analysis clock is superseded by this multi-timeframe contract. M15 remains the canonical signal/reference identity where traceability/history contracts require it, but the analysis itself is simultaneous across the complete aligned timeframe set.
+## F1 — Repository / Build / Dependency Truth — 2026-10-04
+
+- Baseline audited from current `main` commit `8b26c50500cfe980b71a5a5912c3ea25ccdee25a`.
+- Found real Core platform leakage in `PlanLinePresentationRule.cs`; Source/Architecture CI failed for that exact reason.
+- Found PR #272's proposed Runtime.Contracts exclusion would remove the source but also leave five deterministic `PlanLinePresentationRule` test references broken.
+- Root correction: keep the canonical rule and make it platform-neutral; move only cTrader color materialization to the existing `PlanLineRenderer` owner.
+- Added `audit_phase_f1_repository_build_dependency_truth.py` and wired it into Source/Architecture CI.
+- Package versions verified on baseline: cTrader.Automate 1.0.21; Skender.Stock.Indicators 2.7.3. Benchmark-only FacioQuo 3.0.1 remains isolated.
+- No trading behavior, MTF contract, M2 surface or broker authority changed.
+- Verification: branch CI pending; no local cTrader terminal claim made.
+
+
+- F1 baseline cleanup removed three dead display parameters (`LabelLeftOffsetBars`, `ShowEarlyArrow`, `ShowEarlyWatch`) after tracing all consumers; obsolete audit references were synchronized to the current canonical owners instead of restoring dead UI paths.
