@@ -42,7 +42,7 @@ live_cycle = read("src/CFIP.Indicator/Runtime/Calculation/CalculationLiveCycle.c
 contracts_project = read("tools/CFIP.Decision.Contracts/CFIP.Decision.Contracts.csproj")
 contracts = read("tools/CFIP.Decision.Contracts/Program.cs")
 workflow = read(".github/workflows/source-check.yml")
-roadmap = read("docs/ROADMAP.md")
+roadmap = read("docs/CFIP-ROADMAP.md")
 
 check(
     "canonical entry geometry model/rule exist with all required concepts",
