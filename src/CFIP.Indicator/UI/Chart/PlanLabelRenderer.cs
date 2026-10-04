@@ -41,7 +41,7 @@ namespace cAlgo
                     text,
                     price,
                     color,
-                    GetCompactPlanLabelAnchorBar(
+                    GetCompactPlanLabelAnchorTime(
                         canonicalLineLeftBar));
             }
             catch (Exception ex)
@@ -58,12 +58,13 @@ namespace cAlgo
             double price,
             Color color,
             bool visible,
-            int labelBar)
+            DateTime labelTime)
         {
             if (!visible ||
                 !IsFinitePositive(price) ||
                 Bars == null ||
-                Bars.Count < 2)
+                Bars.Count < 2 ||
+                labelTime == DateTime.MinValue)
             {
                 RemovePlanLabel(name);
                 return;
@@ -74,7 +75,7 @@ namespace cAlgo
                 text,
                 price,
                 color,
-                labelBar);
+                labelTime);
         }
 
         private void DrawCompactPlanLabel(
@@ -82,21 +83,15 @@ namespace cAlgo
             string text,
             double price,
             Color semanticColor,
-            int labelBar)
+            DateTime labelTime)
         {
             try
             {
                 if (Bars == null ||
                     Bars.Count < 2 ||
-                    !IsFinitePositive(price))
+                    !IsFinitePositive(price) ||
+                    labelTime == DateTime.MinValue)
                     return;
-
-                int canonicalLabelBar =
-                    Math.Max(
-                        0,
-                        Math.Min(
-                            Bars.Count - 1,
-                            labelBar));
 
                 double labelPrice =
                     NormalizePrice(price);
@@ -106,8 +101,7 @@ namespace cAlgo
                         semanticColor);
 
                 DateTime expectedTime =
-                    Bars.OpenTimes[
-                        canonicalLabelBar];
+                    labelTime;
 
                 ChartText label =
                     Chart.FindObject(name)
@@ -132,14 +126,13 @@ namespace cAlgo
                     if (existing != null)
                         Chart.RemoveObject(name);
 
-                    // IMPORTANT: use the same integer bar-index X coordinate
-                    // system as PlanLineRenderer. Do not assign label.Time
-                    // after creation; doing so creates a second DateTime X path.
+                    // One canonical X system: DateTime/OpenTime. This exactly
+                    // matches the signal line's DateTime endpoints.
                     label =
                         Chart.DrawText(
                             name,
                             text,
-                            canonicalLabelBar,
+                            expectedTime,
                             labelPrice,
                             labelTextColor);
                 }
@@ -169,7 +162,6 @@ namespace cAlgo
                 label.IsInteractive =
                     false;
 
-                // Keep a precise runtime record of the shared bar-index geometry.
                 // Remove every legacy companion shape deterministically.
                 Chart.RemoveObject(name + "_BOX");
                 Chart.RemoveObject(name + "_ANCHOR");
