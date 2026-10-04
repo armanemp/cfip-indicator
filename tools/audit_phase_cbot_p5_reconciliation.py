@@ -28,7 +28,7 @@ publisher = read("src/CFIP.cBot/Execution/CbotExecutionStatePublisher.cs")
 contract = read("src/CFIP.Contracts/CbotExecutionStateSnapshot.cs")
 reader = read("src/CFIP.Indicator/Runtime/Cbot/CbotExecutionStateReader.cs")
 workflow = read(".github/workflows/source-check.yml")
-roadmap = read("docs/ROADMAP.md")
+roadmap = read("docs/CFIP-ROADMAP.md")
 continuation = read("docs/CONTINUATION-STATE.md")
 devlog = read("docs/DEVELOPMENT-LOG.md")
 
