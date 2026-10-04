@@ -41,7 +41,7 @@ namespace cAlgo
                     text,
                     price,
                     color,
-                    GetCompactPlanLabelAnchorTime(
+                    GetCompactPlanLabelAnchorBar(
                         canonicalLineLeftBar));
             }
             catch (Exception ex)
@@ -58,13 +58,12 @@ namespace cAlgo
             double price,
             Color color,
             bool visible,
-            DateTime labelTime)
+            int labelBar)
         {
             if (!visible ||
                 !IsFinitePositive(price) ||
                 Bars == null ||
-                Bars.Count < 2 ||
-                labelTime == DateTime.MinValue)
+                Bars.Count < 2)
             {
                 RemovePlanLabel(name);
                 return;
@@ -75,7 +74,7 @@ namespace cAlgo
                 text,
                 price,
                 color,
-                labelTime);
+                labelBar);
         }
 
         private void DrawCompactPlanLabel(
@@ -83,15 +82,21 @@ namespace cAlgo
             string text,
             double price,
             Color semanticColor,
-            DateTime labelTime)
+            int labelBar)
         {
             try
             {
                 if (Bars == null ||
                     Bars.Count < 2 ||
-                    !IsFinitePositive(price) ||
-                    labelTime == DateTime.MinValue)
+                    !IsFinitePositive(price))
                     return;
+
+                int canonicalLabelBar =
+                    Math.Max(
+                        0,
+                        Math.Min(
+                            Bars.Count - 1,
+                            labelBar));
 
                 double labelPrice =
                     NormalizePrice(price);
@@ -100,20 +105,17 @@ namespace cAlgo
                     ResolveCanonicalPlanLineColor(
                         semanticColor);
 
+                DateTime expectedTime =
+                    Bars.OpenTimes[
+                        canonicalLabelBar];
+
                 ChartText label =
                     Chart.FindObject(name)
                     as ChartText;
 
-                DateTime expectedTime =
-                    labelTime;
-
-                // The X coordinate is the actual chart-space point one real
-                // candle width left of the canonical signal-line start.
-                // No bar-index approximation or second pixel/price offset is used.
                 bool recreate =
                     label == null ||
-                    (label != null &&
-                     label.Time != expectedTime) ||
+                    label.Time != expectedTime ||
                     label.HorizontalAlignment != HorizontalAlignment.Right ||
                     label.VerticalAlignment != VerticalAlignment.Center ||
                     label.FontSize != CompactPlanLabelFontSize ||
@@ -130,11 +132,14 @@ namespace cAlgo
                     if (existing != null)
                         Chart.RemoveObject(name);
 
+                    // IMPORTANT: use the same integer bar-index X coordinate
+                    // system as PlanLineRenderer. Do not assign label.Time
+                    // after creation; doing so creates a second DateTime X path.
                     label =
                         Chart.DrawText(
                             name,
                             text,
-                            expectedTime,
+                            canonicalLabelBar,
                             labelPrice,
                             labelTextColor);
                 }
@@ -142,38 +147,6 @@ namespace cAlgo
                 if (label == null)
                     return;
 
-                if (recreate)
-                {
-                    double lineX =
-                        Chart.BarIndexToX(
-                            GetPlanLineLeftBar());
-
-                    double labelX =
-                        Chart.TimeToX(
-                            expectedTime);
-
-                    double barWidth =
-                        Math.Abs(
-                            lineX -
-                            Chart.BarIndexToX(
-                                Math.Max(
-                                    0,
-                                    GetPlanLineLeftBar() - 1)));
-
-                    Print(
-                        "CFIP SIGNAL LABEL GEOMETRY | {0} | lineX={1:F2} | labelX={2:F2} | gapPx={3:F2} | oneBarPx={4:F2} | Y={5}",
-                        name,
-                        lineX,
-                        labelX,
-                        lineX - labelX,
-                        barWidth,
-                        labelPrice.ToString(
-                            CultureInfo.InvariantCulture));
-                }
-
-                // The line and label use the exact same normalized Y price.
-                // Center alignment makes the horizontal line pass through the
-                // vertical center of the text glyph area.
                 label.Text =
                     text;
                 label.Y =
@@ -195,6 +168,39 @@ namespace cAlgo
                     VerticalAlignment.Center;
                 label.IsInteractive =
                     false;
+
+                // Keep a precise runtime record of the shared bar-index geometry.
+                if (recreate)
+                {
+                    double lineX =
+                        Chart.BarIndexToX(
+                            canonicalLineLeftBar);
+
+                    double labelX =
+                        Chart.BarIndexToX(
+                            canonicalLabelBar);
+
+                    double oneBarX =
+                        Math.Abs(
+                            lineX -
+                            Chart.BarIndexToX(
+                                Math.Max(
+                                    0,
+                                    canonicalLineLeftBar - 1)));
+
+                    Print(
+                        "CFIP SIGNAL LABEL GEOMETRY | {0} | lineBar={1} | labelBar={2} | gapBars={3} | lineX={4:F2} | labelX={5:F2} | gapPx={6:F2} | oneBarPx={7:F2} | Y={8}",
+                        name,
+                        canonicalLineLeftBar,
+                        canonicalLabelBar,
+                        canonicalLineLeftBar - canonicalLabelBar,
+                        lineX,
+                        labelX,
+                        lineX - labelX,
+                        oneBarX,
+                        labelPrice.ToString(
+                            CultureInfo.InvariantCulture));
+                }
 
                 // Remove every legacy companion shape deterministically.
                 Chart.RemoveObject(name + "_BOX");
