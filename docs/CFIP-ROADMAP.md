@@ -769,7 +769,7 @@ No fourth planning document may become an active authority.
 
 Canonical planning, inventory and acceptance authority was normalized across ROADMAP/LIST/GATE. WORKFLOW continuity was aligned to the canonical bootstrap sequence and README ownership wording was aligned to the Indicator-analysis / cBot-execution boundary. Exact-head Source/Architecture, Runtime Acceptance and cTrader Compile gates passed.
 
-**Next:** WP-04 — Legacy control-plane migration and stale-document isolation.
+**Historical next:** WP-04 — Legacy control-plane migration and stale-document isolation (completed; retained only as historical closeout evidence).
 
 ### Permanent workflow rule — local command handoff
 For every Atomic Work Package, if local execution is required, the package MUST explicitly give the user the exact commands, working directory/environment, execution point, expected success signal, and whether output must be returned. CI success never substitutes for a required local verification. This requirement applies to Git sync, build/test/audit, cTrader/cBot compile/runtime probes, artifact generation, and final acceptance.

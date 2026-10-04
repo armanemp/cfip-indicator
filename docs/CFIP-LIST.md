@@ -1591,7 +1591,7 @@ At certification:
 
 Scope closed: four active workflows plus `tools/audit_github_workflows.py`; trigger/permission/concurrency/timeout/command/failure/artifact/duplication checks completed. The benchmark pipeline now propagates command failure and retains its report as a workflow artifact. Source/Architecture, Runtime Acceptance, cTrader Compile and OSS Benchmark all passed on the exact WP-02 head. Repository tree adds one intentional audit file, bringing the tracked-file baseline from 1131 to 1132.
 
-**Next:** WP-03 — Canonical control plane.
+**Historical next:** WP-03 — Canonical control plane (completed; retained only as historical closeout evidence).
 
 **Canonical roadmap:** \`docs/CFIP-ROADMAP.md\`
 
