@@ -68,3 +68,7 @@ No runtime calculation, MTF traversal, chart-object lifecycle or hot-path algori
 ## Operator action
 
 After merge: `git pull --ff-only`.
+
+## Additional baseline cleanup
+
+The source/architecture gate exposed three dead public display parameters after the repository/dependency audit passed: `LabelLeftOffsetBars`, `ShowEarlyArrow`, and `ShowEarlyWatch`. They had declarations but no production consumer; related audits referenced obsolete owners. They were removed rather than reactivated through compatibility or parallel presentation paths. Current public parameter inventory is 545.
