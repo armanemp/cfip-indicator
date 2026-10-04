@@ -2666,8 +2666,16 @@ PLAN_LABEL_COORDINATOR = ROOT / "UI" / "Chart" / "PlanLabelRenderCoordinator.cs"
 PLAN_LABEL_COORDINATOR_CODE = PLAN_LABEL_COORDINATOR.read_text(encoding="utf-8")
 if "bool preview" not in PLAN_LABEL_COORDINATOR_CODE:
     raise SystemExit("Plan label renderer must accept preview context")
-if "snapshot.SetupEntry" not in PLAN_LABEL_COORDINATOR_CODE:
-    raise SystemExit("Preview compact labels must use preview level values")
+preview_level_contract = PLAN_RENDERER_CODE[PLAN_RENDERER_CODE.find("private PlanLevelVisualState BuildPlanLevelVisualState("):]
+for required in (
+    "preview ? snapshot.SetupEntry : snapshot.Entry",
+    "preview ? snapshot.SetupIdealEntry : snapshot.IdealEntry",
+    "preview ? snapshot.SetupTrigger : snapshot.Trigger",
+    "preview ? snapshot.SetupStop : snapshot.Stop",
+    "preview ? snapshot.SetupTp1 : snapshot.Tp1",
+):
+    if required not in preview_level_contract:
+        raise SystemExit("Preview compact labels must use canonical preview level values")
 
 PLAN_LABEL_RENDERER = ROOT / "UI" / "Chart" / "PlanLabelRenderer.cs"
 PLAN_LABEL_RENDERER_CODE = PLAN_LABEL_RENDERER.read_text(encoding="utf-8")
