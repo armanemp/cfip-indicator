@@ -10,7 +10,7 @@ This sub-phase closes the Arrow / Signal Marker / Signal Line / Label portion of
 
 1. The active-plan path rendered a separate `P + "ARROW"` object while WATCH/reaction states used `WATCH_ARROW*`. That created two directional-marker lifecycles and made stale-object cleanup depend on state transitions.
 2. Plan-level line thickness still accepted a configurable 1–3px range, while the required visual contract is a single 1px solid line.
-3. The prior text-only label contract is superseded by the current cTrader-style label contract: white regular-weight text inside a filled box using the exact semantic line color, with the box attached to the exact right endpoint of the 40-bar line.
+3. The current label contract is regular-weight native ChartText: exact line price, exact semantic line color, one full chart-bar gap between the visible end of the text and the canonical line start.
 5. The legacy alert mirror correctly did not draw a second marker, but its ownership needs to remain explicit as the canonical signal renderer evolves.
 
 ## Corrections
@@ -58,7 +58,7 @@ Then rerun `dotnet build src/CFIP.Indicator/CFIP.Indicator.csproj --configuratio
 - cBot startup now emits one canonical `PlayStarted` lifecycle cue; the redundant Live-disarmed startup cue was removed.
 - Signal/plan line geometry has one owner: Solid, 1px, exactly 40 bars from the latest candle.
 - Pending and parallel signal lines delegate to the same line owner.
-- All compact chart labels use one renderer and one formatter: exact price, white text, no background, left-of-line anchor with a deterministic gap.
+- All compact chart labels use one renderer and one formatter: exact price, line-owned semantic color, no background, right-aligned ChartText whose anchor is owned one chart bar before the line start.
 - Historical audit contracts that conflicted with the current visual contract were updated instead of reintroducing duplicate production behavior.
 - Dedicated Single-Owner / No-Duality audit passed on the final implementation head.
 
