@@ -11,7 +11,7 @@ namespace cAlgo
             bool playSound,
             string soundTypeName,
             string soundFilePath,
-            string soundGroupKey)
+            string soundGroupKey = null)
         {
             Envelope = envelope;
             Key = envelope == null ? "" : envelope.AlertKey;
