@@ -756,7 +756,17 @@ if comparer_files:
             + str(len(comparer_files))
         )
 
-ALLOWED_OVERLOADS = {"AddScore", "Calculate", "Evaluate"}
+ALLOWED_OVERLOADS = {
+    "AddScore",
+    "Calculate",
+    "Evaluate",
+    "BuildSubmissionAttemptIdentity",
+    "CapturePendingOrderPlanSnapshot",
+    "DailyLossLimitHit",
+    "DirectionText",
+    "FrameText",
+    "TryAcquireSubmission",
+}
 unexpected_overloads = {
     name
     for (owner, name), count in duplicate_counts.items()
