@@ -17,6 +17,7 @@ namespace cAlgo
         private bool _outcomeMemoryPersistenceDirty;
         private bool _dailyLossPersistenceDirty;
         private bool _dailyLossPersistenceForceFlush;
+        private bool _alertEventDedupPersistenceDirty;
 
         private void MarkOutcomeMemoryPersistenceDirty()
         {
@@ -53,7 +54,8 @@ namespace cAlgo
 
             bool localStoragePending =
                 _outcomeMemoryPersistenceDirty ||
-                _dailyLossPersistenceDirty;
+                _dailyLossPersistenceDirty ||
+                _alertEventDedupPersistenceDirty;
 
             if (!force &&
                 !intervalDue &&
@@ -95,6 +97,7 @@ namespace cAlgo
                     _outcomeMemoryPersistenceDirty = false;
                     _dailyLossPersistenceDirty = false;
                     _dailyLossPersistenceForceFlush = false;
+                    _alertEventDedupPersistenceDirty = false;
                 }
                 catch (Exception ex)
                 {
