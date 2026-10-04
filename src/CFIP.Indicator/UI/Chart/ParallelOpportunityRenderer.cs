@@ -33,8 +33,6 @@ namespace cAlgo
                             Bars.Count - 2,
                             right)));
 
-            HashSetCurrentOpportunityVisuals();
-
             bool primaryM15Rendered = false;
             bool primaryH1Rendered = false;
             int displayNumber = 0;
