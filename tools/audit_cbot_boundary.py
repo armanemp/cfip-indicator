@@ -21,7 +21,7 @@ from collections import Counter, defaultdict
 ROOT = Path(__file__).resolve().parents[1]
 PROD = ROOT / "src" / "CFIP.Indicator"
 
-EXPECTED_PARAMETER_COUNT = 548
+EXPECTED_PARAMETER_COUNT = 547
 
 BROKER_MUTATION_APIS = (
     "ExecuteMarketOrder",
