@@ -54,7 +54,7 @@ plan_reward = read(
 contracts = read("tools/CFIP.Planning.Contracts/Program.cs")
 contracts_project = read("tools/CFIP.Planning.Contracts/CFIP.Planning.Contracts.csproj")
 workflow = read(".github/workflows/source-check.yml")
-roadmap = read("docs/ROADMAP.md")
+roadmap = read("docs/CFIP-ROADMAP.md")
 continuation = read("docs/CONTINUATION-STATE.md")
 phase_doc = read("docs/PHASE-CR4-7-TP-PIPELINE.md")
 
