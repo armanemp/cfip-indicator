@@ -163,7 +163,7 @@ check(
     "_rememberedSignalSoundGroupOrder" in processor and
     "Contains(groupKey)" in processor and
     "delivery.SoundGroupKey" in processor and
-    "AlertSoundPolicy.ResolveDecision(" in sound_policy and
+    "public static AlertSoundDecision ResolveDecision(" in sound_policy and
     "BuildGroupKey(" in sound_policy and
     "CreatedClosedM5" in sound_policy and
     'identity.Direction.ToString() + "|" + key' in sound_policy,
