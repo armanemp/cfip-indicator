@@ -65,15 +65,21 @@ require(
     r"Chart\.DrawText\(\s*\n\s*name,\s*\n\s*text,\s*\n\s*expectedTime,",
     "chart-space time-based canonical label X creation",
 )
+ANCHOR = ROOT / "src/CFIP.Indicator/UI/Chart/PlanLabelAnchorCalculator.cs"
 require(
-    LABEL,
-    r"Chart\.BarIndexToX\(\s*\n\s*GetPlanLineLeftBar\(\)",
+    ANCHOR,
+    r"Chart\.BarIndexToX\(\s*\n\s*canonicalLineLeftBar\)",
     "canonical line X projection consumed by label anchor",
 )
 require(
-    LABEL,
-    r"Chart\.TimeToX\(\s*\n\s*expectedTime\)",
-    "canonical label anchor resolves to actual chart X",
+    ANCHOR,
+    r"double targetX\s*=\s*\n\s*lineX\s*-",
+    "one actual rendered bar-width is subtracted from the line start X",
+)
+require(
+    ANCHOR,
+    r"Chart\.XToTime\(\s*\n\s*targetX\)",
+    "projected X resolves to the canonical ChartText DateTime anchor",
 )
 if re.search(r"label\.Time\s*=", LABEL.read_text(encoding="utf-8")):
     raise SystemExit("canonical signal labels must not mutate ChartText.Time after creation")
