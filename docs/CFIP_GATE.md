@@ -875,3 +875,88 @@ These gates capture the intended CFIP behavior in addition to architectural inva
 - UXB-004 protective changes never widen risk.
 - UXB-005 execution identity survives the full submission/fill/lifecycle chain.
 - UXB-006 current/future opportunity semantics remain distinct after recovery.
+
+
+# 40. Cross-cutting gates — XG
+
+## Concurrency / re-entrancy — XGC
+- XGC-001 Calculate cannot execute conflicting state transitions concurrently.
+- XGC-002 timer supervision cannot re-enter unsafe broker mutation.
+- XGC-003 startup/readiness callbacks are idempotent.
+- XGC-004 reload/restart cannot multiply event subscriptions.
+- XGC-005 reconnect cannot race duplicate reconciliation.
+- XGC-006 scenario identity/gating is atomic enough to prevent duplicate submission.
+- XGC-007 shared mutable state has explicit ownership.
+- XGC-008 cTrader UI/runtime calls respect required thread/event boundaries.
+
+## Data acquisition / history — XGD
+- XGD-001 history load boundaries are explicit.
+- XGD-002 history replacement invalidates affected caches.
+- XGD-003 insufficient history is explicit and safe.
+- XGD-004 missing bars/gaps are deterministic.
+- XGD-005 source observations have deterministic ordering.
+- XGD-006 stale data can be detected.
+- XGD-007 rebuild decisions have one owner.
+- XGD-008 no historical replacement can silently preserve stale derived state.
+
+## Fault containment / errors — XGF
+- XGF-001 recoverable/fatal faults are distinct.
+- XGF-002 fault transitions have one owner.
+- XGF-003 retries use one policy per semantic domain.
+- XGF-004 retry cannot duplicate causal event or execution identity.
+- XGF-005 swallowed exceptions cannot silently leave stale state.
+- XGF-006 automatic entry fails closed under unsafe faults.
+- XGF-007 safety-critical management can continue when non-safety analysis fails, where architecture permits.
+- XGF-008 fault reason is observable.
+
+## Observability — XGO
+- XGO-001 critical events have correlation identity.
+- XGO-002 decision reason is observable.
+- XGO-003 execution request/result is observable.
+- XGO-004 broker confirmation is observable.
+- XGO-005 protection/lifecycle transitions are observable.
+- XGO-006 startup/reload/reconnect are observable.
+- XGO-007 alert delivery/dedup behavior is observable.
+- XGO-008 log volume is bounded.
+- XGO-009 sensitive information is not emitted.
+- XGO-010 diagnostics do not become a second state authority.
+
+## Testing / verification architecture — XGT
+- XGT-001 pure mathematical rules have focused tests.
+- XGT-002 boundary/invalid-value cases are covered.
+- XGT-003 contract boundaries have deterministic tests.
+- XGT-004 negative/failure paths are tested.
+- XGT-005 idempotency is tested.
+- XGT-006 replay/regression fixtures cover critical historical defects.
+- XGT-007 static audits remain layered, not duplicated.
+- XGT-008 target-terminal cases are mapped separately from automation.
+- XGT-009 broker-confirmed cases are not simulated as broker truth without evidence.
+- XGT-010 tests assert semantic contracts, not merely implementation details.
+
+## Configuration / migration — XGCN
+- XGCN-001 every default change has an explicit reason.
+- XGCN-002 obsolete parameters are removed rather than left as hidden compatibility paths.
+- XGCN-003 serialized state migration is explicit.
+- XGCN-004 contract/config schema changes have compatibility rules.
+- XGCN-005 demo/live configuration is one architecture.
+- XGCN-006 environment-specific behavior is explicit.
+- XGCN-007 configuration cannot bypass safety gates.
+
+## Resource / backpressure — XGR
+- XGR-001 caches have bounded memory.
+- XGR-002 queues have bounded capacity.
+- XGR-003 chart object count is bounded.
+- XGR-004 timer work is bounded.
+- XGR-005 persistence backpressure is handled.
+- XGR-006 memory growth is observable.
+- XGR-007 graceful degradation is defined for unavailable resources.
+- XGR-008 hot-path CPU/allocation budgets are measured.
+
+## Deployment / rollback — XGP
+- XGP-001 Release artifacts have stable identity.
+- XGP-002 Indicator/cBot compatibility is explicit.
+- XGP-003 deployment steps are reproducible.
+- XGP-004 rollback artifact is known.
+- XGP-005 partial deployment/restart recovery is defined.
+- XGP-006 operator validation checklist exists.
+- XGP-007 release cannot silently pair incompatible contracts.
