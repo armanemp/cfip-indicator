@@ -67,7 +67,7 @@ if "MapM5ToChart(" in line or "anchorM5" in line:
     raise SystemExit("Plan-line geometry must not be tied to an M5 event-time anchor")
 if "MapM5ToChart(" in pending or "anchorBar" in pending:
     raise SystemExit("Pending level rendering must not discard levels because an M5 anchor cannot be mapped")
-if "GetCompactPlanLabelAnchorBar(" not in labels:
+if "GetCompactPlanLabelAnchorTime(" not in labels:
     raise SystemExit("Plan labels must use the canonical compact-label anchor owner")
 
 for field in (
@@ -172,8 +172,8 @@ if "semanticColor" not in compact_label_renderer or "label.Color =" not in compa
 anchor = read("UI/Chart/PlanLabelAnchorCalculator.cs")
 if (
     "CompactPlanLabelGapBars = 1" not in anchor or
-    "GetCompactPlanLabelAnchorBar(" not in anchor or
-    "GetCompactPlanLabelAnchorBar(" not in anchor or
+    "GetCompactPlanLabelAnchorTime(" not in anchor or
+    "GetCompactPlanLabelAnchorTime(" not in anchor or
     "canonicalLineLeftBar -\n                CompactPlanLabelGapBars" not in anchor
 ):
     raise SystemExit("Plan labels must keep exactly one chart-bar left clearance in the canonical anchor owner")
