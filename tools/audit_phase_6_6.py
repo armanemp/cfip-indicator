@@ -40,6 +40,7 @@ computation = read("src/CFIP.Indicator/Analysis/Market/ParallelScenarioComputati
 runtime = read("tools/CFIP.Runtime.Contracts/Program.cs")
 workflow = read(".github/workflows/source-check.yml")
 roadmap = read("docs/CFIP-ROADMAP.md")
+historical_roadmap = read("docs/archive/ROADMAP-LEGACY-2026-10-04.md")
 continuation = read("docs/CONTINUATION-STATE.md")
 review = read("docs/CLAUDE-REVIEW-REMEDIATION-ROADMAP.md")
 csproj = read("tools/CFIP.Runtime.Contracts/CFIP.Runtime.Contracts.csproj")
@@ -128,8 +129,8 @@ check(
 
 check(
     "F7 documentation records completion and advances to F8",
-    "CR6.6 / F7 closeout" in roadmap and
-    "CR6.7 / F8" in roadmap and
+    "CR6.6 / F7 closeout" in historical_roadmap and
+    "CR6.7 / F8" in historical_roadmap and
     "CR6.7 / F8" in continuation and
     "CR6.6 / F7" in review and
     "CR6.7 / F8" in review
