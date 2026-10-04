@@ -1167,8 +1167,8 @@ if "MapM5ToChart(" in visual_line_code or "anchorM5" in visual_line_code:
     raise SystemExit("Plan line geometry must not end at an M5 event-time mapping")
 if "GetPlanLineLeftBar" not in visual_line_code:
     raise SystemExit("Plan line renderer must expose one canonical left-edge calculation")
-if "GetPlanLineLeftBar(" not in plan_label_coordinator_code:
-    raise SystemExit("Plan label/level presentation must reuse the canonical line left-edge helper")
+if "GetCompactPlanLabelAnchorBar(" not in plan_label_coordinator_code:
+    raise SystemExit("Plan label/level presentation must reuse the canonical label-anchor owner")
 
 if "CreateExecutionToggle(" not in control_factory_code:
     raise SystemExit("Execution controls must use the shared status ToggleButton presentation")
