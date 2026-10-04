@@ -1240,8 +1240,10 @@ No trading/runtime behavior changed. Read-only permissions reduce CI authority; 
 ### Residual risk
 Target-terminal behavior remains outside this repository-only package. `DEF-P0-002` remains OPEN and is the explicit WP-03/WP-04 migration target.
 
-### Next package
+### Historical next package
 **WP-03 — Canonical control plane — NEXT.**
+
+> Historical closeout snapshot only. It does not define current execution order.
 
 
 # 35.4 P3 / WP-03 closeout — 2026-10-04
