@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Xml.Serialization;
 using cAlgo.API;
 
@@ -47,6 +49,22 @@ namespace cAlgo
     {
         [XmlElement("event")]
         public List<CfipEconomicCalendarEventXml> Events { get; set; }
+    }
+
+    public sealed class CfipEconomicCalendarEventJson
+    {
+        [JsonPropertyName("title")]
+        public string Title { get; set; }
+        [JsonPropertyName("country")]
+        public string Currency { get; set; }
+        [JsonPropertyName("date")]
+        public string UtcTimestamp { get; set; }
+        [JsonPropertyName("impact")]
+        public string Impact { get; set; }
+        [JsonPropertyName("previous")]
+        public string Previous { get; set; }
+        [JsonPropertyName("forecast")]
+        public string Forecast { get; set; }
     }
 
     public sealed class CfipEconomicCalendarEventXml
@@ -419,69 +437,97 @@ namespace cAlgo
         }
 
         private List<CfipEconomicNewsEvent> DeserializeEconomicNews(
-            string xml,
+            string payload,
             string[] relevantCurrencies)
         {
-            XmlSerializer serializer =
-                new XmlSerializer(
-                    typeof(CfipEconomicCalendar));
-
-            CfipEconomicCalendar parsed =
-                serializer.Deserialize(
-                    new StringReader(xml))
-                as CfipEconomicCalendar;
-
-            List<CfipEconomicNewsEvent> next =
-                new List<CfipEconomicNewsEvent>();
-
-            if (parsed == null ||
-                parsed.Events == null)
+            List<CfipEconomicNewsEvent> next = new List<CfipEconomicNewsEvent>();
+            if (string.IsNullOrWhiteSpace(payload))
                 return next;
 
-            for (int i = 0;
-                 i < parsed.Events.Count;
-                 i++)
+            string trimmed = payload.TrimStart();
+            if (trimmed.StartsWith("[", StringComparison.Ordinal))
             {
-                CfipEconomicCalendarEventXml raw =
-                    parsed.Events[i];
+                CfipEconomicCalendarEventJson[] parsed =
+                    JsonSerializer.Deserialize<CfipEconomicCalendarEventJson[]>(
+                        payload,
+                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-                if (raw == null)
-                    continue;
+                if (parsed == null)
+                    return next;
 
-                DateTimeOffset eventTime;
+                for (int i = 0; i < parsed.Length; i++)
+                {
+                    CfipEconomicCalendarEventJson raw = parsed[i];
+                    if (raw == null)
+                        continue;
 
-                if (!TryParseEconomicEventTime(
-                        raw.UtcDate,
-                        raw.UtcTime,
-                        out eventTime))
-                    continue;
+                    DateTimeOffset eventTime;
+                    if (!DateTimeOffset.TryParse(
+                            raw.UtcTimestamp,
+                            CultureInfo.InvariantCulture,
+                            DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal,
+                            out eventTime))
+                        continue;
 
-                CfipEconomicNewsEvent item =
-                    new CfipEconomicNewsEvent
-                    {
-                        Title = raw.Title ?? "",
-                        Currency = raw.Currency ?? "",
-                        UtcDate = raw.UtcDate ?? "",
-                        UtcTime = raw.UtcTime ?? "",
-                        Impact = raw.Impact ?? "",
-                        Previous = raw.Previous ?? "",
-                        Forecast = raw.Forecast ?? "",
-                        TimeUtc = eventTime
-                    };
+                    AddEconomicNewsEvent(next, raw.Title, raw.Currency, raw.UtcTimestamp, "",
+                        raw.Impact, raw.Previous, raw.Forecast, eventTime, relevantCurrencies);
+                }
+            }
+            else
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(CfipEconomicCalendar));
+                CfipEconomicCalendar parsed = serializer.Deserialize(new StringReader(payload))
+                    as CfipEconomicCalendar;
 
-                if (item.ImpactRank <= 0 ||
-                    !IsNewsEventRelevant(
-                        item,
-                        relevantCurrencies))
-                    continue;
+                if (parsed == null || parsed.Events == null)
+                    return next;
 
-                next.Add(item);
+                for (int i = 0; i < parsed.Events.Count; i++)
+                {
+                    CfipEconomicCalendarEventXml raw = parsed.Events[i];
+                    if (raw == null)
+                        continue;
+
+                    DateTimeOffset eventTime;
+                    if (!TryParseEconomicEventTime(raw.UtcDate, raw.UtcTime, out eventTime))
+                        continue;
+
+                    AddEconomicNewsEvent(next, raw.Title, raw.Currency, raw.UtcDate, raw.UtcTime,
+                        raw.Impact, raw.Previous, raw.Forecast, eventTime, relevantCurrencies);
+                }
             }
 
-            return next
-                .OrderBy(x => x.TimeUtc)
-                .ThenByDescending(x => x.ImpactRank)
-                .ToList();
+            return next.OrderBy(x => x.TimeUtc).ThenByDescending(x => x.ImpactRank).ToList();
+        }
+
+        private void AddEconomicNewsEvent(
+            List<CfipEconomicNewsEvent> target,
+            string title,
+            string currency,
+            string utcDate,
+            string utcTime,
+            string impact,
+            string previous,
+            string forecast,
+            DateTimeOffset eventTime,
+            string[] relevantCurrencies)
+        {
+            CfipEconomicNewsEvent item = new CfipEconomicNewsEvent
+            {
+                Title = title ?? "",
+                Currency = currency ?? "",
+                UtcDate = utcDate ?? "",
+                UtcTime = utcTime ?? "",
+                Impact = impact ?? "",
+                Previous = previous ?? "",
+                Forecast = forecast ?? "",
+                TimeUtc = eventTime
+            };
+
+            if (item.ImpactRank <= 0 || !IsNewsEventRelevant(item, relevantCurrencies))
+                return;
+
+            target.Add(item);
         }
 
         private void UpdateEconomicNewsStatus(
