@@ -219,42 +219,26 @@ for legacy in (
     if legacy in all_production:
         fail(f"Legacy status-only execution control remains: {legacy}")
 
-# 7) Continuity audit: current/future phase discipline is mandatory.
-roadmap = (DOCS / "ROADMAP.md").read_text(encoding="utf-8")
-devlog = (DOCS / "DEVELOPMENT-LOG.md").read_text(encoding="utf-8")
+# 7) Continuity audit: canonical control-plane authority is mandatory.
+roadmap = (DOCS / "CFIP-ROADMAP.md").read_text(encoding="utf-8")
+control_list = (DOCS / "CFIP-LIST.md").read_text(encoding="utf-8")
+gate = (DOCS / "CFIP_GATE.md").read_text(encoding="utf-8")
 
-phase_ids = sorted(
-    set(
-        re.findall(
-            r"^##\s+(Phase\s+[0-9A-Za-z]+(?:\.[0-9A-Za-z]+)?)\s+[—-]",
-            roadmap,
-            re.M,
-        )
-    )
-)
+for required, label in (
+    ("STATUS: ACTIVE / CANONICAL", "CFIP-ROADMAP canonical status"),
+    ("CFIP-LIST.md", "ROADMAP → LIST continuity"),
+    ("CFIP_GATE.md", "ROADMAP → GATE continuity"),
+    ("WP-04", "next historical-isolation package"),
+):
+    if required not in roadmap:
+        fail(f"{label} is missing from canonical roadmap")
 
-# Historical roadmap material predates the current development-log discipline.
-# Report missing historical entries instead of blocking unrelated source safety
-# checks; every phase completed under the current workflow must still be logged.
-historical_unlogged = [
-    phase for phase in phase_ids
-    if not re.search(rf"(?<![0-9A-Za-z.]){re.escape(phase)}(?![0-9A-Za-z.])", devlog)
-]
-print(
-    f"Continuity coverage: {len(phase_ids) - len(historical_unlogged)}/"
-    f"{len(phase_ids)} roadmap phase identifiers appear in the development log"
-)
-if historical_unlogged:
-    print(
-        "Historical continuity notes without matching log headings: "
-        + ", ".join(historical_unlogged[:12])
-        + (" ..." if len(historical_unlogged) > 12 else "")
-    )
+if "WP-04 | Historical isolation" not in control_list:
+    fail("CFIP-LIST must define WP-04 historical isolation")
+if "DEF-P0-002" not in gate:
+    fail("CFIP_GATE must retain DEF-P0-002 until historical isolation closes")
 
-if "Phase 7.4 — MaximumOpenPositions semantics" not in roadmap:
-    fail("Roadmap does not expose Phase 7.4 continuity")
-if "Phase 7.4 — MaximumOpenPositions semantics" not in devlog:
-    fail("Current Phase 7.4 must be recorded in the development log")
+print("Canonical control-plane continuity: PASS")
 
 print("Full project integrity audit PASS")
 print(f"Production C# files scanned: {len(files)}")
@@ -262,4 +246,4 @@ print(f"Public parameters scanned: {len(param_decls)}")
 print("Exact duplicate method signatures: 0")
 print("Canonical visual snapshot/level geometry: PASS")
 print("Execution UI single-owner boundary: PASS")
-print("Roadmap/development-log continuity: PASS")
+print("Canonical control-plane continuity: PASS")
