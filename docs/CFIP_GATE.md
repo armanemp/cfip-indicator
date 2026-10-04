@@ -65,13 +65,13 @@ Never use "looks fine", screenshot-only code proof, CI as proof of audio, or his
 
 # 4. Current baseline record
 
-This record describes the current canonical `main` state. Earlier P0/P1/P2/P3 baseline values remain historical evidence inside their dated closeout sections and are not current execution state.
+This record separates the current execution state from the repository baseline used for the latest control-plane verification. Earlier P0/P1/P2/P3 baseline values remain historical evidence inside their dated closeout sections and are not current execution state.
 
 | Field | Value |
 |---|---|
 | Repository | armanemp/cfip-indicator |
 | Canonical branch | main |
-| Baseline commit | `5b16b92a7b272e43c71a3bea14c94cc978e7065e` |
+| Control-plane verification baseline | `5b16b92a7b272e43c71a3bea14c94cc978e7065e` |
 | Baseline date/time | `2026-10-04` — current control-plane verification |
 | Indicator | CFIP.Indicator |
 | Contracts | CFIP.Contracts |
