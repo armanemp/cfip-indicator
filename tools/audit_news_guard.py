@@ -107,6 +107,26 @@ if "Http.Get(" in calendar or "Http.Send(" in calendar:
         "EconomicNewsCalendarClient.cs: synchronous HTTP API usage remains"
     )
 
+coordinator = read(
+    "src/CFIP.Indicator/Trading/Intelligence/EconomicNewsFeedCoordinator.cs"
+)
+if "TryGetSnapshot(" in coordinator:
+    errors.append(
+        "EconomicNewsFeedCoordinator.cs: generic snapshot owner name is forbidden"
+    )
+if "TryReadEconomicNewsSnapshot(" not in coordinator:
+    errors.append(
+        "EconomicNewsFeedCoordinator.cs: canonical snapshot owner is missing"
+    )
+
+parameter_source = read(
+    "src/CFIP.Indicator/Indicator/Parameters/28_news_guard.cs"
+)
+if "DefaultValue = 5, MinValue = 5, MaxValue = 60" not in parameter_source:
+    errors.append(
+        "News Refresh Minutes must enforce the provider-safe 5-minute minimum"
+    )
+
 if "RefreshEconomicNewsIfNeeded(" in initialization:
     errors.append(
         "RuntimeInitialization.cs: news refresh must not run during initialization"
