@@ -26,10 +26,16 @@ check("plan labels use canonical line-owned color", "Chart.DrawText(" in labels 
     "ResolveCanonicalPlanLineColor(" in line and
     "ResolveCanonicalPlanLineColor(" in labels and
     "semanticColor" in labels)
-check("plan labels use the canonical readable font and one-bar left clearance", "CompactPlanLabelFontSize = 11.0" in labels and
+check("plan labels use the canonical readable font, one-bar left clearance and follow the moving line anchor",
+    "CompactPlanLabelFontSize = 11.0" in labels and
     "CompactPlanLabelGapBars = 1" in anchor and
     "GetCompactPlanLabelAnchorBar(" in anchor and
-    "HorizontalAlignment.Right" in labels)
+    "HorizontalAlignment.Right" in labels and
+    "Chart.DrawText(" in labels and
+    "textBar," in labels and
+    "label.Time != expectedTime" in labels and
+    "GetPlanLineLeftBar()" in labels and
+    "gapBars=" in labels)
 check("labels share exact normalized price and canonical text anchor", "NormalizePrice(price)" in labels and
     "GetPlanLineLeftBar" in anchor and
     "canonicalLineLeftBar -" in anchor and
@@ -39,6 +45,17 @@ check("legacy active arrow is cleaned", 'P + "ARROW"' in arrows and 'P + "ARROW"
 check("directional arrows are explicit UpArrow/DownArrow", "ChartIconType.UpArrow" in arrows and "ChartIconType.DownArrow" in arrows)
 check("directional marker lifecycle has one owner", "RenderCanonicalMtfTrendArrows(" in (ROOT / "src/CFIP.Indicator/Runtime/Calculation/CalculationLiveCycle.cs").read_text(encoding="utf-8") and "RenderStackedSignalArrows(" in arrows)
 check("legacy alert mirror cannot create second signal marker", 'P + "ALERT_SIGNAL"' in alert_marker and "Chart.DrawIcon" not in alert_marker)
+
+if errors:
+    raise SystemExit("\n".join(errors))
+
+check("canonical labels and line share the exact normalized Y price with centered text",
+    "double labelPrice =\n                    NormalizePrice(price)" in labels and
+    "label.Y =\n                    labelPrice" in labels and
+    "label.VerticalAlignment =\n                    VerticalAlignment.Center" in labels and
+    "line.Y1 =\n                    normalized" in line and
+    "line.Y2 =\n                    normalized" in line
+)
 
 if errors:
     raise SystemExit("\n".join(errors))

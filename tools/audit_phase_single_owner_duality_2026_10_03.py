@@ -138,8 +138,9 @@ require(
 require(
     "IsSameAsCanonicalPlan(" in parallel and
     "IsSameAsLivePlan(" not in parallel and
-    "if (_plan == null ||" in parallel and
-    "!_plan.IsLivePosition" not in parallel,
+    "!_plan.IsLivePosition" not in parallel and
+    "candidate.Tp4" in parallel and
+    "SameCanonicalLevel(" in parallel,
     "parallel opportunity visuals must not duplicate the canonical plan before or during a live position",
 )
 
