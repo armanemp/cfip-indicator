@@ -7,10 +7,9 @@ Close the remaining visual mismatch in signal/plan lines and labels at the exist
 - One canonical PlanLineRenderer owns every signal/plan line.
 - Lines are horizontal, Solid, 1px, finite and exactly 40 chart bars long, ending at the latest candle.
 - The label is owned only by PlanLabelRenderer.
-- The label anchor is the LEFT endpoint of the exact same line geometry.
-- The label's visible text sits one chart bar to the LEFT of the canonical line start.
 - The label is native `ChartText` with no rectangle, box or marker.
-- Text is white, 10px regular weight, right aligned and uses the canonical formatted level text.
+- Text is 10px regular weight, right aligned, uses the exact canonical line color, and the visible end of the text sits exactly one chart bar before the canonical line start.
+- The line renderer owns final line color and the anchor calculator owns the one-bar gap.
 - There is no floating label at the chart's right edge.
 - Pending and parallel labels use the same anchor and renderer.
 - Prediction labels remain under the same renderer owner and must not create a competing presentation path.
