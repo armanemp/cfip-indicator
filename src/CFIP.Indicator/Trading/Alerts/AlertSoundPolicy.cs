@@ -80,7 +80,7 @@ namespace cAlgo
             if (signalFamily)
                 return "SIGNAL|" + (symbolName ?? string.Empty) + "|" +
                     identity.CreatedClosedM5.ToString() + "|" +
-                    identity.Direction.ToString();
+                    identity.Direction.ToString() + "|" + key;
 
             return "ALERT|" + (symbolName ?? string.Empty) + "|" +
                 (identity.SignalId ?? string.Empty) + "|" +
