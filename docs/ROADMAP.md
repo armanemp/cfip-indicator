@@ -127,7 +127,7 @@ Status: VERIFIED COMPLETE — merged to `main` via PR #249, merge commit `fb7dee
 Completed:
 - Signal/plan lines are fixed to Solid + 1px.
 - The canonical span is exactly 40 chart bars from the latest candle; legacy `FullWidthLevelLines` cannot expand signal geometry.
-- Compact level labels sit at the exact line price, use white text with no background, and remain left of the line start with a deterministic minimum three-bar horizontal gap.
+- Compact level labels sit at the exact line price, use the canonical semantic line color with no background, and remain exactly one chart bar left of the line start with 10px regular-weight text.
 - Active Plan and WATCH/Reaction directional markers share the canonical stacked-arrow lifecycle.
 - The user's Release-build CS0219 warning from the dead `PanelMainRenderer.buttonMargin` local was removed.
 - Dedicated Drawing audit, Source/Architecture, Runtime Acceptance and cTrader Compile all passed on the final implementation head before merge.

@@ -1,4 +1,6 @@
-# Phase — Signal Label Color, Marker Removal & Stable Left Gap — 2026-10-04
+# Phase — Signal Label Presentation & Stable Left Gap — 2026-10-04
+
+> Superseded within the same existing label owner: the obsolete 2-pip/box-era wording below has been reconciled to the current one-bar, text-only contract.
 
 ## Status
 Implemented on branch `phase/fix-signal-label-spacing-color-2026-10-04`.
@@ -6,11 +8,11 @@ Implemented on branch `phase/fix-signal-label-spacing-color-2026-10-04`.
 ## User-visible contract
 - Remove the small anchor circles completely.
 - Keep exactly one label owner: `PlanLabelRenderer`.
-- Label text uses the same canonical semantic color as its line.
+- Label text uses the canonical semantic color of its line.
 - No rectangle/background/panel is created for the label.
-- Text remains to the left of the canonical line start.
-- The horizontal gap is owned by `CompactPlanLabelGapBars`.
-- cTrader `ChartText` exposes time/bar coordinates on X and price on Y; it does not expose a pip-based horizontal X offset. Therefore the renderer does not fake a “2 pip” X offset by distorting price geometry. The stable chart-coordinate gap is one bar left of the line start.
+- Text remains exactly one chart bar to the left of the canonical line start.
+- The horizontal gap is owned by `CompactPlanLabelGapBars = 1`.
+- cTrader `ChartText` is positioned on the chart time axis; horizontal presentation is therefore expressed as a deterministic chart-bar gap, not a fabricated pip-space X offset.
 
 ## Architecture
 The existing `PlanLineRenderer` remains the only line owner and `PlanLabelRenderer` remains the only label owner. No second rendering path, marker lifecycle, rectangle, or control was introduced.

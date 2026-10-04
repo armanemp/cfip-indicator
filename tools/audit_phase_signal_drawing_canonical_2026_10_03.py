@@ -23,9 +23,14 @@ check("plan line geometry is fixed to 40 bars from latest candle", "CompactPlanL
 check("plan thickness contract is one pixel", "return MinimumThickness;" in line_rule and "MinimumThickness = 1" in line_rule)
 check("plan labels use canonical background-free line-colored text", "Chart.DrawText(" in labels and
     "Chart.DrawRectangle(" not in labels and
-    "PlanLinePresentationRule.ResolveColor(" in labels)
-check("plan labels use the canonical semantic line color", "return Color.White;" in labels)
-check("labels share exact price and attach box to canonical line endpoint", "NormalizePrice(price)" in labels and "GetPlanLineRightBar()" in labels and "rightBar" in labels and "box.Time2" in labels and "Bars.OpenTimes[rightBar]" in labels)
+    "GetReadableLabelTextColor(" in labels and
+    "return Color.White;" in labels)
+check("plan labels use the canonical readable font and one-bar left clearance", "CompactPlanLabelFontSize = 10.0" in labels and
+    "CompactPlanLabelGapBars = 1" in labels and
+    "HorizontalAlignment.Right" in labels)
+check("labels share exact normalized price without a second geometry owner", "NormalizePrice(price)" in labels and
+    "GetPlanLineLeftBar" in anchor and
+    "return GetPlanLineLeftBar();" in anchor)
 check("active plan does not create a second arrow lifecycle", "RenderStackedSignalArrows(" not in plan and 'P + "ARROW"' not in plan)
 check("legacy active arrow is cleaned", 'P + "ARROW"' in arrows and 'P + "ARROW"' in clearer)
 check("directional arrows are explicit UpArrow/DownArrow", "ChartIconType.UpArrow" in arrows and "ChartIconType.DownArrow" in arrows)

@@ -21,8 +21,8 @@ This sub-phase closes the Arrow / Signal Marker / Signal Line / Label portion of
 - BUY/SELL direction remains explicit through `ChartIconType.UpArrow` / `DownArrow`.
 - Signal/plan level lines are now one-pixel and solid through `PlanLinePresentationRule`.
 - Signal/plan level lines are fixed to exactly 40 chart bars from the latest candle; the legacy `FullWidthLevelLines` switch cannot expand them.
-- Compact labels use canonical white text inside a filled box matching the associated line color.
-- Compact labels sit at the exact level price and are separated from the line only horizontally, with a deterministic minimum three-bar gap.
+- Compact labels use native background-free ChartText with the canonical semantic line color and 10px regular typography.
+- Compact labels sit at the exact level price and are positioned exactly one chart bar left of the canonical line start.
 - Expired/invalid drawing lifecycle continues to remove all plan, watch and legacy marker objects before rendering the current canonical snapshot.
 - The legacy alert mirror remains prohibited from drawing a second signal marker.
 
