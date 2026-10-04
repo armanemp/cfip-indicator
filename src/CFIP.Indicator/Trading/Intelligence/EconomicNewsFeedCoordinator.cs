@@ -40,7 +40,7 @@ namespace cAlgo
             get { return _requestInFlight; }
         }
 
-        public static bool TryGetSnapshot(
+        public static bool TryReadEconomicNewsSnapshot(
             string uri,
             DateTime localSuccessUtc,
             out string payload,
