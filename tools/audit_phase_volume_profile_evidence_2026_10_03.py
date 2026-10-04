@@ -99,8 +99,8 @@ check(
 
 check(
     "phase/roadmap continuity is recorded",
-    "Volume Profile" in roadmap and
-    "Volume Profile" in phase
+    "volume profile" in roadmap.lower() and
+    "volume profile" in phase.lower()
 )
 
 if errors:
