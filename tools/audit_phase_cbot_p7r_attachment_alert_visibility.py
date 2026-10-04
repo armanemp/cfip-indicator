@@ -145,14 +145,15 @@ require(
 
 require(
     "GetReadableLabelTextColor(" in label_renderer and
-    "PlanLinePresentationRule.ResolveColor(" in label_renderer and
-    "labelTextColor" in label_renderer,
+    "return ResolvePlanLineColor(semanticColor);" in label_renderer and
+    "CompactPlanLabelGapPips = 2.0" in label_renderer,
     "compact level labels must use the canonical semantic line-color contract",
 )
 require(
     "CompactPlanLabelFontSize = 8.5" in label_renderer and
     "label.IsBold" in label_renderer and
-    "Chart.DrawRectangle(" in label_renderer and "box.IsFilled" in label_renderer,
+    "Chart.DrawRectangle(" not in label_renderer and
+    "HorizontalAlignment.Right" in label_renderer,
     "compact level labels must retain the modern lightweight text-only presentation",
 )
 
