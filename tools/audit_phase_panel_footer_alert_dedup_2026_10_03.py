@@ -156,18 +156,21 @@ check(
     "structural alerts must retain one canonical structural event owner",
 )
 
+sound_policy = read("Trading/Alerts/AlertSoundPolicy.cs")
 check(
     "MaxRememberedSignalSoundGroups = 256" in processor and
     "_rememberedSignalSoundGroups" in processor and
     "_rememberedSignalSoundGroupOrder" in processor and
     "Contains(groupKey)" in processor and
-    "CreatedClosedM5" in processor and
-    "delivery.Key ?? string.Empty" in processor and
-    "one cue per distinct semantic stage" in processor,
-    "signal sound dedup must preserve distinct semantic alert stages while suppressing exact repeats",
+    "delivery.SoundGroupKey" in processor and
+    "AlertSoundPolicy.ResolveDecision(" in sound_policy and
+    "BuildGroupKey(" in sound_policy and
+    "CreatedClosedM5" in sound_policy and
+    'key;' in sound_policy,
+    "signal sound dedup must consume the canonical policy group and preserve distinct semantic alert stages",
 )
 
-sound_map = read("Trading/Alerts/AlertEngine.cs")
+sound_map = root_read("src/CFIP.Indicator/Trading/Alerts/AlertSoundPolicy.cs")
 check(
     "SoundType.Doorbell" in sound_map and
     "SoundType.PositiveNotification" in sound_map and
@@ -180,7 +183,7 @@ check(
     '"TP"' in sound_map and
     '"SL|"' in sound_map and
     '"REVERSAL|"' in sound_map,
-    "canonical alert sound mapping must use the full cTrader built-in semantic cue set",
+    "canonical alert sound mapping must use the single AlertSoundPolicy owner",
 )
 
 check(
