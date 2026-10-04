@@ -1,11 +1,13 @@
 using System;
 using cAlgo.API;
+using CFIP.Contracts;
 
 namespace CFIP.cBot.Binding
 {
     internal static class CfipIndicatorChartBinding
     {
         public const string DisplayName = "CFIP Smart Indicator";
+        public const string TypeName = IndicatorIdentity.TypeName;
 
         public static bool TryFind(
             Robot robot,
@@ -53,7 +55,7 @@ namespace CFIP.cBot.Binding
                     candidate.Type != null &&
                     string.Equals(
                         candidate.Type.Name,
-                        DisplayName,
+                        TypeName,
                         StringComparison.Ordinal);
 
                 if (!instanceNameMatches &&
