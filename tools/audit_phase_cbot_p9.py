@@ -183,8 +183,8 @@ check(
     "PopupPosition" not in parameter_source,
 )
 check(
-    "current Indicator parameter count is 548",
-    len(re.findall(r"\[Parameter\s*\(", parameter_source)) == 548,
+    "current Indicator parameter count is 545",
+    len(re.findall(r"\[Parameter\s*\(", parameter_source)) == 545,
 )
 check(
     "P9 audit itself is in source CI",
