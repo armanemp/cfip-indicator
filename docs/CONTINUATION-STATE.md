@@ -1,5 +1,8 @@
 # 2026-10-04 — Canonical Forensic Remediation Reset
 
+## Permanent progress reporting
+At every atomic-package closeout, report program progress and package progress separately: total packages, fully PASS packages and percentage, current repository/terminal completion, remaining packages, remaining terminal/manual scenarios, blockers/defects, and next executable package. WP-05 repository work is complete but its 13 target-terminal scenarios remain pending, so it is not counted as fully PASS.
+
 Status: **ACTIVE**
 
 - Accidental M2 / 2-minute timeframe is excluded from active main and now explicitly prohibited by source audit.

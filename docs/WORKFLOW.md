@@ -217,6 +217,10 @@ All final project changes must land on `main` as the single canonical implementa
 ## Local execution handoff
 When a work package needs user-local execution, the assistant must hand off the exact commands and their execution context, expected success signal, and required returned output. This is mandatory for every applicable package and must not be inferred from CI status.
 
+## Permanent progress-reporting rule
+
+At the end of every atomic work package, the assistant must report overall atomic-package progress (completed/total and percentage), current package progress, remaining packages, remaining terminal/manual scenarios, active blockers/defects, and next executable package. When a package has an external terminal boundary, repository completion and terminal completion must be shown separately. Do not round or summarize away blockers.
+
 ## Permanent green-and-merge completion rule
 
 A work package is not considered complete, and the assistant must not issue its completion response, until every required CI gate for the exact final commit is green and the verified work package has been merged into `main`. If any gate is pending or failed, continue inspecting, fixing the canonical owner when needed, rerunning verification, and waiting for green results. After green CI, verify the actual merged `main` state before declaring the package complete. This rule applies to every atomic work package and every phase, without exception.
