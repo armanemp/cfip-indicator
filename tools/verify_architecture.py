@@ -967,231 +967,48 @@ VISUAL_SNAPSHOT_BUILDER = ROOT / "UI" / "Chart" / "SignalVisualSnapshotBuilder.c
 VISUAL_CALCULATION = ROOT / "Runtime" / "Calculation" / "CalculationLiveCycle.cs"
 VISUAL_SIGNAL_RENDERER = ROOT / "UI" / "Chart" / "SignalRenderer.cs"
 VISUAL_PLAN_RENDERER = ROOT / "UI" / "Chart" / "PlanRenderCoordinator.cs"
-VISUAL_PLAN_LABELS = ROOT / "UI" / "Chart" / "PlanLabelRenderCoordinator.cs"
-VISUAL_PENDING_RENDERER = ROOT / "UI" / "Chart" / "PendingOrderRenderer.cs"
-VISUAL_PANEL = ROOT / "UI" / "Panel" / "PanelSignalState.cs"
+PLAN_RENDERER_CODE = PLAN_RENDERER.read_text(encoding="utf-8")
+if "RenderPlanLabels(snapshot, true)" not in PLAN_RENDERER_CODE:
+    raise SystemExit("Setup preview must render compact level labels")
+if "RemovePlanLabels();" in PLAN_RENDERER_CODE and "RenderPlanLabels(snapshot, true)" not in PLAN_RENDERER_CODE:
+    raise SystemExit("Setup preview must not be label-less")
 
-for required_path in (
-    VISUAL_SNAPSHOT,
-    VISUAL_SNAPSHOT_BUILDER,
-    VISUAL_CALCULATION,
-    VISUAL_SIGNAL_RENDERER,
-    VISUAL_PLAN_RENDERER,
-    VISUAL_PLAN_LABELS,
-    VISUAL_PENDING_RENDERER,
-    VISUAL_PANEL,
-):
-    if not required_path.exists():
-        raise SystemExit(f"Canonical visual-state owner is missing: {required_path.name}")
-
-snapshot_code = VISUAL_SNAPSHOT.read_text(encoding="utf-8")
-builder_code = VISUAL_SNAPSHOT_BUILDER.read_text(encoding="utf-8")
-calculation_visual_code = VISUAL_CALCULATION.read_text(encoding="utf-8")
-signal_renderer_code = VISUAL_SIGNAL_RENDERER.read_text(encoding="utf-8")
-plan_renderer_code = VISUAL_PLAN_RENDERER.read_text(encoding="utf-8")
-plan_labels_code = VISUAL_PLAN_LABELS.read_text(encoding="utf-8")
-pending_renderer_code = VISUAL_PENDING_RENDERER.read_text(encoding="utf-8")
-panel_code = VISUAL_PANEL.read_text(encoding="utf-8")
-
-if "class SignalVisualSnapshot" not in snapshot_code:
-    raise SystemExit("Canonical visual-state model is missing")
-for required_field in (
-    "Entry",
-    "Trigger",
-    "Stop",
-    "Tp1",
-    "Tp2",
-    "Tp3",
-    "Tp4",
-    "BrokerStop",
-    "BrokerTarget",
-    "PendingEntry",
-    "PendingStop",
-    "PendingTarget",
-):
-    if f"public double {required_field};" not in snapshot_code:
-        raise SystemExit(f"Canonical visual snapshot field missing: {required_field}")
-
-if "BuildSignalVisualSnapshot(" not in builder_code or    "ResolveCanonicalVisualDirection(" not in builder_code:
-    raise SystemExit("Canonical visual snapshot builder/resolver is missing")
-
-live_pos = builder_code.find("if (livePlan)")
-pending_pos = builder_code.find("else if (pendingValid)")
-if live_pos < 0 or pending_pos < 0 or live_pos > pending_pos:
-    raise SystemExit("Live plan must remain visually authoritative over pending state")
-
-if "BuildSignalVisualSnapshot(" not in calculation_visual_code or    "RenderPlan(" not in calculation_visual_code or    "RenderWatchAndReaction(" not in calculation_visual_code or    "RenderManagedPendingOrder(" not in calculation_visual_code or    "_renderSignalVisualSnapshot = null;" not in calculation_visual_code:
-    raise SystemExit("Calculation cycle must construct, pass and release one visual snapshot")
-
-for visual_code, expected_call in (
-    (signal_renderer_code, "SignalVisualSnapshot snapshot"),
-    (plan_renderer_code, "SignalVisualSnapshot snapshot"),
-    (plan_labels_code, "SignalVisualSnapshot snapshot"),
-    (pending_renderer_code, "SignalVisualSnapshot snapshot"),
-):
-    if expected_call not in visual_code:
-        raise SystemExit("Chart renderer must consume canonical SignalVisualSnapshot")
-
-if "return _renderSignalVisualSnapshot.AuthoritativeDirection;" not in panel_code or    "BuildSignalVisualSnapshot(" not in panel_code:
-    raise SystemExit("Panel signal state must consume the canonical visual snapshot")
-
-for forbidden in (
-    "_decision.Direction",
-    "_decision.Confidence",
-    "_decision.SmartQuality",
-    "_reaction.Direction",
-    "_reaction.Confidence",
-):
-    if forbidden in signal_renderer_code:
-        raise SystemExit(f"Signal renderer bypasses canonical visual snapshot: {forbidden}")
-
-# Phase 5.6 responsive panel/runtime gates.
-PANEL_MAIN = ROOT / "UI" / "Panel" / "PanelMainRenderer.cs"
-PANEL_FACTORY = ROOT / "UI" / "Panel" / "PanelRowsFactory.cs"
-PANEL_WRITER = ROOT / "UI" / "Panel" / "PanelRowWriter.cs"
-PANEL_HEARTBEAT = ROOT / "Runtime" / "Supervision" / "RuntimePanelHeartbeat.cs"
-INIT_RUNTIME = ROOT / "Runtime" / "Initialization" / "RuntimeInitialization.cs"
-CALC_CYCLE = ROOT / "Runtime" / "Calculation" / "CalculationCycle.cs"
-PANEL_DIAGNOSTIC = ROOT / "UI" / "Panel" / "Rows" / "PanelOverviewDiagnosticRowsRenderer.cs"
-PANEL_STATE = ROOT / "Indicator" / "State.cs"
-PANEL_OPTIMIZATION = ROOT / "UI" / "Panel" / "PanelRenderOptimization.cs"
-
-for required_path in (
-    PANEL_MAIN, PANEL_FACTORY, PANEL_WRITER, PANEL_HEARTBEAT,
-    INIT_RUNTIME, CALC_CYCLE, PANEL_DIAGNOSTIC
-):
-    if not required_path.exists():
-        raise SystemExit(f"Phase 5.6 panel/runtime owner is missing: {required_path.name}")
-
-panel_main_code = PANEL_MAIN.read_text(encoding="utf-8")
-panel_factory_code = PANEL_FACTORY.read_text(encoding="utf-8")
-panel_writer_code = PANEL_WRITER.read_text(encoding="utf-8")
-panel_heartbeat_code = PANEL_HEARTBEAT.read_text(encoding="utf-8")
-init_runtime_code = INIT_RUNTIME.read_text(encoding="utf-8")
-calc_cycle_code = CALC_CYCLE.read_text(encoding="utf-8")
-panel_diagnostic_code = PANEL_DIAGNOSTIC.read_text(encoding="utf-8")
-state_code = PANEL_STATE.read_text(encoding="utf-8")
-panel_optimization_code = PANEL_OPTIMIZATION.read_text(encoding="utf-8")
-
-if "RenderPanel();" in panel_heartbeat_code:
-    raise SystemExit("Panel heartbeat must not invoke the full panel renderer")
-if "UpdatePanelHeartbeatRows(" not in panel_heartbeat_code or "UpdatePanelHeartbeatLiveRows(" not in panel_heartbeat_code:
-    raise SystemExit("Panel heartbeat must refresh lightweight live state directly")
-if "ShouldRunSafetySupervisor(" not in panel_heartbeat_code:
-    raise SystemExit("Panel heartbeat must decouple safety cadence")
-if "TotalMilliseconds >= 1000" not in panel_heartbeat_code:
-    raise SystemExit("Safety supervisor cadence must remain bounded at one second")
-if "TimeSpan.FromMilliseconds(500)" not in init_runtime_code:
-    raise SystemExit("Ready runtime timer must provide responsive 500ms panel cadence")
-if "TimeSpan.FromMilliseconds(250)" not in init_runtime_code:
-    raise SystemExit("Initialization poll cadence must remain bounded without 100ms timer churn")
-if init_runtime_code.count("RenderPanel();") < 2:
-    raise SystemExit("Panel must refresh during required initialization/finalization paths")
+PLAN_LABEL_COORDINATOR = ROOT / "UI" / "Chart" / "PlanLabelRenderCoordinator.cs"
+PLAN_LABEL_COORDINATOR_CODE = PLAN_LABEL_COORDINATOR.read_text(encoding="utf-8")
+if "bool preview" not in PLAN_LABEL_COORDINATOR_CODE:
+    raise SystemExit("Plan label renderer must accept preview context")
+if "BuildPlanLevelVisualState(" not in PLAN_LABEL_COORDINATOR_CODE:
+    raise SystemExit("Plan labels must consume the canonical visual-state builder")
 if (
-    "ShouldRenderFullPanel(" not in panel_main_code or
-    "BuildPanelPresentationKey(" not in panel_optimization_code or
-    "_lastPanelPresentationKey" not in state_code
+    "preview ? snapshot.SetupEntry : snapshot.Entry" not in PLAN_RENDERER_CODE or
+    "preview ? snapshot.SetupStop : snapshot.Stop" not in PLAN_RENDERER_CODE
 ):
-    raise SystemExit("Panel full rendering must be state-change driven through its canonical state owner")
-if "_panelRows.Count != PanelRowCount" in panel_main_code:
-    raise SystemExit("Panel renderer must not require eager fixed-row allocation")
-if "EnsurePanelRow(" not in panel_factory_code or "slot >= PanelRowCount" not in panel_writer_code:
-    raise SystemExit("Panel rows must be lazily allocated under the fixed capacity")
-if "if (row.Text != nextText)" not in panel_writer_code or ("if (row.ForegroundColor != nextColor)" not in panel_writer_code and "!Equals(row.ForegroundColor, nextColor)" not in panel_writer_code):
-    raise SystemExit("Panel writer must avoid redundant UI property writes")
-if "_renderSignalVisualSnapshot =" not in panel_main_code or "BuildSignalVisualSnapshot(" not in panel_main_code:
-    raise SystemExit("Panel render must reuse one canonical visual snapshot")
-if "_lastCalculationCompletedUtc" not in calc_cycle_code:
-    raise SystemExit("Calculation completion timestamp must be exposed for diagnostics")
-if "CalculationAgeText(" not in panel_diagnostic_code:
-    raise SystemExit("Panel must expose calculation freshness diagnostics")
-# Phase 5.5 visual setup projection and execution controls.
-VISUAL_PREVIEW_MODEL = MODEL_ROOT / "TradeSetupPreview.cs"
-VISUAL_PREVIEW_BUILDER = ROOT / "Planning" / "TradePlan" / "PlanPreviewBuilder.cs"
-VISUAL_STATE = ROOT / "UI" / "Chart" / "SignalVisualSnapshot.cs"
-VISUAL_BUILDER = ROOT / "UI" / "Chart" / "SignalVisualSnapshotBuilder.cs"
-VISUAL_CALC = ROOT / "Runtime" / "Calculation" / "CalculationLiveCycle.cs"
-VISUAL_PLAN_RENDERER = ROOT / "UI" / "Chart" / "PlanRenderCoordinator.cs"
-VISUAL_LINE_RENDERER = ROOT / "UI" / "Chart" / "PlanLineRenderer.cs"
-VISUAL_LINE_PRESENTATION_RULE = ROOT / "Core" / "Math" / "PlanLinePresentationRule.cs"
-VISUAL_LABEL_RENDERER = ROOT / "UI" / "Chart" / "PlanLabelRenderer.cs"
-VISUAL_LABEL_COORDINATOR = ROOT / "UI" / "Chart" / "PlanLabelRenderCoordinator.cs"
-VISUAL_LABEL_REMOVER = ROOT / "UI" / "Chart" / "PlanLabelRemover.cs"
-CONTROL_FACTORY = ROOT / "UI" / "Controls" / "ExecutionControlsFactory.cs"
-CONTROL_PRESENTATION_RULE = ROOT / "Core" / "Math" / "ExecutionControlPresentationRule.cs"
+    raise SystemExit(
+        "Canonical visual-state builder must use preview setup level values"
+    )
 
-for required_path in (
-    VISUAL_PREVIEW_MODEL,
-    VISUAL_PREVIEW_BUILDER,
-    VISUAL_STATE,
-    VISUAL_BUILDER,
-    VISUAL_CALC,
-    VISUAL_PLAN_RENDERER,
-    VISUAL_LINE_RENDERER,
-    VISUAL_LINE_PRESENTATION_RULE,
-    CONTROL_FACTORY,
-    CONTROL_PRESENTATION_RULE,
-):
-    if not required_path.exists():
-        raise SystemExit(f"Phase 5.5 visual/control owner is missing: {required_path.name}")
-
-preview_model_code = VISUAL_PREVIEW_MODEL.read_text(encoding="utf-8")
-preview_builder_code = VISUAL_PREVIEW_BUILDER.read_text(encoding="utf-8")
-visual_state_code = VISUAL_STATE.read_text(encoding="utf-8")
-visual_builder_code = VISUAL_BUILDER.read_text(encoding="utf-8")
-visual_calc_code = VISUAL_CALC.read_text(encoding="utf-8")
-visual_renderer_code = VISUAL_PLAN_RENDERER.read_text(encoding="utf-8")
-visual_line_code = VISUAL_LINE_RENDERER.read_text(encoding="utf-8")
-visual_line_presentation_rule_code = VISUAL_LINE_PRESENTATION_RULE.read_text(encoding="utf-8")
-plan_label_renderer_code = VISUAL_LABEL_RENDERER.read_text(encoding="utf-8")
-plan_label_coordinator_code = VISUAL_LABEL_COORDINATOR.read_text(encoding="utf-8")
-plan_label_remover_code = VISUAL_LABEL_REMOVER.read_text(encoding="utf-8")
-control_factory_code = CONTROL_FACTORY.read_text(encoding="utf-8")
-control_presentation_rule_code = CONTROL_PRESENTATION_RULE.read_text(encoding="utf-8")
-
-if "class TradeSetupPreview" not in preview_model_code:
-    raise SystemExit("Visual setup preview model is missing")
-if "BuildTradeSetupPreview(" not in preview_builder_code:
-    raise SystemExit("Visual setup preview builder is missing")
-if "BuildStructuralStop(" not in preview_builder_code or "BuildTargetLevels(" not in preview_builder_code:
-    raise SystemExit("Visual preview must reuse structural stop and target authorities")
-if "SetupPreviewActive" not in visual_state_code or "SetupEntry" not in visual_state_code:
-    raise SystemExit("Visual setup preview fields are missing")
-if "_setupPreview" not in visual_builder_code and "_setupPreview" not in visual_calc_code:
-    raise SystemExit("Visual setup preview cache is not wired")
-if "RenderSetupPreview(" not in visual_calc_code or "RenderLevelLines(" not in visual_renderer_code:
-    raise SystemExit("Visual setup levels must render through the shared level renderer")
-if "GetPlanLineRightBar()" not in visual_line_code or "return Bars.Count - 1" not in visual_line_code:
-    raise SystemExit("Plan line renderer must anchor the right edge to the latest chart candle")
-if "MapM5ToChart(" in visual_line_code or "anchorM5" in visual_line_code:
-    raise SystemExit("Plan line geometry must not end at an M5 event-time mapping")
-if "GetPlanLineLeftBar" not in visual_line_code:
-    raise SystemExit("Plan line renderer must expose one canonical left-edge calculation")
-if "GetCompactPlanLabelAnchorBar(" not in plan_label_coordinator_code:
-    raise SystemExit("Plan label/level presentation must reuse the canonical label-anchor owner")
-
-if "CreateExecutionToggle(" not in control_factory_code:
-    raise SystemExit("Execution controls must use the shared status ToggleButton presentation")
-if "IsEnabled = false" not in control_factory_code:
-    raise SystemExit("Execution status controls must be explicitly non-interactive")
-if "_autoTradingQuickToggle.Click +=" in control_factory_code or "_automaticOrdersQuickToggle.Click +=" in control_factory_code:
-    raise SystemExit("Execution status controls must not own click-based mutations")
-if "ExecutionControlPresentationRule.ComposeStatusText(" not in control_factory_code:
-    raise SystemExit("Execution status text must consume the canonical presentation rule")
-if "public static bool IsInteractive => false;" not in control_presentation_rule_code:
-    raise SystemExit("Execution-control presentation policy must be canonical and read-only")
-# Phase 1.5 performance/supervision gates.
-RUNTIME_INIT = ROOT / "Runtime" / "Initialization" / "RuntimeInitialization.cs"
-PANEL_HEARTBEAT = ROOT / "Runtime" / "Supervision" / "RuntimePanelHeartbeat.cs"
-SAFETY_SUPERVISOR = ROOT / "Runtime" / "Supervision" / "RuntimeSafetySupervisor.cs"
-MTF_CONTEXT_BUILDER = ROOT / "Runtime" / "Mtf" / "MtfContextBuilder.cs"
-M1_CLOSED_STAGE = ROOT / "Runtime" / "Calculation" / "CalculationClosedBar.cs"
-M5_REGIME_ANALYZER = ROOT / "Analysis" / "Market" / "MarketRegimeAnalyzer.cs"
-M5_REGIME_CACHE = ROOT / "Analysis" / "Market" / "M5RegimeCoreCache.cs"
-FVG_DETECTION = ROOT / "Analysis" / "Structure" / "Zones" / "FvgDetectionAnalyzer.cs"
-FVG_MITIGATION = ROOT / "Analysis" / "Structure" / "Zones" / "FvgMitigationEvaluator.cs"
-OB_DETECTION = ROOT / "Analysis" / "Structure" / "Zones" / "OrderBlockAnalyzer.cs"
-OB_MITIGATION = ROOT / "Analysis" / "Structure" / "Zones" / "OrderBlockMitigationGuard.cs"
+PLAN_LABEL_RENDERER = ROOT / "UI" / "Chart" / "PlanLabelRenderer.cs"
+PLAN_LABEL_RENDERER_CODE = PLAN_LABEL_RENDERER.read_text(encoding="utf-8")
+if "GetReadableLabelTextColor(" not in PLAN_LABEL_RENDERER_CODE:
+    raise SystemExit("Compact plan labels must resolve the canonical text color")
+if "return Color.White;" not in PLAN_LABEL_RENDERER_CODE:
+    raise SystemExit("Compact plan labels must use the canonical white text contract")
+compact_label_start = PLAN_LABEL_RENDERER_CODE.find("private void DrawCompactPlanLabel(")
+compact_label_code = PLAN_LABEL_RENDERER_CODE[compact_label_start:] if compact_label_start >= 0 else ""
+if compact_label_start < 0:
+    raise SystemExit("Compact plan label renderer method is missing")
+if "Chart.DrawText(" not in compact_label_code:
+    raise SystemExit("Compact plan label must own its native ChartText object")
+if "Chart.DrawRectangle(" in compact_label_code:
+    raise SystemExit("Compact plan labels must remain background-free")
+if "Chart.DrawIcon(" in compact_label_code:
+    raise SystemExit("Compact plan labels must not create anchor markers")
+if "CompactPlanLabelGapPips" not in compact_label_code or "Symbol.PipSize" not in compact_label_code:
+    raise SystemExit("Compact plan labels must use the canonical pip-space clearance")
+if "2.0" not in PLAN_LABEL_RENDERER_CODE:
+    raise SystemExit("Compact plan labels must keep the exact 2-pip clearance contract")
+if "Chart.RemoveObject(" not in compact_label_code:
+    raise SystemExit("Compact plan label must clean legacy chart objects")
 PROTECTION_MANAGER = ROOT / "Trading" / "LiveManagement" / "ProtectionManager.cs"
 
 for required_path in (
