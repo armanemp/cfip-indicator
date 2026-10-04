@@ -77,7 +77,7 @@ false-positive assertion: the Volume Expansion ratio-floor assertion was checked
 against the analyzer instead of its canonical VolumeExpansionRule owner. The
 audit now checks the rule owner.
 
-The CI-01 section in docs/ROADMAP.md was also corrected so the CI-00 closeout
+The CI-01 section in docs/CFIP-ROADMAP.md was also corrected so the CI-00 closeout
 status remains under CI-00 and CI-01 has its own independent status block.
 
 No production trading behavior or public parameter contract changed as part of
