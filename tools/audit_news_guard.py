@@ -46,6 +46,7 @@ required = {
             "EconomicNewsFeedCoordinator.CompleteFailure(",
             "_economicNewsRequestInFlight",
             "_economicNewsRequestGeneration",
+            "CFIP ECONOMIC NEWS FETCH SUCCESS",
         ],
     "src/CFIP.Indicator/Trading/Intelligence/EconomicNewsCalendarSharedState.cs":
         [
@@ -54,6 +55,7 @@ required = {
             "PersistSharedEconomicNewsState(",
             "TryAdoptSharedEconomicNewsSnapshot(",
             "PublishEconomicNewsSnapshot(",
+            "CFIP ECONOMIC NEWS SHARED ADOPTED",
         ],
     "src/CFIP.Indicator/Trading/Intelligence/EconomicNewsFeedCoordinator.cs":
         [
