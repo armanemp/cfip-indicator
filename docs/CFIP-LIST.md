@@ -1576,7 +1576,7 @@ At certification:
 
 **Inventory source tree:** `f6ef574355a115393ef5279036724675ac18af4a`
 
-**Current executable package:** **WP-03 — IN PROGRESS**
+**Current executable package:** **WP-04 — NEXT**
 
 ### WP-02 closeout — GitHub workflows
 
@@ -1633,3 +1633,12 @@ For non-production files, classify whether they are active build/test/audit infr
 # 20. Current continuation lock
 
 Do not start WP-01 or any later package until WP-00 has established the real current baseline and updated CFIP_GATE and CFIP-ROADMAP accordingly.
+
+
+### WP-03 closeout — Canonical control plane
+
+**Status:** PASS — PR #283 merged as `e42e57f7bd425c535ecef57c0835d9d22d84313b`.
+
+ROADMAP/LIST/GATE authority, WORKFLOW continuity and README ownership wording were normalized without production trading-logic changes. Exact-head Source/Architecture, Runtime Acceptance and cTrader Compile all passed.
+
+**Next:** WP-04 — Legacy control-plane migration and stale-document isolation.
