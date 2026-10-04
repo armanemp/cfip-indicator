@@ -114,7 +114,8 @@ check(
 check(
     "F3 roadmap and continuation state are recorded",
     "P3 — Market Data / Time / Price / MTF / Closed-Bar Integrity" in roadmap and
-    "P3 — Market Data / Time / Price / MTF / Closed-Bar Integrity" in continuation
+    "closed-M5 temporal boundary" in continuation and
+    "IndexMath.ClosedBarBoundaryReference" in continuation
 )
 
 print("=" * 72)
