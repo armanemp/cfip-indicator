@@ -4000,7 +4000,7 @@ Verification is pending on the exact branch head.
 Status: PASS — PR #284 merged to `main` as `2e98a4b4cd27dd8b083ee8aac1437cf1a3c6271e`.
 
 Completed:
-- migrated active tooling and continuity checks from superseded `docs/ROADMAP.md` to canonical `docs/CFIP-ROADMAP.md`;
+- migrated active tooling and continuity checks from the superseded roadmap to canonical `docs/CFIP-ROADMAP.md`;
 - isolated the historical roadmap at `docs/archive/ROADMAP-LEGACY-2026-10-04.md` and kept historical checks pointed at that archive;
 - verified the canonical control-plane boundary and repository-integrity continuity;
 - hardened two continuity audits so they validate the correct documentation owner rather than requiring brittle wording in the macro roadmap;
