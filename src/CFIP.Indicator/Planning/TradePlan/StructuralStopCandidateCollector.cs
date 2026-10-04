@@ -25,7 +25,10 @@ namespace cAlgo
                             if (UseM1Trigger &&
                                 _m1Bars != null)
                             {
-                                DateTime reference = _m5Bars.OpenTimes[closedM5];
+                                DateTime reference = ClosedBarBoundaryReference(
+                                    _m5Bars,
+                                    closedM5,
+                                    Server.TimeInUtc);
                                 int m1Index = ClosedIndex(_m1Bars, reference);
 
                                 if (m1Index >= 10)
