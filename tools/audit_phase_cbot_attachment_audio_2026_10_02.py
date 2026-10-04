@@ -24,8 +24,8 @@ checks = {
     "Indicator keeps stable cTrader display registration":
         '"CFIP Smart Indicator"' in indicator and
         "[Indicator(" in indicator,
-    "cBot-to-indicator binding accepts stable indicator type":
-        "IndicatorIdentity.TypeName" in binding and
+    "cBot-to-indicator binding accepts stable indicator display type":
+        'DisplayName = "CFIP Smart Indicator"' in binding and
         "candidate.Type.Name" in binding,
     "cBot does not auto-create the local Indicator":
         "ChartIndicators.Add(" not in read("src/CFIP.cBot/CFIPExecutionBot.cs"),
