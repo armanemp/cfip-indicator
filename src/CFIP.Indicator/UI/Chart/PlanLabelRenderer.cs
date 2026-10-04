@@ -170,38 +170,6 @@ namespace cAlgo
                     false;
 
                 // Keep a precise runtime record of the shared bar-index geometry.
-                if (recreate)
-                {
-                    double lineX =
-                        Chart.BarIndexToX(
-                            canonicalLineLeftBar);
-
-                    double labelX =
-                        Chart.BarIndexToX(
-                            canonicalLabelBar);
-
-                    double oneBarX =
-                        Math.Abs(
-                            lineX -
-                            Chart.BarIndexToX(
-                                Math.Max(
-                                    0,
-                                    canonicalLineLeftBar - 1)));
-
-                    Print(
-                        "CFIP SIGNAL LABEL GEOMETRY | {0} | lineBar={1} | labelBar={2} | gapBars={3} | lineX={4:F2} | labelX={5:F2} | gapPx={6:F2} | oneBarPx={7:F2} | Y={8}",
-                        name,
-                        canonicalLineLeftBar,
-                        canonicalLabelBar,
-                        canonicalLineLeftBar - canonicalLabelBar,
-                        lineX,
-                        labelX,
-                        lineX - labelX,
-                        oneBarX,
-                        labelPrice.ToString(
-                            CultureInfo.InvariantCulture));
-                }
-
                 // Remove every legacy companion shape deterministically.
                 Chart.RemoveObject(name + "_BOX");
                 Chart.RemoveObject(name + "_ANCHOR");
