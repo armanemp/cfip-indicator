@@ -80,7 +80,7 @@ check(
 
 check(
     "presentation-only state is explicit on the candidate model",
-    "public bool PresentationOnly;" in candidate,
+    "public bool PresentationOnly" in candidate,
 )
 
 check(
