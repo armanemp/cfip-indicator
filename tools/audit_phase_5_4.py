@@ -59,7 +59,7 @@ core = read(
 runtime_contracts = read("tools/CFIP.Runtime.Contracts/Program.cs")
 runtime_project = read("tools/CFIP.Runtime.Contracts/CFIP.Runtime.Contracts.csproj")
 workflow = read(".github/workflows/source-check.yml")
-roadmap = read("docs/ROADMAP.md")
+roadmap = read("docs/CFIP-ROADMAP.md")
 phase_doc = read("docs/PHASE-CR5-4-PENDING-FILL-ABSOLUTE-RECONCILIATION.md")
 
 
