@@ -3833,3 +3833,14 @@ Phase report: `docs/PHASE-F1-REPOSITORY-BUILD-DEPENDENCY-TRUTH-2026-10-04.md`.
 
 Operator action after merge: `git pull --ff-only`.
 
+
+
+## 2026-10-04 — F2 Single-Owner / No-Duality / Dead-Code Closure
+
+Status: **IMPLEMENTATION COMPLETE — repository verification pending.**
+
+F2 closed an evidenced dead ownership surface in ParallelOpportunityRenderer: removed the unused LaneLabel helper and the no-op HashSetCurrentOpportunityVisuals helper/call. The existing canonical scenario-label, line-rendering and label-rendering owners remain unchanged. The accumulated single-owner audit now guards against reintroduction of these dead paths.
+
+No strategy, threshold, MTF, signal, Entry/SL/TP/RR, alert, cBot or broker behavior changed.
+
+Next implementation phase after F2 closeout: **F3 — Price / Time / Closed-Bar / MTF Integrity**.

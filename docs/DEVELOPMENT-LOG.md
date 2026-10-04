@@ -3972,3 +3972,14 @@ The older wording that described M15 as the execution analysis clock is supersed
 
 
 - F1 baseline cleanup removed three dead display parameters (`LabelLeftOffsetBars`, `ShowEarlyArrow`, `ShowEarlyWatch`) after tracing all consumers; obsolete audit references were synchronized to the current canonical owners instead of restoring dead UI paths.
+
+## 2026-10-04 — F2 Single-Owner / Dead-Code Closure
+
+Status: implementation complete; verification pending.
+
+- Removed the dead LaneLabel helper from ParallelOpportunityRenderer; canonical scenario label formatting remains in PlanLabelFormatting.
+- Removed the no-op HashSetCurrentOpportunityVisuals helper and its call; _opportunityVisualIds plus the existing stale-object sweep remain the sole parallel-visual lifecycle state.
+- Extended the accumulated single-owner audit to reject those dead helper paths if reintroduced.
+- No strategy, decision, Entry/SL/TP/RR, MTF, alert, execution or broker behavior changed.
+- F2 repository verification must pass before merge; terminal visual acceptance remains manual.
+

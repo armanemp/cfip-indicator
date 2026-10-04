@@ -2642,3 +2642,11 @@ Final closure requires the F1 branch's Source/Architecture, Runtime Acceptance a
 
 
 - F1 also removed three dead public display parameters with no production consumer; current public parameter inventory is 545. No replacement UI path was introduced.
+
+## F2 — Single-Owner / No-Duality / Dead-Code Closure — 2026-10-04
+
+Implementation branch: phase/f2-single-owner-dead-code-2026-10-04.
+
+Removed two dead helpers from ParallelOpportunityRenderer (LaneLabel and the no-op HashSetCurrentOpportunityVisuals) and added an accumulated audit guard against their reintroduction. No parallel owner was created and no trading behavior changed.
+
+Verification is pending on the exact branch head. Operator action after merge: git pull --ff-only.
