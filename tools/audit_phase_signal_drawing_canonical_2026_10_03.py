@@ -32,7 +32,7 @@ check("plan labels use the canonical readable font, one-bar left clearance and f
     "GetCompactPlanLabelAnchorTime(" in anchor and
     "HorizontalAlignment.Right" in labels and
     "Chart.DrawText(" in labels and
-    "canonicalLabelBar" in labels and
+    "expectedTime" in labels and
     "label.Time != expectedTime" in labels and
     "label.HorizontalAlignment" in labels and
     "label.VerticalAlignment" in labels and
