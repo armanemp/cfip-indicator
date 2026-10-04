@@ -376,10 +376,15 @@ Plan lines:
 - finite 40-bar geometry
 
 Labels:
-- canonical owner؛
-- exact price؛
-- readable؛
-- canonical left-of-line anchor.
+- canonical owner: `PlanLabelRenderer`;
+- exact price;
+- readable regular-weight native ChartText;
+- canonical anchor owner: `PlanLabelAnchorCalculator`;
+- visible end of right-aligned text exactly one chart bar before the canonical line start;
+- label text must use the exact materialized color of its corresponding signal line;
+- `Color.White` is forbidden for canonical signal/plan line labels;
+- pending, parallel and prediction labels must reuse the same renderer/anchor contract;
+- no secondary label geometry or alternate label renderer.
 
 ## Alerts
 
