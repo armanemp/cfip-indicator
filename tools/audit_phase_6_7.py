@@ -30,7 +30,8 @@ accumulator = read("src/CFIP.Indicator/Core/Math/TargetObstacleTelemetryAccumula
 runtime = read("tools/CFIP.Runtime.Contracts/Program.cs")
 csproj = read("tools/CFIP.Runtime.Contracts/CFIP.Runtime.Contracts.csproj")
 workflow = read(".github/workflows/source-check.yml")
-roadmap = read("docs/ROADMAP.md")
+roadmap = read("docs/CFIP-ROADMAP.md")
+historical_roadmap = read("docs/archive/ROADMAP-LEGACY-2026-10-04.md")
 continuation = read("docs/CONTINUATION-STATE.md")
 review = read("docs/CLAUDE-REVIEW-REMEDIATION-ROADMAP.md")
 phase = read("docs/PHASE-CR6-7-F8-TARGET-OBSTACLE-TELEMETRY.md")
@@ -128,8 +129,8 @@ check(
 
 check(
     "F8 documentation and continuation advance to F9",
-    "CR6.7 / F8 closeout" in roadmap and
-    "CR6.8 / F9" in roadmap and
+    "CR6.7 / F8 closeout" in historical_roadmap and
+    "CR6.8 / F9" in historical_roadmap and
     "CR6.8 / F9" in continuation and
     "CR6.7 / F8" in review and
     "CR6.8 / F9" in review and

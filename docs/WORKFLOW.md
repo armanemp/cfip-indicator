@@ -208,3 +208,15 @@ BUY uses Bid for TP/SL progression checks; SELL uses Ask. A target that has alre
 passed by market cannot be restored, and a stop cannot become less protective. Server-side
 advanced protection is broker-owned, but its ladder must be reconciled to the same monotonic
 plan geometry after partial realization.
+
+
+## Main branch canonicalization rule
+
+All final project changes must land on `main` as the single canonical implementation state. Work branches/PRs are temporary delivery mechanisms only and must not become parallel long-lived project states. After verification and merge, the authoritative state is `main`; continuation, roadmap, gate, and development-log references must point to that merged state. Do not leave the same completed behavior implemented or maintained independently on multiple branches.
+
+## Local execution handoff
+When a work package needs user-local execution, the assistant must hand off the exact commands and their execution context, expected success signal, and required returned output. This is mandatory for every applicable package and must not be inferred from CI status.
+
+## Permanent green-and-merge completion rule
+
+A work package is not considered complete, and the assistant must not issue its completion response, until every required CI gate for the exact final commit is green and the verified work package has been merged into `main`. If any gate is pending or failed, continue inspecting, fixing the canonical owner when needed, rerunning verification, and waiting for green results. After green CI, verify the actual merged `main` state before declaring the package complete. This rule applies to every atomic work package and every phase, without exception.

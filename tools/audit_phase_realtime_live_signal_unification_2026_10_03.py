@@ -36,7 +36,8 @@ alerts = read("src/CFIP.Indicator/Runtime/Calculation/CalculationDecisionAlerts.
 alert_engine = read("src/CFIP.Indicator/Trading/Alerts/AlertEngine.cs")
 alert_processor = read("src/CFIP.Indicator/UI/Panel/AlertDeliveryProcessor.cs")
 workflow = read(".github/workflows/source-check.yml")
-roadmap = read("docs/ROADMAP.md")
+roadmap = read("docs/CFIP-ROADMAP.md")
+historical_roadmap = read("docs/archive/ROADMAP-LEGACY-2026-10-04.md")
 continuation = read("docs/CONTINUATION-STATE.md")
 phase = read("docs/PHASE-REALTIME-LIVE-SIGNAL-UNIFICATION-2026-10-03.md")
 
@@ -211,7 +212,7 @@ check(
 
 check(
     "operator continuity docs contain this phase",
-    "Realtime / Live Execution + Volume Profile Intelligence" in roadmap and
+    "Realtime / Live Execution + Volume Profile Intelligence" in historical_roadmap and
     "Current continuation" in continuation and
     "Realtime/Live Execution + Volume Profile Intelligence" in continuation and
     "Realtime all-timeframe intelligence + smart arrows" in continuation and

@@ -13,7 +13,8 @@ suite = read("tools/CFIP.Runtime.Contracts/DeterministicReplaySuite.cs")
 program = read("tools/CFIP.Runtime.Contracts/Program.cs")
 runtime_project = read("tools/CFIP.Runtime.Contracts/CFIP.Runtime.Contracts.csproj")
 workflow = read(".github/workflows/source-check.yml")
-roadmap = read("docs/ROADMAP.md")
+roadmap = read("docs/CFIP-ROADMAP.md")
+historical_roadmap = read("docs/archive/ROADMAP-LEGACY-2026-10-04.md")
 continuation = read("docs/CONTINUATION-STATE.md")
 
 required_scenarios = (
@@ -104,9 +105,9 @@ check(
 )
 
 check(
-    "CI-16" in roadmap and
-    "CI-17" in roadmap and
-    "CI-FINAL" in roadmap,
+    "CI-16" in historical_roadmap and
+    "CI-17" in historical_roadmap and
+    "CI-FINAL" in historical_roadmap,
     "roadmap retains CI-16 → CI-17 → CI-FINAL sequence",
 )
 

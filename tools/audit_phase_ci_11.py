@@ -42,7 +42,8 @@ live_cycle = read("src/CFIP.Indicator/Runtime/Calculation/CalculationLiveCycle.c
 contracts_project = read("tools/CFIP.Decision.Contracts/CFIP.Decision.Contracts.csproj")
 contracts = read("tools/CFIP.Decision.Contracts/Program.cs")
 workflow = read(".github/workflows/source-check.yml")
-roadmap = read("docs/ROADMAP.md")
+roadmap = read("docs/CFIP-ROADMAP.md")
+historical_roadmap = read("docs/archive/ROADMAP-LEGACY-2026-10-04.md")
 
 check(
     "canonical entry geometry model/rule exist with all required concepts",
@@ -164,7 +165,7 @@ check(
 
 check(
     "roadmap identifies CI-11 as the active entry-geometry/timing phase",
-    "CI-11 — Entry geometry and signal-timing audit" in roadmap
+    "CI-11 — Entry geometry and signal-timing audit" in historical_roadmap
 )
 
 print("CI-11 ENTRY GEOMETRY / SIGNAL TIMING INTEGRITY SUMMARY")

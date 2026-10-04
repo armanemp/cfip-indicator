@@ -30,7 +30,8 @@ rule = read("src/CFIP.Indicator/Core/Math/WatchReactionAlertRule.cs")
 contracts = read("tools/CFIP.Runtime.Contracts/Program.cs")
 project = read("tools/CFIP.Runtime.Contracts/CFIP.Runtime.Contracts.csproj")
 workflow = read(".github/workflows/source-check.yml")
-roadmap = read("docs/ROADMAP.md")
+roadmap = read("docs/CFIP-ROADMAP.md")
+historical_roadmap = read("docs/archive/ROADMAP-LEGACY-2026-10-04.md")
 phase_doc = read("docs/PHASE-CR5-7-WATCH-REACTION-ALERTS.md")
 continuation = read("docs/CONTINUATION-STATE.md")
 
@@ -129,7 +130,7 @@ check(
 
 check(
     "E7 continuity documentation is synchronized",
-    "CR5.7 / E7" in roadmap and
+    "CR5.7 / E7" in historical_roadmap and
     "CR5.7 / E7" in phase_doc and
     "CR5.7 / E7" in continuation,
 )

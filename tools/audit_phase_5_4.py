@@ -59,7 +59,8 @@ core = read(
 runtime_contracts = read("tools/CFIP.Runtime.Contracts/Program.cs")
 runtime_project = read("tools/CFIP.Runtime.Contracts/CFIP.Runtime.Contracts.csproj")
 workflow = read(".github/workflows/source-check.yml")
-roadmap = read("docs/ROADMAP.md")
+roadmap = read("docs/CFIP-ROADMAP.md")
+historical_roadmap = read("docs/archive/ROADMAP-LEGACY-2026-10-04.md")
 phase_doc = read("docs/PHASE-CR5-4-PENDING-FILL-ABSOLUTE-RECONCILIATION.md")
 
 
@@ -182,7 +183,7 @@ check(
 check(
     "phase record and roadmap reference E4",
     "CR5.4" in phase_doc and
-    "CR5.4 / E4" in roadmap,
+    "CR5.4 / E4" in historical_roadmap,
 )
 
 print("CR5.4 SUMMARY")

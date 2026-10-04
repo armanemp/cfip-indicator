@@ -36,7 +36,7 @@ presentation = read("src/CFIP.Indicator/UI/Chart/SignalPresentationRenderer.cs")
 plan = read("src/CFIP.Indicator/UI/Chart/PlanRenderCoordinator.cs")
 workflow = read(".github/workflows/source-check.yml")
 phase = read("docs/PHASE-SMART-SEPARATED-SIGNAL-ARROWS-2026-10-04.md")
-roadmap = read("docs/ROADMAP.md")
+roadmap = read("docs/CFIP-ROADMAP.md")
 continuation = read("docs/CONTINUATION-STATE.md")
 
 check(
@@ -149,9 +149,9 @@ check(
 )
 
 check(
-    "roadmap and continuation state record the closeout",
-    "2026-10-04" in roadmap and
-    "smart separated signal arrows" in roadmap.lower() and
+    "phase and continuation state record the closeout",
+    "2026-10-04" in phase and
+    "smart separated signal arrows" in phase.lower() and
     "smart separated signal arrows" in continuation.lower(),
 )
 

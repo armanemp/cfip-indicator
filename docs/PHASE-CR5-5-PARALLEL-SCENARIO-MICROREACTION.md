@@ -105,4 +105,4 @@ Target-terminal behavior remains a manual boundary for:
 ## Transition
 
 After repository verification, the next phase is CR5.6 / E6 according to the
-Prompt 5 sequence in docs/ROADMAP.md.
+Prompt 5 sequence in docs/CFIP-ROADMAP.md.

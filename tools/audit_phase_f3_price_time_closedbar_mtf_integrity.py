@@ -35,7 +35,7 @@ prep = read("src/CFIP.Indicator/Runtime/Calculation/CalculationPreparation.cs")
 closed_stage = read("src/CFIP.Indicator/Runtime/Calculation/CalculationClosedBar.cs")
 stage = read("src/CFIP.Indicator/Runtime/Calculation/CalculationStageIsolation.cs")
 workflow = read(".github/workflows/source-check.yml")
-roadmap = read("docs/ROADMAP.md")
+roadmap = read("docs/CFIP-ROADMAP.md")
 continuation = read("docs/CONTINUATION-STATE.md")
 
 check(
@@ -113,8 +113,9 @@ check(
 
 check(
     "F3 roadmap and continuation state are recorded",
-    "F3 — Price / Time / Closed-Bar / MTF Integrity" in roadmap and
-    "F3 — Price / Time / Closed-Bar / MTF Integrity" in continuation
+    "P3 — Market Data / Time / Price / MTF / Closed-Bar Integrity" in roadmap and
+    "closed-M5 temporal boundary" in continuation and
+    "IndexMath.ClosedBarBoundaryReference" in continuation
 )
 
 print("=" * 72)

@@ -55,7 +55,8 @@ contracts = read(
 workflow = read(
     ".github/workflows/source-check.yml"
 )
-roadmap = read("docs/ROADMAP.md")
+roadmap = read("docs/CFIP-ROADMAP.md")
+historical_roadmap = read("docs/archive/ROADMAP-LEGACY-2026-10-04.md")
 continuation = read("docs/CONTINUATION-STATE.md")
 review = read("docs/CLAUDE-REVIEW-REMEDIATION-ROADMAP.md")
 phase_doc = read("docs/PHASE-CR4-8-TP1-DIRECTIONAL-DEFENCE.md")
@@ -142,11 +143,11 @@ check(
 
 check(
     "project documentation records the completed phase and next transition",
-    "CR4.8" in roadmap
+    "CR4.8" in historical_roadmap
     and "CR4.8" in continuation
     and "CR4.8" in review
     and "CR4.8" in phase_doc
-    and "CR4.9" in roadmap
+    and "CR4.9" in historical_roadmap
     and "CR4.9" in continuation,
 )
 

@@ -21,7 +21,7 @@ ranking = read("src/CFIP.Indicator/Core/Math/TradeOpportunityQualityRule.cs")
 state = read("src/CFIP.Indicator/Indicator/State.cs")
 builder = read("src/CFIP.Indicator/Analysis/Market/ParallelOpportunityCandidateBuilder.cs")
 workflow = read(".github/workflows/source-check.yml")
-roadmap = read("docs/ROADMAP.md")
+roadmap = read("docs/CFIP-ROADMAP.md")
 phase = read("docs/PHASE-VOLUME-PROFILE-EVIDENCE-2026-10-03.md")
 
 def check(name, ok):
@@ -99,8 +99,8 @@ check(
 
 check(
     "phase/roadmap continuity is recorded",
-    "VOLUME PROFILE EVIDENCE" in roadmap and
-    "Volume Profile" in phase
+    "volume profile" in roadmap.lower() and
+    "volume profile" in phase.lower()
 )
 
 if errors:

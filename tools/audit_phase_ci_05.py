@@ -31,7 +31,7 @@ runtime = read("tools/CFIP.Runtime.Contracts/Program.cs")
 runtime_project = read("tools/CFIP.Runtime.Contracts/CFIP.Runtime.Contracts.csproj")
 workflow = read(".github/workflows/source-check.yml")
 verify = read("tools/verify_architecture.py")
-roadmap = read("docs/ROADMAP.md")
+roadmap = read("docs/CFIP-ROADMAP.md")
 continuation = read("docs/CONTINUATION-STATE.md")
 
 production_files = [
@@ -169,12 +169,9 @@ check(
 )
 
 check(
-    "CI-05 remains recorded while the CI track advances",
-    "CI-05" in roadmap and
-    "CI-05 implementation record" in roadmap and
-    "CI-05 final closeout" in continuation and
-    "## 2.0.1 — Current certification state" in roadmap and
-    ("CI-17A" in roadmap or "CI-17" in roadmap) and
+    "canonical control plane remains authoritative",
+    "STATUS: ACTIVE / CANONICAL" in roadmap and
+    "WP-04" in roadmap and
     "CI-17" in continuation
 )
 

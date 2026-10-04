@@ -19,7 +19,8 @@ visibility = read("src/CFIP.Indicator/UI/Panel/PanelVisibility.cs")
 live = read("src/CFIP.Indicator/Runtime/Supervision/PanelHeartbeatLiveState.cs")
 runtime = read("tools/CFIP.Runtime.Contracts/Program.cs")
 workflow = read(".github/workflows/source-check.yml")
-roadmap = read("docs/ROADMAP.md")
+roadmap = read("docs/CFIP-ROADMAP.md")
+historical_roadmap = read("docs/archive/ROADMAP-LEGACY-2026-10-04.md")
 continuation = read("docs/CONTINUATION-STATE.md")
 development = read("docs/DEVELOPMENT-LOG.md")
 
@@ -74,7 +75,7 @@ checks = (
     ),
     (
         "continuity records CI-17A",
-        "CI-17A" in roadmap and
+        "CI-17A" in historical_roadmap and
         "CI-17A" in continuation and
         "CI-17A" in development,
     ),

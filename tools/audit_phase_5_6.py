@@ -41,7 +41,8 @@ parameters_confluence = read(
 contracts = read("tools/CFIP.Runtime.Contracts/Program.cs")
 project = read("tools/CFIP.Runtime.Contracts/CFIP.Runtime.Contracts.csproj")
 workflow = read(".github/workflows/source-check.yml")
-roadmap = read("docs/ROADMAP.md")
+roadmap = read("docs/CFIP-ROADMAP.md")
+historical_roadmap = read("docs/archive/ROADMAP-LEGACY-2026-10-04.md")
 phase_doc = read("docs/PHASE-CR5-6-DIRECTIONAL-BIAS-TIMEFRAME.md")
 current_phase_doc = read(
     "docs/PHASE-CR5-8-TARGET-SELECTION-CONSISTENCY.md"
@@ -151,7 +152,7 @@ check(
 check(
     "E6 continuity documentation remains represented after later remediation phases",
     "CR5.6 / E6" in phase_doc and
-    "CR5.7 / E7" in roadmap and
+    "CR5.7 / E7" in historical_roadmap and
     (
         "CR5.7 / E7" in continuation or
         "CR5.8 / E8" in continuation

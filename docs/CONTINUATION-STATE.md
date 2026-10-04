@@ -4,7 +4,7 @@ Status: **ACTIVE**
 
 - Accidental M2 / 2-minute timeframe is excluded from active main and now explicitly prohibited by source audit.
 - Canonical MTF: M1/M5/M15/M30/H1/H4/D1/W1; M15 decision/reference, M5 trigger/entry precision, M1 optional confirmation.
-- Canonical remediation sequence: **F0 → F21** in docs/ROADMAP.md.
+- Canonical remediation sequence: **F0 → F21** in docs/CFIP-ROADMAP.md.
 - One complete vertical-slice phase per message; no phase closes without focused verification, regression/build evidence and docs closeout.
 
 ## 2026-10-04 — Smart Separated Signal Arrows
@@ -884,7 +884,7 @@ repository search on 2026-10-01 found no `CR4.11`, `D11`, `Phase 4.11` or
 ## Authoritative order
 
 1. Claude review remediation: docs/CLAUDE-REVIEW-REMEDIATION-ROADMAP.md
-2. Master roadmap: docs/ROADMAP.md
+2. Master roadmap: docs/CFIP-ROADMAP.md
 3. Only after CR-FINAL: local cBot separation Track 12A.
 
 ## Active phase
@@ -1231,7 +1231,7 @@ CR3.5 is closed. The next implementation response must execute **CR-FINAL** only
 
 ## Prompt 4 remediation insertion — 2026-09-30
 
-Prompt 4 D1–D10 has been added to `docs/CLAUDE-REVIEW-REMEDIATION-ROADMAP.md` and `docs/ROADMAP.md`.
+Prompt 4 D1–D10 has been added to `docs/CLAUDE-REVIEW-REMEDIATION-ROADMAP.md` and `docs/CFIP-ROADMAP.md`.
 
 Order:
 `CR4.1 → CR4.2 → CR4.3 → CR4.4 → CR4.5 → CR4.6 → CR4.7 → CR4.8 → CR4.9 → CR4.10 → CR-FINAL`
@@ -1360,7 +1360,7 @@ Runtime Acceptance Contracts, and cTrader Compile on commit
 `5dd9a8a8bb0fb8172ac40b7336ce86e0bb5c3c2a`.
 ### Prompt 6 remediation insertion — 2026-09-30
 
-Prompt 6 F1–F9 has been added to `docs/CLAUDE-REVIEW-REMEDIATION-ROADMAP.md` and `docs/ROADMAP.md`.
+Prompt 6 F1–F9 has been added to `docs/CLAUDE-REVIEW-REMEDIATION-ROADMAP.md` and `docs/CFIP-ROADMAP.md`.
 
 Order:
 `CR6.1 → CR6.2 → CR6.3 → CR6.4 → CR6.5 → CR6.6 → CR6.7 → CR6.8 → CR6.9 → CR-FINAL`
@@ -1369,7 +1369,7 @@ The F-series remains static-review hypotheses until each item is independently v
 
 ### Prompt 5 remediation insertion — 2026-09-30
 
-Prompt 5 E1–E8 has been added to `docs/CLAUDE-REVIEW-REMEDIATION-ROADMAP.md` and `docs/ROADMAP.md`.
+Prompt 5 E1–E8 has been added to `docs/CLAUDE-REVIEW-REMEDIATION-ROADMAP.md` and `docs/CFIP-ROADMAP.md`.
 
 Order:
 `CR5.1 → CR5.2 → CR5.3 → CR5.4 → CR5.5 → CR5.6 → CR5.7 → CR5.8 → CR-FINAL`

@@ -1,3 +1,5 @@
+<!-- ARCHIVE: historical roadmap; NOT ACTIVE AUTHORITY. Canonical control plane: docs/CFIP-ROADMAP.md + docs/CFIP-LIST.md + docs/CFIP_GATE.md -->
+
 # 0. Canonical Forensic Remediation Program — 2026-10-04
 
 > این بخش تنها مرجع فعال ترتیب اجرای بازبینی و اصلاح است. محتوای قدیمی M0–M45 / CI / CR / MTF پایین همین فایل فقط سابقه و mapping است و منبع دوم roadmap نیست.

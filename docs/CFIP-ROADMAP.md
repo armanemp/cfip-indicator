@@ -11,6 +11,14 @@
 
 ---
 
+# Current execution state
+
+**Macro phase:** P2 — Ownership / Single-Source / Dead-Code Closure  
+**Atomic package:** WP-04 — Historical isolation  
+**Status:** IN PROGRESS
+
+WP-04 is the current executable package. The macro phase remains P2 while atomic packages advance independently.
+
 # 1. Mission
 
 CFIP is reviewed as one complete system:
@@ -529,7 +537,7 @@ Evidence:
 Residual control-plane defect:
 - Active tooling still contains references to historical `docs/ROADMAP.md`; this is registered as DEF-P0-002 and is queued for WP-03/WP-04 migration/isolation. Historical documents do not override the canonical control plane.
 
-The next executable package is **WP-01 — Root/build metadata**.
+The current executable package is **WP-04 — Historical isolation**.
 
 # 18. CFIP operator/product contract
 
@@ -762,3 +770,15 @@ No fourth planning document may become an active authority.
 Canonical planning, inventory and acceptance authority was normalized across ROADMAP/LIST/GATE. WORKFLOW continuity was aligned to the canonical bootstrap sequence and README ownership wording was aligned to the Indicator-analysis / cBot-execution boundary. Exact-head Source/Architecture, Runtime Acceptance and cTrader Compile gates passed.
 
 **Next:** WP-04 — Legacy control-plane migration and stale-document isolation.
+
+### Permanent workflow rule — local command handoff
+For every Atomic Work Package, if local execution is required, the package MUST explicitly give the user the exact commands, working directory/environment, execution point, expected success signal, and whether output must be returned. CI success never substitutes for a required local verification. This requirement applies to Git sync, build/test/audit, cTrader/cBot compile/runtime probes, artifact generation, and final acceptance.
+
+
+### Historical continuity registry — preserved canonical evidence
+
+- **CBOT-P5 historical continuity:** broker reconciliation/protection recovery remains represented by the canonical cBot/Indicator boundary, with detailed implementation evidence retained in docs/CONTINUATION-STATE.md and docs/DEVELOPMENT-LOG.md. This registry preserves the historical audit marker without restoring obsolete roadmap authority.
+
+- **CBOT-P6 historical continuity:** account/risk/connection truth remains recorded in canonical continuity evidence; this registry preserves the historical audit marker without reactivating the superseded roadmap.
+
+- **CBOT-P8 historical continuity:** progressive protection state synchronization remains recorded in canonical continuity evidence, including the M15/M5 role boundary; the historical marker does not act as an independent roadmap.

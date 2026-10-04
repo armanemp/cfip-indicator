@@ -38,7 +38,7 @@ alert_engine = read("src/CFIP.Indicator/Trading/Alerts/AlertEngine.cs")
 runtime = read("tools/CFIP.Runtime.Contracts/Program.cs")
 decision_runtime = read("tools/CFIP.Decision.Contracts/Program.cs")
 workflow = read(".github/workflows/source-check.yml")
-roadmap = read("docs/ROADMAP.md")
+roadmap = read("docs/CFIP-ROADMAP.md")
 continuation = read("docs/CONTINUATION-STATE.md")
 
 check(
@@ -140,10 +140,9 @@ check(
 )
 
 check(
-    "CI-08 roadmap/continuation transition is recorded",
-    "CI-08 implementation record" in roadmap and
-    "## 2.0.1 — Current certification state" in roadmap and
-    ("CI-17A" in roadmap or "CI-17" in roadmap) and
+    "canonical control plane remains authoritative",
+    "STATUS: ACTIVE / CANONICAL" in roadmap and
+    "WP-04" in roadmap and
     "CI-08 implementation status" in continuation and
     "CI-17" in continuation
 )

@@ -75,7 +75,8 @@ benchmark = read("tools/CFIP.StockIndicators.Benchmark/D10/NativeRegistryLookupB
 benchmark_program = read("tools/CFIP.StockIndicators.Benchmark/Program.cs")
 workflow = read(".github/workflows/source-check.yml")
 phase_doc = read("docs/PHASE-CR4-10-NATIVE-INDICATOR-SAFETY.md")
-roadmap = read("docs/ROADMAP.md")
+roadmap = read("docs/CFIP-ROADMAP.md")
+historical_roadmap = read("docs/archive/ROADMAP-LEGACY-2026-10-04.md")
 continuation = read("docs/CONTINUATION-STATE.md")
 review = read("docs/CLAUDE-REVIEW-REMEDIATION-ROADMAP.md")
 
@@ -178,8 +179,8 @@ check(
 )
 check(
     "project documentation records D10 completion and CR-FINAL transition",
-    "CR4.10 / D10" in roadmap and
-    "implementation complete" in roadmap.lower() and
+    "CR4.10 / D10" in historical_roadmap and
+    "implementation complete" in historical_roadmap.lower() and
     "CR4.10" in continuation and
     "CR-FINAL" in continuation and
     "CR4.10" in review and

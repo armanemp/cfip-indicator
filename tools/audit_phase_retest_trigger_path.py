@@ -32,7 +32,8 @@ actionability = (
 )
 runtime = read("tools/CFIP.Runtime.Contracts/Program.cs")
 workflow = read(".github/workflows/source-check.yml")
-roadmap = read("docs/ROADMAP.md")
+roadmap = read("docs/CFIP-ROADMAP.md")
+historical_roadmap = read("docs/archive/ROADMAP-LEGACY-2026-10-04.md")
 continuation = read("docs/CONTINUATION-STATE.md")
 review = read("docs/CLAUDE-REVIEW-REMEDIATION-ROADMAP.md")
 closed_bar = read("src/CFIP.Indicator/Runtime/Calculation/CalculationClosedBar.cs")
@@ -101,7 +102,7 @@ check(
 
 check(
     "roadmap records the current root-cause fix",
-    "RETEST TRIGGER-PATH HARDENING" in roadmap,
+    "RETEST TRIGGER-PATH HARDENING" in historical_roadmap,
 )
 
 check(

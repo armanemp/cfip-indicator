@@ -26,7 +26,8 @@ renderer = read("src/CFIP.Indicator/UI/Chart/PlanLineRenderer.cs")
 contracts = read("tools/CFIP.Runtime.Contracts/Program.cs")
 contracts_project = read("tools/CFIP.Runtime.Contracts/CFIP.Runtime.Contracts.csproj")
 workflow = read(".github/workflows/source-check.yml")
-roadmap = read("docs/ROADMAP.md")
+roadmap = read("docs/CFIP-ROADMAP.md")
+historical_roadmap = read("docs/archive/ROADMAP-LEGACY-2026-10-04.md")
 continuation = read("docs/CONTINUATION-STATE.md")
 review = read("docs/CLAUDE-REVIEW-REMEDIATION-ROADMAP.md")
 development = read("docs/DEVELOPMENT-LOG.md")
@@ -93,8 +94,8 @@ check(
 
 check(
     "roadmap advances from G3 to G4",
-    "CR7.3 / G3 closeout" in roadmap and
-    "**Next phase: CR7.4 / G4" in roadmap
+    "CR7.3 / G3 closeout" in historical_roadmap and
+    "**Next phase: CR7.4 / G4" in historical_roadmap
 )
 
 check(

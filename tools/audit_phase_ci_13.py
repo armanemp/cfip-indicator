@@ -75,7 +75,8 @@ contract_project = read(
     "tools/CFIP.Planning.Contracts/CFIP.Planning.Contracts.csproj"
 )
 workflow = read(".github/workflows/source-check.yml")
-roadmap = read("docs/ROADMAP.md")
+roadmap = read("docs/CFIP-ROADMAP.md")
+historical_roadmap = read("docs/archive/ROADMAP-LEGACY-2026-10-04.md")
 
 check(
     "TargetSelector delegates coherent path selection",
@@ -249,15 +250,15 @@ check(
 
 check(
     "roadmap records the CI-13 completed closeout",
-    "### CI-13 implementation record" in roadmap and
-    "Status: **VERIFIED COMPLETE — PR #168 merged to `main`." in roadmap,
+    "### CI-13 implementation record" in historical_roadmap and
+    "Status: **VERIFIED COMPLETE — PR #168 merged to `main`." in historical_roadmap,
 )
 
 check(
-    "roadmap records CI-14 historical closeout and current certification state",
-    "CI-14" in roadmap and
-    "## 2.0.1 — Current certification state" in roadmap and
-    ("CI-17A" in roadmap or "CI-17" in roadmap)
+    "historical CI sequencing does not override canonical roadmap",
+    "Historical roadmaps" in roadmap and
+    "CFIP-LIST.md" in roadmap and
+    "CFIP_GATE.md" in roadmap
 )
 
 if errors:

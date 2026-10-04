@@ -17,7 +17,7 @@ Activate the cBot separation as a mandatory parallel track from the current road
 
 ## Completed
 
-- Added the active parallel CBOT-P0→P8 schedule to `docs/ROADMAP.md`.
+- Added the active parallel CBOT-P0→P8 schedule to `docs/CFIP-ROADMAP.md`.
 - Aligned `docs/CBOT-SEPARATION-ROADMAP.md` so the detailed M29–M38 material is retained as reference while the active migration starts now.
 - Created `src/CFIP.Contracts` as a platform-neutral project boundary.
 - Created `src/CFIP.cBot` as an independent cTrader Robot project.

@@ -16,7 +16,8 @@ life = read("Trading/Execution/State/LifecycleStateStore.cs")
 state = read("Indicator/State.cs")
 program = Path("tools/CFIP.Runtime.Contracts/Program.cs").read_text(encoding="utf-8")
 workflow = Path(".github/workflows/source-check.yml").read_text(encoding="utf-8")
-roadmap = Path("docs/ROADMAP.md").read_text(encoding="utf-8")
+roadmap = Path("docs/CFIP-ROADMAP.md").read_text(encoding="utf-8")
+historical_roadmap = Path("docs/archive/ROADMAP-LEGACY-2026-10-04.md").read_text(encoding="utf-8")
 continuation = Path("docs/CONTINUATION-STATE.md").read_text(encoding="utf-8")
 review = Path("docs/CLAUDE-REVIEW-REMEDIATION-ROADMAP.md").read_text(encoding="utf-8")
 development = Path("docs/DEVELOPMENT-LOG.md").read_text(encoding="utf-8")
@@ -71,7 +72,7 @@ if "python tools/audit_phase_7_5.py" not in workflow:
     raise SystemExit("G5 static audit is not in Source/Architecture CI")
 
 for document, token, name in (
-    (roadmap, "CR7.5 / G5", "ROADMAP G5 scope"),
+    (historical_roadmap, "CR7.5 / G5", "ROADMAP G5 scope"),
     (continuation, "CR7.5 / G5", "CONTINUATION G5 scope"),
     (review, "CR7.5 / G5", "remediation G5 scope"),
     (development, "CR7.5 / G5", "development log G5 entry"),
@@ -86,7 +87,7 @@ if (
     raise SystemExit("G5 phase document does not record implementation and G6A continuation")
 
 for document, name in (
-    (roadmap, "ROADMAP G6A continuation"),
+    (historical_roadmap, "ROADMAP G6A continuation"),
     (continuation, "CONTINUATION G6A continuation"),
     (review, "remediation G6A continuation"),
 ):
