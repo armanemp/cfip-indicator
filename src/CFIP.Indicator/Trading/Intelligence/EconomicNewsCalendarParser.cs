@@ -127,7 +127,7 @@ namespace cAlgo
                 return next.ToArray();
 
             string trimmed =
-                payload.TrimStart();
+                NormalizePayloadPrefix(payload);
 
             if (trimmed.StartsWith(
                     "[",
@@ -174,7 +174,9 @@ namespace cAlgo
                         relevantCurrencies);
                 }
             }
-            else
+            else if (trimmed.StartsWith(
+                       "<",
+                       StringComparison.Ordinal))
             {
                 XmlSerializer serializer =
                     new XmlSerializer(
@@ -220,10 +222,56 @@ namespace cAlgo
                 }
             }
 
+            else
+            {
+                throw new InvalidOperationException(
+                    "NEWS FEED PAYLOAD FORMAT FAILURE | prefix=" +
+                    BuildPayloadPrefix(trimmed));
+            }
+
             return next
                 .OrderBy(x => x.TimeUtc)
                 .ThenByDescending(x => x.ImpactRank)
                 .ToArray();
+        }
+
+        private static string NormalizePayloadPrefix(
+            string payload)
+        {
+            if (string.IsNullOrEmpty(payload))
+                return "";
+
+            int index = 0;
+
+            while (index < payload.Length &&
+                   (char.IsWhiteSpace(payload[index]) ||
+                    payload[index] == '\uFEFF' ||
+                    payload[index] == '\u200B' ||
+                    payload[index] == '\u0000'))
+            {
+                index++;
+            }
+
+            return index == 0
+                ? payload
+                : payload.Substring(index);
+        }
+
+        private static string BuildPayloadPrefix(
+            string payload)
+        {
+            if (string.IsNullOrEmpty(payload))
+                return "EMPTY";
+
+            int length =
+                Math.Min(80, payload.Length);
+
+            string prefix =
+                payload.Substring(0, length)
+                    .Replace("\r", " ")
+                    .Replace("\n", " ");
+
+            return prefix;
         }
 
         private static bool TryParseEconomicEventTime(
