@@ -1,0 +1,470 @@
+# CFIP — Canonical Master Roadmap
+## CFIP-ROADMAP.md
+### Zero-to-Full Forensic Review, Hardening, Certification and Continuation Contract
+### Canonical edition: 2026-10-04
+
+> **STATUS: ACTIVE / CANONICAL**
+>
+> This file is the only active development roadmap for CFIP.
+> Historical roadmaps, old phase numbering, review plans, hotfix plans and previous sequencing are archival only.
+> A new chat/account must read this file and \`docs/CFIP_GATE.md\`, inspect actual current \`main\`, and continue from the first phase marked **NEXT**.
+
+---
+
+# 1. Mission
+
+CFIP is reviewed as one complete system:
+
+**Market Data → Canonical Time/Price Context → MTF → Indicators/OSS → Structure/Zones/Liquidity/Regime → Evidence → Decision → Entry/Trigger → Plan → Risk → Scenario/Contract → Signal → Alert → Indicator/Contracts/cBot → Preflight → Broker → Broker Truth → Protection/Lifecycle → Outcome/History → Calibration → Presentation**
+
+This roadmap is a gated engineering program, not a feature wishlist. The objective is correctness first, then safety, consistency, robustness, predictive quality, performance and controlled evolution.
+
+# 2. Non-negotiable laws
+
+## 2.1 Single owner
+
+**One concept → one owner → one source of truth → many read-only consumers.**
+
+Repair the canonical owner. Do not add a second calculation, state machine, renderer, audio path, execution engine, contract or overlapping safety gate for the same semantic question.
+
+## 2.2 Architecture before patch
+
+For every defect:
+1. identify the concept;
+2. identify its canonical owner;
+3. inspect all callers/consumers;
+4. prove where the contradiction enters;
+5. repair the owner;
+6. migrate consumers;
+7. remove the competing path;
+8. verify the complete chain.
+
+A compile-only workaround is not a valid closure.
+
+## 2.3 Broker truth
+
+Planned/requested state is never broker-confirmed state.
+
+- accepted submission is not fill confirmation;
+- rejection is not success;
+- broker-confirmed state is authoritative;
+- protective mutations may reduce risk but never silently widen it;
+- restart/reconnect must reconcile broker truth before assuming lifecycle state.
+
+## 2.4 Indicator / cBot boundary
+
+\`CFIP.Indicator\` owns analysis and canonical signal/plan intent.
+
+\`CFIP.Contracts\` owns the platform-neutral cross-boundary contract.
+
+\`CFIP.cBot\` owns broker mutation and execution lifecycle.
+
+The cBot must not recreate the Indicator's analytical engine. The Indicator must not mutate the broker.
+
+## 2.5 Timeframe law
+
+Production MTF is exactly:
+
+**M1 / M5 / M15 / M30 / H1 / H4 / D1 / W1**
+
+- M15 = canonical decision/reference/execution-planning frame.
+- M5 = trigger/retest/breakout/entry-precision layer; not a competing execution clock.
+- M1 = optional confirmation/precision evidence only; it cannot create directional consensus alone.
+- M30/H1/H4 = higher-context support.
+- D1/W1 = optional broader context only.
+- **M2 / two-minute is forbidden.** It must not exist as provider, Bars request, enum, cache, panel item, parameter, contract field, signal source, fallback or execution clock.
+
+## 2.6 Closed-bar law
+
+Confirmed decision semantics use the canonical fully closed-bar contract. Intrabar/reaction semantics must be explicit and isolated.
+
+No look-ahead, future-bar acceptance, open/closed index mixing, or use of stale closed-bar state as a substitute for current executable quote state.
+
+## 2.7 Presentation law
+
+Presentation consumes authoritative state. It does not decide, score, validate or rebuild trading semantics.
+
+Current canonical contracts:
+- one \`SignalVisualSnapshot\`;
+- one direction resolver;
+- one nine-level directional strength ladder;
+- M1 precision marker is non-directional;
+- one arrow renderer;
+- one plan-line renderer;
+- one plan-label renderer/formatter;
+- bounded stale-object lifecycle;
+- plan lines: Solid, 1px, finite 40 chart bars;
+- exact-price compact labels anchored by the canonical label owner.
+
+## 2.8 Alert law
+
+One causal event produces one canonical event record and one delivery lifecycle.
+
+Event creation, queue/delivery and presentation are distinct roles, but no duplicate startup sound, popup, panel alert, email event or retry-generated duplicate event may exist.
+
+Blocked/restricted candidates cannot create trading side effects.
+
+## 2.9 Safety law
+
+Automatic entry is fail-closed. Recoverable faults may reduce availability but cannot silently authorize unsafe automatic entry. Safety-critical management must remain independent from telemetry/UI/persistence failures where feasible.
+
+## 2.10 Performance law
+
+Correctness precedes optimization. Optimize only measured hot paths and prove semantic equivalence before/after.
+
+# 3. Canonical terminology
+
+| Term | Meaning |
+|---|---|
+| Observation | Raw market/platform observation with explicit observation time |
+| Closed context | Canonical fully closed MTF references |
+| Reaction | Explicit intrabar/open-bar observation under a defined contract |
+| Evidence | Measured fact with provenance |
+| Independent evidence | Evidence not merely another representation of the same information |
+| Decision | Canonical direction/quality/confidence result |
+| Actionability | Eligibility for a defined action now |
+| Trigger | Entry-timing qualification, primarily M5 |
+| Plan | Entry, SL, TP, reward-path and risk geometry |
+| Scenario | One distinct execution opportunity |
+| Execution intent | Contract crossing Indicator → cBot boundary |
+| Submission | Broker request |
+| Confirmation | Broker/server-confirmed result |
+| Lifecycle | State progression of managed broker entities |
+| Outcome | Broker-confirmed realized result |
+| Calibration | Governed empirical evaluation of live-policy quality |
+
+# 4. Identity model
+
+These are distinct and must remain distinct:
+
+**SignalId → ScenarioId → ExecutionId → Broker position/order identity → Outcome identity**
+
+Retries preserve scenario identity. New opportunities create new scenario identity. Stale revisions must not mutate current opportunities. Missing identity evidence must fail closed rather than invent continuity.
+
+# 5. Every-phase Definition of Done
+
+A phase is complete only when all applicable items are true:
+
+1. Root cause is evidence-based.
+2. Canonical owner is identified.
+3. Relevant callers/consumers/contracts are audited.
+4. Competing/dead paths are removed or redirected.
+5. Invalid, boundary and stale states are covered where applicable.
+6. BUY/SELL symmetry is checked.
+7. Time/index semantics are explicit.
+8. Public parameters are unchanged unless intentionally governed.
+9. No hidden threshold/constant or workaround was introduced.
+10. Focused tests/contracts pass.
+11. Whole-project integrity gate passes.
+12. Relevant static audits pass.
+13. cTrader Release compile passes.
+14. Performance impact is assessed.
+15. Safety impact is assessed.
+16. \`CFIP_GATE.md\` is updated with evidence.
+17. Exactly one next phase is marked.
+18. Manual target-terminal requirements are explicitly recorded.
+
+# 6. Phase sequence
+
+## P0 — Baseline Truth & Roadmap Bootstrap
+**Status: NEXT**
+
+Re-baseline from actual current \`main\`: exact HEAD, project graph, production inventory, CI, warnings, parameters, MTF surface, owner map, cBot boundary, known legacy/duplicate paths and target-terminal boundaries.
+
+Mandatory first checks:
+- prove M2 absence;
+- fingerprint repository structure;
+- identify current critical owners;
+- identify current open defects;
+- reconcile roadmap/gate with code, not historical documents.
+
+Exit: reproducible baseline and filled P0 section in \`CFIP_GATE.md\`.
+
+## P1 — Repository / Build / Dependency Integrity
+
+Audit solution/projects, ProjectReference/PackageReference, target frameworks, source inclusion, generated artifacts, orphan files, Debug/Release parity, CI drift, warnings, assembly/algo names, dependency provenance and reproducible Release.
+
+Exit: build graph is intentional and clean.
+
+## P2 — Ownership / Single-Source / Dead-Code Closure
+
+Audit calculation, state, decision, actionability, trigger, plan, risk, scenario, contract, visual, label, arrow, alert, sound, execution, broker mutation, lifecycle, persistence and history ownership.
+
+Exit: one semantic owner per critical concept; competing/dead paths removed.
+
+## P3 — Market Data / Time / Price / MTF / Closed-Bar Integrity
+
+Audit bar indices, next-bar-open boundaries, gaps, UTC/DST, observation time, Bid/Ask, executable side, spread, pip/tick/digits, broker min distance, cache freshness and quote refresh.
+
+Exit: deterministic temporal and executable-price semantics; no look-ahead.
+
+## P4 — Numerical / Formula / Boundary Integrity
+
+Audit ATR, ADX/DMI, EMA, RSI, MACD, volatility, range efficiency, choppiness, VWAP/volume transformations, rounding, conversions, finite values, hidden clamps and native-vs-CFIP-vs-OSS ownership.
+
+Exit: deterministic numerical contracts and no second formula engine.
+
+## P5 — Analytical Stack
+
+Audit native indicators, OSS adapters, trend/momentum, swing/structure, MSS/CHOCH, liquidity sweeps, FVG, OB, retest, divergence, WaveTrend, volume profile/VWAP and higher-timeframe context.
+
+Exit: each detector/lifecycle has one owner; provenance is preserved.
+
+## P6 — Evidence Independence / Confluence / Regime
+
+Audit correlation, double counting, Trend/Momentum/Context grouping, OB/FVG overlap, structure/liquidity interaction, divergence modifiers, live pressure and regime transitions.
+
+Exit: independent evidence votes once and provenance reaches decision.
+
+## P7 — Decision / Score / Confidence / Actionability
+
+Audit direction, score, quality, confidence, WATCH/CONFIRMED/READY/BLOCKED/RESTRICTED, range handling, stale decisions and canonical block reasons.
+
+Exit: one decision/actionability authority; consumers do not rebuild.
+
+## P8 — Entry / Trigger / Plan / SL / TP / RR
+
+Audit M5 trigger/retest/breakout, optional M1 confirmation, entry side, requested/executable/fill prices, structural SL, TP1..TP4 where contracted, obstacle/reward path, spread/slippage, RR, minimum distance, trailing and break-even.
+
+Exit: no wrong-side target, SL widening, RR-by-rounding or trailing backtrack.
+
+## P9 — Scenario / Identity / Contract Integrity
+
+Audit SignalId/ScenarioId/ExecutionId, revision/staleness, current vs future semantics, market/aggressive/pending intents, codec/schema and idempotency.
+
+Exit: no duplicate execution or stale mutation.
+
+## P10 — Signal Visual State / Chart Rendering
+
+Audit \`SignalVisualSnapshot\`, direction, nine-level strength, arrow stack, M1 marker, lines, exact-price labels, anchoring, colors and stale-object cleanup.
+
+Exit: one signal = one visual set; renderer is presentation-only.
+
+## P11 — Alerts / Popup / Sound / Email
+
+Audit event identity, queue, delivery, cooldown, dedup, retry, startup cue, panel mirror, sound, email and blocked/restricted behavior.
+
+Exit: one causal event = one delivery lifecycle.
+
+## P12 — Panel / Startup / UI Runtime
+
+Audit async startup, readiness, handlers, teardown, refresh, MTF lamp/text parity, header/footer, alert rail, hide/show, narrow widths, chart-height behavior and UI hot-path performance.
+
+Exit: no duplicate handlers and no contradictory operator-facing state.
+
+## P13 — Indicator ↔ Contracts ↔ cBot Boundary
+
+Audit contracts, provider freshness, binding/rebind, restart, missing/stale provider, version compatibility and mutation permissions.
+
+Exit: cBot is sole broker mutation authority; cBot does not invent analysis.
+
+## P14 — cBot Preflight / Risk / Capacity / Broker Rules
+
+Audit connection/account/symbol/market, spread/session/safety gates, margin, volume normalization, distance/freeze rules, capacity, idempotency, direction conflicts and current decision refresh immediately before submission.
+
+Exit: unsafe requests never reach broker.
+
+## P15 — Broker Execution / Submission / Retry / Confirmation
+
+Audit market/pending/aggressive submissions, one submission gate, identity, backoff, retries, rejected/accepted/unknown states, fills, slippage and pending confirmations.
+
+Exit: submission ≠ confirmation; one retry policy and one identity.
+
+## P16 — Protection / Lifecycle / Recovery / Restart / Reconnect
+
+Audit initial protection, break-even, profit lock, trailing, partial TP/close, reversal, invalidation, end-of-day, restart, reconnect, adoption and reconciliation.
+
+Exit: broker-confirmed state is authoritative; recovery idempotent; risk never widens.
+
+## P17 — History / Persistence / Outcome / Calibration
+
+Audit identity, dedup, retention/archive, buffered persistence, failure recovery, outcome attribution, MAE/MFE, calibration eligibility and policy isolation.
+
+Exit: no duplicate/lost outcome and no implicit live-policy mutation.
+
+## P18 — Performance / Allocation / Cache / Hot Path
+
+Measure startup, Calculate, closed-bar rebuild, MTF/zone cache, allocations, chart churn, panel updates, timers and persistence.
+
+Exit: measured improvement with semantic equivalence.
+
+## P19 — Replay / OOS / Ablation / Signal-Quality Proof
+
+Build deterministic replay, live-vs-replay parity, walk-forward/OOS, ablation, confidence calibration, false-signal/missed-opportunity, MAE/MFE and reward-distribution measurement.
+
+Exit: no tuning without controlled evidence; predictive/risk/execution/computational quality remain separate.
+
+## P20 — Full Target-Terminal Acceptance
+
+Verify attach/startup, panel, MTF, arrows, M1 marker, lines, labels, alerts, sound, email, cBot binding, market/pending execution, rejection, fills, protection, trailing, close, restart, reconnect and cleanup.
+
+Exit: every terminal-required scenario has evidence.
+
+## P21 — Security / Configuration / Release / OSS / Reproducibility
+
+Audit secrets, access rights, local paths, config, parameter compatibility, dependency/license provenance, package versions and deployment artifact reproducibility.
+
+Exit: no unsafe environment assumption or undocumented dependency.
+
+## P22 — Final Repository Cleanup / Certification
+
+Remove or clearly archive legacy roadmap references, dead docs/anchors, stale names, generated artifacts, contradictory contracts and temporary workarounds.
+
+Certification requires:
+- P0–P21 closed;
+- no OPEN P0/P1 defect;
+- M2 absent;
+- Indicator broker mutation = zero;
+- one critical owner per concept;
+- clean Release build;
+- static/runtime contracts green;
+- terminal acceptance complete.
+
+## P23 — Controlled Production Observation
+
+Only after certification: observe drift, execution failures, resource health and safety behavior. No silent strategy changes.
+
+## P24 — Future Cloud-Analysis Readiness
+
+Prepare a future cloud analysis brain only after local certification. Contracts remain the boundary; cBot remains local broker/execution authority; cloud cannot become a hidden second decision engine.
+
+# 7. Mandatory audit on every phase
+
+Every phase also checks:
+- ownership/duplication;
+- BUY/SELL symmetry;
+- current/future semantics;
+- open/closed semantics;
+- quote/signal timestamps;
+- numeric invalids;
+- stale/boundary states;
+- contract compatibility;
+- panel/chart parity;
+- alert/audio uniqueness;
+- Indicator/cBot authority;
+- broker-confirmed truth;
+- lifecycle/recovery;
+- persistence/outcome;
+- performance;
+- terminal implications;
+- documentation continuity.
+
+# 8. Evidence package
+
+Every phase closeout records:
+- phase ID/status/date;
+- exact main baseline;
+- implementation commit(s)/PR;
+- changed files;
+- canonical owner before/after;
+- consumers/callers audited;
+- competing paths removed;
+- tests/static/runtime/build;
+- terminal/broker evidence where required;
+- performance;
+- safety impact;
+- residual risk;
+- next phase;
+- operator pull instruction.
+
+# 9. Status protocol
+
+Use exactly:
+**BLOCKED / NEXT / IN PROGRESS / VERIFICATION / PASS / PASS + TERMINAL PENDING / REOPENED / N/A**
+
+Only one phase may be NEXT.
+
+# 10. Parameter governance
+
+Every public parameter has an owner, type, default, valid range, consumer, semantic purpose, safety impact and relevant test coverage.
+
+No parameter exists solely to hide a defect. Strategy-changing parameter changes require the relevant planning/evidence gates.
+
+# 11. Quality governance
+
+Order of concern:
+
+**Correctness → Safety → Consistency → Robustness → Predictive Quality → Performance → Controlled Optimization**
+
+Win rate alone is never sufficient evidence.
+
+# 12. Manual terminal boundary
+
+Static CI cannot prove actual chart appearance, audio audibility, terminal event ordering, broker-server behavior, fill/slippage, restart timing, reconnect timing or live resource profile. Those need target-terminal evidence.
+
+# 13. Current canonical architecture snapshot
+
+Production projects:
+- \`CFIP.Indicator\`
+- \`CFIP.Contracts\`
+- \`CFIP.cBot\`
+
+Authority:
+**Indicator Analysis → Decision/Plan → Contracts → cBot Preflight/Execution → Broker → Confirmed Lifecycle → Outcome**
+
+Visual:
+**Decision/Plan → SignalVisualSnapshot → Chart/Panel**
+
+Alerts:
+**Canonical Event → Alert Queue/Delivery → contracted channels**
+
+Current protected contracts:
+- MTF = M1/M5/M15/M30/H1/H4/D1/W1;
+- M15 decision/reference;
+- M5 trigger/precision;
+- M1 optional confirmation;
+- cBot-only broker mutation;
+- one nine-level directional strength ladder;
+- M1 non-directional precision marker;
+- Solid 1px finite 40-bar plan lines;
+- single label owner;
+- one causal alert delivery lifecycle.
+
+# 14. New-chat / new-account boot sequence
+
+A fresh assistant must:
+1. read \`docs/CFIP-ROADMAP.md\`;
+2. read \`docs/CFIP_GATE.md\`;
+3. inspect actual \`main\` and latest CI;
+4. compare code with the gate baseline;
+5. find the first phase marked NEXT;
+6. audit the affected chain and all global invariants;
+7. execute one complete phase;
+8. close it in \`CFIP_GATE.md\`;
+9. mark exactly one next phase here.
+
+Do not rely on chat memory, screenshots or old phase numbering when repository evidence differs.
+
+# 15. Conflict rule
+
+If any historical document, issue, review, screenshot or memory conflicts with these two canonical files, use:
+**actual current code + verified evidence**, with this file defining execution order and \`CFIP_GATE.md\` defining acceptance.
+
+# 16. Permanent P0 prohibitions
+
+The following are P0 defects if reintroduced:
+- M2;
+- Indicator broker mutation;
+- second execution engine;
+- second decision engine;
+- second critical visual owner;
+- second startup sound owner;
+- duplicate signal event path;
+- consumer-side decision recomputation;
+- hidden strategy thresholds;
+- blind auto-rearm;
+- plan state masquerading as broker state;
+- protective SL widening;
+- duplicate lifecycle ownership;
+- unbounded hot-path scanning/I/O;
+- silent calibration mutation.
+
+# 17. Current state
+
+**Current phase: P0 — NEXT**
+
+**Canonical companion:** \`docs/CFIP_GATE.md\`
+
+**Execution unit:** one complete phase per implementation response.
+
+**Roadmap authority:** this file only.
