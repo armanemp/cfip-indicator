@@ -1576,7 +1576,7 @@ At certification:
 
 **Inventory source tree:** `f6ef574355a115393ef5279036724675ac18af4a`
 
-**Current executable package:** **WP-03 — NEXT**
+**Current executable package:** **WP-03 — IN PROGRESS**
 
 ### WP-02 closeout — GitHub workflows
 

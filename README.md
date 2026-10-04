@@ -6,9 +6,9 @@ Clean, modular cTrader indicator with a single execution authority.
 
 - 545 configuration parameters are currently exposed; the count is machine-verified from the parameter source tree by `python tools/audit_parameter_count.py`.
 - Strategy behavior decomposed into responsibility-isolated source modules.
-- Automatic market execution and automatic pending orders retained.
+- Automatic market execution and automatic pending orders are owned by the cBot; the Indicator remains the analysis/signal authority.
 - Manual BUY/SELL/order-entry controls are absent.
-- Execution capacity is intentionally single-plan: `Maximum Open Positions` is constrained to `1` (`MinValue=1`, `MaxValue=1`).
+- Multiple opportunities may be represented distinctly; execution capacity remains an explicit risk policy rather than a hidden presentation or fallback rule.
 - .NET 6 production target.
 - GitHub CI verifies architecture and compiles against the `cTrader.Automate` package.
 
@@ -21,6 +21,6 @@ Clean, modular cTrader indicator with a single execution authority.
 - Trading: identity, pending orders, execution, lifecycle, live management, risk, validation and intelligence.
 - UI: chart, panel, historical and unified alert-rail presentation.
 
-Canonical control plane: `docs/CFIP-ROADMAP.md`, `docs/CFIP-LIST.md`, and `docs/CFIP_GATE.md`. `docs/CFIP-PROMPT.md` and `docs/CFIP-PREPROMPT.md` are bootstrap prompts. Supporting architecture/editing/OSS documents are reference material and cannot override the canonical control plane.
+Canonical control plane: `docs/CFIP-ROADMAP.md`, `docs/CFIP-LIST.md`, and `docs/CFIP_GATE.md`. `docs/CFIP-PROMPT.md` and `docs/CFIP-PREPROMPT.md` are bootstrap prompts. Supporting workflow, architecture, development-log and OSS documents are reference material and cannot override the canonical control plane.
 
 Repository hygiene is mandatory: every tracked artifact must be intentional and classified; proven-unused, redundant, generated, temporary, or obsolete files must be removed or explicitly archived after dependency verification.
