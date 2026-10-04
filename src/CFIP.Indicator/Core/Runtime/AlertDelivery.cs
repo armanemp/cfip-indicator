@@ -10,7 +10,8 @@ namespace cAlgo
             int direction,
             bool playSound,
             string soundTypeName,
-            string soundFilePath)
+            string soundFilePath,
+            string soundGroupKey = null)
         {
             Envelope = envelope;
             Key = envelope == null ? "" : envelope.AlertKey;
@@ -23,6 +24,7 @@ namespace cAlgo
             PlaySound = playSound;
             SoundTypeName = soundTypeName;
             SoundFilePath = soundFilePath;
+            SoundGroupKey = soundGroupKey;
         }
 
         public AlertEnvelope Envelope { get; }
@@ -34,5 +36,6 @@ namespace cAlgo
         public bool PlaySound { get; }
         public string SoundTypeName { get; }
         public string SoundFilePath { get; }
+        public string SoundGroupKey { get; }
     }
 }
