@@ -11,6 +11,14 @@
 
 ---
 
+# Current execution state
+
+**Macro phase:** P2 — Ownership / Single-Source / Dead-Code Closure  
+**Atomic package:** WP-04 — Historical isolation  
+**Status:** IN PROGRESS
+
+WP-04 is the current executable package. The macro phase remains P2 while atomic packages advance independently.
+
 # 1. Mission
 
 CFIP is reviewed as one complete system:
@@ -529,7 +537,7 @@ Evidence:
 Residual control-plane defect:
 - Active tooling still contains references to historical `docs/ROADMAP.md`; this is registered as DEF-P0-002 and is queued for WP-03/WP-04 migration/isolation. Historical documents do not override the canonical control plane.
 
-The next executable package is **WP-01 — Root/build metadata**.
+The current executable package is **WP-04 — Historical isolation**.
 
 # 18. CFIP operator/product contract
 
