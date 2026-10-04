@@ -146,8 +146,10 @@ for chart_path in sorted((ROOT / "UI" / "Chart").glob("*.cs")):
             raise SystemExit(f"{chart_path.name}: forbidden non-solid line style {forbidden}")
 
 compact_label_renderer = labels[labels.find("private void DrawCompactPlanLabel("):]
-if "return Color.White;" not in labels:
-    raise SystemExit("level labels must use canonical white text")
+if "return ResolvePlanLineColor(semanticColor);" not in labels:
+    raise SystemExit("level labels must reuse canonical semantic line color")
+if "CompactPlanLabelGapPips = 2.0" not in labels:
+    raise SystemExit("level labels must preserve exact 2-pip clearance")
 if "PlanLinePresentationRule.ResolveThickness(" not in line:
     raise SystemExit("plan signal line thickness must use the canonical presentation rule")
 if "MinimumThickness = 1" not in line_presentation_rule or "return MinimumThickness;" not in line_presentation_rule:
@@ -176,14 +178,10 @@ if "RecordPanelAlertDelivery(" not in read("UI/Panel/AlertDeliveryProcessor.cs")
     raise SystemExit("panel alert delivery handoff is missing")
 if "ResolvePanelAlertMessageColor(" not in read("UI/Panel/PanelAlertMessageRenderer.cs"):
     raise SystemExit("panel alert semantic color owner is missing")
-if "Chart.DrawRectangle(" not in labels:
-    raise SystemExit("level label renderer must remain background-free")
-if "box.IsFilled" not in labels:
-    raise SystemExit("level label renderer must not require a box")
-if "PlanLinePresentationRule.ResolveColor(" not in labels:
-    raise SystemExit("level label box must reuse canonical line color")
-if "GetPlanLineRightBar()" not in labels:
-    raise SystemExit("level label box must attach to the line endpoint")
+if "Chart.DrawRectangle(" in compact_label_renderer:
+    raise SystemExit("level label renderer must not create a background box")
+if "HorizontalAlignment.Right" not in compact_label_renderer:
+    raise SystemExit("level label renderer must align text immediately before the line start")
 
 # Phase 7.4 / G4 — analysis-only panel after execution UI extraction.
 g4_overview_rows = read("UI/Panel/Rows/PanelOverviewStateRowsRenderer.cs")
@@ -199,7 +197,7 @@ if "GetCanonicalSignalPanelStatus()" not in g4_overview_rows:
 parameter_source = "\n".join(
     p.read_text(encoding="utf-8") for p in PARAM_ROOT.glob("*.cs")
 )
-EXPECTED_CURRENT_PARAMETERS = 548
+EXPECTED_CURRENT_PARAMETERS = 547
 if len(re.findall(r"\[Parameter\s*\(", parameter_source)) != EXPECTED_CURRENT_PARAMETERS:
     raise SystemExit("public parameter contract changed unexpectedly")
 
@@ -209,6 +207,6 @@ print("Smart server TP + break-even ownership: PASS")
 print("Local TP/BE mutation yields to broker-owned advanced protection: PASS")
 print("All signal/plan level lines: Solid")
 print("Plan Level Line Thickness: canonical 1px mapping for all configured values")
-print("All compact level labels: white text inside canonical line-colored filled boxes")
+print("All compact level labels: native ChartText, semantic line color, no box/marker, exact 2-pip clearance")
 print(f"Public parameter contract: {EXPECTED_CURRENT_PARAMETERS}")
 print("Signal lifecycle / recent calibration / broker telemetry: PASS")
