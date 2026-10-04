@@ -2628,3 +2628,15 @@ Current continuation: this consolidated branch carries realtime/live execution u
 
 
 - 2026-10-04 smart trend arrow recovery: MTF trend direction/strength is independent of ActionableNow/DecisionEntryAllowed; one canonical lifecycle renders the 9-level arrows and M1 remains a Circle precision marker.
+## 2026-10-04 — F1 Repository / Build / Dependency Truth
+
+Status: **IMPLEMENTATION COMPLETE — CI verification pending.**
+
+Current branch: `phase/f1-repository-build-dependency-truth-2026-10-04`.
+
+Root correction: Core no longer imports `cAlgo.API`; `PlanLinePresentationRule` owns only platform-neutral line semantics, while `PlanLineRenderer` owns cTrader color materialization. Runtime.Contracts continues to test the canonical rule instead of deleting its regression. The new F1 repository audit is wired into Source/Architecture CI.
+
+No strategy, signal threshold, MTF role, M2 path, broker mutation, cBot authority or chart geometry contract changed.
+
+Final closure requires the F1 branch's Source/Architecture, Runtime Acceptance and cTrader Compile workflows to pass. Target-terminal verification is not a required boundary for F1.
+
