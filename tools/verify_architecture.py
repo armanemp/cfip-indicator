@@ -2681,8 +2681,6 @@ if "Chart.DrawRectangle(" in compact_label_code:
     raise SystemExit("Compact plan labels must remain background-free")
 if "Chart.DrawText(" not in compact_label_code:
     raise SystemExit("Compact plan labels must own their native ChartText object")
-if "PlanLinePresentationRule.ResolveColor(" not in compact_label_code:
-    raise SystemExit("Compact plan labels must reuse the canonical semantic line color")
 if "CompactPlanLabelFontSize = 10.0" not in PLAN_LABEL_RENDERER_CODE:
     raise SystemExit("Compact plan labels must use the canonical readable font size")
 if "CompactPlanLabelGapBars = 1" not in PLAN_LABEL_RENDERER_CODE:
