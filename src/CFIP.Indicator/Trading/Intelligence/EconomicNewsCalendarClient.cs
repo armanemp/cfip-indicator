@@ -441,5 +441,3 @@ namespace cAlgo
         }
     }
 }
-
-}
