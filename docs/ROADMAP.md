@@ -47,7 +47,7 @@ Baseline inventory:
 - 22 Contracts C# files;
 - 204 Markdown documents;
 - 155 Python audit/tool files;
-- current machine-enforced public-parameter baseline: 548.
+- current machine-enforced public-parameter baseline: 547.
 
 The document contains:
 - complete recursive repository file inventory;
