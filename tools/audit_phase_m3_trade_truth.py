@@ -173,11 +173,11 @@ require(
 )
 
 require(
-    "lineLeft - offset" in label_anchor and
+    "return GetPlanLineLeftBar();" in label_anchor and
     "Chart.RemoveObject(" in label_renderer and
     "GetReadableLabelTextColor(" in label_renderer and
-    "GetReadableLabelTextColor(" in label_renderer,
-    "M3: compact signal labels must stay left of the line, background-free and line-colored",
+    "Chart.DrawRectangle(" not in label_renderer,
+    "M3: compact signal labels must use the canonical line-left anchor, background-free text and semantic color",
 )
 
 require(
