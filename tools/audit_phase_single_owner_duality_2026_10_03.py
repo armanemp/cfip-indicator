@@ -90,7 +90,7 @@ require(
     "GetCompactPlanLabelAnchorTime(" in parallel_label and
     "GetCompactPlanLabelAnchorTime(" in anchor and
     "Chart.BarIndexToX(" in anchor and
-    "targetX = lineX -" in anchor and
+    "double targetX =\n                lineX -" in anchor and
     "Chart.XToTime(" in anchor and
     "CompactPlanLabelGapBars = 1" in anchor,
     "all standard signal label paths must reuse one canonical left-of-line anchor with a deterministic one-bar gap",
