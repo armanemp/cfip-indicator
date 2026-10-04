@@ -45,7 +45,7 @@ namespace cAlgo
                     _opportunityCandidates[i];
 
                 if (candidate == null ||
-                    IsSameAsLivePlan(candidate))
+                    IsSameAsCanonicalPlan(candidate))
                     continue;
 
                 displayNumber++;
@@ -303,11 +303,13 @@ namespace cAlgo
                 labelBar);
         }
 
-        private bool IsSameAsLivePlan(
+        private bool IsSameAsCanonicalPlan(
             TradeOpportunityCandidate candidate)
         {
+            // A parallel candidate that represents the already-canonical plan
+            // must never materialize a second line/label set, regardless of
+            // whether the plan is pre-trade or a live position.
             if (_plan == null ||
-                !_plan.IsLivePosition ||
                 candidate == null)
                 return false;
 
