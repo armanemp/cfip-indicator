@@ -4039,3 +4039,23 @@ Status: **OPEN DEFECT REGISTERED — implementation intentionally not started wh
 The forensic boundary audit found that `CFIP.Indicator` still exposes execution/auto-trading configuration (`EnableAutoTrading`, `EnableAutomaticOrders`, pending/execution/risk/management settings) and maintains Indicator-side runtime execution state, while cBot binding reads those values from the Indicator. This contradicts the canonical Indicator = analysis/signal and cBot = broker-mutation/execution authority boundary.
 
 Registered as `DEF-P0-003`, owner **WP-08 cBot binding**. The eventual repair must migrate execution authority to the cBot/Contracts boundary and remove the Indicator-side execution-settings owner, with no compatibility mirror or parallel authority. No trading behavior was changed by this audit registration.
+
+
+## 2026-10-04 — Indicator Alert Sound Ownership Hardening
+
+Status: **VERIFIED COMPLETE — PR #296 merged to `main` as `1d90c6ce01e1930b1137ffa6879a32d8f13b0dcc`.**
+
+Closed the alert-audio ownership contradiction found during the P2 single-source audit:
+- semantic sound classification is now owned by `src/CFIP.Indicator/Trading/Alerts/AlertSoundPolicy.cs`;
+- the canonical sound-group identity is created at the same owner and carried through `AlertDelivery.SoundGroupKey`;
+- `AlertDeliveryProcessor` no longer recomputes signal-stage semantics or group identity and only performs bounded delivery/deduplication;
+- direct Indicator playback remains absent from `AlertEngine`;
+- the runtime contract harness remains compatible with the extended delivery metadata;
+- the existing distinct-stage/exact-repeat dedup contract is preserved.
+
+Verification on final PR head `23a5e7878029ba02d7dd6ead0444a3fc10dccdeb`:
+- Runtime Acceptance #4209: PASS;
+- cTrader Compile #4393: PASS;
+- Source/Architecture #4400: PASS.
+
+No broker mutation, execution authority, signal scoring, MTF role or trading threshold changed. Target-terminal audio acceptance remains part of the existing manual terminal boundary and was not falsely marked complete.

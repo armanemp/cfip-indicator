@@ -392,6 +392,7 @@ Status:
 - AL-014 alert failure cannot mutate broker.
 - AL-015 alert delivery does not recompute decision.
 - AL-016 event text/label semantics have one formatter/source.
+- AL-017 Indicator sound classification and sound-group identity have one `AlertSoundPolicy` owner; delivery consumes its immutable decision.
 
 # 17. Panel / UI runtime gates — UI
 
