@@ -34,6 +34,7 @@ runtime_project = read("tools/CFIP.Runtime.Contracts/CFIP.Runtime.Contracts.cspr
 runtime_contracts = read("tools/CFIP.Runtime.Contracts/Program.cs")
 workflow = read(".github/workflows/source-check.yml")
 roadmap = read("docs/CFIP-ROADMAP.md")
+historical_roadmap = read("docs/archive/ROADMAP-LEGACY-2026-10-04.md")
 continuation = read("docs/CONTINUATION-STATE.md")
 
 check(
@@ -166,9 +167,9 @@ check(
 
 check(
     "CI-10 continuity and phase record are documented",
-    "CI-10 — Trigger and trigger-lifecycle audit" in roadmap and
+    "CI-10 — Trigger and trigger-lifecycle audit" in historical_roadmap and
     "CI-10 implementation record" in continuation and
-    "PHASE-CI-10-TRIGGER-LIFECYCLE.md" in roadmap
+    "PHASE-CI-10-TRIGGER-LIFECYCLE.md" in historical_roadmap
 )
 
 print("CI-10 TRIGGER / TRIGGER-LIFECYCLE INTEGRITY SUMMARY")
