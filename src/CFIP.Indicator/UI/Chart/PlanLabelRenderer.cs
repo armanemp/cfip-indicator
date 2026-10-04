@@ -13,13 +13,9 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
+        // Canonical presentation contract: native text, line semantic color, exact 2-pip clearance, no marker/box.
         private const double CompactPlanLabelFontSize = 8.5;
         private const double CompactPlanLabelGapPips = 2.0;
-
-        // ChartText uses time/bar coordinates on X; cTrader does not expose
-        // a pip-based horizontal X offset. Keep one stable bar of visual
-        // separation, owned only by this renderer.
-        private const int CompactPlanLabelGapBars = 1;
 
         private void DrawPlanLabel(
             string name,
@@ -102,16 +98,15 @@ namespace cAlgo
                             labelBar));
 
                 int textBar =
-                    Math.Max(
-                        0,
-                        lineLeftBar - CompactPlanLabelGapBars);
+                    lineLeftBar;
 
                 double labelPrice =
-                    NormalizePrice(price);
+                    NormalizePrice(
+                        price +
+                        (CompactPlanLabelGapPips * Symbol.PipSize));
 
                 Color labelColor =
-                    PlanLinePresentationRule.ResolveColor(
-                        semanticColor);
+                    ResolvePlanLineColor(semanticColor);
 
                 ChartText label =
                     Chart.FindObject(name)
@@ -178,8 +173,7 @@ namespace cAlgo
             Color semanticColor)
         {
             // Label text intentionally matches the canonical line color.
-            return PlanLinePresentationRule.ResolveColor(
-                semanticColor);
+            return ResolvePlanLineColor(semanticColor);
         }
 
         private void RemovePlanLabel(
