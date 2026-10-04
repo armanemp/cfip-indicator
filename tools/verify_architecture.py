@@ -766,6 +766,7 @@ ALLOWED_OVERLOADS = {
     "DirectionText",
     "FrameText",
     "TryAcquireSubmission",
+    "GetCompactPlanLabelAnchorBar",
 }
 unexpected_overloads = {
     name
