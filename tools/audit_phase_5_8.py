@@ -37,7 +37,7 @@ preview = read("src/CFIP.Indicator/Planning/TradePlan/PlanPreviewBuilder.cs")
 contracts = read("tools/CFIP.Planning.Contracts/Program.cs")
 contract_project = read("tools/CFIP.Runtime.Contracts/CFIP.Runtime.Contracts.csproj")
 workflow = read(".github/workflows/source-check.yml")
-roadmap = read("docs/ROADMAP.md")
+roadmap = read("docs/CFIP-ROADMAP.md")
 continuation = read("docs/CONTINUATION-STATE.md")
 phase_doc = read("docs/PHASE-CR5-8-TARGET-SELECTION-CONSISTENCY.md")
 
