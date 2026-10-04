@@ -196,7 +196,7 @@ if (SuppressDuplicateAlerts)
                                 !blockedCandidateAlert;
 
                             AlertSoundDecision soundDecision =
-                                AlertSoundPolicy.Resolve(
+                                AlertSoundPolicy.ResolveDecision(
                                     normalizedKey,
                                     UseSemanticAlertSounds,
                                     AlertSoundType,
@@ -334,19 +334,6 @@ if (SuppressDuplicateAlerts)
                             return fallback;
                         }
 
-        private SoundType ResolveAlertSoundType(
-            string key,
-            bool critical)
-        {
-            AlertSoundDecision decision = AlertSoundPolicy.Resolve(
-                key,
-                UseSemanticAlertSounds,
-                AlertSoundType,
-                null,
-                SymbolName);
-
-            return decision.SoundType;
-        }
 
     }
 }
