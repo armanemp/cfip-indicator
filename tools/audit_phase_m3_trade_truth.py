@@ -106,10 +106,11 @@ require(
 )
 
 require(
-    "snapshot.DecisionEntryAllowed" in watch_renderer and
-    "!snapshot.PendingOrder" in watch_renderer and
-    "!snapshot.LivePosition" in watch_renderer,
-    "M3: blocked/pending/live states must not draw directional watch marks",
+    "bool decisionOwnsDirection" in watch_renderer and
+    "snapshot.PlanActive" in watch_renderer and
+    "snapshot.ActionableNow" in watch_renderer and
+    "snapshot.DecisionEntryAllowed" in watch_renderer,
+    "M3: directional watch marks must use the canonical actionable decision state",
 )
 
 require(
