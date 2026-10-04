@@ -135,7 +135,7 @@ namespace cAlgo
             {
                 CfipEconomicCalendarEventJson[] parsed =
                     JsonSerializer.Deserialize<CfipEconomicCalendarEventJson[]>(
-                        payload,
+                        trimmed,
                         new JsonSerializerOptions
                         {
                             PropertyNameCaseInsensitive = true
@@ -174,18 +174,28 @@ namespace cAlgo
                         relevantCurrencies);
                 }
             }
-            else if (trimmed.StartsWith(
-                       "<",
-                       StringComparison.Ordinal))
+            else if (IsWeeklyEventsXmlPayload(trimmed))
             {
                 XmlSerializer serializer =
                     new XmlSerializer(
                         typeof(CfipEconomicCalendar));
 
-                CfipEconomicCalendar parsed =
-                    serializer.Deserialize(
-                        new StringReader(payload))
-                    as CfipEconomicCalendar;
+                CfipEconomicCalendar parsed;
+                try
+                {
+                    parsed =
+                        serializer.Deserialize(
+                            new StringReader(trimmed))
+                        as CfipEconomicCalendar;
+                }
+                catch (Exception ex)
+                {
+                    throw new InvalidOperationException(
+                        "NEWS FEED XML PARSE FAILURE | prefix=" +
+                        BuildPayloadPrefix(trimmed) +
+                        " | exception=" +
+                        ex.Message);
+                }
 
                 if (parsed == null ||
                     parsed.Events == null)
@@ -255,6 +265,47 @@ namespace cAlgo
             return index == 0
                 ? payload
                 : payload.Substring(index);
+        }
+
+        private static bool IsWeeklyEventsXmlPayload(
+            string payload)
+        {
+            if (string.IsNullOrEmpty(payload))
+                return false;
+
+            string candidate =
+                payload.TrimStart();
+
+            if (candidate.StartsWith(
+                    "<?xml",
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                int declarationEnd =
+                    candidate.IndexOf(
+                        "?>",
+                        StringComparison.Ordinal);
+
+                if (declarationEnd < 0)
+                    return false;
+
+                candidate =
+                    candidate.Substring(
+                        declarationEnd + 2)
+                        .TrimStart();
+            }
+
+            const string root = "<weeklyevents";
+
+            if (!candidate.StartsWith(
+                    root,
+                    StringComparison.OrdinalIgnoreCase))
+                return false;
+
+            int rootEnd = root.Length;
+
+            return candidate.Length == rootEnd ||
+                   candidate[rootEnd] == '>' ||
+                   char.IsWhiteSpace(candidate[rootEnd]);
         }
 
         private static string BuildPayloadPrefix(
