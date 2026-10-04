@@ -23,7 +23,7 @@ A file is not "reviewed" merely because it was opened. It is reviewed only when 
 | Metric | Baseline |
 |---|---:|
 | Inventory source tree commit | \`d79a0c5a67537f3c6c9806e5eb7c85c33f7f94ac\` |
-| Repository files | 1129 |
+| Repository files | 1130 |
 | Repository directories | 82 |
 | Markdown files | 211 |
 | Production projects | CFIP.Indicator / CFIP.Contracts / CFIP.cBot |
