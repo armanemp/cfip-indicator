@@ -173,9 +173,10 @@ require(
 )
 
 require(
-    "return GetPlanLineLeftBar();" in label_anchor and
+    "GetPlanLineLeftBar" in label_anchor and
+    "canonicalLineLeftBar -" in label_anchor and
     "Chart.RemoveObject(" in label_renderer and
-    "GetReadableLabelTextColor(" in label_renderer and
+    "ResolveCanonicalPlanLineColor(" in label_renderer and
     "Chart.DrawRectangle(" not in label_renderer,
     "M3: compact signal labels must use the canonical line-left anchor, background-free text and semantic color",
 )
