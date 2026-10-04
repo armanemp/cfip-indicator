@@ -2750,8 +2750,8 @@ for required in (
 
 PLAN_LABEL_RENDERER = ROOT / "UI" / "Chart" / "PlanLabelRenderer.cs"
 PLAN_LABEL_RENDERER_CODE = PLAN_LABEL_RENDERER.read_text(encoding="utf-8")
-if "GetReadableLabelTextColor(" not in PLAN_LABEL_RENDERER_CODE:
-    raise SystemExit("Compact plan labels must resolve a canonical semantic text color")
+if "ResolveCanonicalPlanLineColor(" not in PLAN_LABEL_RENDERER_CODE:
+    raise SystemExit("Compact plan labels must consume the canonical signal-line color owner")
 compact_label_start = PLAN_LABEL_RENDERER_CODE.find("private void DrawCompactPlanLabel(")
 compact_label_code = PLAN_LABEL_RENDERER_CODE[compact_label_start:] if compact_label_start >= 0 else ""
 if compact_label_start < 0:
@@ -2762,8 +2762,12 @@ if "Chart.DrawText(" not in compact_label_code:
     raise SystemExit("Compact plan labels must own their native ChartText object")
 if "CompactPlanLabelFontSize = 10.0" not in PLAN_LABEL_RENDERER_CODE:
     raise SystemExit("Compact plan labels must use the canonical readable font size")
-if "CompactPlanLabelGapBars = 1" not in PLAN_LABEL_RENDERER_CODE:
-    raise SystemExit("Compact plan labels must keep exactly one chart-bar left clearance")
+PLAN_LABEL_ANCHOR = ROOT / "UI" / "Chart" / "PlanLabelAnchorCalculator.cs"
+PLAN_LABEL_ANCHOR_CODE = PLAN_LABEL_ANCHOR.read_text(encoding="utf-8")
+if "CompactPlanLabelGapBars = 1" not in PLAN_LABEL_ANCHOR_CODE:
+    raise SystemExit("Compact plan label gap must be owned by the canonical anchor calculator")
+if "canonicalLineLeftBar -" not in PLAN_LABEL_ANCHOR_CODE:
+    raise SystemExit("Compact plan label anchor must be exactly one bar before line start")
 if "HorizontalAlignment.Right" not in compact_label_code:
     raise SystemExit("Compact plan labels must terminate at the left-of-line anchor")
 if "Chart.RemoveObject(" not in compact_label_code:
