@@ -97,8 +97,6 @@ namespace cAlgo
         private const int EconomicNewsProviderMinimumRefreshMinutes = 5;
         private const string CanonicalEconomicNewsJsonUri =
             "https://nfs.faireconomy.media/ff_calendar_thisweek.json";
-        private const string LegacyEconomicNewsXmlUri =
-            "https://nfs.faireconomy.media/ff_calendar_thisweek.xml";
         private const string EconomicNewsUserAgent =
             "CFIP-Indicator/1.0 (cTrader Algo)";
 
@@ -252,7 +250,7 @@ namespace cAlgo
 
             if (string.Equals(
                     uri,
-                    LegacyEconomicNewsXmlUri,
+                    "https://nfs.faireconomy.media/ff_calendar_thisweek.xml",
                     StringComparison.OrdinalIgnoreCase))
                 return CanonicalEconomicNewsJsonUri;
 
