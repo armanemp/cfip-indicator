@@ -159,7 +159,7 @@ if (
     "GetCompactPlanLabelAnchorBar(" not in label_anchor or
     "canonicalLineLeftBar -\n                CompactPlanLabelGapBars" not in label_anchor
 ):
-    raise SystemExit("level labels must keep exactly one chart-bar left clearance in the canonical anchor owner")
+    raise SystemExit("level labels must keep exactly one chart-bar left clearance in the canonical bar-index anchor owner")
 if "HorizontalAlignment.Right" not in compact_label_renderer:
     raise SystemExit("level labels must use right-aligned text at the left-of-line anchor")
 if "PlanLinePresentationRule.ResolveThickness(" not in line:
@@ -194,7 +194,7 @@ if "ResolveCanonicalPlanLineColor(" not in labels:
     raise SystemExit("level label renderer must consume the canonical signal-line color resolver")
 if "Chart.DrawRectangle(" in labels:
     raise SystemExit("level label renderer must remain background-free")
-if "CompactPlanLabelGapBars = 1" not in label_anchor or "double targetX =\n                lineX -" not in label_anchor or "Chart.BarIndexToX(" not in label_anchor or "Chart.XToTime(" not in label_anchor:
+if "CompactPlanLabelGapBars = 1" not in label_anchor or "GetCompactPlanLabelAnchorBar(" not in label_anchor or "canonicalLineLeftBar -\n                CompactPlanLabelGapBars" not in label_anchor:
     raise SystemExit("level label renderer must retain the one-bar left clearance in the canonical anchor owner")
 
 # Phase 7.4 / G4 — analysis-only panel after execution UI extraction.
