@@ -90,10 +90,9 @@ require(
     "GetCompactPlanLabelAnchorBar(" in parallel_label and
     "GetCompactPlanLabelAnchorBar(" in anchor and
     "GetCompactPlanLabelAnchorBar(" in anchor and
-    "double targetX =\n                lineX -" in anchor and
-    "Chart.XToTime(" in anchor and
+    "canonicalLineLeftBar -\n                CompactPlanLabelGapBars" in anchor and
     "CompactPlanLabelGapBars = 1" in anchor,
-    "all standard signal label paths must reuse one canonical left-of-line anchor with a deterministic one-bar gap",
+    "all standard signal label paths must reuse one canonical bar-index anchor with a deterministic one-bar gap",
 )
 
 prediction_line = read("src/CFIP.Indicator/UI/Chart/PredictionLineRenderer.cs")
