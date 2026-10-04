@@ -76,6 +76,7 @@ contract_project = read(
 )
 workflow = read(".github/workflows/source-check.yml")
 roadmap = read("docs/CFIP-ROADMAP.md")
+historical_roadmap = read("docs/archive/ROADMAP-LEGACY-2026-10-04.md")
 
 check(
     "TargetSelector delegates coherent path selection",
@@ -249,8 +250,8 @@ check(
 
 check(
     "roadmap records the CI-13 completed closeout",
-    "### CI-13 implementation record" in roadmap and
-    "Status: **VERIFIED COMPLETE — PR #168 merged to `main`." in roadmap,
+    "### CI-13 implementation record" in historical_roadmap and
+    "Status: **VERIFIED COMPLETE — PR #168 merged to `main`." in historical_roadmap,
 )
 
 check(
