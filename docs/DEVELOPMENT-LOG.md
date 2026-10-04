@@ -4090,3 +4090,12 @@ Evidence:
 - Source/Architecture #4412: PASS.
 
 The defect is registered as DEF-P1-001. It remains FIXED_UNVERIFIED until the updated production .algo is loaded in cTrader and the same M15 closed-bar execution path completes without the runtime fault.
+
+
+## 2026-10-04 — Terminal Revalidation: Target Ladder Runtime Defect Closed
+
+The updated CFIP `.algo` was loaded in the real cTrader M15 instance after PR #302. The instance loaded successfully at `16:03:25.758`; history persistence passed; alert processing continued; and the previous `NullReferenceException` from `TargetLadderSelectionRule.SelectBestPath` did not recur.
+
+The terminal evidence closes `DEF-P1-001` as **FIXED — TERMINAL REVALIDATED**. This evidence is intentionally scoped to the target-ladder runtime defect and does not manufacture PASS results for the separate CI-17 target-terminal scenarios.
+
+The same runtime evidence also showed two semantically distinct queued/delivered alerts for the same plan stage: `BOS` delivered `Doorbell` and `EARLY` delivered `Announcement`, with both platform `PlaySound` operations succeeding. No duplicate delivery was observed in this log excerpt.
