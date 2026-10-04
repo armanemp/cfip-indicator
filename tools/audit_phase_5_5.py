@@ -64,6 +64,7 @@ contracts = read("tools/CFIP.Runtime.Contracts/Program.cs")
 project = read("tools/CFIP.Runtime.Contracts/CFIP.Runtime.Contracts.csproj")
 workflow = read(".github/workflows/source-check.yml")
 roadmap = read("docs/CFIP-ROADMAP.md")
+historical_roadmap = read("docs/archive/ROADMAP-LEGACY-2026-10-04.md")
 phase_doc = read("docs/PHASE-CR5-5-PARALLEL-SCENARIO-MICROREACTION.md")
 
 
@@ -193,7 +194,7 @@ check(
 check(
     "phase record and roadmap position E5 as the active remediation",
     "CR5.5" in phase_doc and
-    "CR5.5 / E5" in roadmap,
+    "CR5.5 / E5" in historical_roadmap,
 )
 
 print("CR5.5 SUMMARY")
