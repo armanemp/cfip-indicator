@@ -5,7 +5,7 @@ namespace cAlgo
     internal static class EconomicNewsFeedCoordinator
     {
         private const int RequestTimeoutSeconds = 30;
-        private const int ProviderMinimumRefreshMinutes = 5;
+        private const int ProviderMinimumRefreshMinutes = 60;
 
         private static readonly object Sync =
             new object();

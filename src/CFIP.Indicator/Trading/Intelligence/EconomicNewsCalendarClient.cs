@@ -55,48 +55,6 @@ namespace cAlgo
                 AdditionalNewsCurrencies);
         }
 
-        private bool TryAdoptSharedEconomicNewsSnapshot(
-            string uri,
-            string[] relevantCurrencies)
-        {
-            string payload;
-            DateTime successUtc;
-
-            if (!EconomicNewsFeedCoordinator.TryReadEconomicNewsSnapshot(
-                    uri,
-                    _economicNewsLastSuccessUtc,
-                    out payload,
-                    out successUtc))
-                return false;
-
-            CfipEconomicNewsEvent[] next =
-                EconomicNewsCalendarParser.Parse(
-                    payload,
-                    relevantCurrencies);
-
-            lock (_economicNewsSync)
-            {
-                if (_economicNewsDisposed ||
-                    successUtc <= _economicNewsLastSuccessUtc)
-                    return false;
-
-                _economicNewsEvents =
-                    next;
-                _economicNewsLastSuccessUtc =
-                    successUtc;
-                _economicNewsLastFailureUtc =
-                    DateTime.MinValue;
-                _economicNewsLastError = "";
-                _economicNewsFetchHealthy = true;
-                _economicNewsLastAttemptUtc =
-                    successUtc;
-                UpdateEconomicNewsStatusUnsafe(
-                    successUtc);
-            }
-
-            return true;
-        }
-
         private bool RefreshEconomicNewsIfNeeded(
             DateTime utc)
         {
@@ -119,9 +77,13 @@ namespace cAlgo
             string[] relevantCurrencies =
                 InferNewsCurrencies();
 
+            DateTime sharedLastAttemptUtc;
+
             if (TryAdoptSharedEconomicNewsSnapshot(
                     uri,
-                    relevantCurrencies))
+                    relevantCurrencies,
+                    normalizedUtc,
+                    out sharedLastAttemptUtc))
             {
                 UpdateEconomicNewsStatus(
                     normalizedUtc,
@@ -143,6 +105,17 @@ namespace cAlgo
                     UpdateEconomicNewsStatusUnsafe(
                         normalizedUtc);
                 }
+                return false;
+            }
+
+            if (sharedLastAttemptUtc != DateTime.MinValue &&
+                (normalizedUtc -
+                 sharedLastAttemptUtc).TotalMinutes <
+                    EconomicNewsFeedCoordinator.MinimumRefreshMinutes)
+            {
+                UpdateEconomicNewsStatus(
+                    normalizedUtc,
+                    false);
                 return false;
             }
 
@@ -175,6 +148,12 @@ namespace cAlgo
                     normalizedUtc);
             }
 
+            PersistSharedEconomicNewsState(
+                uri,
+                normalizedUtc,
+                _economicNewsLastSuccessUtc,
+                null);
+
             try
             {
                 var request =
@@ -186,7 +165,7 @@ namespace cAlgo
                     "application/json, text/plain, */*");
                 request.Headers.Add(
                     "User-Agent",
-                    "CFIP-Indicator/1.0 (cTrader Algo)");
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154 Safari/537.36");
                 request.Timeout =
                     TimeSpan.FromSeconds(
                         EconomicNewsFeedCoordinator.TimeoutSeconds);
@@ -295,6 +274,12 @@ namespace cAlgo
                     UpdateEconomicNewsStatusUnsafe(
                         requestUtc);
                 }
+
+                PersistSharedEconomicNewsState(
+                    uri,
+                    requestUtc,
+                    requestUtc,
+                    payload);
             }
             catch (Exception ex)
             {
@@ -324,6 +309,12 @@ namespace cAlgo
                     UpdateEconomicNewsStatusUnsafe(
                         requestUtc);
                 }
+
+                PersistSharedEconomicNewsState(
+                    uri,
+                    requestUtc,
+                    _economicNewsLastSuccessUtc,
+                    null);
 
                 Print(
                     "CFIP economic news refresh failed: {0}",

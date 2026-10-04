@@ -47,6 +47,14 @@ required = {
             "_economicNewsRequestInFlight",
             "_economicNewsRequestGeneration",
         ],
+    "src/CFIP.Indicator/Trading/Intelligence/EconomicNewsCalendarSharedState.cs":
+        [
+            "LocalStorageScope.Type",
+            "EconomicNewsSharedStateSchema",
+            "PersistSharedEconomicNewsState(",
+            "TryAdoptSharedEconomicNewsSnapshot(",
+            "PublishEconomicNewsSnapshot(",
+        ],
     "src/CFIP.Indicator/Trading/Intelligence/EconomicNewsFeedCoordinator.cs":
         [
             "ProviderMinimumRefreshMinutes",
@@ -132,9 +140,9 @@ if "TryReadEconomicNewsSnapshot(" not in coordinator:
 parameter_source = read(
     "src/CFIP.Indicator/Indicator/Parameters/28_news_guard.cs"
 )
-if "DefaultValue = 5, MinValue = 5, MaxValue = 60" not in parameter_source:
+if "DefaultValue = 60, MinValue = 60, MaxValue = 360" not in parameter_source:
     errors.append(
-        "News Refresh Minutes must enforce the provider-safe 5-minute minimum"
+        "News Refresh Minutes must enforce the provider-safe hourly minimum"
     )
 
 if "RefreshEconomicNewsIfNeeded(" in initialization:
