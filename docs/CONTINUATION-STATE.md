@@ -2743,7 +2743,7 @@ Target-terminal acceptance remains required to prove a successful JSON fetch, sh
 
 ## 2026-10-04 — Cross-Instance Alert/Audio Dedup Revalidation
 
-Status: **IMPLEMENTATION COMPLETE — VERIFICATION PENDING**
+Status: **REPOSITORY VERIFIED — TERMINAL REVALIDATION PENDING**
 
 New terminal evidence from 17:45 exposed a second-order alert transport defect: the exact same canonical BOS event/Alert ID was queued and sound-delivered by M5 and then M15 20 seconds later.
 
@@ -2759,3 +2759,9 @@ Implementation:
 - the existing queue-level pending idempotency remains as the lower transport safety guard.
 
 Target-terminal revalidation remains required before DEF-P1-003 can be closed and before CI-17 alert/audio acceptance is marked PASS.
+
+## 2026-10-04 — Cross-Instance Alert/Audio Dedup Repository Closeout
+
+PR #312 merged to `main` as `ca7d9844b1a312651d4ce073393d666d59b12cda`. Post-merge Source/Architecture, Runtime Acceptance and cTrader Compile are all PASS.
+
+The implementation removes the redundant per-instance causal-event memory and uses the canonical shared `AlertEventDedupCoordinator` + `LocalStorageScope.Type` state. Terminal revalidation is still required to prove that the same M5/M15 causal event produces exactly one queue acceptance and one sound delivery.
