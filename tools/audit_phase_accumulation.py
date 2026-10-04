@@ -152,8 +152,9 @@ if "Chart.DrawText(" not in compact_label_renderer:
     raise SystemExit("level labels must own their native ChartText object")
 if "Chart.DrawRectangle(" in compact_label_renderer:
     raise SystemExit("level labels must remain background-free")
-if "CompactPlanLabelGapBars = 1" not in labels:
-    raise SystemExit("level labels must keep exactly one chart-bar left clearance")
+label_anchor = read("UI/Chart/PlanLabelAnchorCalculator.cs")
+if "CompactPlanLabelGapBars = 1" not in label_anchor or "canonicalLineLeftBar -" not in label_anchor:
+    raise SystemExit("level labels must keep exactly one chart-bar left clearance in the canonical anchor owner")
 if "HorizontalAlignment.Right" not in compact_label_renderer:
     raise SystemExit("level labels must use right-aligned text at the left-of-line anchor")
 if "PlanLinePresentationRule.ResolveThickness(" not in line:
@@ -215,6 +216,6 @@ print("Smart server TP + break-even ownership: PASS")
 print("Local TP/BE mutation yields to broker-owned advanced protection: PASS")
 print("All signal/plan level lines: Solid")
 print("Plan Level Line Thickness: canonical 1px mapping for all configured values")
-print("All compact level labels: white text with no background")
+print("All compact level labels: exact line color, no background, one-bar left clearance")
 print(f"Public parameter contract: {EXPECTED_CURRENT_PARAMETERS}")
 print("Signal lifecycle / recent calibration / broker telemetry: PASS")
