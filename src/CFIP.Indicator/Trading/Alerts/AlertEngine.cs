@@ -15,12 +15,6 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private const int MaxRememberedAlertEventKeys = 512;
-        private readonly HashSet<string> _rememberedAlertEventKeys =
-            new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        private readonly Queue<string> _rememberedAlertEventKeyOrder =
-            new Queue<string>(MaxRememberedAlertEventKeys);
-
         private string BuildAlertEventDedupKey(
             AlertEnvelope envelope,
             string normalizedKey)
@@ -45,35 +39,6 @@ namespace cAlgo
                 identity.Direction.ToString() +
                 "|" +
                 (normalizedKey ?? string.Empty);
-        }
-
-        private bool IsRememberedAlertEvent(
-            string eventKey)
-        {
-            return
-                !string.IsNullOrWhiteSpace(eventKey) &&
-                _rememberedAlertEventKeys.Contains(eventKey);
-        }
-
-        private void RememberAlertEvent(
-            string eventKey)
-        {
-            if (string.IsNullOrWhiteSpace(eventKey) ||
-                _rememberedAlertEventKeys.Contains(eventKey))
-                return;
-
-            _rememberedAlertEventKeys.Add(eventKey);
-            _rememberedAlertEventKeyOrder.Enqueue(eventKey);
-
-            while (_rememberedAlertEventKeyOrder.Count >
-                   MaxRememberedAlertEventKeys)
-            {
-                string expired =
-                    _rememberedAlertEventKeyOrder.Dequeue();
-
-                _rememberedAlertEventKeys.Remove(
-                    expired);
-            }
         }
 
                         private bool SendUnifiedAlert(
@@ -180,11 +145,12 @@ if (SuppressDuplicateAlerts)
                                     envelope,
                                     normalizedKey);
 
-                            if (IsRememberedAlertEvent(
-                                    alertEventKey))
+                            if (!TryClaimSharedAlertEvent(
+                                    alertEventKey,
+                                    now))
                             {
                                 Print(
-                                    "CFIP ALERT DUPLICATE SUPPRESSED | event={0} | retryable=false",
+                                    "CFIP ALERT DUPLICATE SUPPRESSED | event={0} | scope=SHARED | retryable=false",
                                     alertEventKey);
                                 return false;
                             }
@@ -229,6 +195,10 @@ if (SuppressDuplicateAlerts)
 
                             if (!queued)
                             {
+                                ReleaseSharedAlertEvent(
+                                    alertEventKey,
+                                    now);
+
                                 Print(
                                     "CFIP ALERT QUEUE REJECTED | id={0} | revision={1} | retryable=true",
                                     envelope.AlertId,
@@ -236,9 +206,6 @@ if (SuppressDuplicateAlerts)
                             }
                             else
                             {
-                                RememberAlertEvent(
-                                    alertEventKey);
-
                                 _alertCooldowns[normalizedKey] = now;
 
                                 _lastAlertMessage =
