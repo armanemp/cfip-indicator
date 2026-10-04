@@ -113,7 +113,7 @@ namespace cAlgo
                     utc);
 
             string uri =
-                NormalizeEconomicNewsDataUri(
+                EconomicNewsCalendarParser.NormalizeUri(
                     EconomicNewsDataUri);
 
             string[] relevantCurrencies =
