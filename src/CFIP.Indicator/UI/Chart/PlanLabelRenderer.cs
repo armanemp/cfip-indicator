@@ -41,7 +41,7 @@ namespace cAlgo
                     text,
                     price,
                     color,
-                    GetCompactPlanLabelAnchorBar(
+                    GetCompactPlanLabelAnchorTime(
                         canonicalLineLeftBar));
             }
             catch (Exception ex)
@@ -58,7 +58,7 @@ namespace cAlgo
             double price,
             Color color,
             bool visible,
-            int labelBar)
+            DateTime labelTime)
         {
             if (!visible ||
                 !IsFinitePositive(price) ||
@@ -82,7 +82,7 @@ namespace cAlgo
             string text,
             double price,
             Color semanticColor,
-            int labelBar)
+            DateTime labelTime)
         {
             try
             {
@@ -100,7 +100,7 @@ namespace cAlgo
                         0,
                         Math.Min(
                             Bars.Count - 1,
-                            labelBar));
+                            labelTime));
 
                 double labelPrice =
                     NormalizePrice(price);
@@ -114,7 +114,7 @@ namespace cAlgo
                     as ChartText;
 
                 DateTime expectedTime =
-                    Bars.OpenTimes[textBar];
+                    labelTime;
 
                 // X geometry has one source of truth: the bar-index anchor. Recreate
                 // the same named ChartText only when its current anchor or visual
@@ -144,7 +144,7 @@ namespace cAlgo
                         Chart.DrawText(
                             name,
                             text,
-                            textBar,
+                            labelTime,
                             labelPrice,
                             labelTextColor);
                 }
@@ -155,7 +155,7 @@ namespace cAlgo
                 if (recreate)
                 {
                     Print(
-                        "CFIP SIGNAL LABEL GEOMETRY | {0} | textBar={1} | lineLeft={2} | gapBars={3} | price={4}",
+                        "CFIP SIGNAL LABEL GEOMETRY | {0} | anchorTime={1:o} | lineLeft={2} | gapBars={3} | price={4}",
                         name,
                         textBar,
                         GetPlanLineLeftBar(),
