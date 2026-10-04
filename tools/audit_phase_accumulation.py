@@ -156,8 +156,8 @@ label_anchor = read("UI/Chart/PlanLabelAnchorCalculator.cs")
 if (
     "CompactPlanLabelGapBars = 1" not in label_anchor or
     "Chart.BarIndexToX(" not in label_anchor or
-    "double targetX =\n                lineX -" not in label_anchor or
-    "Chart.XToTime(" not in label_anchor
+    "GetCompactPlanLabelAnchorBar(" not in label_anchor or
+    "canonicalLineLeftBar -\n                CompactPlanLabelGapBars" not in label_anchor
 ):
     raise SystemExit("level labels must keep exactly one chart-bar left clearance in the canonical anchor owner")
 if "HorizontalAlignment.Right" not in compact_label_renderer:
