@@ -935,9 +935,9 @@ Historical documents are evidence/archive only.
 
 **Canonical gate:** \`docs/CFIP_GATE.md\`
 
-**Current phase:** P1
+**Current phase:** P2
 
-**Current status:** PASS
+**Current status:** NEXT
 
 **Execution unit:** one complete atomic work package per implementation response.
 
