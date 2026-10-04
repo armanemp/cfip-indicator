@@ -163,16 +163,21 @@ if "CreatePanelAlertMessageRail(" not in alert_rail or "ResolvePanelAlertMessage
     raise SystemExit("Unified panel alert rail is incomplete")
 
 compact_label_renderer = labels_renderer[labels_renderer.find("private void DrawCompactPlanLabel("):]
-if "return Color.White;" not in labels_renderer:
-    raise SystemExit("All compact plan-level text must use the canonical semantic line color")
-if "Chart.DrawRectangle(" not in compact_label_renderer:
-    raise SystemExit("Plan label renderer must own the cTrader-style filled label box")
-if "box.IsFilled" not in compact_label_renderer:
-    raise SystemExit("Plan label box must be filled")
-if "PlanLinePresentationRule.ResolveColor(" not in compact_label_renderer:
-    raise SystemExit("Plan label box must reuse canonical line color")
-if "GetPlanLineRightBar()" not in labels_renderer:
-    raise SystemExit("Plan label box must attach to the canonical line endpoint")
+if "GetReadableLabelTextColor(" not in compact_label_renderer:
+    raise SystemExit("Plan labels must resolve a canonical semantic text color")
+if "Chart.DrawText(" not in compact_label_renderer:
+    raise SystemExit("Plan label renderer must own the native ChartText")
+if "Chart.DrawRectangle(" in compact_label_renderer:
+    raise SystemExit("Plan label renderer must remain background-free")
+if "GetReadableLabelTextColor(" not in compact_label_renderer or
+        "return Color.White;" not in compact_label_renderer:
+    raise SystemExit("Plan label renderer must use the canonical white text resolver")
+if "CompactPlanLabelGapBars = 1" not in compact_label_renderer:
+    raise SystemExit("Plan labels must keep exactly one chart-bar left clearance")
+if "HorizontalAlignment.Right" not in compact_label_renderer:
+    raise SystemExit("Plan labels must terminate at the left-of-line anchor")
+if "CompactPlanLabelFontSize = 10.0" not in labels_renderer:
+    raise SystemExit("Plan labels must use the canonical readable font size")
 if "OrderVolume(" in server_ladder:
     raise SystemExit("Server TP ladder must use the current relative protection volume API")
 if "new RelativeTakeProfitProtection(" not in server_ladder:
@@ -183,10 +188,6 @@ if "!pendingValid" not in signal_snapshot or "!livePlan" not in signal_snapshot:
     raise SystemExit("Signal snapshot must suppress lower-priority signal layers during execution state")
 if "!snapshot.PendingOrder" not in signal_renderer or "!snapshot.LivePosition" not in signal_renderer:
     raise SystemExit("Signal alerts must yield while pending/live execution is authoritative")
-if "Chart.DrawRectangle(" not in labels_renderer:
-    raise SystemExit("Plan label renderer must own the canonical filled cTrader-style box")
-if "box.IsFilled" not in labels_renderer:
-    raise SystemExit("Plan label box must be filled")
 if "_serverSideTakeProfitLadderActive" not in partial:
     raise SystemExit("Local partial-close path must know server TP authority")
 if "_serverSideTakeProfitLadderActive" not in target_progression:

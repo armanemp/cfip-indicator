@@ -69,12 +69,15 @@ require(
 require(
     "Chart.DrawText(" in label and
     "Chart.DrawRectangle(" not in label and
-    "Chart.DrawIcon(" in label and
+    "Chart.DrawIcon(" not in label and
     "HorizontalAlignment.Right" in label and
-    "CompactPlanLabelGapPips = 2.0" in label and
+    "CompactPlanLabelGapBars = 1" in label and
+    "CompactPlanLabelFontSize = 10.0" in label and
     "Chart.RemoveObject(name + "_BOX")" in label and
-    "PlanLinePresentationRule.ResolveColor(" in label,
-    "canonical chart labels must be native ChartText with no rectangle, exact-price alignment and a tiny native anchor marker",
+    "Chart.RemoveObject(name + "_ANCHOR")" in label and
+    "GetReadableLabelTextColor(" in label and
+    "return Color.White;" in label,
+    "canonical chart labels must be native ChartText, background-free and separated one bar left of the line",
 )
 
 require(
@@ -83,7 +86,16 @@ require(
     "GetCompactPlanLabelAnchorBar(" in parallel_label and
     "return GetPlanLineLeftBar();" in anchor and
     "CompactPlanLabelGapBars = 1" in label,
-    "all signal label paths must reuse one left-of-line anchor with a deterministic minimum gap",
+    "all standard signal label paths must reuse one canonical left-of-line anchor with a deterministic one-bar gap",
+)
+
+prediction_line = read("src/CFIP.Indicator/UI/Chart/PredictionLineRenderer.cs")
+prediction_label = read("src/CFIP.Indicator/UI/Chart/PredictionLabelsRenderer.cs")
+require(
+    "GetPredictionLineLeftBar(" in prediction_line and
+    "GetPredictionLineLeftBar(" in prediction_label and
+    "DrawPlanLabel(" in prediction_label,
+    "prediction labels must consume the prediction line owner's exact left edge before applying the shared label gap",
 )
 
 require(

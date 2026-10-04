@@ -13,18 +13,16 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private const double CompactPlanLabelFontSize = 8.5;
-        private const double CompactPlanLabelGapPips = 2.0;
-
-        // ChartText uses time/bar coordinates on X; cTrader does not expose
-        // a pip-based horizontal X offset. Keep one stable bar of visual
-        // separation, owned only by this renderer.
+        private const double CompactPlanLabelFontSize = 10.0;
         private const int CompactPlanLabelGapBars = 1;
+
+        // ChartText uses time/bar coordinates on X. Keep one deterministic
+        // chart-bar separation to the LEFT of the canonical line start.
 
         private void DrawPlanLabel(
             string name,
             string text,
-            int bar,
+            int lineLeftBar,
             double price,
             Color color)
         {
@@ -35,27 +33,19 @@ namespace cAlgo
                     Bars.Count < 2)
                     return;
 
-                int anchor =
+                int canonicalLineLeftBar =
                     Math.Max(
                         0,
                         Math.Min(
                             Bars.Count - 1,
-                            bar));
-
-                int lineLeft =
-                    Math.Max(
-                        0,
-                        anchor -
-                        Math.Max(
-                            1,
-                            LineLengthBars));
+                            lineLeftBar));
 
                 DrawCompactPlanLabel(
                     name,
                     text,
                     price,
                     color,
-                    lineLeft);
+                    canonicalLineLeftBar);
             }
             catch (Exception ex)
             {
@@ -121,8 +111,8 @@ namespace cAlgo
                 double labelPrice =
                     NormalizePrice(price);
 
-                Color labelColor =
-                    PlanLinePresentationRule.ResolveColor(
+                Color labelTextColor =
+                    GetReadableLabelTextColor(
                         semanticColor);
 
                 ChartText label =
@@ -143,7 +133,7 @@ namespace cAlgo
                             text,
                             Bars.OpenTimes[textBar],
                             labelPrice,
-                            labelColor);
+                            labelTextColor);
                 }
 
                 if (label == null)
@@ -156,7 +146,7 @@ namespace cAlgo
                 label.Y =
                     labelPrice;
                 label.Color =
-                    GetReadableLabelTextColor(labelColor);
+                    labelTextColor;
                 label.FontSize =
                     CompactPlanLabelFontSize;
                 label.FontFamily =
@@ -189,9 +179,9 @@ namespace cAlgo
         private Color GetReadableLabelTextColor(
             Color semanticColor)
         {
-            // Label text intentionally matches the canonical line color.
-            return PlanLinePresentationRule.ResolveColor(
-                semanticColor);
+            // Label text is intentionally white; line semantics are kept by
+            // the line itself and must not leak into text presentation.
+            return Color.White;
         }
 
         private void RemovePlanLabel(

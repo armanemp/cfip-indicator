@@ -55,6 +55,33 @@ namespace cAlgo
                                     return PredictionColor;
                                 }
 
+        private int GetPredictionLineLeftBar(
+                                    int closedM5)
+                                {
+                                    if (Bars == null ||
+                                        Bars.Count < 2)
+                                        return 0;
+
+                                    int anchor =
+                                        MapM5ToChart(
+                                            closedM5,
+                                            Bars.Count - 1);
+
+                                    anchor =
+                                        Math.Max(
+                                            0,
+                                            Math.Min(
+                                                Bars.Count - 1,
+                                                anchor));
+
+                                    return Math.Max(
+                                        0,
+                                        anchor -
+                                        Math.Max(
+                                            1,
+                                            LineLengthBars));
+                                }
+
         private void DrawPredictionLine(
                                     string name,
                                     double price)
@@ -77,21 +104,14 @@ namespace cAlgo
                                                         1,
                                                         _m5Bars.Count - 1),
                                                 Bars.Count - 1);
-                        
-                                        anchor =
-                                            Math.Max(
-                                                0,
-                                                Math.Min(
-                                                    Bars.Count - 1,
-                                                    anchor));
-                        
+
                                         int left =
-                                            Math.Max(
-                                                0,
-                                                anchor -
-                                                Math.Max(
-                                                    1,
-                                                    LineLengthBars));
+                                            GetPredictionLineLeftBar(
+                                                _m5Bars == null
+                                                    ? Bars.Count - 1
+                                                    : Math.Max(
+                                                        1,
+                                                        _m5Bars.Count - 1));
                         
                                         int right =
                                             Math.Min(

@@ -8,20 +8,19 @@ Close the remaining visual mismatch in signal/plan lines and labels at the exist
 - Lines are horizontal, Solid, 1px, finite and exactly 40 chart bars long, ending at the latest candle.
 - The label is owned only by PlanLabelRenderer.
 - The label anchor is the LEFT endpoint of the exact same line geometry.
-- The label sits immediately before the line start with a deterministic 1-bar gap.
-- The label is a compact filled price tag, not a large rectangle spanning the line.
-- Tag fill uses the exact semantic color of its line.
-- Text is white, compact, centered inside the tag, and uses the canonical formatted level text.
+- The label's visible text sits one chart bar to the LEFT of the canonical line start.
+- The label is native `ChartText` with no rectangle, box or marker.
+- Text is white, 10px regular weight, right aligned and uses the canonical formatted level text.
 - There is no floating label at the chart's right edge.
 - Pending and parallel labels use the same anchor and renderer.
 - Prediction labels remain under the same renderer owner and must not create a competing presentation path.
 - Expired/invalid objects continue to be removed by the existing lifecycle.
 
 ## Root cause
-The line renderer was already canonical and correct. The remaining mismatch came from presentation geometry: the coordinator selected the line's right endpoint as the label anchor, and the label renderer then constructed a multi-bar rectangle from that point. The result looked like a detached right-side annotation rather than a native-style level tag.
+The line renderer was already canonical and correct. The remaining mismatch came from label presentation geometry: the text was visually too close to the line start and too small for reliable reading. The label owner already had the correct line-left anchor; the correction keeps that anchor and enforces exactly one chart bar of left clearance with a slightly larger native-text font.
 
 ## Correction
-The existing owners were corrected in place: GetCompactPlanLabelAnchorBar() now returns GetPlanLineLeftBar(); RenderPlanLabels() consumes that canonical anchor; DrawCompactPlanLabel() treats the anchor as the line start and builds only a compact tag before it; the tag retains exact-price alignment and semantic color. No duplicate renderer or parallel geometry engine was added.
+The existing owners were corrected in place: `GetCompactPlanLabelAnchorBar()` continues to return `GetPlanLineLeftBar()`; `RenderPlanLabels()` consumes that canonical anchor; `DrawCompactPlanLabel()` places one native `ChartText` object exactly one chart bar to the left of the line start and uses the canonical 10px presentation size. No duplicate renderer, geometry engine, box, marker or calculation path was added.
 
 ## Single-owner invariant
 For this behavior there is exactly one line owner (PlanLineRenderer), one line presentation rule (PlanLinePresentationRule), one label owner (PlanLabelRenderer), one label anchor (PlanLabelAnchorCalculator), one label formatting owner (PlanLabelFormatting), and one presentation state owner (PlanLevelVisualState).
@@ -34,4 +33,4 @@ Not claimed without the user's terminal: cTrader Release compile, exact target-t
 ## Operator action
 Run git pull --ff-only, then: dotnet build src/CFIP.Indicator/CFIP.Indicator.csproj --configuration Release
 
-Finally inspect one live signal on cTrader. The acceptance criterion is a clean, thin, solid 40-bar line with a small same-color price tag immediately at its left start; no detached text on the right and no oversized rectangle.
+Finally inspect one live signal on cTrader. The acceptance criterion is a clean, thin, solid 40-bar line with native text positioned exactly one chart bar to its left; no text crossing the line, no detached right-side label, and no background rectangle.

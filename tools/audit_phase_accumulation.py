@@ -146,8 +146,17 @@ for chart_path in sorted((ROOT / "UI" / "Chart").glob("*.cs")):
             raise SystemExit(f"{chart_path.name}: forbidden non-solid line style {forbidden}")
 
 compact_label_renderer = labels[labels.find("private void DrawCompactPlanLabel("):]
-if "return Color.White;" not in labels:
-    raise SystemExit("level labels must use canonical white text")
+if "GetReadableLabelTextColor(" not in compact_label_renderer or
+        "return Color.White;" not in compact_label_renderer:
+    raise SystemExit("level labels must use the canonical white text resolver")
+if "Chart.DrawText(" not in compact_label_renderer:
+    raise SystemExit("level labels must own their native ChartText object")
+if "Chart.DrawRectangle(" in compact_label_renderer:
+    raise SystemExit("level labels must remain background-free")
+if "CompactPlanLabelGapBars = 1" not in compact_label_renderer:
+    raise SystemExit("level labels must keep exactly one chart-bar left clearance")
+if "HorizontalAlignment.Right" not in compact_label_renderer:
+    raise SystemExit("level labels must use right-aligned text at the left-of-line anchor")
 if "PlanLinePresentationRule.ResolveThickness(" not in line:
     raise SystemExit("plan signal line thickness must use the canonical presentation rule")
 if "MinimumThickness = 1" not in line_presentation_rule or "return MinimumThickness;" not in line_presentation_rule:
@@ -176,14 +185,14 @@ if "RecordPanelAlertDelivery(" not in read("UI/Panel/AlertDeliveryProcessor.cs")
     raise SystemExit("panel alert delivery handoff is missing")
 if "ResolvePanelAlertMessageColor(" not in read("UI/Panel/PanelAlertMessageRenderer.cs"):
     raise SystemExit("panel alert semantic color owner is missing")
-if "Chart.DrawRectangle(" not in labels:
-    raise SystemExit("level label renderer must remain background-free")
-if "box.IsFilled" not in labels:
-    raise SystemExit("level label renderer must not require a box")
+if "GetReadableLabelTextColor(" not in labels:
+    raise SystemExit("level label renderer must keep one canonical text-color resolver")
 if "PlanLinePresentationRule.ResolveColor(" not in labels:
-    raise SystemExit("level label box must reuse canonical line color")
-if "GetPlanLineRightBar()" not in labels:
-    raise SystemExit("level label box must attach to the line endpoint")
+    raise SystemExit("level label renderer must reuse the canonical semantic line color")
+if "Chart.DrawRectangle(" in labels:
+    raise SystemExit("level label renderer must remain background-free")
+if "CompactPlanLabelGapBars = 1" not in labels:
+    raise SystemExit("level label renderer must retain the one-bar left clearance")
 
 # Phase 7.4 / G4 — analysis-only panel after execution UI extraction.
 g4_overview_rows = read("UI/Panel/Rows/PanelOverviewStateRowsRenderer.cs")

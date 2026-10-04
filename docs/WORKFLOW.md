@@ -127,7 +127,7 @@ The standing checklist is:
 
 ## Permanent signal-line presentation rule
 
-All signal/plan level lines must use `LineStyle.Solid`, fixed thickness 1, and finite 40-bar geometry ending at the latest chart candle. Compact level labels are white, regular-weight text inside a filled box using the exact semantic line color; the box right edge is attached to the exact line endpoint. This is the current canonical UI contract and must be checked by phase audits.
+All signal/plan level lines must use `LineStyle.Solid`, fixed thickness 1, and finite 40-bar geometry ending at the latest chart candle. Compact level labels are native `ChartText`, background-free, white 10px regular-weight text, right-aligned and positioned exactly one chart bar to the left of the canonical line start. This is the current canonical UI contract and must be checked by phase audits.
 
 Alert mirror text such as `ALERT BUY/SELL` is not a signal authority and must remain absent from chart level presentation. Expired/stale pre-trade visuals must be removed by a bounded lifecycle owner, and blocked/restricted candidates must produce no sound, email or visual-alert side effect.
 

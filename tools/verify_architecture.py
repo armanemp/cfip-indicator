@@ -1167,8 +1167,10 @@ if "MapM5ToChart(" in visual_line_code or "anchorM5" in visual_line_code:
     raise SystemExit("Plan line geometry must not end at an M5 event-time mapping")
 if "GetPlanLineLeftBar" not in visual_line_code:
     raise SystemExit("Plan line renderer must expose one canonical left-edge calculation")
-if "GetPlanLineLeftBar(" not in plan_label_coordinator_code:
-    raise SystemExit("Plan label/level presentation must reuse the canonical line left-edge helper")
+if "GetCompactPlanLabelAnchorBar(" not in plan_label_coordinator_code:
+    raise SystemExit("Plan label/level presentation must consume the canonical label anchor helper")
+if "GetPlanLineLeftBar(" not in (ROOT / "UI" / "Chart" / "PlanLabelAnchorCalculator.cs").read_text(encoding="utf-8"):
+    raise SystemExit("Plan label anchor must delegate to the canonical plan-line left edge")
 
 if "CreateExecutionToggle(" not in control_factory_code:
     raise SystemExit("Execution controls must use the shared status ToggleButton presentation")
@@ -2664,24 +2666,25 @@ if "snapshot.SetupEntry" not in PLAN_LABEL_COORDINATOR_CODE:
 PLAN_LABEL_RENDERER = ROOT / "UI" / "Chart" / "PlanLabelRenderer.cs"
 PLAN_LABEL_RENDERER_CODE = PLAN_LABEL_RENDERER.read_text(encoding="utf-8")
 if "GetReadableLabelTextColor(" not in PLAN_LABEL_RENDERER_CODE:
-    raise SystemExit("Compact plan labels must resolve a canonical text color")
-compact_label_color = PLAN_LABEL_RENDERER_CODE[PLAN_LABEL_RENDERER_CODE.find("private void DrawCompactPlanLabel("):]
-if "return Color.White;" not in PLAN_LABEL_RENDERER_CODE:
-    raise SystemExit("Compact plan labels must use the canonical white text contract")
-if "Chart.DrawRectangle(" not in PLAN_LABEL_RENDERER_CODE:
-    raise SystemExit("Compact plan labels must own the canonical filled cTrader-style box")
-if "box.IsFilled" not in PLAN_LABEL_RENDERER_CODE:
-    raise SystemExit("Compact plan label box must be filled")
-if "PlanLinePresentationRule.ResolveColor(" not in PLAN_LABEL_RENDERER_CODE:
-    raise SystemExit("Compact plan label box must reuse canonical line color")
+    raise SystemExit("Compact plan labels must resolve a canonical semantic text color")
 compact_label_start = PLAN_LABEL_RENDERER_CODE.find("private void DrawCompactPlanLabel(")
 compact_label_code = PLAN_LABEL_RENDERER_CODE[compact_label_start:] if compact_label_start >= 0 else ""
 if compact_label_start < 0:
     raise SystemExit("Compact plan label renderer method is missing")
+if "Chart.DrawRectangle(" in compact_label_code:
+    raise SystemExit("Compact plan labels must remain background-free")
 if "Chart.DrawText(" not in compact_label_code:
-    raise SystemExit("Compact plan label must own its text object")
+    raise SystemExit("Compact plan labels must own their native ChartText object")
+if "PlanLinePresentationRule.ResolveColor(" not in compact_label_code:
+    raise SystemExit("Compact plan labels must reuse the canonical semantic line color")
+if "CompactPlanLabelFontSize = 10.0" not in PLAN_LABEL_RENDERER_CODE:
+    raise SystemExit("Compact plan labels must use the canonical readable font size")
+if "CompactPlanLabelGapBars = 1" not in PLAN_LABEL_RENDERER_CODE:
+    raise SystemExit("Compact plan labels must keep exactly one chart-bar left clearance")
+if "HorizontalAlignment.Right" not in compact_label_code:
+    raise SystemExit("Compact plan labels must terminate at the left-of-line anchor")
 if "Chart.RemoveObject(" not in compact_label_code:
-    raise SystemExit("Compact plan label must clean legacy chart objects")
+    raise SystemExit("Compact plan labels must clean legacy chart objects")
 
 PROTECTION_MANAGER = ROOT / "Trading" / "LiveManagement" / "ProtectionManager.cs"
 PROTECTION_MANAGER_CODE = PROTECTION_MANAGER.read_text(encoding="utf-8")
@@ -3103,21 +3106,22 @@ label_renderer = ROOT / "UI" / "Chart" / "PlanLabelRenderer.cs"
 label_code = label_renderer.read_text(encoding="utf-8")
 if "GetReadableLabelTextColor(" not in label_code:
     raise SystemExit("Plan labels must use the canonical semantic text-color resolver")
-compact_label_color = label_code[label_code.find("private void DrawCompactPlanLabel("):]
-if "return Color.White;" not in label_code:
-    raise SystemExit("Plan labels must use the canonical white text contract")
 compact_label_start = label_code.find("private void DrawCompactPlanLabel(")
 compact_label_code = label_code[compact_label_start:] if compact_label_start >= 0 else ""
-if "Chart.DrawRectangle(" not in compact_label_code:
-    raise SystemExit("Plan price labels must remain background-free")
-if "box.IsFilled" not in compact_label_code:
-    raise SystemExit("Plan price label box must be filled")
+if compact_label_start < 0:
+    raise SystemExit("Compact plan label renderer method is missing")
+if "Chart.DrawRectangle(" in compact_label_code:
+    raise SystemExit("Plan labels must remain background-free")
 if "PlanLinePresentationRule.ResolveColor(" not in compact_label_code:
-    raise SystemExit("Plan price label box must reuse canonical line color")
-if "GetPlanLineRightBar()" not in label_code:
-    raise SystemExit("Plan price label box must attach to the line endpoint")
+    raise SystemExit("Plan labels must reuse the canonical semantic line color")
 if "Chart.DrawText(" not in compact_label_code:
-    raise SystemExit("Plan price labels must own their text object")
+    raise SystemExit("Plan labels must own their native ChartText object")
+if "CompactPlanLabelFontSize = 10.0" not in label_code:
+    raise SystemExit("Plan labels must use the canonical readable font size")
+if "CompactPlanLabelGapBars = 1" not in label_code:
+    raise SystemExit("Plan labels must keep exactly one chart-bar left clearance")
+if "HorizontalAlignment.Right" not in compact_label_code:
+    raise SystemExit("Plan labels must terminate at the left-of-line anchor")
 
 live_calc = ROOT / "Runtime" / "Calculation" / "CalculationLiveCycle.cs"
 live_calc_code = live_calc.read_text(encoding="utf-8")

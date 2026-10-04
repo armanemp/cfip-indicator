@@ -23,23 +23,15 @@ namespace cAlgo
                                         Bars.Count < 2)
                                         return;
                         
-                                    int bar =
-                                        MapM5ToChart(
-                                            closedM5,
-                                            Bars.Count - 1);
-                        
-                                    bar =
-                                        Math.Max(
-                                            0,
-                                            Math.Min(
-                                                Bars.Count - 1,
-                                                bar));
+                                    int lineLeftBar =
+                                        GetPredictionLineLeftBar(
+                                            closedM5);
                         
                                     DrawPlanLabel(
                                         P + "PRED_ENTRY_LABEL",
                                         "ENTRY " +
                                         Price(prediction.Entry),
-                                        bar,
+                                                lineLeftBar,
                                         prediction.Entry,
                                         EntryLineColor);
                         
@@ -48,7 +40,7 @@ namespace cAlgo
                                             P + "PRED_STOP_LABEL",
                                             "SL " +
                                             Price(prediction.StopLoss),
-                                            bar,
+                                                lineLeftBar,
                                             prediction.StopLoss,
                                             SlLineColor);
                         
@@ -60,7 +52,7 @@ namespace cAlgo
                                             P + "PRED_TRIGGER_LABEL",
                                             "TRIGGER " +
                                             Price(prediction.Trigger),
-                                            bar,
+                                                lineLeftBar,
                                             prediction.Trigger,
                                             TriggerLineColor);
                         
@@ -74,7 +66,7 @@ namespace cAlgo
                                                 P + "PRED_TARGET1_LABEL",
                                                 "TP1 " +
                                                 Price(prediction.Target1),
-                                                bar,
+                                                lineLeftBar,
                                                 prediction.Target1,
                                                 TpLineColor);
                         
@@ -86,7 +78,7 @@ namespace cAlgo
                                                 P + "PRED_TARGET2_LABEL",
                                                 "TP2 " +
                                                 Price(prediction.Target2),
-                                                bar,
+                                                lineLeftBar,
                                                 prediction.Target2,
                                                 Tp2LineColor);
                         
@@ -98,7 +90,7 @@ namespace cAlgo
                                                 P + "PRED_TARGET3_LABEL",
                                                 "TP3 " +
                                                 Price(prediction.Target3),
-                                                bar,
+                                                lineLeftBar,
                                                 prediction.Target3,
                                                 Tp3LineColor);
                         
@@ -110,7 +102,7 @@ namespace cAlgo
                                                 P + "PRED_TARGET4_LABEL",
                                                 "TP4 " +
                                                 Price(prediction.Target4),
-                                                bar,
+                                                lineLeftBar,
                                                 prediction.Target4,
                                                 Tp4LineColor);
                                     }
