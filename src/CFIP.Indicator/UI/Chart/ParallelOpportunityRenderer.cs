@@ -305,26 +305,6 @@ namespace cAlgo
                 labelBar);
         }
 
-        private string LaneLabel(
-            TradeOpportunityCandidate candidate)
-        {
-            string direction =
-                candidate.Direction == 1
-                    ? "BUY"
-                    : "SELL";
-
-            if (!string.IsNullOrWhiteSpace(
-                    candidate.SourceTimeframe))
-                return
-                    ScenarioLabelPrefix(
-                        candidate);
-
-            return
-                candidate.LabelPrefix +
-                " " +
-                direction;
-        }
-
         private bool IsSameAsLivePlan(
             TradeOpportunityCandidate candidate)
         {
@@ -356,12 +336,6 @@ namespace cAlgo
                     _plan.Tp1 -
                     candidate.Tp1) <=
                 tolerance;
-        }
-
-        private void HashSetCurrentOpportunityVisuals()
-        {
-            // Existing IDs are intentionally kept until the current render has
-            // declared ownership; stale IDs are removed in a separate pass.
         }
 
         private void RemoveOpportunityLabels(
