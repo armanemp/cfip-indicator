@@ -1297,14 +1297,24 @@ if "double atr =" not in protection_code or "_m5Frame.Atr" not in protection_cod
 # Signal/execution synchronization gates.
 PLAN_RENDER = ROOT / "UI" / "Chart" / "PlanRenderCoordinator.cs"
 PLAN_LABEL_RENDER = ROOT / "UI" / "Chart" / "PlanLabelRenderCoordinator.cs"
-for visual_path in (PLAN_RENDER, PLAN_LABEL_RENDER):
-    visual_code = visual_path.read_text(encoding="utf-8")
-    if visual_path == PLAN_RENDER:
-        if "SignalVisualSnapshot snapshot" not in visual_code or "snapshot.Stop" not in visual_code:
-            raise SystemExit("Plan levels must render through the canonical visual snapshot: PlanRenderCoordinator.cs")
-    else:
-        if "SignalVisualSnapshot snapshot" not in visual_code or "BuildPlanLevelVisualState(" not in visual_code:
-            raise SystemExit("Plan labels must consume the canonical visual snapshot state builder")
+plan_render_code = PLAN_RENDER.read_text(encoding="utf-8")
+plan_label_render_code = PLAN_LABEL_RENDER.read_text(encoding="utf-8")
+
+if (
+    "SignalVisualSnapshot snapshot" not in plan_render_code or
+    "snapshot.Stop" not in plan_render_code
+):
+    raise SystemExit(
+        "Plan levels must render through the canonical visual snapshot: PlanRenderCoordinator.cs"
+    )
+
+if (
+    "SignalVisualSnapshot snapshot" not in plan_label_render_code or
+    "BuildPlanLevelVisualState(" not in plan_label_render_code
+):
+    raise SystemExit(
+        "Plan labels must consume the canonical visual snapshot state builder"
+    )
 
 # Market/Aggressive broker reporting is owned by the cBot after CBOT-P4A.
 
@@ -2662,28 +2672,43 @@ PLAN_LABEL_COORDINATOR = ROOT / "UI" / "Chart" / "PlanLabelRenderCoordinator.cs"
 PLAN_LABEL_COORDINATOR_CODE = PLAN_LABEL_COORDINATOR.read_text(encoding="utf-8")
 if "bool preview" not in PLAN_LABEL_COORDINATOR_CODE:
     raise SystemExit("Plan label renderer must accept preview context")
-if "snapshot.SetupEntry" not in PLAN_LABEL_COORDINATOR_CODE:
-    raise SystemExit("Preview compact labels must use preview level values")
+
+# Preview level selection is owned by the canonical visual-state builder
+# in PlanRenderCoordinator; labels must consume that state rather than
+# duplicating preview/current level selection.
+if "BuildPlanLevelVisualState(" not in PLAN_LABEL_COORDINATOR_CODE:
+    raise SystemExit("Plan labels must consume the canonical visual-state builder")
+
+if (
+    "preview ? snapshot.SetupEntry : snapshot.Entry" not in PLAN_RENDERER_CODE or
+    "preview ? snapshot.SetupStop : snapshot.Stop" not in PLAN_RENDERER_CODE
+):
+    raise SystemExit(
+        "Canonical visual-state builder must use preview setup level values"
+    )
 
 PLAN_LABEL_RENDERER = ROOT / "UI" / "Chart" / "PlanLabelRenderer.cs"
 PLAN_LABEL_RENDERER_CODE = PLAN_LABEL_RENDERER.read_text(encoding="utf-8")
 if "GetReadableLabelTextColor(" not in PLAN_LABEL_RENDERER_CODE:
-    raise SystemExit("Compact plan labels must resolve a canonical text color")
-compact_label_color = PLAN_LABEL_RENDERER_CODE[PLAN_LABEL_RENDERER_CODE.find("private void DrawCompactPlanLabel("):]
-if "return Color.White;" not in PLAN_LABEL_RENDERER_CODE:
-    raise SystemExit("Compact plan labels must use the canonical white text contract")
-if "Chart.DrawRectangle(" not in PLAN_LABEL_RENDERER_CODE:
-    raise SystemExit("Compact plan labels must own the canonical filled cTrader-style box")
-if "box.IsFilled" not in PLAN_LABEL_RENDERER_CODE:
-    raise SystemExit("Compact plan label box must be filled")
-if "PlanLinePresentationRule.ResolveColor(" not in PLAN_LABEL_RENDERER_CODE:
-    raise SystemExit("Compact plan label box must reuse canonical line color")
+    raise SystemExit("Compact plan labels must resolve the canonical semantic text color")
+if "return ResolvePlanLineColor(" not in PLAN_LABEL_RENDERER_CODE:
+    raise SystemExit("Compact plan labels must use the canonical line color owner")
 compact_label_start = PLAN_LABEL_RENDERER_CODE.find("private void DrawCompactPlanLabel(")
 compact_label_code = PLAN_LABEL_RENDERER_CODE[compact_label_start:] if compact_label_start >= 0 else ""
 if compact_label_start < 0:
     raise SystemExit("Compact plan label renderer method is missing")
 if "Chart.DrawText(" not in compact_label_code:
-    raise SystemExit("Compact plan label must own its text object")
+    raise SystemExit("Compact plan label must own its native ChartText object")
+if "Chart.DrawRectangle(" in compact_label_code:
+    raise SystemExit("Compact plan labels must remain background-free")
+if "Chart.DrawIcon(" in compact_label_code:
+    raise SystemExit("Compact plan labels must not create anchor markers")
+if "CompactPlanLabelGapPips" not in compact_label_code:
+    raise SystemExit("Compact plan labels must use the canonical pip-space clearance")
+if "Symbol.PipSize" not in compact_label_code:
+    raise SystemExit("Compact plan labels must express clearance in symbol pip space")
+if "2.0" not in PLAN_LABEL_RENDERER_CODE:
+    raise SystemExit("Compact plan labels must keep the exact 2-pip clearance contract")
 if "Chart.RemoveObject(" not in compact_label_code:
     raise SystemExit("Compact plan label must clean legacy chart objects")
 
