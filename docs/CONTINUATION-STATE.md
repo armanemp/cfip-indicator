@@ -2672,3 +2672,14 @@ Repository implementation merged to `main` as `f43e83bac3d54e90d18e419320c3a5d4c
 **Blocking boundary:** real cTrader target-terminal evidence is still required. The manual acceptance package remains the source of truth for that boundary; no historical or source-only evidence is substituted.
 
 **Next:** WP-06 remains blocked until WP-05 target-terminal acceptance is recorded.
+
+
+## 2026-10-04 — Open PR disposition cleanup
+
+Status: **VERIFIED — stale/superseded PR cleanup completed; no deferred execution work was merged.**
+
+Closed as superseded after comparison with canonical `main`: PR #253 (smart arrows; canonical implementation already merged via #252), PR #256 (alert audio; canonical owner merged via #296), PR #244 (older integrated UI/signal/alert snapshot), and PR #246 (older final-verification snapshot).
+
+Retained open for later canonical disposition because they contain substantive later-scope Trade/cBot work rather than proven duplicate-only content: PR #226 (actual-entry trade path), #235 (cBot capacity), #239 (live/realtime execution), and #258 (adaptive reward/risk/protection). These are not merged early and do not alter the current WP-05 terminal blocker or WP-06 sequencing.
+
+Program progress remains **5/70 fully PASS = 7.1%**. WP-05 repository scope remains 100% complete with **0/13 target-terminal scenarios** accepted; WP-06 remains BLOCKED.
