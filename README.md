@@ -21,4 +21,6 @@ Clean, modular cTrader indicator with a single execution authority.
 - Trading: identity, pending orders, execution, lifecycle, live management, risk, validation and intelligence.
 - UI: chart, panel, historical and unified alert-rail presentation.
 
-Canonical continuation/acceptance: `docs/CFIP-ROADMAP.md` and `docs/CFIP_GATE.md`. Supporting architecture/editing/OSS documents are reference material and cannot override those two canonical files.
+Canonical control plane: `docs/CFIP-ROADMAP.md`, `docs/CFIP-LIST.md`, and `docs/CFIP_GATE.md`. `docs/CFIP-PROMPT.md` and `docs/CFIP-PREPROMPT.md` are bootstrap prompts. Supporting architecture/editing/OSS documents are reference material and cannot override the canonical control plane.
+
+Repository hygiene is mandatory: every tracked artifact must be intentional and classified; proven-unused, redundant, generated, temporary, or obsolete files must be removed or explicitly archived after dependency verification.
