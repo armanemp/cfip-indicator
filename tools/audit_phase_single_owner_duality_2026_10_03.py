@@ -73,8 +73,8 @@ require(
     "HorizontalAlignment.Right" in label and
     "CompactPlanLabelGapBars = 1" in label and
     "CompactPlanLabelFontSize = 10.0" in label and
-    "Chart.RemoveObject(name + "_BOX")" in label and
-    "Chart.RemoveObject(name + "_ANCHOR")" in label and
+    'Chart.RemoveObject(name + "_BOX")' in label and
+    'Chart.RemoveObject(name + "_ANCHOR")' in label and
     "GetReadableLabelTextColor(" in label and
     "return Color.White;" in label,
     "canonical chart labels must be native ChartText, background-free and separated one bar left of the line",
