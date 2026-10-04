@@ -95,7 +95,7 @@ check(
 
 check(
     "ActionabilityReason remains the single panel-visible diagnostic channel",
-    "public string ActionabilityReason;" in decision and
+    "public string ActionabilityReason" in decision and
     "actionability.Reason" in orchestration and
     "_decision.ActionabilityReason" in panel
 )
