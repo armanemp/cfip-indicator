@@ -35,7 +35,7 @@ prediction = read("src/CFIP.Indicator/Trading/Intelligence/Prediction/EarlyPredi
 runtime_project = read("tools/CFIP.Runtime.Contracts/CFIP.Runtime.Contracts.csproj")
 runtime_contracts = read("tools/CFIP.Runtime.Contracts/Program.cs")
 workflow = read(".github/workflows/source-check.yml")
-roadmap = read("docs/ROADMAP.md")
+roadmap = read("docs/CFIP-ROADMAP.md")
 continuation = read("docs/CONTINUATION-STATE.md")
 phase_doc = read("docs/PHASE-CI-12-STRUCTURAL-SL.md")
 
