@@ -80,19 +80,19 @@ require(
     "ResolveCanonicalPlanLineColor(" in line and
     "ResolveCanonicalPlanLineColor(" in label and
     "semanticColor" in label and
-    "GetCompactPlanLabelAnchorBar(" in label,
+    "GetCompactPlanLabelAnchorTime(" in label,
     "canonical chart labels must be native ChartText, background-free and separated one bar left of the line",
 )
 
 require(
-    "GetCompactPlanLabelAnchorBar(" in label_coord and
-    "GetCompactPlanLabelAnchorBar(" in pending_label and
-    "GetCompactPlanLabelAnchorBar(" in parallel_label and
-    "GetCompactPlanLabelAnchorBar(" in anchor and
-    "GetCompactPlanLabelAnchorBar(" in anchor and
+    "GetCompactPlanLabelAnchorTime(" in label_coord and
+    "GetCompactPlanLabelAnchorTime(" in pending_label and
+    "GetCompactPlanLabelAnchorTime(" in parallel_label and
+    "GetCompactPlanLabelAnchorTime(" in anchor and
+    "GetCompactPlanLabelAnchorTime(" in anchor and
     "canonicalLineLeftBar -\n                CompactPlanLabelGapBars" in anchor and
     "CompactPlanLabelGapBars = 1" in anchor,
-    "all standard signal label paths must reuse one canonical bar-index anchor with a deterministic one-bar gap",
+    "all standard signal label paths must reuse one canonical DateTime/OpenTime anchor with a deterministic one-bar gap",
 )
 
 prediction_line = read("src/CFIP.Indicator/UI/Chart/PredictionLineRenderer.cs")
