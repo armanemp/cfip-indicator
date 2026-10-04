@@ -63,6 +63,14 @@ namespace cAlgo
                 int thickness =
                     ResolvePlanLineThickness(name);
 
+        private Color ResolveCanonicalPlanLineColor(
+            Color semanticColor)
+        {
+            return Color.FromArgb(
+                PlanLinePresentationRule.SignalLineAlpha,
+                semanticColor);
+        }
+
                 ChartTrendLine line =
                     Chart.FindObject(name)
                     as ChartTrendLine;
@@ -82,8 +90,7 @@ namespace cAlgo
                             normalized,
                             right,
                             normalized,
-                            Color.FromArgb(
-                                PlanLinePresentationRule.SignalLineAlpha,
+                            ResolveCanonicalPlanLineColor(
                                 color),
                             thickness,
                             lineStyle);
@@ -103,7 +110,7 @@ namespace cAlgo
                 line.Color =
                     Color.FromArgb(
                         PlanLinePresentationRule.SignalLineAlpha,
-                        color);
+                                color);
                 line.Thickness =
                     thickness;
                 line.LineStyle =
