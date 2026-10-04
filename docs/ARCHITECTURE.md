@@ -79,6 +79,10 @@ an artificial unit weight.
 
 Parallel timeframe scenario enrichment reuses the canonical per-frame evidence owner and must not maintain a second raw boolean counter.
 
+### Canonical supported analysis timeframes — hard contract
+
+Production MTF is strictly **M1 / M5 / M15 / M30 / H1 / H4 / D1 / W1**. D1/W1 are optional context only. M15 is the canonical decision/reference frame; M5 is trigger/entry precision; M1 is optional confirmation. **M2 / 2-minute is not supported** and must not exist as a provider, Bars request, state, cache, panel/row/lamp, signal source, decision input, contract field or execution clock. Reintroduction is a P0 architecture defect.
+
 Indicator-group count is provenance only; existing decision quality, confidence and actionability authorities remain unchanged.
 ### FVG lifecycle ownership
 
