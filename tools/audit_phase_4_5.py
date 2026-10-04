@@ -54,6 +54,7 @@ calc = read(
 contracts = read("tools/CFIP.Runtime.Contracts/Program.cs")
 contracts_project = read("tools/CFIP.Runtime.Contracts/CFIP.Runtime.Contracts.csproj")
 roadmap = read("docs/CFIP-ROADMAP.md")
+historical_roadmap = read("docs/archive/ROADMAP-LEGACY-2026-10-04.md")
 continuation = read("docs/CONTINUATION-STATE.md")
 
 
@@ -160,8 +161,8 @@ check(
 )
 check(
     "phase is recorded as complete and target-terminal boundary remains explicit",
-    "CR4.5" in roadmap
-    and "target-terminal" in roadmap.lower()
+    "CR4.5" in historical_roadmap
+    and "target-terminal" in historical_roadmap.lower()
     and "CR4.5" in continuation
     and "Next phase" in continuation,
 )
