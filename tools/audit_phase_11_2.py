@@ -47,7 +47,7 @@ require(
 )
 require(
     ROOT / "src/CFIP.Indicator/UI/Chart/PlanLabelRenderCoordinator.cs",
-    r"GetCompactPlanLabelAnchorBar\(\)",
+    r"GetCompactPlanLabelAnchorTime\(\)",
     "canonical compact label anchor owner",
 )
 require(
@@ -68,13 +68,13 @@ require(
 ANCHOR = ROOT / "src/CFIP.Indicator/UI/Chart/PlanLabelAnchorCalculator.cs"
 require(
     ANCHOR,
-    r"private int GetCompactPlanLabelAnchorBar\(\)",
-    "canonical bar-index anchor owner",
+    r"private DateTime GetCompactPlanLabelAnchorTime\(\)",
+    "canonical DateTime/OpenTime anchor owner",
 )
 require(
     ANCHOR,
     r"canonicalLineLeftBar\s*-\s*\n\s*CompactPlanLabelGapBars",
-    "exact one-bar gap is owned by the canonical bar-index anchor",
+    "exact one-bar gap is owned by the canonical OpenTime anchor",
 )
 
 if re.search(r"label\.Time\s*=", LABEL.read_text(encoding="utf-8")):
