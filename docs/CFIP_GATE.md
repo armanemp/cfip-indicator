@@ -61,8 +61,8 @@ Never use "looks fine", screenshot-only code proof, CI as proof of audio, or his
 |---|---|
 | Repository | armanemp/cfip-indicator |
 | Canonical branch | main |
-| Baseline commit | **FILL FROM ACTUAL MAIN AT P0** |
-| Baseline date/time | **FILL** |
+| Baseline commit | `207e43b7d5293db4445e3f00e9b2b008c95f8dea` |
+| Baseline date/time | `2026-10-04T11:36:56Z` (commit time) |
 | Indicator | CFIP.Indicator |
 | Contracts | CFIP.Contracts |
 | cBot | CFIP.cBot |
@@ -73,7 +73,7 @@ Never use "looks fine", screenshot-only code proof, CI as proof of audio, or his
 | M2 | FORBIDDEN |
 | Broker mutation | CFIP.cBot only |
 | Current phase | P0 |
-| Current phase status | NEXT |
+| Current phase status | PASS |
 
 # 5. Master defect register
 
@@ -81,7 +81,8 @@ One row per distinct root cause; do not duplicate rows for symptoms of the same 
 
 | ID | Domain | Severity | Owner | Symptom | Root cause | Status | Phase | Evidence | Regression guard |
 |---|---|---|---|---|---|---|---|---|---|
-| DEF-000 | TEMPLATE | — | — | — | — | TEMPLATE | — | — | — |
+| DEF-P0-001 | Repository inventory | P1 | CFIP-LIST.md | Canonical inventory lagged actual tree by four files | Inventory snapshot predates the current canonical prompt/control-plane additions and `.vscode/extensions.json` indexing | VERIFIED | P0/WP-00 | Git tree `207e43b7...`: 1131 files; CFIP-LIST enumerated 1127; reconciled in WP-00 closeout | CFIP-LIST exact-tree comparison |
+| DEF-P0-002 | Documentation governance | P1 | WP-03 / WP-04 | Active tooling still reads `docs/ROADMAP.md` | `tools/verify_architecture.py` contains an active read of the historical roadmap for the Track-19 continuity check; 43 tool files reference the old roadmap path | OPEN | P0/WP-00 → WP-03 | Current main search + `verify_architecture.py:3054`; Source/Architecture still passes | WP-03 canonical-control-plane migration + WP-04 historical isolation |
 
 Severity:
 - P0 safety/architecture/data-integrity;
@@ -762,6 +763,89 @@ P0 must produce:
 13. this baseline table completed;
 14. \`docs/CFIP-ROADMAP.md\` synchronized.
 
+# 35.1 P0 / WP-00 closeout — 2026-10-04
+
+**Status:** PASS  
+**Baseline commit:** `207e43b7d5293db4445e3f00e9b2b008c95f8dea`  
+**Baseline time:** `2026-10-04T11:36:56Z`  
+**Atomic package:** WP-00 — Rebaseline
+
+### Baseline truth
+- Actual `main` HEAD: `207e43b7d5293db4445e3f00e9b2b008c95f8dea`.
+- Repository tree: **1,131 files / 82 directories / 218 Markdown files**; tree is not truncated.
+- Canonical inventory before closeout enumerated 1,127 files. The four-file delta was: `.vscode/extensions.json`, `docs/CFIP-LIST.md`, `docs/CFIP-PROMPT.md`, `docs/CFIP-PREPROMPT.md`. All four are now indexed.
+- Production projects: `CFIP.Indicator`, `CFIP.Contracts`, `CFIP.cBot`.
+- Production C# baseline from the machine gate: **668 files**.
+- Public parameter baseline: **545 declarations / 545 unique**, across **30 parameter source files**; zero unread candidates and no duplicate public parameter names.
+- Canonical MTF: **M1/M5/M15/M30/H1/H4/D1/W1**; M2 absent.
+
+### CI / build evidence
+- Source / Architecture: **PASS**, run `37199344197`, all 157 audit steps completed successfully.
+- Runtime Acceptance Contracts: **PASS**, run `37199344236`.
+- cTrader Compile: **PASS**, run `37199344261`; Release restore/build/run sequence completed for Contracts, cBot, CI, Decision/Planning/Execution contracts, Shadow tests and Preflight projects. Indicator compilation is covered through the Preflight project reference.
+- Current CI logs report **0 failures** for the cBot boundary audit and **0 direct broker mutation calls in Indicator**.
+- M2 audit: **PASS / ABSENT**.
+- Current runtime/UI audit: **PASS**.
+- Current single-owner/no-duality audit: **PASS**.
+- The only runner-level warning observed in the Source job is the GitHub Actions Node.js 20 deprecation warning for `actions/checkout@v4` / `actions/setup-python@v5`; it is not a C# compiler warning.
+
+### Project / dependency graph
+- Solution contains exactly the three production projects: Indicator, Contracts and cBot.
+- Production projects target `net6.0`.
+- Indicator package pins: `cTrader.Automate 1.0.21`, `Skender.Stock.Indicators 2.7.3`; Contracts is dependency-free; cBot references Contracts and cTrader.Automate.
+- CI/runtime harness projects intentionally compile selected canonical production owners directly; F1 audit reports **12 projects scanned**, `cTrader.Automate=[1.0.21]`, `Skender.Stock.Indicators=[2.7.3]`, **214 neutral Core/Contracts files scanned**, **0 Runtime.Contracts linked platform files**, and **0 cBot→Indicator ProjectReferences**.
+- `Directory.Build.props`: deterministic build, nullable disabled globally, implicit usings disabled, warnings not treated as errors.
+- `CFIP.Indicator.csproj`: `net6.0`, deterministic, default SDK source inclusion, Contracts reference.
+- `CFIP.cBot.csproj`: `net6.0`, deterministic, Contracts reference, no Indicator reference.
+
+### Canonical owner map
+- Closed-bar boundary: `ClosedBarReferenceRule`; MTF closed context: `MtfClosedContext`.
+- Decision/actionability/plan semantics remain in their existing canonical Core/Decision/Trading owners; presentation consumes canonical snapshots.
+- Direction/strength: `MtfTrendStrengthRule` with the canonical nine-level ladder.
+- Signal visual snapshot: `SignalVisualSnapshotBuilder` / `SignalVisualSnapshot`.
+- Arrow rendering: canonical arrow renderer; stale legacy arrow renderers are absent by current dedicated audit.
+- Plan line geometry: `PlanLineRenderer`; plan label rendering: `PlanLabelRenderer`; label formatting/anchor have dedicated canonical owners.
+- Alert delivery: `AlertDeliveryProcessor`; cBot lifecycle audio: `CbotLifecycleAudioService`.
+- Broker mutation: cBot execution owners only; Indicator direct mutation count is zero.
+- Broker-confirmed lifecycle/recovery: cBot lifecycle/reconciliation owners.
+- The current machine gates confirm these ownership boundaries without introducing a second owner.
+
+### Duplicate / parallel-path scan
+- Source/Architecture full accumulated audit: PASS.
+- Single-owner/no-duality audit: PASS.
+- Smart separated signal-arrow audit: PASS; obsolete arrow owners are absent.
+- Signal drawing canonical audit: PASS; one line owner, one label owner, solid 1px/40-bar geometry.
+- Realtime/live unification audit: PASS; Indicator remains broker-mutation-free and cBot remains execution authority.
+- No duplicate execution/decision/critical visual/audio path was detected by the active accumulated gates.
+- No M2 path was detected.
+
+### Safety / performance / terminal boundary
+- Safety: fail-closed execution and cBot-only broker mutation gates PASS; live account arm remains explicit/default-off per current CI evidence.
+- Performance: accumulated optimization/hot-path audits PASS; no new hot-path code was introduced by WP-00.
+- Terminal-only evidence remains required for actual cTrader chart geometry, sound audibility, attachment visibility, broker-server fills/slippage, restart/reconnect timing and live resource behavior. WP-00 does not claim terminal PASS.
+
+### Historical/open-PR boundary
+- Open PRs inspected at baseline include #279, #273, #272, #263, #258, #256, #254, #253, #251, #246, #244, #241, #239, #235 and #226.
+- These PRs are not part of the `main` baseline unless their changes are actually present in HEAD; no open PR was treated as authoritative over current `main`.
+- PR #272 is an older baseline-gate repair against an earlier base and is not merged into the current HEAD; it is not used as WP-00 evidence.
+
+### Residual defects
+- **DEF-P0-001** inventory drift is fixed in this closeout.
+- **DEF-P0-002** historical `docs/ROADMAP.md` remains referenced by active audit tooling and must be migrated/isolated under WP-03/WP-04. This does not change current runtime authority, but it is a canonical-control-plane dependency and remains OPEN.
+
+### Gate results
+| Gate | Result | Evidence |
+|---|---|---|
+| G0 Repository Truth | PASS | HEAD/tree/CI/project graph captured |
+| G1 Contract Truth | PASS | Canonical MTF, boundary and product contracts reconciled |
+| G2 Ownership Truth | PASS | Accumulated single-owner/no-duality audits |
+| G3 Implementation Truth | PASS | Current main source and cBot boundary audits |
+| G4 Static/Automated Truth | PASS | Source/Architecture run 37199344197 |
+| G5 Build Truth | PASS | cTrader compile run 37199344261 |
+| G6 Runtime Contract Truth | PASS | Runtime Acceptance run 37199344236 |
+| G7 Target-Terminal Truth | PASS + TERMINAL PENDING | WP-00 cannot prove host-only behavior statically |
+| G8 Continuity Truth | PASS | Three canonical files synchronized by this closeout |
+
 # 36. Certification
 
 Certification requires:
@@ -803,7 +887,7 @@ Historical documents are evidence/archive only.
 
 **Canonical gate:** \`docs/CFIP_GATE.md\`
 
-**Current phase:** P0
+**Current phase:** P1
 
 **Current status:** NEXT
 
@@ -1036,7 +1120,7 @@ For any material code file being changed or flagged:
 
 **Macro phase:** P0
 
-**Executable package:** WP-00 — NEXT
+**Executable package:** WP-01 — NEXT
 
 **Roadmap:** \`docs/CFIP-ROADMAP.md\`
 
