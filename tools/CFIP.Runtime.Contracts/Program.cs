@@ -6536,9 +6536,24 @@ namespace cAlgo
                 !lineRenderer.Contains("anchorM5"),
                 "plan levels terminate at the latest chart candle without stale M5 anchoring");
 
+            string labelAnchorPath =
+                Path.Combine(
+                    "src",
+                    "CFIP.Indicator",
+                    "UI",
+                    "Chart",
+                    "PlanLabelAnchorCalculator.cs");
+            string labelAnchor =
+                File.ReadAllText(labelAnchorPath);
+
             Assert(
-                labelCoordinator.Contains("GetCompactPlanLabelAnchorBar("),
-                "plan labels use the canonical compact label anchor owner");
+                labelCoordinator.Contains("GetCompactPlanLabelAnchorTime()") &&
+                labelAnchor.Contains("CompactPlanLabelGapBars = 1") &&
+                labelAnchor.Contains("Chart.BarIndexToX(") &&
+                labelAnchor.Contains("double targetX =") &&
+                labelAnchor.Contains("lineX -") &&
+                labelAnchor.Contains("Chart.XToTime("),
+                "plan labels use the canonical projected chart-space label anchor owner");
 
             Assert(
                 controlFactory.Contains("CreateExecutionToggle(") &&
