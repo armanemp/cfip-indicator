@@ -1574,7 +1574,7 @@ At certification:
 
 # 17. Current state
 
-**Inventory source tree:** `f81bfee89dbbc18324892007c26678cc4d5e8639`
+**Inventory source tree:** `26eed2df59bfe8972f379c44e7bde9180bc32b81`
 
 **Current executable package:** **WP-02 — NEXT**
 
