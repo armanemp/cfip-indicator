@@ -94,29 +94,6 @@ namespace cAlgo
     public partial class CFIPIndicator
     {
         private const int EconomicNewsRequestTimeoutSeconds = 30;
-        private const int EconomicNewsProviderMinimumRefreshMinutes = 5;
-        private const string CanonicalEconomicNewsJsonUri =
-            "https://nfs.faireconomy.media/ff_calendar_thisweek.json";
-        private const string EconomicNewsUserAgent =
-            "CFIP-Indicator/1.0 (cTrader Algo)";
-
-        private static readonly object EconomicNewsSharedSync =
-            new object();
-
-        private static string _economicNewsSharedUri =
-            "";
-        private static string _economicNewsSharedPayload =
-            "";
-        private static DateTime _economicNewsSharedLastAttemptUtc =
-            DateTime.MinValue;
-        private static DateTime _economicNewsSharedRequestStartedUtc =
-            DateTime.MinValue;
-        private static DateTime _economicNewsSharedLastSuccessUtc =
-            DateTime.MinValue;
-        private static string _economicNewsSharedLastError =
-            "";
-        private static int _economicNewsSharedGeneration;
-        private static volatile bool _economicNewsSharedRequestInFlight;
 
         private readonly object _economicNewsSync =
             new object();
@@ -245,23 +222,16 @@ namespace cAlgo
         {
             string uri =
                 string.IsNullOrWhiteSpace(configuredUri)
-                    ? CanonicalEconomicNewsJsonUri
+                    ? "https://nfs.faireconomy.media/ff_calendar_thisweek.json"
                     : configuredUri.Trim();
 
             if (string.Equals(
                     uri,
                     "https://nfs.faireconomy.media/ff_calendar_thisweek.xml",
                     StringComparison.OrdinalIgnoreCase))
-                return CanonicalEconomicNewsJsonUri;
+                return "https://nfs.faireconomy.media/ff_calendar_thisweek.json";
 
             return uri;
-        }
-
-        private int GetEffectiveNewsRefreshMinutes()
-        {
-            return Math.Max(
-                EconomicNewsProviderMinimumRefreshMinutes,
-                Math.Max(1, NewsRefreshMinutes));
         }
 
         private bool TryAdoptSharedEconomicNewsSnapshot(
@@ -271,21 +241,12 @@ namespace cAlgo
             string payload;
             DateTime successUtc;
 
-            lock (EconomicNewsSharedSync)
-            {
-                if (!string.Equals(
-                        _economicNewsSharedUri,
-                        uri,
-                        StringComparison.OrdinalIgnoreCase) ||
-                    _economicNewsSharedLastSuccessUtc ==
-                        DateTime.MinValue ||
-                    _economicNewsSharedLastSuccessUtc <=
-                        _economicNewsLastSuccessUtc)
-                    return false;
-
-                payload = _economicNewsSharedPayload;
-                successUtc = _economicNewsSharedLastSuccessUtc;
-            }
+            if (!EconomicNewsFeedCoordinator.TryGetSnapshot(
+                    uri,
+                    _economicNewsLastSuccessUtc,
+                    out payload,
+                    out successUtc))
+                return false;
 
             List<CfipEconomicNewsEvent> next =
                 DeserializeEconomicNews(
@@ -364,74 +325,33 @@ namespace cAlgo
                 return false;
             }
 
-            int refreshMinutes =
-                GetEffectiveNewsRefreshMinutes();
-
-            int requestId =
-                0;
-            bool shouldStartRequest =
-                false;
-
-            lock (EconomicNewsSharedSync)
-            {
-                if (!string.Equals(
-                        _economicNewsSharedUri,
-                        uri,
-                        StringComparison.OrdinalIgnoreCase))
-                {
-                    if (_economicNewsSharedRequestInFlight)
-                        return false;
-
-                    _economicNewsSharedUri = uri;
-                    _economicNewsSharedPayload = "";
-                    _economicNewsSharedLastAttemptUtc =
-                        DateTime.MinValue;
-                    _economicNewsSharedLastSuccessUtc =
-                        DateTime.MinValue;
-                    _economicNewsSharedLastError = "";
-                }
-
-                if (_economicNewsSharedRequestInFlight)
-                {
-                    if ((normalizedUtc -
-                         _economicNewsSharedRequestStartedUtc).TotalSeconds <
-                        EconomicNewsRequestTimeoutSeconds)
-                        return false;
-
-                    _economicNewsSharedRequestInFlight =
-                        false;
-                    _economicNewsSharedGeneration++;
-                    _economicNewsSharedLastError =
-                        "NEWS FEED REQUEST TIMEOUT";
-                    _economicNewsSharedLastAttemptUtc =
-                        normalizedUtc;
-                }
-
-                if (_economicNewsSharedLastAttemptUtc !=
-                        DateTime.MinValue &&
-                    (normalizedUtc -
-                     _economicNewsSharedLastAttemptUtc).TotalMinutes <
-                    refreshMinutes)
-                    return false;
-
-                _economicNewsSharedLastAttemptUtc =
-                    normalizedUtc;
-                _economicNewsSharedRequestStartedUtc =
-                    normalizedUtc;
-                _economicNewsSharedRequestInFlight =
-                    true;
-                _economicNewsSharedGeneration++;
-                requestId =
-                    _economicNewsSharedGeneration;
-                shouldStartRequest = true;
-            }
-
-            if (!shouldStartRequest)
+            int requestId;
+            if (!EconomicNewsFeedCoordinator.TryStart(
+                    uri,
+                    normalizedUtc,
+                    NewsRefreshMinutes,
+                    out requestId))
             {
                 UpdateEconomicNewsStatus(
                     normalizedUtc,
                     false);
                 return false;
+            }
+
+            int localRequestId;
+            lock (_economicNewsSync)
+            {
+                _economicNewsLastAttemptUtc =
+                    normalizedUtc;
+                _economicNewsRequestStartedUtc =
+                    normalizedUtc;
+                _economicNewsRequestInFlight =
+                    true;
+                _economicNewsRequestGeneration++;
+                localRequestId =
+                    _economicNewsRequestGeneration;
+                UpdateEconomicNewsStatusUnsafe(
+                    normalizedUtc);
             }
 
             try
@@ -445,32 +365,21 @@ namespace cAlgo
                     "application/json, text/plain, */*");
                 request.Headers.Add(
                     "User-Agent",
-                    EconomicNewsUserAgent);
+                    "CFIP-Indicator/1.0 (cTrader Algo)");
                 request.Timeout =
                     TimeSpan.FromSeconds(
-                        EconomicNewsRequestTimeoutSeconds);
+                        EconomicNewsFeedCoordinator.TimeoutSeconds);
 
                 Http.SendAsync(
                     request,
                     response =>
                         CompleteEconomicNewsRequest(
                             requestId,
+                            localRequestId,
                             normalizedUtc,
                             uri,
                             relevantCurrencies,
                             response));
-
-                lock (_economicNewsSync)
-                {
-                    _economicNewsLastAttemptUtc =
-                        normalizedUtc;
-                    _economicNewsRequestInFlight =
-                        true;
-                    _economicNewsRequestStartedUtc =
-                        normalizedUtc;
-                    UpdateEconomicNewsStatusUnsafe(
-                        normalizedUtc);
-                }
 
                 return true;
             }
@@ -478,6 +387,7 @@ namespace cAlgo
             {
                 CompleteEconomicNewsRequest(
                     requestId,
+                    localRequestId,
                     normalizedUtc,
                     uri,
                     relevantCurrencies,
@@ -490,6 +400,7 @@ namespace cAlgo
 
         private void CompleteEconomicNewsRequest(
             int requestId,
+            int localRequestId,
             DateTime requestUtc,
             string uri,
             string[] relevantCurrencies,
@@ -536,30 +447,18 @@ namespace cAlgo
                         payload,
                         relevantCurrencies);
 
-                lock (EconomicNewsSharedSync)
-                {
-                    if (requestId !=
-                            _economicNewsSharedGeneration ||
-                        !string.Equals(
-                            _economicNewsSharedUri,
-                            uri,
-                            StringComparison.OrdinalIgnoreCase))
-                        return;
-
-                    _economicNewsSharedPayload =
-                        payload;
-                    _economicNewsSharedLastSuccessUtc =
-                        requestUtc;
-                    _economicNewsSharedLastError = "";
-                    _economicNewsSharedRequestInFlight =
-                        false;
-                    _economicNewsSharedRequestStartedUtc =
-                        DateTime.MinValue;
-                }
+                if (!EconomicNewsFeedCoordinator.CompleteSuccess(
+                        uri,
+                        requestId,
+                        requestUtc,
+                        payload))
+                    return;
 
                 lock (_economicNewsSync)
                 {
-                    if (_economicNewsDisposed)
+                    if (_economicNewsDisposed ||
+                        localRequestId !=
+                        _economicNewsRequestGeneration)
                         return;
 
                     _economicNewsEvents =
@@ -580,28 +479,16 @@ namespace cAlgo
             }
             catch (Exception ex)
             {
-                lock (EconomicNewsSharedSync)
-                {
-                    if (requestId ==
-                            _economicNewsSharedGeneration &&
-                        string.Equals(
-                            _economicNewsSharedUri,
-                            uri,
-                            StringComparison.OrdinalIgnoreCase))
-                    {
-                        _economicNewsSharedLastError =
-                            ex.Message ??
-                            "UNKNOWN FEED ERROR";
-                        _economicNewsSharedRequestInFlight =
-                            false;
-                        _economicNewsSharedRequestStartedUtc =
-                            DateTime.MinValue;
-                    }
-                }
+                EconomicNewsFeedCoordinator.CompleteFailure(
+                    uri,
+                    requestId,
+                    ex.Message);
 
                 lock (_economicNewsSync)
                 {
-                    if (_economicNewsDisposed)
+                    if (_economicNewsDisposed ||
+                        localRequestId !=
+                        _economicNewsRequestGeneration)
                         return;
 
                     _economicNewsFetchHealthy = false;
@@ -622,6 +509,33 @@ namespace cAlgo
                     "CFIP economic news refresh failed: {0}",
                     ex.Message);
             }
+        }
+
+        private void ValidateEconomicNewsPayload(
+            string payload)
+        {
+            string trimmed =
+                payload.TrimStart();
+
+            if (trimmed.StartsWith(
+                    "[",
+                    StringComparison.Ordinal))
+            {
+                JsonSerializer.Deserialize<CfipEconomicCalendarEventJson[]>(
+                    payload,
+                    new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    });
+                return;
+            }
+
+            XmlSerializer serializer =
+                new XmlSerializer(
+                    typeof(CfipEconomicCalendar));
+
+            serializer.Deserialize(
+                new StringReader(payload));
         }
 
         private List<CfipEconomicNewsEvent> DeserializeEconomicNews(
@@ -762,7 +676,7 @@ namespace cAlgo
 
             string refresh =
                 _economicNewsRequestInFlight ||
-                _economicNewsSharedRequestInFlight
+                EconomicNewsFeedCoordinator.RequestInFlight
                     ? " • REFRESHING"
                     : "";
 
@@ -779,9 +693,9 @@ namespace cAlgo
             {
                 if (_economicNewsRequestInFlight)
                     return true;
-
-                return _economicNewsSharedRequestInFlight;
             }
+
+            return EconomicNewsFeedCoordinator.RequestInFlight;
         }
 
         private string GetEconomicNewsLastError()
@@ -808,8 +722,6 @@ namespace cAlgo
             {
                 _economicNewsDisposed = false;
                 _economicNewsRequestInFlight = false;
-                _economicNewsRequestStartedUtc =
-                    DateTime.MinValue;
                 _economicNewsRequestGeneration++;
             }
         }
@@ -820,8 +732,6 @@ namespace cAlgo
             {
                 _economicNewsDisposed = true;
                 _economicNewsRequestInFlight = false;
-                _economicNewsRequestStartedUtc =
-                    DateTime.MinValue;
                 _economicNewsRequestGeneration++;
             }
         }
