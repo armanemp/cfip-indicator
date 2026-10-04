@@ -37,9 +37,9 @@ workflow = read(".github/workflows/source-check.yml")
 
 check(
     "candidate carries live intrabar and future-order state",
-    "public bool FutureOrderReady;" in candidate and
-    "public double FutureOrderDistanceAtr;" in candidate and
-    "public string FutureOrderSource;" in candidate and
+    "public bool FutureOrderReady" in candidate and
+    "public double FutureOrderDistanceAtr" in candidate and
+    "public string FutureOrderSource" in candidate and
     "public double ZoneLow;" in candidate and
     "public double ZoneHigh;" in candidate
 )
