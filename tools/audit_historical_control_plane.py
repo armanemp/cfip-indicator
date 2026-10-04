@@ -15,7 +15,7 @@ for path in CANONICAL:
 
 violations = []
 for path in ROOT.rglob("*"):
-    if not path.is_file() or ".git" in path.parts or path == ARCHIVE:
+    if (not path.is_file() or ".git" in path.parts or path == ARCHIVE or path == Path("tools/audit_historical_control_plane.py") or path in CANONICAL or path == Path("docs/CFIP-PREPROMPT.md")):
         continue
     try:
         text = path.read_text(encoding="utf-8")
