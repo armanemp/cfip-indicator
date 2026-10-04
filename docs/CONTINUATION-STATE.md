@@ -10,6 +10,24 @@ Status: **ACTIVE**
 - Canonical remediation sequence: **F0 → F21** in docs/CFIP-ROADMAP.md.
 - One complete vertical-slice phase per message; no phase closes without focused verification, regression/build evidence and docs closeout.
 
+## 2026-10-04 — Signal-Line Label Placement and Color Hardening
+
+Status: **FIXED — REPOSITORY VERIFIED / TERMINAL VISUAL REVALIDATION PENDING**
+
+Implementation merged to `main` as `d3e5f163659fcd72636a52d3033423c69ee10f5a`.
+
+Canonical contract:
+- `PlanLineRenderer` owns signal-line geometry and the final materialized line color.
+- `PlanLabelAnchorCalculator` is the sole owner of the horizontal gap and places the visible end of right-aligned label text exactly one chart bar before the canonical line start.
+- `PlanLabelRenderer` is the sole native `ChartText` label owner; labels are regular-weight, exact-price and background-free.
+- Label text uses exactly the same materialized color as its corresponding line; `Color.White` is not permitted for canonical line labels.
+- Pending, parallel and prediction label paths reuse the same renderer/anchor contract.
+
+Verification:
+- PR #319 merged with Runtime Acceptance, cTrader Compile and Source/Architecture all PASS.
+- Source/Architecture completed 162/162 audits successfully on the final implementation head.
+- Target-terminal visual revalidation is the remaining G7 boundary: confirm one-candle text-end clearance, exact line color, readability, BUY/SELL symmetry and absence of overlap across applicable line/label types.
+
 ## 2026-10-04 — Smart Separated Signal Arrows
 
 Status: VERIFIED COMPLETE — PR #252 merged to main; target-terminal visual acceptance remains the final manual boundary.
