@@ -29,6 +29,7 @@ signal_renderer = (
     read("src/CFIP.Indicator/UI/Chart/SignalStackedArrowRenderer.cs")
 )
 watch_renderer = read("src/CFIP.Indicator/UI/Chart/SignalPresentationRenderer.cs")
+live_cycle = read("src/CFIP.Indicator/Runtime/Calculation/CalculationLiveCycle.cs")
 labels = read("src/CFIP.Indicator/UI/Chart/PlanLabelFormatting.cs")
 label_renderer = read("src/CFIP.Indicator/UI/Chart/PlanLabelRenderer.cs")
 parallel_renderer = read("src/CFIP.Indicator/UI/Chart/ParallelOpportunityRenderer.cs")
@@ -82,25 +83,16 @@ require(
     "signal arrow renderer must use the current chart bar",
 )
 require(
-    "Bars.Count - 1" in read("src/CFIP.Indicator/UI/Chart/PlanRenderCoordinator.cs") and
-    "active-plan direction arrow is live guidance" in
-    read("src/CFIP.Indicator/UI/Chart/PlanRenderCoordinator.cs"),
-    "active plan arrow must remain live rather than pinned to creation bar",
-)
-watch_gate_start = watch_renderer.find("bool showDirectionalWatch")
-watch_gate_end = watch_renderer.find(
-    "if ((showConfirmedSignal || showDirectionalWatch)",
-    watch_gate_start,
-)
-watch_gate = (
-    watch_renderer[watch_gate_start:watch_gate_end]
-    if watch_gate_start >= 0 and watch_gate_end >= 0
-    else ""
+    "RenderCanonicalMtfTrendArrows(" in live_cycle and
+    "_renderSignalVisualSnapshot" in live_cycle and
+    "index)" in live_cycle,
+    "canonical directional arrow layer must use the current live chart index",
 )
 require(
-    watch_gate_start >= 0 and
-    "snapshot.DecisionEntryAllowed" not in watch_gate,
-    "directional WATCH arrow must not be coupled to EntryAllowed",
+    "RenderNonActionableWatchState(" in signal_renderer and
+    "signalPresentationAllowed" in read("src/CFIP.Indicator/UI/Chart/SignalRenderer.cs") and
+    "snapshot.ActionableNow" in read("src/CFIP.Indicator/UI/Chart/SignalRenderer.cs"),
+    "directional WATCH arrow must be governed by the canonical presentation lifecycle, not a duplicate gate",
 )
 require(
     "visualDirection == 0" in signal_renderer and
@@ -110,8 +102,9 @@ require(
 )
 
 require(
-    "!snapshot.LivePosition" in watch_gate,
-    "directional WATCH layer must yield while the active-plan arrow owns live execution guidance",
+    "!snapshot.PendingOrder" in read("src/CFIP.Indicator/UI/Chart/SignalRenderer.cs") and
+    "!snapshot.LivePosition" in read("src/CFIP.Indicator/UI/Chart/SignalRenderer.cs"),
+    "directional WATCH layer must yield while execution state is authoritative",
 )
 
 # Multiple scenario presentation receives stable #N prefixes.
