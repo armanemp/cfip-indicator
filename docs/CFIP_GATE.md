@@ -32,6 +32,8 @@ Mark BLOCKED when any occurs:
 - broker-confirmed state replaced by plan/request state;
 - protective logic can widen risk;
 - duplicate identity can cause duplicate broker action;
+- any tracked file/artifact is unclassified, orphaned, accidentally generated, redundant, or retained only through an obsolete dependency;
+- an artifact scheduled for deletion still has an active build, CI, audit, test, runtime, release, deployment, or continuity consumer;
 - unresolved P0 safety/architecture defect;
 - mandatory machine gate fails;
 - Release build fails;
@@ -115,6 +117,13 @@ Status:
 - RB-018 Release artifact is reproducible.
 - RB-019 project tree and source tree have no silent mismatch.
 - RB-020 latest CI status recorded at phase boundary.
+- RB-021 every tracked repository artifact has an explicit classification/status;
+- RB-022 orphan, dead, duplicate, temporary, and generated artifacts are identified repository-wide;
+- RB-023 DELETE/ARCHIVE candidates have active-consumer dependency traces;
+- RB-024 deleted artifacts are proven absent from build/CI/audit/test/runtime/release/deployment/continuity paths;
+- RB-025 duplicate documentation/tool/configuration/evidence paths are consolidated to one canonical owner;
+- RB-026 preserved historical evidence is moved to an explicit archive/reference boundary;
+- RB-027 final repository cleanup leaves zero unexplained tracked artifacts.
 
 # 7. Ownership / No-Duality gates — OW
 
@@ -1101,8 +1110,27 @@ This is the minimum gate set. Cross-phase/global invariants still apply.
 - INV-006 inventory source commit is recorded.
 - INV-007 CFIP-LIST and CFIP-ROADMAP identify the same current executable package.
 - INV-008 CFIP-GATE and CFIP-LIST have matching package completion state.
+- INV-009 every tracked file has a lifecycle/classification decision;
+- INV-010 every DELETE/ARCHIVE candidate has a dependency trace;
+- INV-011 repository cleanup deltas are reflected in the inventory;
+- INV-012 no obsolete artifact remains merely because another obsolete artifact references it.
 
-# 43. Global line-audit gate
+# 43. Repository artifact hygiene gate
+
+A repository-cleanliness PASS requires:
+- HYG-001 current Git tree is compared with CFIP-LIST;
+- HYG-002 every tracked file has KEEP / MIGRATE / ARCHIVE / DELETE disposition;
+- HYG-003 every DELETE candidate has no active consumer;
+- HYG-004 every ARCHIVE candidate is outside active authority/tooling;
+- HYG-005 generated/build/temp artifacts are ignored/untracked or intentionally retained with an owner;
+- HYG-006 duplicate documentation/tool/configuration/evidence paths are consolidated;
+- HYG-007 deletion is verified against project inclusion, CI, tests, and release packaging;
+- HYG-008 canonical control-plane docs remain the only active roadmap/gate authority;
+- HYG-009 final tree contains zero unexplained files.
+
+A single unresolved HYG-* item blocks the applicable cleanup package.
+
+# 44. Global line-audit gate
 
 For any material code file being changed or flagged:
 - LINE-001 all declarations inspected;
@@ -1116,7 +1144,7 @@ For any material code file being changed or flagged:
 - LINE-009 test/audit proof is mapped;
 - LINE-010 no second semantic owner is introduced.
 
-# 44. Current executable control state
+# 45. Current executable control state
 
 **Macro phase:** P0
 
