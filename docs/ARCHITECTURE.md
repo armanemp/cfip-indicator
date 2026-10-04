@@ -107,9 +107,12 @@ Liquidity sweeps consume the canonical confirmed swing and
 `LiquiditySweepRule.IsActiveUnbrokenLevel`; prior closes can invalidate a
 liquidity level before the sweep bar, preventing stale-level reuse.
 
-`AlertDeliveryQueue` is the single bounded runtime queue for audible and panel-alert
-delivery. `AlertEngine` creates one event and never directly plays a sound or
-renders a popup. Calculation and timer boundaries drain the same queue. The
+`AlertDeliveryQueue` is the single bounded canonical runtime event-ingress queue for
+panel and optional-audio delivery. `AlertEngine` creates one event and never directly
+plays a sound or renders a popup. The delivery processor drains that canonical queue,
+presents the panel event, and may place the same event into the dedicated bounded
+sound-staging buffer so playback remains on the realtime last-bar boundary. The sound
+buffer is downstream transport staging, not a second alert/event owner or producer. The
 delivery processor updates the panel alert rail first and then emits the sound cue,
 keeping the two user-facing channels on one event boundary.
 Platform sound-type resolution occurs only at that cTrader delivery boundary.
