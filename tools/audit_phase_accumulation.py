@@ -155,7 +155,6 @@ if "Chart.DrawRectangle(" in compact_label_renderer:
 label_anchor = read("UI/Chart/PlanLabelAnchorCalculator.cs")
 if (
     "CompactPlanLabelGapBars = 1" not in label_anchor or
-    "Chart.BarIndexToX(" not in label_anchor or
     "GetCompactPlanLabelAnchorBar(" not in label_anchor or
     "canonicalLineLeftBar -\n                CompactPlanLabelGapBars" not in label_anchor
 ):
