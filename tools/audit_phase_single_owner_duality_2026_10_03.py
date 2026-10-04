@@ -78,8 +78,9 @@ require(
     "CompactPlanLabelFontSize = 10.0" in label and
     'Chart.RemoveObject(name + "_BOX")' in label and
     'Chart.RemoveObject(name + "_ANCHOR")' in label and
-    "GetReadableLabelTextColor(" in label and
-    "return Color.White;" in label,
+    "ResolveCanonicalPlanLineColor(" in line and
+    "ResolveCanonicalPlanLineColor(" in label and
+    "semanticColor" in label,
     "canonical chart labels must be native ChartText, background-free and separated one bar left of the line",
 )
 
@@ -87,8 +88,9 @@ require(
     "GetCompactPlanLabelAnchorBar(" in label_coord and
     "GetCompactPlanLabelAnchorBar(" in pending_label and
     "GetCompactPlanLabelAnchorBar(" in parallel_label and
-    "return GetPlanLineLeftBar();" in anchor and
-    "CompactPlanLabelGapBars = 1" in label,
+    "GetCompactPlanLabelAnchorBar(" in anchor and
+    "canonicalLineLeftBar -" in anchor and
+    "CompactPlanLabelGapBars = 1" in anchor,
     "all standard signal label paths must reuse one canonical left-of-line anchor with a deterministic one-bar gap",
 )
 
