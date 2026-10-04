@@ -468,3 +468,65 @@ The following are P0 defects if reintroduced:
 **Execution unit:** one complete phase per implementation response.
 
 **Roadmap authority:** this file only.
+
+
+# 18. CFIP operator/product contract
+
+These requirements are treated as acceptance targets and must be verified against the actual implementation before being declared PASS.
+
+## Analysis and timeframe behavior
+- All supported analyzers may evaluate their own valid timeframe context concurrently.
+- M15 remains the decision/reference center of the system.
+- M5 is the trigger/entry precision layer and must not become a second decision clock.
+- M1 is optional confirmation/precision only.
+- Higher frames provide context and larger structural/reward-path information.
+- M2 remains permanently forbidden.
+
+## Execution behavior
+- Automatic trading and automatic order placement belong to the cBot, not the Indicator.
+- Current actionable market opportunities may be submitted immediately when all gates pass.
+- Future opportunities may become pending Stop/Limit orders according to the canonical scenario contract.
+- Multiple distinct opportunities are a product requirement; capacity policy must be explicit rather than accidentally single-plan. Any current capacity restriction must be a deliberate, visible risk policy and must never be hidden in UI or fallback logic.
+- Demo and live broker behavior must share one execution architecture; environment selection must not create a second execution engine.
+- Current deployment may be local on the same machine/terminal; the contract boundary must remain suitable for later cloud-hosted analysis without moving broker authority out of cBot.
+- Position sizing must respect account risk, margin, broker volume limits, minimum executable risk and maximum viable reward-path constraints.
+- Spread/slippage/executable quote effects must be included wherever entry, SL or TP safety requires them.
+- No generic fixed 1:2 RR rule is the strategy authority.
+
+## Signal quality
+- The system must reject weak/range conditions when evidence does not justify an actionable signal.
+- Direction, confidence, quality, actionability, trigger, plan and execution must never disagree without an explicit revision/invalid state.
+- Stronger reward is desirable only when the structural path remains valid and risk is controlled.
+- OB/FVG/structure/liquidity and higher-timeframe context must inform reward-path quality without becoming duplicated decision engines.
+
+## Chart contract
+- One signal produces one canonical visual set.
+- Directional arrows are separated deterministically and use the canonical nine-level strength ladder.
+- There is no secondary directional arrow path.
+- M1 precision evidence must be distinguishable from directional consensus.
+- Level lines remain active for the defined lifecycle and are removed when the related managed position/plan lifecycle ends.
+- Labels must remain readable, non-overflowing, price-accurate and placed to the left of the line according to the canonical renderer/anchor contract; the exact visual implementation is accepted only through the canonical renderer.
+- Chart geometry must not be recreated by panel, alert or cBot code.
+
+## Panel/runtime contract
+- Panel state, chart state, alert state and execution state must derive from the same authoritative semantic result.
+- Indicator and cBot identity must be visible with meaningful names; source/assembly placeholders must not be presented as operator identity.
+- The panel must clearly distinguish Indicator analysis state from cBot attachment/execution state.
+- No repeated popup may ask the operator to choose local/cloud execution when that choice is already governed by the current architecture.
+- Operator messages must remain readable and placed in the intended panel message/alert region rather than creating contradictory chart popups.
+- Timeframe lamp and text must agree.
+- Footer/header density must remain compact and usable after reload, hide/show and narrow-width conditions.
+- UI event handlers must not multiply after reload/restart.
+
+## Alert contract
+- One causal event produces one canonical delivery lifecycle.
+- Startup sound is emitted exactly once per canonical startup event.
+- Signal sounds, warning sounds and diagnostic notifications must not duplicate each other for the same cause.
+- Blocked/restricted candidates do not create actionable sound/email/trading side effects.
+- Panel notification and audio/email, when enabled, are mirrors of the same causal event.
+
+## Lifecycle contract
+- Signal/plan visuals and state live only as long as their canonical lifecycle allows.
+- Broker-confirmed close ends the corresponding managed visual lifecycle.
+- Reconnect/restart cannot create duplicate positions, orders, alerts or protection changes.
+- Risk-reducing protection is monotonic.
