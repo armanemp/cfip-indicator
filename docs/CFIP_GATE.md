@@ -8,6 +8,12 @@
 > This is the single acceptance and defect register for CFIP.
 > A phase/work package cannot be PASS because the code merely compiles. All applicable gates, scoped files and evidence must be closed.
 
+# Current execution state
+
+**Macro phase:** P2 — Ownership / Single-Source / Dead-Code Closure  
+**Atomic package:** WP-04 — Historical isolation  
+**Status:** IN PROGRESS
+
 # 1. Gate hierarchy
 
 - **G0 Repository Truth** — actual branch, commit, files, project graph, CI.
@@ -84,7 +90,7 @@ One row per distinct root cause; do not duplicate rows for symptoms of the same 
 | ID | Domain | Severity | Owner | Symptom | Root cause | Status | Phase | Evidence | Regression guard |
 |---|---|---|---|---|---|---|---|---|---|
 | DEF-P0-001 | Repository inventory | P1 | CFIP-LIST.md | Canonical inventory lagged actual tree by four files | Inventory snapshot predates the current canonical prompt/control-plane additions and `.vscode/extensions.json` indexing | VERIFIED | P0/WP-00 | Git tree `207e43b7...`: 1131 files; CFIP-LIST enumerated 1127; reconciled in WP-00 closeout | CFIP-LIST exact-tree comparison |
-| DEF-P0-002 | Documentation governance | P1 | WP-03 / WP-04 | Active tooling still reads `docs/ROADMAP.md` | `tools/verify_architecture.py` contains an active read of the historical roadmap for the Track-19 continuity check; 43 tool files reference the old roadmap path | OPEN | P0/WP-00 → WP-03 | Current main search + `verify_architecture.py:3054`; Source/Architecture still passes | WP-03 canonical-control-plane migration + WP-04 historical isolation |
+| DEF-P0-002 | Documentation governance | P1 | WP-04 | Active tooling depended on superseded `docs/ROADMAP.md` | Historical audit tooling and documentation used the superseded roadmap as an active dependency; 43 audit files were migrated to `docs/CFIP-ROADMAP.md`, active documentation references were migrated, and the superseded roadmap was moved to `docs/archive/ROADMAP-LEGACY-2026-10-04.md` | IN_PROGRESS | WP-04 | Migration branch; final CI pending | Global legacy-reference scan + post-archive CI/build verification |
 
 Severity:
 - P0 safety/architecture/data-integrity;
@@ -1241,4 +1247,4 @@ Canonical planning, inventory and acceptance authority was normalized across ROA
 
 **Residual risk:** `DEF-P0-002` remains OPEN and is the explicit WP-04 migration target. No blind deletion of legacy documents was performed.
 
-**Next:** WP-04 — Legacy control-plane migration and stale-document isolation.
+**Current package:** WP-04 — Legacy control-plane migration and stale-document isolation — IN PROGRESS.
