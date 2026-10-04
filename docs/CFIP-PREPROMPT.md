@@ -63,8 +63,11 @@ Atomic packageها در docs/CFIP-LIST.md تعریف شده‌اند.
 
 در حال حاضر:
 
-Macro Phase = P0
-Executable Package = WP-00 — NEXT
+Macro Phase = P2 — Ownership / Single-Source / Dead-Code Closure
+Atomic Work Package = WP-05 — Preflight
+Status = PASS + TERMINAL PENDING
+
+WP-06 — Contracts is BLOCKED pending real target-terminal evidence.
 
 هر package باید در یک response کامل شود.
 
