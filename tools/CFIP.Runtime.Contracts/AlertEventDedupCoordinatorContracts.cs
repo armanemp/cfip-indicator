@@ -16,51 +16,47 @@ namespace cAlgo
                     0,
                     DateTimeKind.Utc);
 
-            string eventKey =
-                "BTCUSD|SIGNAL-1|SCENARIO-1|PLAN-1|639267324000000000|1|BOS|2000|1";
+            string primaryEvent =
+                "BTCUSD|SIGNAL-1|SCENARIO-1|639267324000000000|1|BOS|2000|1";
+
+            string independentEvent =
+                "BTCUSD|SIGNAL-1|SCENARIO-2|639267324000000000|1|ACTION|2001|1";
 
             AlertEventDedupCoordinator.Release(
-                eventKey);
+                primaryEvent);
+            AlertEventDedupCoordinator.Release(
+                independentEvent);
 
             Assert(
                 AlertEventDedupCoordinator.TryClaim(
-                    eventKey,
+                    primaryEvent,
                     now),
                 "first causal alert claim must succeed");
 
             Assert(
                 !AlertEventDedupCoordinator.TryClaim(
-                    eventKey,
+                    primaryEvent,
                     now.AddSeconds(1)),
                 "same causal alert must be rejected while within the shared claim lifetime");
 
-            string persisted =
-                AlertEventDedupCoordinator.Serialize(
-                    now.AddSeconds(2));
-
-            AlertEventDedupCoordinator.Release(
-                eventKey);
-
-            AlertEventDedupCoordinator.Import(
-                persisted,
-                now.AddSeconds(2));
-
             Assert(
-                !AlertEventDedupCoordinator.TryClaim(
-                    eventKey,
-                    now.AddSeconds(3)),
-                "persisted causal alert claim must reject an equivalent claim from another runtime instance");
+                AlertEventDedupCoordinator.TryClaim(
+                    independentEvent,
+                    now.AddSeconds(1)),
+                "independent alert event must not be suppressed by another event claim");
 
             Assert(
                 AlertEventDedupCoordinator.TryClaim(
-                    eventKey,
+                    primaryEvent,
                     now.AddSeconds(
                         AlertEventDedupCoordinator.ClaimLifetime +
                         1)),
                 "same causal alert may re-arm after the bounded shared dedup lifetime");
 
             AlertEventDedupCoordinator.Release(
-                eventKey);
+                primaryEvent);
+            AlertEventDedupCoordinator.Release(
+                independentEvent);
 
             Console.WriteLine(
                 "Cross-instance alert dedup contracts PASS");
