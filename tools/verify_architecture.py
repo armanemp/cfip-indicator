@@ -2768,7 +2768,7 @@ PLAN_LABEL_ANCHOR_CODE = PLAN_LABEL_ANCHOR.read_text(encoding="utf-8")
 if "CompactPlanLabelGapBars = 1" not in PLAN_LABEL_ANCHOR_CODE or "GetCompactPlanLabelAnchorBar(" not in PLAN_LABEL_ANCHOR_CODE:
     raise SystemExit("Compact plan label gap must be owned by the canonical anchor calculator")
 if "canonicalLineLeftBar -\n                CompactPlanLabelGapBars" not in PLAN_LABEL_ANCHOR_CODE:
-    raise SystemExit("Compact plan label anchor must use exactly one actual chart-bar width before line start")
+    raise SystemExit("Compact plan label anchor must use exactly one canonical bar before line start")
 if "HorizontalAlignment.Right" not in compact_label_code:
     raise SystemExit("Compact plan labels must terminate at the left-of-line anchor")
 if "Chart.RemoveObject(" not in compact_label_code:
@@ -3210,11 +3210,10 @@ label_anchor_code = label_anchor.read_text(encoding="utf-8")
 if "CompactPlanLabelGapBars = 1" not in label_anchor_code:
     raise SystemExit("Plan label gap must be owned by the canonical anchor calculator")
 if (
-    "canonicalLineLeftBar -\n                lineX -" not in label_anchor_code or
-    "GetCompactPlanLabelAnchorBar(" not in label_anchor_code or
+    "canonicalLineLeftBar -\n                CompactPlanLabelGapBars" not in label_anchor_code or
     "GetCompactPlanLabelAnchorBar(" not in label_anchor_code
 ):
-    raise SystemExit("Plan label anchor must use exactly one actual chart-bar width before line start")
+    raise SystemExit("Plan label anchor must use exactly one canonical bar before line start")
 if "HorizontalAlignment.Right" not in compact_label_code:
     raise SystemExit("Plan labels must terminate at the left-of-line anchor")
 
