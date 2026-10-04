@@ -152,9 +152,25 @@ namespace cAlgo
                 if (label == null)
                     return;
 
+                if (recreate)
+                {
+                    Print(
+                        "CFIP SIGNAL LABEL GEOMETRY | {0} | textBar={1} | lineLeft={2} | gapBars={3} | price={4}",
+                        name,
+                        textBar,
+                        GetPlanLineLeftBar(),
+                        Math.Max(
+                            0,
+                            GetPlanLineLeftBar() - textBar),
+                        labelPrice.ToString(
+                            CultureInfo.InvariantCulture));
+                }
+
                 // Do not assign label.Time here. A stale X anchor is corrected by
                 // recreating the same named ChartText through the bar-index overload;
                 // the Time property is never used as a second movement path.
+                // Y is the exact normalized line price and Center alignment puts
+                // that line through the vertical center of the text object.
                 label.Text =
                     text;
                 label.Y =
