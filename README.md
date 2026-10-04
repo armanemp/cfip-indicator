@@ -21,4 +21,4 @@ Clean, modular cTrader indicator with a single execution authority.
 - Trading: identity, pending orders, execution, lifecycle, live management, risk, validation and intelligence.
 - UI: chart, panel, historical and unified alert-rail presentation.
 
-See `docs/ARCHITECTURE.md`, `docs/EDITING-GUIDE.md`, `docs/ROADMAP.md`, `docs/PHASE-CR1-9-MINOR-CLEANUP.md` and `docs/OSS-COMPONENT-REGISTER.md`.
+Canonical continuation/acceptance: `docs/CFIP-ROADMAP.md` and `docs/CFIP_GATE.md`. Supporting architecture/editing/OSS documents are reference material and cannot override those two canonical files.
