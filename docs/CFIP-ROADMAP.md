@@ -751,3 +751,14 @@ For a file actively changed or found to contain a material defect, line-by-line 
 - \`CFIP_GATE.md\` answers **how we know it is complete**.
 
 No fourth planning document may become an active authority.
+
+
+### P3 / WP-03 closeout — 2026-10-04
+
+**Status:** PASS  
+**PR:** #283  
+**Merge commit:** `e42e57f7bd425c535ecef57c0835d9d22d84313b`
+
+Canonical planning, inventory and acceptance authority was normalized across ROADMAP/LIST/GATE. WORKFLOW continuity was aligned to the canonical bootstrap sequence and README ownership wording was aligned to the Indicator-analysis / cBot-execution boundary. Exact-head Source/Architecture, Runtime Acceptance and cTrader Compile gates passed.
+
+**Next:** WP-04 — Legacy control-plane migration and stale-document isolation.
