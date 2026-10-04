@@ -108,7 +108,7 @@ The architecture verifier and CI workflows are regression gates, not substitutes
 
 ## Current release boundary
 
-The repository is hardened and CI-clean. The remaining validation boundary is hands-on cTrader acceptance against the actual target terminal and broker session, as documented in docs/ROADMAP.md and docs/ACCEPTANCE-MATRIX.md.
+The repository is hardened and CI-clean. The remaining validation boundary is hands-on cTrader acceptance against the actual target terminal and broker session, as documented in docs/CFIP-ROADMAP.md and docs/ACCEPTANCE-MATRIX.md.
 
 
 ## Local-first release policy
