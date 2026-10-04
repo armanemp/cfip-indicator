@@ -69,7 +69,7 @@ ANCHOR = ROOT / "src/CFIP.Indicator/UI/Chart/PlanLabelAnchorCalculator.cs"
 require(
     ANCHOR,
     r"Chart\.DrawText\(\s*\n\s*name,\s*\n\s*text,\s*\n\s*canonicalLabelBar,",
-    "canonical line X projection consumed by label anchor",
+    "canonical bar-index anchor owner",
 )
 require(
     ANCHOR,
