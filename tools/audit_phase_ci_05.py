@@ -169,12 +169,9 @@ check(
 )
 
 check(
-    "CI-05 remains recorded while the CI track advances",
-    "CI-05" in roadmap and
-    "CI-05 implementation record" in roadmap and
-    "CI-05 final closeout" in continuation and
-    "## 2.0.1 — Current certification state" in roadmap and
-    ("CI-17A" in roadmap or "CI-17" in roadmap) and
+    "canonical control plane remains authoritative",
+    "STATUS: ACTIVE / CANONICAL" in roadmap and
+    "WP-04" in roadmap and
     "CI-17" in continuation
 )
 
