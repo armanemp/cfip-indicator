@@ -98,6 +98,7 @@ One row per distinct root cause; do not duplicate rows for symptoms of the same 
 | DEF-P0-002 | Documentation governance | P1 | WP-04 | Active tooling depended on superseded `docs/ROADMAP.md` | Historical audit tooling and documentation used the superseded roadmap as an active dependency; active references were migrated to the canonical control plane and the superseded roadmap was isolated under `docs/archive/ROADMAP-LEGACY-2026-10-04.md` | VERIFIED | WP-04 | PR #284 merged as `2e98a4b4cd27dd8b083ee8aac1437cf1a3c6271e`; Source/Architecture #4365, Runtime #4174, cTrader Compile #4358 all PASS | Global legacy-reference scan + canonical control-plane CI |
 | DEF-P0-003 | Architecture boundary | P1 | WP-08 | Indicator still exposes execution/auto-trading parameters and runtime execution state | cBot execution settings are still read from `CFIP.Indicator` parameters, while the canonical architecture requires Indicator = analysis/signal and cBot = broker-mutation/execution authority | OPEN | WP-08 | Source search on `main` confirms `src/CFIP.Indicator/Indicator/Parameters/13_auto_trading.cs`, `Runtime/Initialization/RuntimeInitialization.cs`, `Trading/Execution/State/AutoTradingStateStore.cs` and cBot `CbotIndicatorExecutionSettings.cs` still form an execution-settings dependency | Boundary extraction audit + CI guard requiring execution authority to originate in cBot/Contracts |
 | DEF-P1-001 | Target ladder runtime | P1 | `TargetLadderSelectionRule` | CLOSED-BAR ANALYSIS raised `NullReferenceException` at `SelectBestPath` on live cTrader M15 instance | A null intermediate ladder stage was accepted during initialization but later dereferenced as `stages[stage].Count` during the second traversal | FIXED — TERMINAL REVALIDATED | WP-05 terminal acceptance | Initial fault: `2026-10-04 15:47:48.244`; fix PR #302 merged as `2f8089e475b98a1cd4c688b9aada418f6067251c`; updated cTrader M15 instance loaded `2026-10-04 16:03:25.758` and completed alert/runtime processing without the previous exception | Null-stage planning-contract fixture in `tools/CFIP.Planning.Contracts/Program.cs`; this evidence closes the defect itself but does not mark unrelated CI-17 scenarios PASS |
+| DEF-P1-002 | Economic news feed | P1 | `EconomicNewsFeedCoordinator` | Target-terminal refresh produced HTTP failure on M1 and XML parse failure on M5/M15/M30/H1/H4/D1/W1/Month1 | Each indicator instance could refresh the same weekly external feed independently, while persisted cTrader instances could retain the retired XML URI after the default changed to JSON | FIXED — REPOSITORY VERIFIED / TERMINAL REVALIDATION PENDING | WP-05 / CI-17 | User terminal logs from `2026-10-04 16:24:04`–`16:27:18`; PR #306 merged to `main` as `34be5ae2e9eb336c4c3396a70b5cc211294a97a0`; exact merged-main `verify`, `runtime`, and `build` all PASS | Shared async single-flight/cache coordinator, legacy-URI normalization to current JSON, provider-safe 5-minute minimum, and news-guard audit; terminal must still prove actual feed success and cross-instance behavior |
 
 Severity:
 - P0 safety/architecture/data-integrity;
@@ -1275,3 +1276,18 @@ If a gate requires user-local execution, the gate record must contain the exact 
 **Target-terminal requirement:** None for WP-04; this package is repository/control-plane scope.
 
 **Historical next:** WP-05 — Preflight.
+
+
+### 2026-10-04 — WP-05 Economic News Feed Hardening
+
+**Status:** REPOSITORY VERIFIED — TARGET-TERMINAL REVALIDATION PENDING
+
+**Root cause:** multiple attached Indicator instances were independently able to request the same weekly external calendar feed, while existing cTrader instances could retain the retired XML URI after the parameter default moved to JSON.
+
+**Canonical ownership:** `EconomicNewsFeedCoordinator` owns shared feed transport, request generation, single-flight and shared cache. `EconomicNewsCalendarParser` owns payload normalization/parsing and legacy-URI migration. `EconomicNewsCalendarClient` remains the per-instance consumer that filters the shared snapshot to relevant currencies and publishes local news state.
+
+**Implementation:** PR #306 merged as `34be5ae2e9eb336c4c3396a70b5cc211294a97a0`. The merged code uses asynchronous `Http.SendAsync`, current weekly JSON, legacy XML-URI normalization, a provider-safe five-minute refresh floor, and diagnostic HTTP status/exception reporting.
+
+**Verification:** exact merged `main` head passed Source/Architecture, Runtime Acceptance and cTrader Compile/Build. No target-terminal PASS is inferred from those repository gates.
+
+**Required terminal evidence:** load the new Release build with existing CFIP instances on M1, M5 and M15; confirm the old XML error is absent, the M1 HTTP failure is absent, history persistence/audio still pass, and the shared feed behavior is compatible with multiple concurrently attached timeframes. Extend to the higher supported frames when validating cross-instance sharing. CI-17 remains 0/13 until the canonical manual scenarios themselves are evidenced.
