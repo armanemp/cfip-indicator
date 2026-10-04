@@ -120,6 +120,11 @@ Optional:
 
 No file is VERIFIED without owner and dependency trace.
 
+Every tracked repository artifact must also receive exactly one disposition:
+**KEEP / MIGRATE / ARCHIVE / DELETE**.
+
+DELETE/ARCHIVE requires active dependency tracing and post-change repository verification.
+
 # 6. Atomic work-package rule
 
 A work package must be small enough to complete in one response.
@@ -139,11 +144,11 @@ If a proposed package cannot close in one response, split it into smaller packag
 
 | WP | Scope | Primary check |
 |---|---|---|
-| WP-00 | Rebaseline | current HEAD/tree/CI/parameters/MTF/owners/defects |
-| WP-01 | Root/build metadata | solution/props/global/.editorconfig/.gitignore |
+| WP-00 | Rebaseline | current HEAD/tree/CI/parameters/MTF/owners/defects + full artifact classification |
+| WP-01 | Root/build metadata | solution/props/global/.editorconfig/.gitignore + orphan/generated/temp/dead artifact audit |
 | WP-02 | GitHub workflows | triggers/tools/commands/failure/artifacts/duplication |
 | WP-03 | Canonical control plane | CFIP-ROADMAP/CFIP_GATE/CFIP-LIST/WORKFLOW/README |
-| WP-04 | Historical isolation | old docs and active tooling references |
+| WP-04 | Historical isolation | old docs, obsolete phase/contracts and active tooling references; KEEP/MIGRATE/ARCHIVE/DELETE decisions |
 | WP-05 | Preflight | probe/host/compile/safety boundary |
 | WP-06 | Contracts | all CFIP.Contracts models/enums/codecs/identity/bus |
 | WP-07 | cBot host | main robot/project boundary |
@@ -193,8 +198,8 @@ If a proposed package cannot close in one response, split it into smaller packag
 | WP-51 | OSS/benchmarks | OSS registry/benchmark boundary |
 | WP-52 | Contract-test projects | runtime/decision/planning/execution CI contracts |
 | WP-53 | cBot shadow tests | shadow host tests |
-| WP-54 | Audit foundation | global architecture/project/parameter/MTF audits |
-| WP-55 | Phase audit tools | all audit_phase tools in bounded semantic batches |
+| WP-54 | Audit foundation | global architecture/project/parameter/MTF audits + repository artifact hygiene checks |
+| WP-55 | Phase audit tools | all audit_phase tools in bounded semantic batches + remove unreferenced/obsolete audits after dependency proof |
 | WP-56 | Analysis tools | analyze scripts and benchmark helpers |
 | WP-57 | Cross-project graph | all references across projects/docs/tools |
 | WP-58 | Global duplicate scan | duplicate owners/methods/state/renderers/audio/execution |
@@ -207,8 +212,8 @@ If a proposed package cannot close in one response, split it into smaller packag
 | WP-65 | Performance | CPU/allocation/cache/queue/UI/IO |
 | WP-66 | Security/config | secrets/access/config/licenses/dependencies |
 | WP-67 | Test-gap | owner→proof mapping |
-| WP-68 | Documentation migration | remove active dependence on old roadmap |
-| WP-69 | Certification inventory | zero UNSEEN, zero unclassified critical owner |
+| WP-68 | Documentation migration | remove active dependence on old roadmap + classify/migrate/archive/delete redundant documentation |
+| WP-69 | Certification inventory | zero UNSEEN, zero unclassified critical owner + zero unexplained tracked artifact |
 
 # 8. Work-package completion contract
 
@@ -1587,6 +1592,19 @@ At certification:
 The exact file list above is generated from the repository Git tree. P0 must compare the current tree against this inventory. Any new/deleted/moved file creates an inventory delta that must be accounted for before related work is closed.
 
 Inventory delta is not merely documentation: a new production file without an owner or gate mapping is a P0/P1 defect.
+
+# 18. Repository artifact disposition
+
+At every inventory refresh classify every tracked file as:
+- **KEEP** — active and intentional;
+- **MIGRATE** — valid dependency/knowledge must move to the canonical owner/path;
+- **ARCHIVE** — historical evidence retained outside active authority;
+- **DELETE** — proven unused, redundant, generated, temporary, dead, or obsolete.
+
+Mandatory deletion proof:
+**Tree → inclusion/reference search → active consumer trace → CI/build/test/release check → deletion → post-deletion global scan**
+
+Never delete solely by filename, age, phase number, or location. Never keep solely because another obsolete artifact references it. Resynchronize CFIP-LIST after every deletion/move.
 
 # 19. File-by-file completion rule
 
