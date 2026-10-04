@@ -1649,3 +1649,6 @@ WP-00, WP-01, WP-02 and WP-03 are PASS. WP-04 is the only executable package and
 ROADMAP/LIST/GATE authority, WORKFLOW continuity and README ownership wording were normalized without production trading-logic changes. Exact-head Source/Architecture, Runtime Acceptance and cTrader Compile all passed.
 
 **Next:** WP-04 — Legacy control-plane migration and stale-document isolation.
+
+## Permanent workflow requirement — Local command handoff
+Every Atomic Work Package must identify all required user-local commands explicitly: exact command, working directory/environment, when to run, expected success signal, and whether output must be returned. Local verification is never implied by CI.
