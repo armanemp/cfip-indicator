@@ -2761,7 +2761,7 @@ if "Chart.DrawRectangle(" in compact_label_code:
     raise SystemExit("Compact plan labels must remain background-free")
 if "Chart.DrawText(" not in compact_label_code:
     raise SystemExit("Compact plan labels must own their native ChartText object")
-if "CompactPlanLabelFontSize = 10.0" not in PLAN_LABEL_RENDERER_CODE:
+if "CompactPlanLabelFontSize = 11.0" not in PLAN_LABEL_RENDERER_CODE:
     raise SystemExit("Compact plan labels must use the canonical readable font size")
 PLAN_LABEL_ANCHOR = ROOT / "UI" / "Chart" / "PlanLabelAnchorCalculator.cs"
 PLAN_LABEL_ANCHOR_CODE = PLAN_LABEL_ANCHOR.read_text(encoding="utf-8")
@@ -3203,7 +3203,7 @@ if "Chart.DrawRectangle(" in compact_label_code:
     raise SystemExit("Plan labels must remain background-free")
 if "Chart.DrawText(" not in compact_label_code:
     raise SystemExit("Plan labels must own their native ChartText object")
-if "CompactPlanLabelFontSize = 10.0" not in label_code:
+if "CompactPlanLabelFontSize = 11.0" not in label_code:
     raise SystemExit("Plan labels must use the canonical readable font size")
 label_anchor = ROOT / "UI" / "Chart" / "PlanLabelAnchorCalculator.cs"
 label_anchor_code = label_anchor.read_text(encoding="utf-8")
