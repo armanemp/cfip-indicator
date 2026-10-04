@@ -37,9 +37,6 @@ namespace cAlgo
         [Parameter("Show Signal Arrow", Group = "14 · DISPLAY — CORE", DefaultValue = true)]
         public bool ShowSignalArrow { get; set; }
 
-        [Parameter("Show Early Watch", Group = "14 · DISPLAY — CORE", DefaultValue = true)]
-        public bool ShowEarlyWatch { get; set; }
-
         [Parameter("Show Historical Signals", Group = "14 · DISPLAY — CORE", DefaultValue = false)]
         public bool ShowHistoricalSignals { get; set; }
 
