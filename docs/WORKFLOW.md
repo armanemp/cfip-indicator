@@ -210,5 +210,9 @@ advanced protection is broker-owned, but its ladder must be reconciled to the sa
 plan geometry after partial realization.
 
 
+## Main branch canonicalization rule
+
+All final project changes must land on `main` as the single canonical implementation state. Work branches/PRs are temporary delivery mechanisms only and must not become parallel long-lived project states. After verification and merge, the authoritative state is `main`; continuation, roadmap, gate, and development-log references must point to that merged state. Do not leave the same completed behavior implemented or maintained independently on multiple branches.
+
 ## Local execution handoff
 When a work package needs user-local execution, the assistant must hand off the exact commands and their execution context, expected success signal, and required returned output. This is mandatory for every applicable package and must not be inferred from CI status.
