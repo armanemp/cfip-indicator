@@ -40,8 +40,8 @@ check(
     "public bool FutureOrderReady" in candidate and
     "public double FutureOrderDistanceAtr" in candidate and
     "public string FutureOrderSource" in candidate and
-    "public double ZoneLow;" in candidate and
-    "public double ZoneHigh;" in candidate
+    "public double ZoneLow" in candidate and
+    "public double ZoneHigh" in candidate
 )
 
 check(
