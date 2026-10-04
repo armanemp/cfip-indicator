@@ -1196,3 +1196,34 @@ For any material code file being changed or flagged:
 **Gate:** \`docs/CFIP_GATE.md\`
 
 **Rule:** one complete atomic package per response.
+
+
+# 35.3 P2 / WP-02 closeout — 2026-10-04
+
+**Status:** PASS  
+**Implementation branch:** `phase/p2-wp02-github-workflows-2026-10-04`  
+**PR:** #282  
+**Merge commit:** `f6ef574355a115393ef5279036724675ac18af4a`
+
+### Root cause
+The four active workflows lacked one enforced contract for permissions, bounded runtime and stale-run cancellation. The OSS benchmark pipeline could also mask a failing `dotnet run` through `tee`, and its report was not retained as an Actions artifact.
+
+### Canonical owner
+`tools/audit_github_workflows.py` is the sole static owner of workflow-contract invariants; workflow files remain owners of their domain-specific commands.
+
+### Verification
+- Workflow contract audit: PASS
+- Source and Architecture: PASS — 158 audit steps
+- Runtime Acceptance: PASS
+- cTrader Compile: PASS
+- OSS Indicator Benchmark: PASS
+- Terminal: PENDING — no terminal behavior changed
+
+### Safety / performance
+No trading/runtime behavior changed. Read-only permissions reduce CI authority; concurrency cancellation prevents stale duplicate CI work; timeouts bound hung jobs; `pipefail` restores benchmark failure integrity.
+
+### Residual risk
+Target-terminal behavior remains outside this repository-only package. `DEF-P0-002` remains OPEN and is the explicit WP-03/WP-04 migration target.
+
+### Next package
+**WP-03 — Canonical control plane — NEXT.**
