@@ -69,12 +69,13 @@ require(
 require(
     "Chart.DrawText(" in label and
     "Chart.DrawRectangle(" not in label and
-    "Chart.DrawIcon(" in label and
+    "Chart.DrawIcon(" not in label and
     "HorizontalAlignment.Right" in label and
     "CompactPlanLabelGapPips = 2.0" in label and
+    "return ResolvePlanLineColor(semanticColor);" in label and
     "Chart.RemoveObject(name + "_BOX")" in label and
     "PlanLinePresentationRule.ResolveColor(" in label,
-    "canonical chart labels must be native ChartText with no rectangle, exact-price alignment and a tiny native anchor marker",
+    "canonical chart labels must be native ChartText with no rectangle/marker, semantic line color and exact 2-pip clearance",
 )
 
 require(
