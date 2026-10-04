@@ -10,7 +10,7 @@ namespace cAlgo
         [Parameter("Economic News Data URI", Group = "28 · NEWS GUARD", DefaultValue = "https://nfs.faireconomy.media/ff_calendar_thisweek.json")]
         public string EconomicNewsDataUri { get; set; }
 
-        [Parameter("News Refresh Minutes", Group = "28 · NEWS GUARD", DefaultValue = 5, MinValue = 5, MaxValue = 60)]
+        [Parameter("News Refresh Minutes", Group = "28 · NEWS GUARD", DefaultValue = 60, MinValue = 60, MaxValue = 360)]
         public int NewsRefreshMinutes { get; set; }
 
         [Parameter("High Impact Minutes Before", Group = "28 · NEWS GUARD", DefaultValue = 30, MinValue = 0, MaxValue = 180)]
