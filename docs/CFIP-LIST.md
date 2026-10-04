@@ -1583,7 +1583,7 @@ At certification:
 
 **Inventory source tree:** `f6ef574355a115393ef5279036724675ac18af4a`
 
-**Current executable package:** **WP-04 — NEXT**
+**Historical executable snapshot:** WP-04 was NEXT when this historical section was written; the active state is recorded in the canonical control-plane header above.
 
 ### WP-02 closeout — GitHub workflows
 
