@@ -494,9 +494,9 @@ The following are P0 defects if reintroduced:
 
 # 17. Current state
 
-**Current macro phase: P2**
+**Current macro phase: P3**
 
-**Current executable package: WP-02 — NEXT**
+**Current executable package: WP-03 — NEXT**
 
 **Canonical inspection inventory:** \`docs/CFIP-LIST.md\`
 
