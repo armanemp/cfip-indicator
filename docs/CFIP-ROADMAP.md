@@ -778,3 +778,5 @@ For every Atomic Work Package, if local execution is required, the package MUST 
 ### Historical continuity registry — preserved canonical evidence
 
 - **CBOT-P5 historical continuity:** broker reconciliation/protection recovery remains represented by the canonical cBot/Indicator boundary, with detailed implementation evidence retained in docs/CONTINUATION-STATE.md and docs/DEVELOPMENT-LOG.md. This registry preserves the historical audit marker without restoring obsolete roadmap authority.
+
+- **CBOT-P6 historical continuity:** account/risk/connection truth remains recorded in canonical continuity evidence; this registry preserves the historical audit marker without reactivating the superseded roadmap.
