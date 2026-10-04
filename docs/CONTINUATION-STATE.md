@@ -52,7 +52,7 @@ Corrections:
 - Active signal arrows converge on the canonical stacked-arrow renderer.
 - Signal/plan lines converge on `PlanLineRenderer`: Solid, fixed 1px, exactly 40 bars from the latest candle.
 - Pending/parallel lines delegate to that owner.
-- All compact labels converge on one renderer/formatter: exact signal price, white/no-background text, source timeframe once, pip distance where applicable, left-of-line with minimum horizontal gap.
+- All compact labels converge on one renderer/formatter: exact signal price, exact semantic line color, source timeframe once, pip distance where applicable, and a canonical one-bar gap between text end and line start.
 - Added a dedicated Single-Owner / No-Duality source audit and accumulated it in CI.
 - Resolved contradictory legacy audits without creating alternate production behavior.
 
@@ -73,7 +73,7 @@ Status: VERIFIED COMPLETE — merged to `main` via PR #249, merge commit `fb7dee
 Completed:
 - Signal/plan lines are fixed to Solid + 1px.
 - The canonical span is exactly 40 chart bars from the latest candle; legacy `FullWidthLevelLines` cannot expand signal geometry.
-- Compact level labels sit at the exact line price, use white text with no background, and remain left of the line start with a deterministic minimum three-bar horizontal gap.
+- Compact level labels sit at the exact line price, use the exact line color with no background, and keep their visible text end one chart bar before the line start.
 - Active Plan and WATCH/Reaction directional markers share the canonical stacked-arrow lifecycle.
 - The user's Release-build CS0219 warning from the dead `PanelMainRenderer.buttonMargin` local was removed.
 - Dedicated Drawing audit, Source/Architecture, Runtime Acceptance and cTrader Compile all passed on the final implementation head before merge.
@@ -96,7 +96,7 @@ Status: VERIFIED COMPLETE — implemented directly on `main`.
 Closure:
 - One canonical directional-arrow renderer now owns active Plan/WATCH/Reaction arrows.
 - Signal/plan lines are Solid, one-pixel and finite 40-bar geometry.
-- Labels are white regular-weight text inside filled line-colored boxes attached to the exact line endpoint.
+- Labels are regular-weight native ChartText using the exact line color, with their visible text end one chart bar before the canonical line start.
 - User-reported Release-build CS0219 warning for dead `PanelMainRenderer.buttonMargin` was removed.
 - Source/Architecture, Runtime Acceptance and cTrader Compile all passed on code head `a3cd97f715ed6b6b91599b79fe3fa42c82690e1c`.
 
