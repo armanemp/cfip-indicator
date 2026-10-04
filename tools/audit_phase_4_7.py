@@ -55,6 +55,7 @@ contracts = read("tools/CFIP.Planning.Contracts/Program.cs")
 contracts_project = read("tools/CFIP.Planning.Contracts/CFIP.Planning.Contracts.csproj")
 workflow = read(".github/workflows/source-check.yml")
 roadmap = read("docs/CFIP-ROADMAP.md")
+historical_roadmap = read("docs/archive/ROADMAP-LEGACY-2026-10-04.md")
 continuation = read("docs/CONTINUATION-STATE.md")
 phase_doc = read("docs/PHASE-CR4-7-TP-PIPELINE.md")
 
@@ -162,7 +163,7 @@ check(
 )
 check(
     "phase documentation preserves no-tuning and manual-terminal boundaries",
-    "CR4.7" in roadmap
+    "CR4.7" in historical_roadmap
     and "CR4.7" in continuation
     and "no public parameter name/type/defaultvalue changed" in phase_doc.lower()
     and "no default rr" in phase_doc.lower()
