@@ -47,7 +47,7 @@ require(
 )
 require(
     ROOT / "src/CFIP.Indicator/UI/Chart/PlanLabelRenderCoordinator.cs",
-    r"GetCompactPlanLabelAnchorTime\(\)",
+    r"GetCompactPlanLabelAnchorBar\(\)",
     "canonical compact label anchor owner",
 )
 require(
@@ -73,12 +73,12 @@ require(
 )
 require(
     ANCHOR,
-    r"double targetX\s*=\s*\n\s*lineX\s*-",
+    r"canonicalLineLeftBar\s*-\s*CompactPlanLabelGapBars",
     "one actual rendered bar-width is subtracted from the line start X",
 )
 require(
     ANCHOR,
-    r"Chart\.XToTime\(\s*\n\s*targetX\)",
+    r"Chart\.DrawText",
     "projected X resolves to the canonical ChartText DateTime anchor",
 )
 if re.search(r"label\.Time\s*=", LABEL.read_text(encoding="utf-8")):
