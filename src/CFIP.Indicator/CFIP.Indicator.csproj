@@ -3,7 +3,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <OutputType>Library</OutputType>
     <AssemblyName>CFIPIndicator</AssemblyName>
-    <AlgoName>CFIP Smart Indicator</AlgoName>
+    <AlgoName>CFIP-Smart-Indicator</AlgoName>
     <RootNamespace>cAlgo</RootNamespace>
     <Nullable>disable</Nullable>
   </PropertyGroup>
