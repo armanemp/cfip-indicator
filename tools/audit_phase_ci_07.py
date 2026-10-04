@@ -40,7 +40,7 @@ suitability = read("src/CFIP.Indicator/Trading/Risk/SuitabilityCalculator.cs")
 runtime = read("tools/CFIP.Runtime.Contracts/Program.cs")
 runtime_project = read("tools/CFIP.Runtime.Contracts/CFIP.Runtime.Contracts.csproj")
 workflow = read(".github/workflows/source-check.yml")
-roadmap = read("docs/ROADMAP.md")
+roadmap = read("docs/CFIP-ROADMAP.md")
 continuation = read("docs/CONTINUATION-STATE.md")
 
 production_files = list((ROOT / "src" / "CFIP.Indicator").rglob("*.cs"))
