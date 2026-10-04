@@ -3051,7 +3051,7 @@ fixture_code = (TRACK_19_BENCHMARK_ROOT / "BenchmarkFixtures.cs").read_text(enco
 for required_scenario in ("TREND_UP", "TREND_DOWN", "RANGE", "REGIME_SHIFT"):
     if f'"{required_scenario}"' not in fixture_code:
         raise SystemExit(f"Track 19 benchmark scenario missing: {required_scenario}")
-if "docs/TRACK-19-OSS-NUMERICAL-BENCHMARK.md" not in Path("docs/ROADMAP.md").read_text(encoding="utf-8"):
+if "docs/TRACK-19-OSS-NUMERICAL-BENCHMARK.md" not in Path("docs/CFIP-ROADMAP.md").read_text(encoding="utf-8"):
     raise SystemExit("Track 19 continuity document is not linked from the roadmap")
 
 if PRODUCTION_PACKAGE not in benchmark_project:
