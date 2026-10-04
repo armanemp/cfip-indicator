@@ -3,7 +3,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <OutputType>Library</OutputType>
     <AssemblyName>CFIPExecutionBot</AssemblyName>
-    <AlgoName>CFIP Smart Execution Bot</AlgoName>
+    <AlgoName>CFIP-Smart-Execution-Bot</AlgoName>
     <RootNamespace>CFIP.cBot</RootNamespace>
     <Nullable>disable</Nullable>
   </PropertyGroup>
