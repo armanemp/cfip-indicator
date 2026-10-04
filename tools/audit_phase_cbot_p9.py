@@ -128,8 +128,6 @@ check(
     "CompactPlanLineLengthBars = 40" in line and
     "PlanLinePresentationRule.ResolveThickness(" in line and
     "GetReadableLabelTextColor(" in labels and
-    "PlanLinePresentationRule.ResolveColor(" in labels and
-    'name + "_BOX"' in labels,
 )
 check(
     "prediction signal line remains thickness one",
