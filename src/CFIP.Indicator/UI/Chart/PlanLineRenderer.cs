@@ -63,14 +63,6 @@ namespace cAlgo
                 int thickness =
                     ResolvePlanLineThickness(name);
 
-        private Color ResolveCanonicalPlanLineColor(
-            Color semanticColor)
-        {
-            return Color.FromArgb(
-                PlanLinePresentationRule.SignalLineAlpha,
-                semanticColor);
-        }
-
                 ChartTrendLine line =
                     Chart.FindObject(name)
                     as ChartTrendLine;
@@ -108,9 +100,8 @@ namespace cAlgo
                 line.Y2 =
                     normalized;
                 line.Color =
-                    Color.FromArgb(
-                        PlanLinePresentationRule.SignalLineAlpha,
-                                color);
+                    ResolveCanonicalPlanLineColor(
+                        color);
                 line.Thickness =
                     thickness;
                 line.LineStyle =
@@ -127,6 +118,16 @@ namespace cAlgo
                     name,
                     ex.Message);
             }
+        }
+
+        private Color ResolveCanonicalPlanLineColor(
+            Color semanticColor)
+        {
+            // The line renderer is the single owner of chart-level color
+            // materialization. Labels consume this exact same result.
+            return Color.FromArgb(
+                PlanLinePresentationRule.SignalLineAlpha,
+                semanticColor);
         }
 
         private int GetPlanLineRightBar()
