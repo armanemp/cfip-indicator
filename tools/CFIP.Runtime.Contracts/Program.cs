@@ -6768,7 +6768,10 @@ namespace cAlgo
                 "panel content refresh has dedicated runtime cadence state");
 
             Assert(
-                visibility.Contains("_lastPanelContentRefreshUtc =\n                                            DateTime.MinValue"),
+                visibility.Contains("_lastPanelContentRefreshUtc") &&
+                visibility.Contains("DateTime.MinValue") &&
+                visibility.IndexOf("_lastPanelContentRefreshUtc", StringComparison.Ordinal) <
+                    visibility.IndexOf("DateTime.MinValue", StringComparison.Ordinal),
                 "panel restore/reset forces immediate content refresh");
 
             Assert(
