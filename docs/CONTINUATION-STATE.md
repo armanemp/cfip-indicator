@@ -2658,3 +2658,14 @@ Implementation branch: phase/f3-price-time-closedbar-mtf-integrity-2026-10-04.
 F3 corrected the closed-M5 temporal boundary used by downstream MTF/M1 consumers. IndexMath.ClosedBarBoundaryReference is the single reusable owner and affected consumers no longer use the opening timestamp of the closed M5 bar for closed-index resolution. Added the F3 static integrity gate and CI wiring.
 
 Status: verification pending on the exact branch head.
+
+
+## 2026-10-04 — WP-05 Preflight Hardening
+
+Status: **PASS + TERMINAL PENDING**.
+
+Repository implementation merged to `main` as `f43e83bac3d54e90d18e419320c3a5d4ca32d087`. The preflight capability probe is fail-closed for stale/uninitialized scope, invalid quote/probe data, and probe age beyond the bounded safety window. Automated repository gates all passed on the exact implementation head.
+
+**Blocking boundary:** real cTrader target-terminal evidence is still required. The manual acceptance package remains the source of truth for that boundary; no historical or source-only evidence is substituted.
+
+**Next:** WP-06 remains blocked until WP-05 target-terminal acceptance is recorded.
