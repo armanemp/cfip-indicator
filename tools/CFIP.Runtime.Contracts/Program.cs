@@ -6553,7 +6553,7 @@ namespace cAlgo
                 labelAnchor.Contains("CompactPlanLabelGapBars = 1") &&
                 labelAnchor.Contains("lineX -") &&
                 labelAnchor.Contains("canonicalLineLeftBar -"),
-                "plan labels use the canonical projected chart-space label anchor owner");
+                "plan labels use the canonical bar-index label anchor owner");
 
             Assert(
                 controlFactory.Contains("CreateExecutionToggle(") &&
