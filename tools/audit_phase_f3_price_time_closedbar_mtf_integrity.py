@@ -113,8 +113,8 @@ check(
 
 check(
     "F3 roadmap and continuation state are recorded",
-    "F3 — Price / Time / Closed-Bar / MTF Integrity" in roadmap and
-    "F3 — Price / Time / Closed-Bar / MTF Integrity" in continuation
+    "P3 — Market Data / Time / Price / MTF / Closed-Bar Integrity" in roadmap and
+    "P3 — Market Data / Time / Price / MTF / Closed-Bar Integrity" in continuation
 )
 
 print("=" * 72)
