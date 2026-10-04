@@ -70,58 +70,6 @@ namespace cAlgo
             }
         }
 
-        private int ResolveSignalSoundPriority(
-            string key)
-        {
-            string normalized =
-                key ?? string.Empty;
-
-            if (normalized.StartsWith(
-                    "ACTION|",
-                    StringComparison.OrdinalIgnoreCase) ||
-                normalized.StartsWith(
-                    "HIGH|",
-                    StringComparison.OrdinalIgnoreCase) ||
-                normalized.StartsWith(
-                    "SMART|",
-                    StringComparison.OrdinalIgnoreCase))
-                return 3;
-
-            if (normalized.StartsWith(
-                    "EARLY|",
-                    StringComparison.OrdinalIgnoreCase) ||
-                normalized.StartsWith(
-                    "WATCH|",
-                    StringComparison.OrdinalIgnoreCase))
-                return 2;
-
-            if (normalized.StartsWith(
-                    "REACTION|",
-                    StringComparison.OrdinalIgnoreCase) ||
-                normalized.StartsWith(
-                    "AUTO-REACTION|",
-                    StringComparison.OrdinalIgnoreCase))
-                return 1;
-
-            return 0;
-        }
-
-        private bool IsSignalSoundAlertKey(
-            string key)
-        {
-            string normalized =
-                key ?? string.Empty;
-
-            return
-                normalized.StartsWith("WATCH|", StringComparison.OrdinalIgnoreCase) ||
-                normalized.StartsWith("REACTION|", StringComparison.OrdinalIgnoreCase) ||
-                normalized.StartsWith("ACTION|", StringComparison.OrdinalIgnoreCase) ||
-                normalized.StartsWith("HIGH|", StringComparison.OrdinalIgnoreCase) ||
-                normalized.StartsWith("SMART|", StringComparison.OrdinalIgnoreCase) ||
-                normalized.StartsWith("EARLY|", StringComparison.OrdinalIgnoreCase) ||
-                normalized.StartsWith("AUTO-REACTION|", StringComparison.OrdinalIgnoreCase);
-        }
-
         private void RememberSignalSoundGroup(
             string groupKey)
         {
@@ -147,56 +95,19 @@ namespace cAlgo
             AlertDelivery delivery,
             out string groupKey)
         {
-            groupKey = string.Empty;
+            groupKey = delivery.SoundGroupKey ?? string.Empty;
+
             if (!delivery.PlaySound)
                 return false;
 
-            int priority =
-                ResolveSignalSoundPriority(
-                    delivery.Key);
-
-            if (priority <= 0 ||
-                delivery.Envelope == null ||
-                delivery.Envelope.Identity == null)
+            if (string.IsNullOrWhiteSpace(groupKey))
                 return true;
-
-            string signalId =
-                delivery.Envelope.Identity.SignalId ?? string.Empty;
-
-            int createdClosedM5 =
-                delivery.Envelope.Identity.CreatedClosedM5;
-
-            if (string.IsNullOrWhiteSpace(signalId) ||
-                createdClosedM5 < 0)
-                return true;
-
-            // The alert key is part of the sound fingerprint. This preserves
-            // one cue per distinct semantic stage (WATCH, REACTION, ACTION, TP, SL,
-            // REVERSAL, execution outcome, etc.) while exact duplicate deliveries
-            // remain silent. Signal-family classification is retained for diagnostics
-            // and priority handling, but never collapses distinct stages into one cue.
-            groupKey =
-                (SymbolName ?? string.Empty) +
-                "|" +
-                signalId +
-                "|" +
-                delivery.Envelope.Identity.ScenarioId +
-                "|" +
-                delivery.Envelope.Identity.PlanId +
-                "|" +
-                createdClosedM5.ToString() +
-                "|" +
-                delivery.Direction.ToString() +
-                "|" +
-                (delivery.Key ?? string.Empty);
-
 
             if (_rememberedSignalSoundGroups.Contains(groupKey))
             {
                 Print(
-                    "CFIP ALERT SOUND SUPPRESSED | group={0} | priority={1} | alreadyPlayed=true",
-                    groupKey,
-                    priority);
+                    "CFIP ALERT SOUND SUPPRESSED | group={0} | alreadyPlayed=true",
+                    groupKey);
                 return false;
             }
 
