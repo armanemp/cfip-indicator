@@ -241,7 +241,7 @@ namespace cAlgo
             string payload;
             DateTime successUtc;
 
-            if (!EconomicNewsFeedCoordinator.TryGetSnapshot(
+            if (!EconomicNewsFeedCoordinator.TryReadEconomicNewsSnapshot(
                     uri,
                     _economicNewsLastSuccessUtc,
                     out payload,
