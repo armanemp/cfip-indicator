@@ -3855,3 +3855,7 @@ Corrected a concrete temporal-boundary defect: downstream MTF/M1 consumers were 
 No strategy thresholds, RR, alert, rendering, cBot execution or MTF role changed. M15 remains canonical decision/reference; M5 remains trigger/entry precision; M1 remains optional confirmation. No M2 path introduced.
 
 Phase report: docs/PHASE-F3-PRICE-TIME-CLOSEDBAR-MTF-INTEGRITY-2026-10-04.md.
+
+
+## 2026-10-04 — F4 Verification Closeout
+F4 numerical/formula/boundary verification was completed for the concrete current defect set. Runtime.Contracts CS0649 warnings were eliminated by explicit defaults in existing model owners; no warning suppression was used. Declaration-sensitive legacy audits were aligned to semantic member checks. Final head 62f69dc703887486392fbfd59f0f726deea4bba4 passed Source/Architecture, Runtime Acceptance and cTrader Compile. Next canonical phase remains F5.
