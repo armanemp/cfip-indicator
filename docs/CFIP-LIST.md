@@ -22,8 +22,8 @@ A file is not "reviewed" merely because it was opened. It is reviewed only when 
 
 | Metric | Baseline |
 |---|---:|
-| Inventory source commit | \`c8f8c65d77ee1cf0ca9df71169a821a34b86f75d\` |
-| Repository files | 1128 |
+| Inventory source tree commit | \`d79a0c5a67537f3c6c9806e5eb7c85c33f7f94ac\` |
+| Repository files | 1129 |
 | Repository directories | 82 |
 | Markdown files | 211 |
 | Production projects | CFIP.Indicator / CFIP.Contracts / CFIP.cBot |
@@ -1563,7 +1563,7 @@ At certification:
 
 # 17. Current state
 
-**Inventory source commit:** \`c8f8c65d77ee1cf0ca9df71169a821a34b86f75d\`
+**Inventory source tree:** \`d79a0c5a67537f3c6c9806e5eb7c85c33f7f94ac\`
 
 **Current executable package:** **WP-00 — NEXT**
 
