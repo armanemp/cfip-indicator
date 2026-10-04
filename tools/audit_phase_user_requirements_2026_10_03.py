@@ -131,10 +131,26 @@ check(
     "OpportunityMagnitudeRule.IsMeaningful(" in read("src/CFIP.Indicator/Analysis/Market/FuturePendingOpportunityRuntime.cs")
 )
 check(
-    "range signals require strong structural evidence and RR",
+    "range signals require strong structural evidence and canonical RR",
     "RANGE NO-TRADE • MID-RANGE" in range_quality and
-    "RANGE NO-TRADE • LOW RR" in range_quality and
-    "input.Tp1RR < 2.25" in range_quality
+    "RANGE NO-TRADE • NO STRUCTURAL REVERSAL" in range_quality and
+    "RANGE NO-TRADE • EVIDENCE" in range_quality and
+    "RANGE NO-TRADE • STRUCTURE COUNT" in range_quality and
+    "RANGE NO-TRADE • CONFIDENCE" in range_quality and
+    "RANGE NO-TRADE • SMART QUALITY" in range_quality and
+    "RANGE NO-TRADE • NO DISPLACEMENT" in range_quality and
+    "input.Tp1RR" not in range_quality and
+    "MarketRegimeIdentity.Range" in reward_floor and
+    "Math.Max(baseFloor, 2.25)" in reward_floor and
+    "MinimumRequiredRRForRegime" in read(
+        "src/CFIP.Indicator/Planning/TradePlan/MinimumRequiredRiskRewardCalculator.cs"
+    ) and
+    "Math.Max(" in read(
+        "src/CFIP.Indicator/Planning/TradePlan/MinimumRequiredRiskRewardCalculator.cs"
+    ) and
+    "2.25" in read(
+        "src/CFIP.Indicator/Planning/TradePlan/MinimumRequiredRiskRewardCalculator.cs"
+    )
 )
 
 # Audio and panel header.

@@ -107,8 +107,11 @@ check(
 )
 
 check(
-    "range-market RR floor was strengthened",
-    "input.Tp1RR < 2.25" in range_rule
+    "range-market RR floor uses the canonical reward-floor owner",
+    "input.Tp1RR" not in range_rule and
+    "MarketRegimeIdentity.Range" in read("src/CFIP.Indicator/Core/Math/RegimeAdaptiveRewardFloorRule.cs") and
+    "Math.Max(baseFloor, 2.25)" in read("src/CFIP.Indicator/Core/Math/RegimeAdaptiveRewardFloorRule.cs") and
+    "MinimumRequiredRRForRegime" in read("src/CFIP.Indicator/Planning/TradePlan/MinimumRequiredRiskRewardCalculator.cs")
 )
 
 check(
@@ -178,7 +181,8 @@ check(
 check(
     "nine-level smart arrow stack has one canonical owner",
     "class MtfTrendStrengthRule" in read("src/CFIP.Indicator/Core/Math/MtfTrendStrengthRule.cs") and
-    "preferredDirection" in read("src/CFIP.Indicator/Core/Math/MtfTrendStrengthRule.cs") and
+    "MtfTrendStrengthResult" in read("src/CFIP.Indicator/Core/Math/MtfTrendStrengthRule.cs") and
+    "ResolveNineLevel(" in read("src/CFIP.Indicator/Core/Math/MtfTrendStrengthRule.cs") and
     "MtfTrendStrengthLevel" in read("src/CFIP.Indicator/UI/Chart/SignalVisualSnapshot.cs") and
     "ApplyMtfTrendStrength(" in read("src/CFIP.Indicator/UI/Chart/SignalVisualSnapshotBuilder.cs") and
     "visualDirection" in read("src/CFIP.Indicator/UI/Chart/SignalVisualSnapshotBuilder.cs") and
