@@ -71,7 +71,7 @@ if "python tools/audit_phase_7_5.py" not in workflow:
     raise SystemExit("G5 static audit is not in Source/Architecture CI")
 
 for document, token, name in (
-    (roadmap, "CR7.5 / G5", "ROADMAP G5 scope"),
+    (historical_roadmap, "CR7.5 / G5", "ROADMAP G5 scope"),
     (continuation, "CR7.5 / G5", "CONTINUATION G5 scope"),
     (review, "CR7.5 / G5", "remediation G5 scope"),
     (development, "CR7.5 / G5", "development log G5 entry"),
