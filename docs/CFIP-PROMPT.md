@@ -455,7 +455,7 @@ PASS را برای حفظ ظاهری وضعیت با ضعیف‌کردن gate ح
 
 # Documentation migration
 
-اگر tooling هنوز به docs/ROADMAP.md قدیمی وابسته است:
+اگر tooling هنوز به docs/CFIP-ROADMAP.md قدیمی وابسته است:
 
 اول dependencyها را کامل trace کن،
 سپس owner canonical را به سه فایل جدید migrate کن،
