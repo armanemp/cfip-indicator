@@ -72,7 +72,7 @@ This record separates the current execution state from the repository baseline u
 |---|---|
 | Repository | armanemp/cfip-indicator |
 | Canonical branch | main |
-| Control-plane verification baseline | `5b16b92a7b272e43c71a3bea14c94cc978e7065e` |
+| Control-plane verification baseline | `aeaaa4e34521f368ba9f426ed691f3c156c26886` |
 | Baseline date/time | `2026-10-04` — current control-plane verification |
 | Indicator | CFIP.Indicator |
 | Contracts | CFIP.Contracts |
