@@ -22,9 +22,9 @@ namespace cAlgo
 
             DateTime reference =
                 ClosedBarBoundaryReference(
-                            _m5Bars,
-                            closedM5,
-                            Server.TimeInUtc);
+                    _m5Bars,
+                    closedM5,
+                    Server.TimeInUtc);
 
             int m1Index =
                 ClosedIndex(
