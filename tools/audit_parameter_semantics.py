@@ -40,7 +40,7 @@ for path in sorted(PARAM_ROOT.glob("*.cs")):
             "default": default_match.group(1).strip() if default_match else "",
         }
 
-EXPECTED_CURRENT_PARAMETERS = 548
+EXPECTED_CURRENT_PARAMETERS = 545
 if len(parameter_defs) != EXPECTED_CURRENT_PARAMETERS:
     raise SystemExit(
         f"Expected {EXPECTED_CURRENT_PARAMETERS} current parameters, found {len(parameter_defs)}"
