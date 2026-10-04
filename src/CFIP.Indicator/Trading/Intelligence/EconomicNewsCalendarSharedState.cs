@@ -122,7 +122,7 @@ namespace cAlgo
 
                             Print(
                                 "CFIP ECONOMIC NEWS SHARED ADOPTED | source=LocalStorage | events={0} | successUtc={1}",
-                                CountRelevantEconomicNewsEvents(),
+                                _economicNewsEvents.Length,
                                 successUtc.ToString(
                                     "O",
                                     System.Globalization.CultureInfo.InvariantCulture));
