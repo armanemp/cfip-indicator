@@ -10,9 +10,17 @@ on:
       - "tools/CFIP.StockIndicators.Benchmark/**"
       - ".github/workflows/oss-benchmark.yml"
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   stock-indicators:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
@@ -24,5 +32,13 @@ jobs:
       - name: Run OSS benchmark
         working-directory: tools/CFIP.StockIndicators.Benchmark
         run: |
+          set -o pipefail
           dotnet run --project CFIP.StockIndicators.Benchmark.csproj --no-restore --configuration Release | tee benchmark-report.md
           cat benchmark-report.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload benchmark report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: oss-indicator-benchmark-report
+          path: tools/CFIP.StockIndicators.Benchmark/benchmark-report.md
+          if-no-files-found: ignore
