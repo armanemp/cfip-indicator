@@ -34,6 +34,7 @@ execution_tf = read("src/CFIP.Indicator/Core/Math/ExecutionTimeframePolicy.cs")
 runtime = read("tools/CFIP.Runtime.Contracts/Program.cs")
 workflow = read(".github/workflows/source-check.yml")
 roadmap = read("docs/CFIP-ROADMAP.md")
+historical_roadmap = read("docs/archive/ROADMAP-LEGACY-2026-10-04.md")
 continuation = read("docs/CONTINUATION-STATE.md")
 devlog = read("docs/DEVELOPMENT-LOG.md")
 
@@ -107,7 +108,7 @@ check(
 
 check(
     "CI-21 documentation is recorded across roadmap, continuation state and development log",
-    "CI-21" in roadmap and
+    "CI-21" in historical_roadmap and
     "CI-21" in continuation and
     "CI-21" in devlog,
 )
