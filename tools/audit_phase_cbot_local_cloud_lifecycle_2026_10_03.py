@@ -66,13 +66,13 @@ check(
 check(
     "<AssemblyName>CFIPIndicator</AssemblyName>" in indicator_project and
     "<AlgoName>CFIP Smart Indicator</AlgoName>" in indicator_project and
-    "<Deterministic>true</Deterministic>" in indicator_project,
+    "<Deterministic>true</Deterministic>" in root_build_props,
     "Indicator build identity must remain stable and deterministic",
 )
 check(
     "<AssemblyName>CFIPExecutionBot</AssemblyName>" in cbot_project and
     "<AlgoName>CFIP Smart Execution Bot</AlgoName>" in cbot_project and
-    "<Deterministic>true</Deterministic>" in cbot_project,
+    "<Deterministic>true</Deterministic>" in root_build_props,
     "cBot build identity must remain stable and deterministic",
 )
 check(
