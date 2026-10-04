@@ -637,6 +637,33 @@ namespace cAlgo
                 invalidDirection[0] == -1,
                 "CI-13 invalid direction fails closed");
 
+            IReadOnlyList<TargetLadderOption>[] nullStage =
+            {
+                new List<TargetLadderOption>
+                {
+                    new TargetLadderOption(0, 103.0, 100.0)
+                },
+                null,
+                new List<TargetLadderOption>
+                {
+                    new TargetLadderOption(2, 106.0, 90.0)
+                }
+            };
+
+            int[] nullStageResult =
+                TargetLadderSelectionRule.SelectBestPath(
+                    1,
+                    100.0,
+                    0.25,
+                    nullStage);
+
+            Assert(
+                nullStageResult.Length == 3 &&
+                nullStageResult[0] == 0 &&
+                nullStageResult[1] == -1 &&
+                nullStageResult[2] == -1,
+                "CI-13 null stage fails closed without exception");
+
             Console.WriteLine(
                 "CI-13 coherent TP ladder contracts: global path selection, termination and BUY/SELL symmetry passed");
         }

@@ -102,12 +102,19 @@ namespace cAlgo
             {
                 bool stageReachable = false;
 
+                IReadOnlyList<TargetLadderOption> currentOptions =
+                    stages[stage];
+
+                if (currentOptions == null ||
+                    currentOptions.Count == 0)
+                    break;
+
                 for (int current = 0;
-                     current < stages[stage].Count;
+                     current < currentOptions.Count;
                      current++)
                 {
                     TargetLadderOption currentOption =
-                        stages[stage][current];
+                        currentOptions[current];
 
                     if (!IsCandidateFinite(currentOption) ||
                         !IsTargetSideValid(
