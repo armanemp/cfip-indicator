@@ -6536,9 +6536,9 @@ namespace cAlgo
                 "plan levels terminate at the latest chart candle without stale M5 anchoring");
 
             Assert(
-                labelCoordinator.Contains("GetPlanLineLeftBar(") &&
+                labelCoordinator.Contains("GetCompactPlanLabelAnchorBar(") &&
                 !labelCoordinator.Contains("GetCompactPlanLineLeftBar("),
-                "plan labels reuse the canonical line left edge");
+                "plan labels reuse the canonical compact-label anchor");
 
             Assert(
                 controlFactory.Contains("CreateExecutionToggle(") &&
