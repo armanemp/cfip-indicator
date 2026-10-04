@@ -39,7 +39,7 @@ if not SOLUTION.exists():
 
 solution = read(SOLUTION)
 for project in sorted(EXPECTED_PROJECTS):
-    if project.replace("/", "\") not in solution:
+    if project.replace("/", "\\") not in solution:
         fail(f"solution missing canonical project: {project}")
 
 csprojs = sorted(ROOT.rglob("*.csproj"))
