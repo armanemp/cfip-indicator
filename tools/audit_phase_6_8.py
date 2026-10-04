@@ -35,6 +35,7 @@ csproj = read("tools/CFIP.Planning.Contracts/CFIP.Planning.Contracts.csproj")
 workflow = read(".github/workflows/source-check.yml")
 benchmark = read("tools/benchmark_target_obstacle_cache.py")
 roadmap = read("docs/CFIP-ROADMAP.md")
+historical_roadmap = read("docs/archive/ROADMAP-LEGACY-2026-10-04.md")
 continuation = read("docs/CONTINUATION-STATE.md")
 review = read("docs/CLAUDE-REVIEW-REMEDIATION-ROADMAP.md")
 phase = read("docs/PHASE-CR6-8-F9-TARGET-OBSTACLE-CACHE.md")
@@ -140,8 +141,8 @@ check(
 
 check(
     "F9 documentation and continuation advance to F3",
-    "CR6.8 / F9 closeout" in roadmap and
-    "CR6.9 / F3" in roadmap and
+    "CR6.8 / F9 closeout" in historical_roadmap and
+    "CR6.9 / F3" in historical_roadmap and
     "CR6.8 / F9" in continuation and
     "CR6.9 / F3" in continuation and
     "CR6.8 / F9" in review and
