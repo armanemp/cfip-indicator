@@ -530,3 +530,119 @@ These requirements are treated as acceptance targets and must be verified agains
 - Broker-confirmed close ends the corresponding managed visual lifecycle.
 - Reconnect/restart cannot create duplicate positions, orders, alerts or protection changes.
 - Risk-reducing protection is monotonic.
+
+
+# 19. Cross-cutting domains that every phase must inspect
+
+The phase titles are not exemptions. Every phase must inspect the following system-wide concerns when affected, and P0 must baseline all of them.
+
+## Data acquisition and history
+- history load boundaries and replacement events;
+- insufficient history;
+- missing bars and gaps;
+- source observation ordering;
+- cache invalidation after history replacement;
+- stale data detection;
+- deterministic rebuild rules.
+
+## Concurrency and re-entrancy
+- overlapping Calculate/timer/UI callbacks;
+- duplicate subscriptions;
+- shared mutable state;
+- re-entrant execution requests;
+- concurrent scenario updates;
+- atomic identity/gate decisions;
+- race conditions during startup/reload/reconnect;
+- thread-affinity rules for cTrader UI/runtime APIs.
+
+## Error handling and fault containment
+- exception ownership;
+- recoverable vs fatal fault classification;
+- fault state transitions;
+- retry/backoff/circuit semantics;
+- fail-closed automatic entry;
+- continuation of safety-critical management during analytical faults;
+- no swallowed exceptions that conceal state divergence.
+
+## Observability and auditability
+- structured diagnostic events;
+- correlation with SignalId/ScenarioId/ExecutionId;
+- startup/shutdown/reconnect evidence;
+- decision and execution reasons;
+- broker request/result evidence;
+- protection/lifecycle transitions;
+- alert delivery evidence;
+- bounded logs;
+- no sensitive data leakage.
+
+## Testing strategy
+- unit/pure-rule tests;
+- deterministic contract tests;
+- integration tests across module boundaries;
+- negative/failure-path tests;
+- property/boundary tests where valuable;
+- replay/regression fixtures;
+- build/architecture/static audits;
+- target-terminal manual scenarios;
+- broker-confirmed acceptance where required.
+
+## Configuration and migration
+- default-value changes;
+- parameter migration;
+- serialized state/schema compatibility;
+- environment-specific configuration;
+- demo/live configuration;
+- backward compatibility only where intentionally required;
+- removal of obsolete configuration rather than indefinite compatibility.
+
+## Resource governance
+- memory bounds;
+- cache bounds;
+- queue bounds;
+- chart-object bounds;
+- timer frequency;
+- CPU/allocation limits;
+- persistence backpressure;
+- graceful degradation when resources are unavailable.
+
+## Deployment and rollback
+- Release artifact identity;
+- install/update procedure;
+- cBot/Indicator version pairing;
+- contract compatibility;
+- rollback to the prior certified artifact;
+- recovery after partial deployment;
+- operator-facing validation checklist.
+
+# 20. Canonical defect taxonomy
+
+Every confirmed issue must be classified by root cause, not symptom. Minimum classes:
+
+**DATA / TIME / NUMERICAL / ANALYSIS / EVIDENCE / DECISION / ACTIONABILITY / PLAN / RISK / CONTRACT / IDENTITY / VISUAL / ALERT / UI / EXECUTION / BROKER / LIFECYCLE / RECOVERY / PERSISTENCE / OUTCOME / PERFORMANCE / SECURITY / BUILD / DEPENDENCY / DOCUMENTATION**
+
+A single root cause gets one defect identity even when it produces multiple symptoms.
+
+# 21. Change-impact discipline
+
+Before changing any owner, determine:
+- direct callers;
+- indirect consumers;
+- contracts crossing the boundary;
+- visual/panel consumers;
+- alert/event consumers;
+- execution consumers;
+- persistence/outcome consumers;
+- tests/static audits;
+- performance-sensitive callers.
+
+After the change, re-check the same graph. No phase is closed on file-local evidence only.
+
+# 22. Current state
+
+**Current phase: P0 — NEXT**
+
+**Canonical companion:** \`docs/CFIP_GATE.md\`
+
+**Execution unit:** one complete phase per implementation response.
+
+**Roadmap authority:** this file only.
