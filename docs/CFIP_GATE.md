@@ -810,3 +810,68 @@ Historical documents are evidence/archive only.
 **Execution unit:** one complete phase per implementation response.
 
 **Last instruction:** never continue from historical phase numbering when it conflicts with the canonical files or current code.
+
+
+# 39. CFIP operator/product acceptance gates
+
+These gates capture the intended CFIP behavior in addition to architectural invariants.
+
+## Product / execution — UXE
+
+- UXE-001 all valid timeframe analyzers can operate concurrently without creating competing decision clocks.
+- UXE-002 M15 remains the canonical decision/reference frame.
+- UXE-003 M5 is trigger/entry precision, not a second decision authority.
+- UXE-004 M1 is optional confirmation only.
+- UXE-005 higher-timeframe context is available to reward-path/structure logic without duplicate decision ownership.
+- UXE-006 no M2 exists anywhere in production behavior.
+- UXE-007 auto-trade/order placement is owned only by cBot.
+- UXE-008 current actionable opportunity can reach immediate execution only after all canonical gates pass.
+- UXE-009 future opportunity can map to a pending order only through canonical scenario/execution intent.
+- UXE-010 concurrent opportunities are represented distinctly by identity and an explicit capacity policy.
+- UXE-011 demo/live selection does not create a second execution engine.
+- UXE-012 local deployment does not hard-code away future cloud-analysis compatibility.
+- UXE-013 sizing respects account/margin/broker-volume/risk constraints.
+- UXE-014 spread/executable quote is included where required by entry/SL/TP safety.
+- UXE-015 no fixed generic 1:2 RR owner exists.
+- UXE-016 weak/range conditions cannot silently become actionable through a downstream bypass.
+- UXE-017 OB/FVG/structure/liquidity context contributes through canonical evidence/plan owners.
+- UXE-018 displayed signal, alert and execution intent share identity and direction.
+
+## Chart/panel — UXP
+
+- UXP-001 one signal creates one visual set.
+- UXP-002 directional arrows use one nine-level strength source.
+- UXP-003 arrows have deterministic non-overlap separation.
+- UXP-004 M1 precision is visually distinguishable from directional consensus.
+- UXP-005 level lines remain through the defined active lifecycle.
+- UXP-006 level lines are removed after the canonical lifecycle ends.
+- UXP-007 labels are exact-price and readable.
+- UXP-008 labels are positioned left of the line by the canonical anchor.
+- UXP-009 label text does not overflow.
+- UXP-010 panel/chart direction agrees.
+- UXP-011 Indicator and cBot names shown to operator are meaningful, not source placeholders.
+- UXP-012 cBot attachment/execution status is derived from one canonical state.
+- UXP-013 no repeated local/cloud choice popup exists.
+- UXP-014 operator messages stay inside the intended UI message region.
+- UXP-015 timeframe lamps and text agree.
+- UXP-016 UI density remains usable on reload/hide/show/narrow widths.
+- UXP-017 UI handlers remain single-registration.
+
+## Alert/audio — UXA
+
+- UXA-001 one causal event creates one delivery lifecycle.
+- UXA-002 one canonical startup event creates one startup cue.
+- UXA-003 duplicate startup sounds are impossible through code paths.
+- UXA-004 signal/warning/diagnostic cues are causally distinct.
+- UXA-005 blocked/restricted candidates have no actionable side effect.
+- UXA-006 panel/audio/email mirrors cannot drift in event identity.
+- UXA-007 retry/dedup cannot replay the same causal event unintentionally.
+
+## Broker/lifecycle — UXB
+
+- UXB-001 broker-confirmed close drives visual lifecycle completion.
+- UXB-002 reconnect cannot duplicate an order/position.
+- UXB-003 restart cannot duplicate lifecycle mutation.
+- UXB-004 protective changes never widen risk.
+- UXB-005 execution identity survives the full submission/fill/lifecycle chain.
+- UXB-006 current/future opportunity semantics remain distinct after recovery.
