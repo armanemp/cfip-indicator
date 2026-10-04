@@ -14,8 +14,8 @@
 # Current execution state
 
 **Macro phase:** P2 — Ownership / Single-Source / Dead-Code Closure  
-**Atomic package:** WP-04 — Historical isolation  
-**Status:** IN PROGRESS
+**Atomic package:** WP-05 — Preflight  
+**Status:** NEXT
 
 WP-04 is the current executable package. The macro phase remains P2 while atomic packages advance independently.
 
@@ -504,7 +504,7 @@ The following are P0 defects if reintroduced:
 
 **Current macro phase: P3**
 
-**Current executable package: WP-03 — IN PROGRESS**
+**Current executable package: WP-05 — NEXT**
 
 **Canonical inspection inventory:** \`docs/CFIP-LIST.md\`
 
@@ -537,7 +537,7 @@ Evidence:
 Residual control-plane defect:
 - Active tooling still contains references to historical `docs/ROADMAP.md`; this is registered as DEF-P0-002 and is queued for WP-03/WP-04 migration/isolation. Historical documents do not override the canonical control plane.
 
-The current executable package is **WP-04 — Historical isolation**.
+The current executable package is **WP-05 — Preflight**.
 
 # 18. CFIP operator/product contract
 
@@ -782,3 +782,14 @@ For every Atomic Work Package, if local execution is required, the package MUST 
 - **CBOT-P6 historical continuity:** account/risk/connection truth remains recorded in canonical continuity evidence; this registry preserves the historical audit marker without reactivating the superseded roadmap.
 
 - **CBOT-P8 historical continuity:** progressive protection state synchronization remains recorded in canonical continuity evidence, including the M15/M5 role boundary; the historical marker does not act as an independent roadmap.
+
+
+### WP-04 closeout — Historical control-plane isolation — 2026-10-04
+
+**Status: PASS**
+
+PR #284 was merged to `main` as `2e98a4b4cd27dd8b083ee8aac1437cf1a3c6271e` after the final implementation head `3853f3d9708a7b378e8f61edeefb800a52898ee6` passed Source/Architecture #4365, Runtime Acceptance #4174 and cTrader Compile #4358. The obsolete `docs/ROADMAP.md` authority is isolated in the archive boundary, active tooling is aligned to the canonical control plane, and DEF-P0-002 is verified closed.
+
+The completion protocol is now permanent: required CI must be green, the verified work must be merged to `main`, and merged `main` must be re-verified before the package is declared complete.
+
+**Next:** WP-05 — Preflight.
