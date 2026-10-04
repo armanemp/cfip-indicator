@@ -3125,22 +3125,22 @@ label_renderer = ROOT / "UI" / "Chart" / "PlanLabelRenderer.cs"
 label_code = label_renderer.read_text(encoding="utf-8")
 if "GetReadableLabelTextColor(" not in label_code:
     raise SystemExit("Plan labels must use the canonical semantic text-color resolver")
-compact_label_color = label_code[label_code.find("private void DrawCompactPlanLabel("):]
 if "return Color.White;" not in label_code:
     raise SystemExit("Plan labels must use the canonical white text contract")
 compact_label_start = label_code.find("private void DrawCompactPlanLabel(")
 compact_label_code = label_code[compact_label_start:] if compact_label_start >= 0 else ""
-if "Chart.DrawRectangle(" not in compact_label_code:
-    raise SystemExit("Plan price labels must remain background-free")
-if "box.IsFilled" not in compact_label_code:
-    raise SystemExit("Plan price label box must be filled")
-if "PlanLinePresentationRule.ResolveColor(" not in compact_label_code:
-    raise SystemExit("Plan price label box must reuse canonical line color")
-if "GetPlanLineRightBar()" not in label_code:
-    raise SystemExit("Plan price label box must attach to the line endpoint")
 if "Chart.DrawText(" not in compact_label_code:
-    raise SystemExit("Plan price labels must own their text object")
-
+    raise SystemExit("Plan price labels must own their native ChartText object")
+if "Chart.DrawRectangle(" in compact_label_code:
+    raise SystemExit("Plan price labels must remain background-free")
+if "Chart.DrawIcon(" in compact_label_code:
+    raise SystemExit("Plan price labels must not create anchor markers")
+if "CompactPlanLabelGapPips" not in compact_label_code or "Symbol.PipSize" not in compact_label_code:
+    raise SystemExit("Plan price labels must use the canonical pip-space clearance")
+if "2.0" not in label_code:
+    raise SystemExit("Plan price labels must keep the exact 2-pip clearance contract")
+if "GetCompactPlanLabelAnchorBar(" not in label_code:
+    raise SystemExit("Plan label renderer must use the canonical compact label anchor")
 live_calc = ROOT / "Runtime" / "Calculation" / "CalculationLiveCycle.cs"
 live_calc_code = live_calc.read_text(encoding="utf-8")
 if "RenderParallelOpportunityCandidates(" not in live_calc_code:
