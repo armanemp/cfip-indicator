@@ -40,12 +40,20 @@ required = {
         [
             "RefreshEconomicNewsIfNeeded",
             "Http.SendAsync(",
-            "_economicNewsSharedRequestInFlight",
-            "EconomicNewsProviderMinimumRefreshMinutes",
-            "EconomicNewsUserAgent",
+            "EconomicNewsFeedCoordinator.TryStart(",
+            "EconomicNewsFeedCoordinator.CompleteSuccess(",
+            "EconomicNewsFeedCoordinator.CompleteFailure(",
             "_economicNewsRequestInFlight",
             "_economicNewsRequestGeneration",
-            "EconomicNewsRequestTimeoutSeconds",
+        ],
+    "src/CFIP.Indicator/Trading/Intelligence/EconomicNewsFeedCoordinator.cs":
+        [
+            "ProviderMinimumRefreshMinutes",
+            "TryGetSnapshot(",
+            "TryStart(",
+            "CompleteSuccess(",
+            "CompleteFailure(",
+            "RequestInFlight",
         ],
     "src/CFIP.Indicator/Trading/Intelligence/EconomicNewsRiskEvaluator.cs":
         [
