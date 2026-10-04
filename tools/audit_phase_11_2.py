@@ -68,12 +68,12 @@ require(
 ANCHOR = ROOT / "src/CFIP.Indicator/UI/Chart/PlanLabelAnchorCalculator.cs"
 require(
     ANCHOR,
-    r"Chart\.DrawText\(\s*\n\s*name,\s*\n\s*text,\s*\n\s*canonicalLabelBar,",
+    r"private int GetCompactPlanLabelAnchorBar\(\s*\n\s*\)",
     "canonical bar-index anchor owner",
 )
 require(
     ANCHOR,
-    r"canonicalLineLeftBar\s*-\s*CompactPlanLabelGapBars",
+    r"canonicalLineLeftBar\s*-\s*\n\s*CompactPlanLabelGapBars",
     "exact one-bar gap is owned by the canonical bar-index anchor",
 )
 
