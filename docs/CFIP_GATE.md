@@ -1248,3 +1248,6 @@ Canonical planning, inventory and acceptance authority was normalized across ROA
 **Residual risk:** `DEF-P0-002` remains OPEN and is the explicit WP-04 migration target. No blind deletion of legacy documents was performed.
 
 **Current package:** WP-04 — Legacy control-plane migration and stale-document isolation — IN PROGRESS.
+
+## Permanent acceptance requirement — Local command handoff
+If a gate requires user-local execution, the gate record must contain the exact command, environment, execution point, expected success signal, and required returned output. A green GitHub workflow does not close a local verification requirement.
