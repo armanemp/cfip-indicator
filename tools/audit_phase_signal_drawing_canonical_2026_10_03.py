@@ -21,6 +21,15 @@ def check(name, ok):
 check("plan lines are solid and canonical", "return LineStyle.Solid;" in line)
 check("plan line geometry is fixed to 40 bars from latest candle", "CompactPlanLineLengthBars = 40" in line and "GetPlanLineRightBar()" in line and "GetPlanLineRightBar() -" in line and "if (FullWidthLevelLines)" not in line.split("private int GetPlanLineLeftBar", 1)[1])
 check("plan thickness contract is one pixel", "return MinimumThickness;" in line_rule and "MinimumThickness = 1" in line_rule)
+check("plan line and label use one canonical DateTime/OpenTime X system",
+    "Chart.DrawTrendLine(" in line and
+    "expectedStartTime" in line and
+    "expectedEndTime" in line and
+    "line.Time1 =" not in line and
+    "line.Time2 =" not in line and
+    "Chart.DrawText(" in labels and
+    "expectedTime" in labels and
+    "label.Time =" not in labels)
 check("plan labels use canonical line-owned color", "Chart.DrawText(" in labels and
     "Chart.DrawRectangle(" not in labels and
     "ResolveCanonicalPlanLineColor(" in line and
