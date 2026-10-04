@@ -490,8 +490,8 @@ Full-chain routine audit:
 
 - BUY and SELL level presentation uses the same canonical line geometry, thickness mapping, font size, weight, and label placement; direction does not alter the visual layout.
 - Entry / Trigger / SL / TP / Pending labels share the same compact renderer.
-- Compact level text remains white inside a filled box using exactly the same semantic color as its corresponding Solid line.
-- All compact plan lines remain finite and Solid with the existing default 40-bar span.
+- Compact level text uses exactly the same materialized semantic color as its corresponding Solid line.
+- All compact plan lines remain finite and Solid with the existing default 40-bar span; the visible end of each label is kept one chart bar before the line start by the canonical anchor owner.
 
 ## CBOT-P7 — UI / State Cutover — 2026-10-02
 
