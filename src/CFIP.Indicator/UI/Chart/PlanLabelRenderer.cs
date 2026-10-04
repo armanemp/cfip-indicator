@@ -35,20 +35,8 @@ namespace cAlgo
                     Bars.Count < 2)
                     return;
 
-                int anchor =
-                    Math.Max(
-                        0,
-                        Math.Min(
-                            Bars.Count - 1,
-                            bar));
-
                 int lineLeft =
-                    Math.Max(
-                        0,
-                        anchor -
-                        Math.Max(
-                            1,
-                            LineLengthBars));
+                    GetPlanLineLeftBar();
 
                 DrawCompactPlanLabel(
                     name,
