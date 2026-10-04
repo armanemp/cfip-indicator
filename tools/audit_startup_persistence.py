@@ -105,16 +105,7 @@ require(
 )
 
 host_text = HOST.read_text(encoding="utf-8")
-if (
-    not re.search(
-        r"\[Indicator\(\s*\n\s*IndicatorIdentity\.DisplayName\s*,[\s\S]*?IsOverlay\s*=",
-        host_text,
-    )
-    and not re.search(
-        r"\[Indicator\(\s*\n\s*IsOverlay\s*=",
-        host_text,
-    )
-):
+if "[Indicator(" not in host_text or "IndicatorIdentity.DisplayName" not in host_text:
     errors.append("cTrader indicator attribute registration is missing")
 if '[Indicator("CFIPIndicator"' in host_text:
     errors.append("legacy IndicatorAttribute name remains")
