@@ -338,7 +338,7 @@ The following list is generated from the recursive Git tree of the audited main 
 - docs/PHASE-VOLUME-PROFILE-EVIDENCE-2026-10-03.md
 - docs/REFERENCE-COVERAGE.md
 - docs/REFERENCE-INDICATOR-AUDIT-2026-09-29.md
-- docs/ROADMAP.md
+- docs/CFIP-ROADMAP.md
 - docs/RUNTIME-LOG-GUIDE.md
 - docs/RUNTIME-STARTUP-OBSERVABILITY-HOTFIX.md
 - docs/SMART-INTELLIGENCE.md
