@@ -935,7 +935,7 @@ Historical documents are evidence/archive only.
 
 **Canonical gate:** \`docs/CFIP_GATE.md\`
 
-**Current phase:** P2
+**Current phase:** P3
 
 **Current status:** NEXT
 
