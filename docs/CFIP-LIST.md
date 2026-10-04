@@ -1574,9 +1574,9 @@ At certification:
 
 # 17. Current state
 
-**Inventory source tree:** \`207e43b7d5293db4445e3f00e9b2b008c95f8dea\`
+**Inventory source tree:** `f81bfee89dbbc18324892007c26678cc4d5e8639`
 
-**Current executable package:** **WP-01 — NEXT**
+**Current executable package:** **WP-02 — NEXT**
 
 **Canonical roadmap:** \`docs/CFIP-ROADMAP.md\`
 

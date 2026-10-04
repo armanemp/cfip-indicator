@@ -5,9 +5,7 @@
     <AssemblyName>CFIP.Planning.Contracts</AssemblyName>
     <RootNamespace>cAlgo</RootNamespace>
     <Nullable>disable</Nullable>
-    <ImplicitUsings>disable</ImplicitUsings>
     <LangVersion>latest</LangVersion>
-    <Deterministic>true</Deterministic>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="../../src/CFIP.Indicator/Core/Math/OssIndicatorSettings.cs" />

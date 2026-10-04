@@ -18,6 +18,7 @@ bot = read("src/CFIP.cBot/CFIPExecutionBot.cs")
 binding = read("src/CFIP.cBot/Binding/CfipIndicatorChartBinding.cs")
 indicator = read("src/CFIP.Indicator/Indicator/CFIPIndicator.cs")
 indicator_project = read("src/CFIP.Indicator/CFIP.Indicator.csproj")
+root_build_props = read("Directory.Build.props")
 cbot_project = read("src/CFIP.cBot/CFIP.cBot.csproj")
 identity = read("src/CFIP.Contracts/IndicatorIdentity.cs")
 cbot_identity = read("src/CFIP.Contracts/CbotIdentity.cs")
@@ -66,13 +67,13 @@ check(
 check(
     "<AssemblyName>CFIPIndicator</AssemblyName>" in indicator_project and
     "<AlgoName>CFIP Smart Indicator</AlgoName>" in indicator_project and
-    "<Deterministic>true</Deterministic>" in indicator_project,
+    "<Deterministic>true</Deterministic>" in root_build_props,
     "Indicator build identity must remain stable and deterministic",
 )
 check(
     "<AssemblyName>CFIPExecutionBot</AssemblyName>" in cbot_project and
     "<AlgoName>CFIP Smart Execution Bot</AlgoName>" in cbot_project and
-    "<Deterministic>true</Deterministic>" in cbot_project,
+    "<Deterministic>true</Deterministic>" in root_build_props,
     "cBot build identity must remain stable and deterministic",
 )
 check(

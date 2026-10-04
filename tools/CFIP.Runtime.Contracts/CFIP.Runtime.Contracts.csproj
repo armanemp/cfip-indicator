@@ -5,9 +5,7 @@
     <AssemblyName>CFIP.Runtime.Contracts</AssemblyName>
     <RootNamespace>cAlgo</RootNamespace>
     <Nullable>disable</Nullable>
-    <ImplicitUsings>disable</ImplicitUsings>
     <LangVersion>latest</LangVersion>
-    <Deterministic>true</Deterministic>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../../src/CFIP.Contracts/CFIP.Contracts.csproj" />

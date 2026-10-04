@@ -205,13 +205,14 @@ Mandatory first checks:
 Exit: reproducible baseline and filled P0 section in \`CFIP_GATE.md\`.
 
 ## P1 — Repository / Build / Dependency Integrity
-**Status: NEXT**
+**Status: PASS**
 
 Audit solution/projects, ProjectReference/PackageReference, target frameworks, source inclusion, generated/temporary artifacts, orphan/dead files, duplicate configuration, Debug/Release parity, CI drift, warnings, assembly/algo names, dependency provenance and reproducible Release. Every repository artifact must also be classified for KEEP / MIGRATE / ARCHIVE / DELETE; active dependencies must be migrated before deletion.
 
 Exit: build graph is intentional and clean.
 
 ## P2 — Ownership / Single-Source / Dead-Code Closure
+**Status: NEXT**
 
 Audit calculation, state, decision, actionability, trigger, plan, risk, scenario, contract, visual, label, arrow, alert, sound, execution, broker mutation, lifecycle, persistence and history ownership, together with dead production source, duplicate tools, obsolete tests, superseded scripts and redundant documentation.
 
@@ -493,9 +494,9 @@ The following are P0 defects if reintroduced:
 
 # 17. Current state
 
-**Current macro phase: P1**
+**Current macro phase: P2**
 
-**Current executable package: WP-01 — NEXT**
+**Current executable package: WP-02 — NEXT**
 
 **Canonical inspection inventory:** \`docs/CFIP-LIST.md\`
 

@@ -136,6 +136,40 @@ for item in required_ci:
     if item not in matrix:
         fail(f"CI build matrix missing {item}")
 
+# 6. Root/build metadata must have one owner.
+root_props = ROOT / "Directory.Build.props"
+if not root_props.exists():
+    fail("Directory.Build.props is missing")
+root_props_text = read(root_props)
+for property, expected in (
+    ("Deterministic", "true"),
+    ("ImplicitUsings", "disable"),
+):
+    if f"<{property}>{expected}</{property}>" not in root_props_text:
+        fail(f"Root build default missing: {property}={expected}")
+
+for project in csprojs:
+    project_text = read(project)
+    relative = project.relative_to(ROOT).as_posix()
+    if "<Deterministic>true</Deterministic>" in project_text:
+        fail(f"Duplicate Deterministic project override; root owner is Directory.Build.props: {relative}")
+    if "<ImplicitUsings>disable</ImplicitUsings>" in project_text:
+        fail(f"Duplicate ImplicitUsings project override; root owner is Directory.Build.props: {relative}")
+
+ignore_path = ROOT / ".gitignore"
+if not ignore_path.exists():
+    fail(".gitignore is missing")
+ignore_lines = {
+    line.strip()
+    for line in read(ignore_path).splitlines()
+    if line.strip() and not line.lstrip().startswith("#")
+}
+for required_ignore in ("bin/", "obj/", "BenchmarkDotNet.Artifacts/", "benchmark-report.md", "*.log", "*.tmp"):
+    if required_ignore not in ignore_lines:
+        fail(f"Repository hygiene ignore missing: {required_ignore}")
+if ".vscode/*" not in ignore_lines or "!.vscode/extensions.json" not in ignore_lines:
+    fail("VS Code ignore policy must keep only the canonical extensions recommendation tracked")
+
 # 6. Tracked generated output must not become production source.
 for path in ROOT.rglob("*.cs"):
     rel = path.relative_to(ROOT).as_posix()
@@ -143,6 +177,8 @@ for path in ROOT.rglob("*.cs"):
         fail(f"generated build output is present in source tree: {rel}")
 
 print("F1 Repository / Build / Dependency Truth: PASS")
+print("Root build metadata owner: Directory.Build.props")
+print("Repository artifact ignore policy: PASS")
 print(f"Projects scanned: {len(csprojs)}")
 print(f"cTrader.Automate: {sorted(package_versions.get('cTrader.Automate', set()))}")
 print(f"Skender.Stock.Indicators: {sorted(package_versions.get('Skender.Stock.Indicators', set()))}")

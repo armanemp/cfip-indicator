@@ -5,9 +5,7 @@
     <AssemblyName>CFIP.Decision.Contracts</AssemblyName>
     <RootNamespace>cAlgo</RootNamespace>
     <Nullable>disable</Nullable>
-    <ImplicitUsings>disable</ImplicitUsings>
     <LangVersion>latest</LangVersion>
-    <Deterministic>true</Deterministic>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="../../src/CFIP.Indicator/Core/Math/NumericGuards.cs" Link="Core/Math/NumericGuards.cs" />

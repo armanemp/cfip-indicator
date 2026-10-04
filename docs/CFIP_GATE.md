@@ -855,6 +855,45 @@ P0 must produce:
 | G7 Target-Terminal Truth | PASS + TERMINAL PENDING | WP-00 cannot prove host-only behavior statically |
 | G8 Continuity Truth | PASS | Three canonical files synchronized by this closeout |
 
+# 35.2 P1 / WP-01 closeout — 2026-10-04
+
+**Status:** PASS  
+**Implementation branch:** `phase/p1-wp01-root-build-metadata-2026-10-04`  
+**Baseline HEAD:** `f81bfee89dbbc18324892007c26678cc4d5e8639`
+
+### Root/build audit
+- `CFIP.Indicator.sln` contains exactly the three canonical production projects: Indicator, Contracts, cBot.
+- All 13 project files were inspected for target framework, project references, package references, source inclusion and shared build-property duplication.
+- `Directory.Build.props` is the canonical owner for `Deterministic=true` and `ImplicitUsings=disable`.
+- Duplicate per-project declarations of those shared defaults were removed from the 11 affected net6 projects plus the net8 benchmark's redundant Deterministic declaration.
+- `CFIP.Contracts` retains its intentional `Nullable=enable`; other nullable-disabled projects retain their explicit semantic override.
+- `CFIP.StockIndicators.Benchmark` intentionally retains `net8.0` and `ImplicitUsings=enable`; its dedicated workflow supplies the .NET 8 SDK.
+- `.gitignore` now protects generated benchmark output and common temporary/build artifacts while preserving the intentionally tracked `.vscode/extensions.json`.
+
+### Artifact classification
+- No tracked `bin/`, `obj/`, TestResults, coverage, publish/dist, archive package, log, tmp, backup or generated benchmark-report artifact was present in the actual tree.
+- Active production/build/test/tool files are **KEEP**.
+- Benchmark project and benchmark workflow are **KEEP** because the active OSS benchmark workflow consumes them.
+- `.vscode/extensions.json` is **KEEP** as the sole intentional editor recommendation; the rest of `.vscode/` is ignored.
+- No DELETE/ARCHIVE candidate met the required proof threshold in WP-01; no artifact was removed merely by name.
+
+### Owner / dependency / consumer analysis
+- Shared build defaults: `Directory.Build.props` → every descendant SDK project.
+- Production build authority: the three canonical projects in `CFIP.Indicator.sln`.
+- Indicator source compile harness: `tools/CFIP.Indicator.CI` → canonical Indicator source.
+- Runtime/contract harnesses and Preflight were traced through their active CI commands.
+- OSS benchmark: `.github/workflows/oss-benchmark.yml` → `tools/CFIP.StockIndicators.Benchmark`; generated `benchmark-report.md` is now explicitly ignored.
+- No duplicate production project owner or duplicate ProjectReference was introduced.
+
+### Safety / performance
+No runtime trading logic, thresholds, parameters, contracts, broker mutation, renderer or alert/audio path changed. Centralizing identical MSBuild defaults reduces configuration drift without changing evaluated values. Artifact ignore changes affect repository hygiene only.
+
+### Verification boundary
+The existing accumulated source, runtime, cTrader build, M2, cBot-boundary and single-owner gates remain mandatory. WP-01 additionally requires the F1 root/build metadata checks introduced in `audit_phase_f1_repository_build_dependency_truth.py`.
+
+### Terminal
+No target-terminal behavior changed. Manual terminal acceptance remains unchanged and is not claimed by this repository metadata package.
+
 # 36. Certification
 
 Certification requires:
@@ -898,9 +937,9 @@ Historical documents are evidence/archive only.
 
 **Current phase:** P1
 
-**Current status:** NEXT
+**Current status:** PASS
 
-**Execution unit:** one complete phase per implementation response.
+**Execution unit:** one complete atomic work package per implementation response.
 
 **Last instruction:** never continue from historical phase numbering when it conflicts with the canonical files or current code.
 
@@ -1148,7 +1187,7 @@ For any material code file being changed or flagged:
 
 **Macro phase:** P0
 
-**Executable package:** WP-01 — NEXT
+**Executable package:** WP-02 — NEXT
 
 **Roadmap:** \`docs/CFIP-ROADMAP.md\`
 

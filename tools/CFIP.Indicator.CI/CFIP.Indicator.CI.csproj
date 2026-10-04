@@ -6,9 +6,7 @@
     <RootNamespace>cAlgo</RootNamespace>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <Nullable>disable</Nullable>
-    <ImplicitUsings>disable</ImplicitUsings>
     <LangVersion>latest</LangVersion>
-    <Deterministic>true</Deterministic>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="cTrader.Automate" Version="1.0.21" />
