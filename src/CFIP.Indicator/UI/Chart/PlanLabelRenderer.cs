@@ -31,7 +31,7 @@ namespace cAlgo
 
                 int canonicalLineLeftBar =
                     Math.Max(
-                        0,
+                        1,
                         Math.Min(
                             Bars.Count - 1,
                             lineLeftBar));
@@ -41,7 +41,7 @@ namespace cAlgo
                     text,
                     price,
                     color,
-                    GetCompactPlanLabelAnchorBar(
+                    GetCompactPlanLabelAnchorTime(
                         canonicalLineLeftBar));
             }
             catch (Exception ex)
@@ -58,12 +58,13 @@ namespace cAlgo
             double price,
             Color color,
             bool visible,
-            int labelBar)
+            DateTime labelTime)
         {
             if (!visible ||
                 !IsFinitePositive(price) ||
                 Bars == null ||
-                Bars.Count < 2)
+                Bars.Count < 2 ||
+                labelTime == DateTime.MinValue)
             {
                 RemovePlanLabel(name);
                 return;
@@ -74,7 +75,7 @@ namespace cAlgo
                 text,
                 price,
                 color,
-                labelBar);
+                labelTime);
         }
 
         private void DrawCompactPlanLabel(
@@ -82,25 +83,15 @@ namespace cAlgo
             string text,
             double price,
             Color semanticColor,
-            int labelBar)
+            DateTime labelTime)
         {
             try
             {
                 if (Bars == null ||
                     Bars.Count < 2 ||
-                    !IsFinitePositive(price))
+                    !IsFinitePositive(price) ||
+                    labelTime == DateTime.MinValue)
                     return;
-
-                // The canonical line renderer owns the line geometry.
-                // This renderer owns only the native ChartText object.
-                // labelBar is the RIGHT edge anchor of the visible text.
-                // PlanLabelAnchorCalculator owns the exact one-bar gap.
-                int textBar =
-                    Math.Max(
-                        0,
-                        Math.Min(
-                            Bars.Count - 1,
-                            labelBar));
 
                 double labelPrice =
                     NormalizePrice(price);
@@ -114,12 +105,11 @@ namespace cAlgo
                     as ChartText;
 
                 DateTime expectedTime =
-                    Bars.OpenTimes[textBar];
+                    labelTime;
 
-                // X geometry has one source of truth: the bar-index anchor. Recreate
-                // the same named ChartText only when its current anchor or visual
-                // contract is stale. The replacement is still created exclusively
-                // through the bar-index DrawText overload.
+                // The X coordinate is the actual chart-space point one real
+                // candle width left of the canonical signal-line start.
+                // No bar-index approximation or second pixel/price offset is used.
                 bool recreate =
                     label == null ||
                     (label != null &&
@@ -144,7 +134,7 @@ namespace cAlgo
                         Chart.DrawText(
                             name,
                             text,
-                            textBar,
+                            expectedTime,
                             labelPrice,
                             labelTextColor);
                 }
@@ -154,23 +144,36 @@ namespace cAlgo
 
                 if (recreate)
                 {
+                    double lineX =
+                        Chart.BarIndexToX(
+                            GetPlanLineLeftBar());
+
+                    double labelX =
+                        Chart.TimeToX(
+                            expectedTime);
+
+                    double barWidth =
+                        Math.Abs(
+                            lineX -
+                            Chart.BarIndexToX(
+                                Math.Max(
+                                    0,
+                                    GetPlanLineLeftBar() - 1)));
+
                     Print(
-                        "CFIP SIGNAL LABEL GEOMETRY | {0} | textBar={1} | lineLeft={2} | gapBars={3} | price={4}",
+                        "CFIP SIGNAL LABEL GEOMETRY | {0} | lineX={1:F2} | labelX={2:F2} | gapPx={3:F2} | oneBarPx={4:F2} | Y={5}",
                         name,
-                        textBar,
-                        GetPlanLineLeftBar(),
-                        Math.Max(
-                            0,
-                            GetPlanLineLeftBar() - textBar),
+                        lineX,
+                        labelX,
+                        lineX - labelX,
+                        barWidth,
                         labelPrice.ToString(
                             CultureInfo.InvariantCulture));
                 }
 
-                // Do not assign label.Time here. A stale X anchor is corrected by
-                // recreating the same named ChartText through the bar-index overload;
-                // the Time property is never used as a second movement path.
-                // Y is the exact normalized line price and Center alignment puts
-                // that line through the vertical center of the text object.
+                // The line and label use the exact same normalized Y price.
+                // Center alignment makes the horizontal line pass through the
+                // vertical center of the text glyph area.
                 label.Text =
                     text;
                 label.Y =

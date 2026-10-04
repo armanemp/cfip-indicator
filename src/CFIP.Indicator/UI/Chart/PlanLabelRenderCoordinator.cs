@@ -33,8 +33,8 @@ namespace cAlgo
                 return;
             }
 
-            int labelBar =
-                GetCompactPlanLabelAnchorBar();
+            DateTime labelTime =
+                GetCompactPlanLabelAnchorTime();
 
             PlanLevelVisualState state =
                 BuildPlanLevelVisualState(
@@ -91,7 +91,7 @@ namespace cAlgo
                     level.Price,
                     level.Color,
                     level.Visible,
-                    labelBar);
+                    labelTime);
             }
         }
     }

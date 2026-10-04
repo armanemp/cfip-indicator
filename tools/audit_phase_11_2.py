@@ -47,7 +47,7 @@ require(
 )
 require(
     ROOT / "src/CFIP.Indicator/UI/Chart/PlanLabelRenderCoordinator.cs",
-    r"GetCompactPlanLabelAnchorBar\(\)",
+    r"GetCompactPlanLabelAnchorTime\(\)",
     "canonical compact label anchor owner",
 )
 require(
@@ -60,15 +60,29 @@ require(
     r"double labelPrice\s*=\s*\n\s*NormalizePrice\(price\)",
     "exact-price level-label alignment",
 )
-if re.search(r"Chart\.DrawText\([\s\S]*?expectedTime", LABEL.read_text(encoding="utf-8")):
-    raise SystemExit("canonical signal labels must not use the DateTime DrawText overload")
-if re.search(r"label\.Time\s*=", LABEL.read_text(encoding="utf-8")):
-    raise SystemExit("canonical signal labels must not mutate ChartText.Time after bar-index creation")
 require(
     LABEL,
-    r"Chart\.DrawText\(\s*\n\s*name,\s*\n\s*text,\s*\n\s*textBar,",
-    "bar-index-only canonical label X creation",
+    r"Chart\.DrawText\(\s*\n\s*name,\s*\n\s*text,\s*\n\s*expectedTime,",
+    "chart-space time-based canonical label X creation",
 )
+ANCHOR = ROOT / "src/CFIP.Indicator/UI/Chart/PlanLabelAnchorCalculator.cs"
+require(
+    ANCHOR,
+    r"Chart\.BarIndexToX\(\s*\n\s*canonicalLineLeftBar\)",
+    "canonical line X projection consumed by label anchor",
+)
+require(
+    ANCHOR,
+    r"double targetX\s*=\s*\n\s*lineX\s*-",
+    "one actual rendered bar-width is subtracted from the line start X",
+)
+require(
+    ANCHOR,
+    r"Chart\.XToTime\(\s*\n\s*targetX\)",
+    "projected X resolves to the canonical ChartText DateTime anchor",
+)
+if re.search(r"label\.Time\s*=", LABEL.read_text(encoding="utf-8")):
+    raise SystemExit("canonical signal labels must not mutate ChartText.Time after creation")
 require(LAMP, r'ForegroundColor\s*=\s*Color\.FromArgb', "processing lamp pulse color")
 require(LAMP, r'_processingLampPulseIndex\s*=\s*\(_processingLampPulseIndex \+ 1\) % 6', "processing lamp pulse state")
 require(PANEL_FACTORY, r"CreateProcessingHeartbeatLamp\(\)[\s\S]*?_panelHeaderStack\.AddChild", "lamp header ownership")
