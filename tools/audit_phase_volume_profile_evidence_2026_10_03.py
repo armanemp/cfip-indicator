@@ -99,7 +99,7 @@ check(
 
 check(
     "phase/roadmap continuity is recorded",
-    "VOLUME PROFILE EVIDENCE" in roadmap and
+    "Volume Profile" in roadmap and
     "Volume Profile" in phase
 )
 
