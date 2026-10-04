@@ -40,6 +40,13 @@ namespace CFIP.cBot.Binding
             ChartIndicator match = null;
             int count = 0;
 
+            IndicatorType registeredType =
+                AlgoRegistry.Get(
+                    DisplayName,
+                    AlgoKind.CustomIndicator) as IndicatorType;
+            string registeredProjectFilePath =
+                registeredType?.ProjectFilePath;
+
             foreach (ChartIndicator candidate in robot.ChartIndicators.Custom)
             {
                 if (candidate == null)
@@ -53,10 +60,15 @@ namespace CFIP.cBot.Binding
 
                 bool typeNameMatches =
                     candidate.Type != null &&
-                    string.Equals(
-                        candidate.Type.Name,
-                        TypeName,
-                        StringComparison.Ordinal);
+                    (string.Equals(
+                         candidate.Type.Name,
+                         TypeName,
+                         StringComparison.Ordinal) ||
+                     (!string.IsNullOrWhiteSpace(registeredProjectFilePath) &&
+                      string.Equals(
+                          candidate.Type.ProjectFilePath,
+                          registeredProjectFilePath,
+                          StringComparison.OrdinalIgnoreCase)));
 
                 if (!instanceNameMatches &&
                     !typeNameMatches)
