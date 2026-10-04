@@ -142,7 +142,7 @@ require(
     "compact level labels must use the exact canonical semantic line color",
 )
 require(
-    "CompactPlanLabelFontSize = 10.0" in label_renderer and
+    "CompactPlanLabelFontSize = 11.0" in label_renderer and
     "label.IsBold" in label_renderer and
     "Chart.DrawText(" in label_renderer and
     "Chart.DrawRectangle(" not in label_renderer and

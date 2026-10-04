@@ -13,7 +13,7 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private const double CompactPlanLabelFontSize = 10.0;
+        private const double CompactPlanLabelFontSize = 11.0;
         private void DrawPlanLabel(
             string name,
             string text,

@@ -174,7 +174,7 @@ if "CompactPlanLabelGapBars = 1" not in anchor or "canonicalLineLeftBar -" not i
     raise SystemExit("Plan labels must keep exactly one chart-bar left clearance in the canonical anchor owner")
 if "HorizontalAlignment.Right" not in compact_label_renderer:
     raise SystemExit("Plan labels must terminate at the left-of-line anchor")
-if "CompactPlanLabelFontSize = 10.0" not in labels_renderer:
+if "CompactPlanLabelFontSize = 11.0" not in labels_renderer:
     raise SystemExit("Plan labels must use the canonical readable font size")
 if "OrderVolume(" in server_ladder:
     raise SystemExit("Server TP ladder must use the current relative protection volume API")
