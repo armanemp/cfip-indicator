@@ -152,7 +152,7 @@ if "Chart.DrawText(" not in compact_label_renderer:
     raise SystemExit("level labels must own their native ChartText object")
 if "Chart.DrawRectangle(" in compact_label_renderer:
     raise SystemExit("level labels must remain background-free")
-if "CompactPlanLabelGapBars = 1" not in compact_label_renderer:
+if "CompactPlanLabelGapBars = 1" not in labels:
     raise SystemExit("level labels must keep exactly one chart-bar left clearance")
 if "HorizontalAlignment.Right" not in compact_label_renderer:
     raise SystemExit("level labels must use right-aligned text at the left-of-line anchor")
