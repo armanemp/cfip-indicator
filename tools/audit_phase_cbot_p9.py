@@ -127,7 +127,7 @@ check(
     "plan levels retain canonical 40-bar geometry and semantic text color",
     "CompactPlanLineLengthBars = 40" in line and
     "PlanLinePresentationRule.ResolveThickness(" in line and
-    "GetReadableLabelTextColor(" in labels and
+    "GetReadableLabelTextColor(" in labels
 )
 check(
     "prediction signal line remains thickness one",
