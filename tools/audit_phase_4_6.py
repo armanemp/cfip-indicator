@@ -28,7 +28,7 @@ scoring = read(
 )
 contracts = read("tools/CFIP.Runtime.Contracts/Program.cs")
 contracts_project = read("tools/CFIP.Runtime.Contracts/CFIP.Runtime.Contracts.csproj")
-roadmap = read("docs/ROADMAP.md")
+roadmap = read("docs/CFIP-ROADMAP.md")
 continuation = read("docs/CONTINUATION-STATE.md")
 
 
