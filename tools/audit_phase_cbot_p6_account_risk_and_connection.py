@@ -30,7 +30,7 @@ daily = read("src/CFIP.cBot/Risk/CbotDailyLossGuard.cs")
 intent = read("src/CFIP.Contracts/ExecutionIntent.cs")
 provider = read("src/CFIP.Indicator/Runtime/Provider/CFIPReadOnlyProviderPlan.cs")
 workflow = read(".github/workflows/source-check.yml")
-roadmap = read("docs/ROADMAP.md")
+roadmap = read("docs/CFIP-ROADMAP.md")
 continuation = read("docs/CONTINUATION-STATE.md")
 devlog = read("docs/DEVELOPMENT-LOG.md")
 
