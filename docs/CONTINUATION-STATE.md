@@ -2717,17 +2717,25 @@ dotnet build src/CFIP.Indicator/CFIP.Indicator.csproj --configuration Release
 
 ## 2026-10-04 — Economic News Provider Rate-Limit / Cross-Instance Cache Hardening
 
-Status: **IMPLEMENTATION COMPLETE — verification pending**
+Status: **REPOSITORY VERIFIED — TERMINAL REVALIDATION PENDING**
 
-New target-terminal evidence at 17:20–17:21 showed the expected payload-format diagnostic with an HTML `DOCTYPE` response. This identifies the upstream FairEconomy weekly-export rate-limit response rather than a parser failure.
+Target-terminal evidence at 17:20–17:21 showed the upstream weekly export returning an HTML `DOCTYPE` rate-limit response. The canonical parser correctly rejected that non-calendar payload instead of producing the misleading XML serializer exception.
 
-Implementation on branch `fix/economic-news-shared-cache-rate-limit-2026-10-04`:
+PR #310 merged to `main` as `b99b62746332bbc9c0348c1a1bbf7538dd109cae`.
+
+Implementation:
 - hourly minimum refresh boundary replaces the former five-minute floor;
 - browser-compatible request identity is used for the provider;
 - the canonical Indicator news client persists shared feed metadata and the validated raw JSON payload in `LocalStorageScope.Type`;
 - recent shared attempts suppress duplicate refreshes across Indicator instances;
 - shared successful payloads are adopted by M1/M5/M15 instances without another upstream request;
-- the shared-storage reload cadence is bounded to 15 seconds and is not part of the per-tick calculation path.
+- the shared-storage reload cadence is bounded to 15 seconds and is not part of the per-tick calculation path;
+- the canonical news audit is aligned with these ownership boundaries.
+
+Repository verification on the merged code is complete:
+- Source/Architecture: PASS;
+- Runtime Acceptance: PASS;
+- cTrader Compile: PASS.
 
 Target-terminal acceptance remains required to prove a successful JSON fetch, shared adoption across instances, and absence of repeated upstream requests.
 
