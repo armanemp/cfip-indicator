@@ -14,8 +14,8 @@
 
 # Current execution state
 
-**Atomic package:** WP-04 — Historical isolation  
-**Status:** IN PROGRESS
+**Atomic package:** WP-05 — Preflight  
+**Status:** NEXT
 
 **Scope:** old roadmap isolation, obsolete phase/tooling dependency migration, KEEP/MIGRATE/ARCHIVE/DELETE proof.
 
@@ -1639,7 +1639,7 @@ For non-production files, classify whether they are active build/test/audit infr
 
 # 20. Current continuation lock
 
-WP-00, WP-01, WP-02 and WP-03 are PASS. WP-04 is the only executable package and is IN PROGRESS. Do not start WP-05 or any later package until WP-04 closes with dependency, deletion/archive and regression evidence.
+WP-00 through WP-04 are PASS. WP-05 is the only executable package and is NEXT.
 
 
 ### WP-03 closeout — Canonical control plane
@@ -1652,3 +1652,24 @@ ROADMAP/LIST/GATE authority, WORKFLOW continuity and README ownership wording we
 
 ## Permanent workflow requirement — Local command handoff
 Every Atomic Work Package must identify all required user-local commands explicitly: exact command, working directory/environment, when to run, expected success signal, and whether output must be returned. Local verification is never implied by CI.
+
+### WP-04 closeout — Historical control-plane isolation — 2026-10-04
+
+**Status:** PASS
+**PR:** #284
+**Implementation head:** `3853f3d9708a7b378e8f61edeefb800a52898ee6`
+**Merge commit on main:** `2e98a4b4cd27dd8b083ee8aac1437cf1a3c6271e`
+
+Closed the superseded active roadmap dependency without changing production trading/runtime logic. Active tooling and continuity checks now use the canonical control plane; historical continuity checks read the archived roadmap where required. The obsolete `docs/ROADMAP.md` authority was isolated under `docs/archive/ROADMAP-LEGACY-2026-10-04.md`.
+
+Verification on the exact final implementation head:
+- Source/Architecture: PASS — run #4365
+- Runtime Acceptance: PASS — run #4174
+- cTrader Compile: PASS — run #4358
+- Volume Profile continuity audit: PASS after canonical-roadmap wording alignment
+- Smart Separated Signal Arrows continuity audit: PASS after correcting the audit to use its phase/continuation documentation owner
+- Main branch verified at merge commit `2e98a4b4cd27dd8b083ee8aac1437cf1a3c6271e`
+
+No production trading logic, public strategy threshold, broker authority or MTF contract was changed.
+
+**Next:** WP-05 — Preflight.
