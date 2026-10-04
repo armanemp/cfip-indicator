@@ -28,7 +28,7 @@ def read(path: Path) -> str:
 def project_refs(path: Path) -> list[str]:
     root = ET.fromstring(read(path))
     return [
-        (path.parent / node.attrib["Include"]).resolve().relative_to(ROOT).as_posix()
+        (path.parent / node.attrib["Include"].replace("\\", "/")).resolve().relative_to(ROOT).as_posix()
         for node in root.iter()
         if node.tag.endswith("ProjectReference") and "Include" in node.attrib
     ]
