@@ -277,3 +277,16 @@ Mapping for the upcoming provider migration:
 - requested live management actions → `CFIP.Contracts.ManagementCommand`
 
 P2 must expose these canonical Contracts read-only from the Indicator. cBot must never reconstruct them from chart objects or private Indicator state. After P2/P3 parity, the temporary internal models can be reduced or removed as their callers are migrated.
+
+
+## Universal engineering invariants
+
+The universal standard in `docs/ROADMAP.md` §0.6 is normative for this architecture. In particular:
+- platform-specific code stays at the boundary;
+- domain rules are deterministic and side-effect free unless their name/contract explicitly denotes lifecycle orchestration;
+- every canonical semantic has one owner and downstream consumers consume its output;
+- state, identity, time, units and lifecycle boundaries are explicit;
+- performance optimizations must preserve a reference semantic path;
+- tests and audits protect the current contract, while historical audits are never executable policy;
+- broker mutation exists only in the cBot execution boundary;
+- no M2/2-minute production timeframe may re-enter any layer.

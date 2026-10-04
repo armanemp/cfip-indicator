@@ -111,6 +111,114 @@ startup/attachment/rebind، panel freshness، MTF display، arrows/lines/labels�
 فقط بعد از F20: observation، drift، statistical safety switch، controlled calibration و آماده‌سازی cloud analysis از مسیر contract فعلی.
 **Gate:** هر تغییر production measurement-driven و governed باشد.
 
+
+
+## 0.6 Universal Engineering & Quality Standard — MANDATORY FOR ALL PHASES
+
+This section is a permanent project-wide gate. It applies to every production file, core rule, analyzer, adapter, contract, UI surface, cBot component, audit, test and document.
+
+### A. Architecture / ownership
+- Single owner / single source of truth for every behavior, state, formula, threshold, presentation, event, sound, persistence and execution decision.
+- No consumer-side recomputation of canonical semantics.
+- No parallel fallback that can produce a different answer; compatibility shims must be explicit, bounded and removable.
+- Dependencies flow inward: platform adapters at the edge; domain rules/contracts remain platform-neutral where practical.
+- Dependency direction must not form cycles; abstractions exist only when they remove real coupling, not for decoration.
+- Partial classes are host-compatibility units, never separate engines.
+- Every public parameter has one owner, one default, one range, one unit and one documented effect.
+
+### B. Coding / API / naming
+- Nullable/reference state is explicit; no unexplained null-forgiving or sentinel magic values.
+- Names describe domain meaning, not implementation accidents.
+- One responsibility per method/class; methods should be deterministic unless explicitly lifecycle-bound.
+- No hidden I/O, broker mutation, chart mutation or global state inside pure calculation rules.
+- No magic numbers, duplicate constants, implicit unit conversions or unexplained casts.
+- Exceptions are not control flow for expected market-state conditions.
+- Logging/error messages carry enough context to diagnose symbol, timeframe, scenario/position identity and revision without leaking secrets.
+- Remove dead locals, unreachable branches, obsolete comments and misleading names in the same change.
+
+### C. Numerical / market-data safety
+- Explicit finite-value validation for every external/indicator-derived numeric boundary.
+- Explicit units for price, pips, ticks, ATR multiples, percentages, bars and milliseconds.
+- Rounding/normalization occurs only at the canonical boundary appropriate to the broker/domain.
+- Closed-bar truth is never silently replaced by live/intrabar truth.
+- Current Bid/Ask is never treated as historical closed-bar data.
+- Time uses one canonical representation internally (UTC/offset-aware where required) and explicit conversion at presentation/platform boundaries.
+- Boundary tests cover zero, negative, minimum, maximum, missing, stale, NaN and Infinity cases.
+
+### D. Concurrency / lifecycle / state
+- State machines have explicit legal transitions and terminal/recovery semantics.
+- Async work is cancellation-aware and cannot update disposed UI/components.
+- Event subscriptions have one registration owner and deterministic unsubscription.
+- Timers have bounded cadence and cannot multiply after reinitialization.
+- Restart/reconnect/rebind are first-class test cases, not exceptional afterthoughts.
+- Idempotency keys are stable and scoped to the real causal identity.
+- Broker-confirmed state is authoritative over optimistic local state.
+
+### E. Performance
+- No synchronous file/network/database I/O on calculation or UI hot paths.
+- No repeated full-history or full-MTF rebuild when incremental/cached work is semantically safe.
+- Avoid per-tick/per-bar allocations and chart-object churn unless measured and justified.
+- Cache ownership, invalidation and freshness are explicit.
+- UI updates are change-aware and throttled where appropriate.
+- Performance changes require before/after evidence and must preserve semantic parity.
+
+### F. Testing / verification
+- Every new rule gets deterministic boundary tests at its canonical owner.
+- Every bug fix gets a regression reproducer before/with the fix.
+- Tests cover happy path, invalid input, boundary, stale/replay, duplicate, restart and failure/recovery where relevant.
+- Static audits verify architecture contracts; runtime tests verify behavior; compile verifies build truth; terminal acceptance verifies host-only behavior.
+- No CI audit may silently encode a superseded product contract. Historical audits must be marked historical or updated to the current owner/contract.
+- A green test suite does not permit claiming terminal behavior that was not observed in cTrader.
+
+### G. Security / operational safety
+- No secrets, credentials, account identifiers or private tokens in source, logs, tests or docs.
+- External input is validated at trust boundaries.
+- Broker mutation is fail-closed and centralized in the cBot execution owner.
+- Risk controls cannot be bypassed by UI toggles, stale state, retries or recovery paths.
+- Audit logs are diagnostic evidence, not a second policy engine.
+- Dependencies are pinned/controlled and reviewed for unnecessary surface area.
+
+### H. Observability / diagnostics
+- Important state transitions have structured diagnostic context with stable event identity.
+- Metrics distinguish decision, actionability, delivery, execution request, broker confirmation, protection and outcome.
+- Diagnostic telemetry never changes strategy behavior.
+- Logs are bounded, rate-limited and safe for long-running terminals.
+- Recovery paths expose the reason and authoritative state used for the recovery decision.
+
+### I. Documentation / governance
+- Current contracts live in one canonical document/location; old material is historical and explicitly non-authoritative.
+- Every phase records exact scope, owner, files, root cause, changed behavior, removed duplication, verification, limitations and operator action.
+- Parameters, enums, status vocabulary, identity/version rules and MTF roles cannot silently drift between code/docs/audits.
+- Roadmap, architecture, acceptance matrix, development log and continuation state must agree before phase close.
+- No phase may be marked COMPLETE when a required gate is pending; use IMPLEMENTED / VERIFICATION-PENDING instead.
+
+### J. UX / chart / panel
+- Presentation consumes canonical semantic snapshots; UI never invents business meaning.
+- One visual object owner per behavior; stale-object cleanup is symmetric with creation.
+- Text, color, glyph, position and geometry contracts are centralized.
+- Layout is responsive to narrow/large chart/panel dimensions and does not depend on incidental chart viewport boundaries.
+- User-facing status vocabulary is consistent across panel, alerts, chart and cBot state.
+- Accessibility/readability: contrast, font size, clipping, overlap and attachment are explicitly verified.
+
+### K. Git / CI / release discipline
+- One phase branch per work unit; focused commits; no unrelated drive-by changes.
+- PR description states root cause, scope, invariants and verification.
+- Main must remain buildable; no knowingly broken intermediate merge.
+- Required CI gates are Source/Architecture, Runtime Acceptance, cTrader Compile/Build and relevant focused audits.
+- Release artifacts are reproducible; generated outputs are not hand-edited production source.
+- Before merge, compare against current main and confirm no unrelated file drift.
+
+### L. Product-quality / trading-system standard
+- Accuracy, opportunity coverage, risk control and latency are optimized together; no blind tightening that simply reduces signal count.
+- No tuning solely from in-sample anecdotes; changes require controlled evidence and OOS/replay where applicable.
+- OB/FVG, WaveTrend, divergence, structure and MTF evidence must retain provenance and cannot silently become duplicate votes.
+- M15/M5/M1 role separation is invariant unless a future roadmap phase explicitly changes and re-certifies it.
+- Current-market and future-pending scenarios remain semantically distinct.
+- Signal → plan → alert → contract → cBot → broker → protection → outcome must remain traceable by stable identity.
+
+### M. Phase closure gate
+A phase is closed only when: source audit PASS; focused regression PASS; relevant runtime/build PASS; no unresolved P0/P1 introduced; duplicate/dead path cleanup PASS; performance review recorded; docs synchronized; exact commit/PR recorded; operator action stated; and any terminal-only evidence is explicitly marked pending rather than implied.
+
 ## 0.3 Defect / Risk Gate Catalog
 
 ### Repository / Build — R001..R010

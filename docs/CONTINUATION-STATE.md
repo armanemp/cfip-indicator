@@ -2628,3 +2628,17 @@ Current continuation: this consolidated branch carries realtime/live execution u
 
 
 - 2026-10-04 smart trend arrow recovery: MTF trend direction/strength is independent of ActionableNow/DecisionEntryAllowed; one canonical lifecycle renders the 9-level arrows and M1 remains a Circle precision marker.
+
+
+## 2026-10-04 — Standardization Gate Added
+
+The project-wide engineering standard is now part of the canonical roadmap and applies to every future phase. It covers architecture/ownership, coding/API/naming, numerical and market-data safety, concurrency/lifecycle, performance, testing/verification, security/operational safety, observability, documentation/governance, UX/chart/panel, Git/CI/release discipline and trading-system quality. Future phases must use these gates in addition to their domain-specific gates.
+
+Continuation contract for the next chat:
+- Start from current `main` and do not recreate the roadmap.
+- Work exactly one complete phase per message.
+- First active implementation phase is F1 unless a newly discovered P0/P1 requires containment first.
+- Never reintroduce M2/2-minute.
+- Preserve M15 canonical decision/reference, M5 trigger/entry precision and M1 optional confirmation.
+- Preserve Indicator=analysis/signal and cBot=broker mutation architecture.
+- If a CI/audit contract is stale, repair the canonical audit owner rather than weakening production behavior.

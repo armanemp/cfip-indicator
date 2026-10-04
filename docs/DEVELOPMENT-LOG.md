@@ -3959,3 +3959,10 @@ Implementation:
 - the final trade geometry remains constrained by direction, structural validity, spread, risk, RR, target obstacles, target spacing, actionability and broker preflight.
 
 The older wording that described M15 as the execution analysis clock is superseded by this multi-timeframe contract. M15 remains the canonical signal/reference identity where traceability/history contracts require it, but the analysis itself is simultaneous across the complete aligned timeframe set.
+
+
+## 2026-10-04 — Universal Engineering Standardization
+
+Added a permanent project-wide quality standard to the canonical roadmap and architecture. The standard now gates all future work across architecture, coding, API/naming, numerical safety, lifecycle/concurrency, performance, testing, security, observability, documentation, UX/chart/panel, Git/CI/release and trading-system quality. No phase can close while these gates or required evidence are missing.
+
+No trading strategy threshold or broker behavior was changed by this documentation/contract update.
