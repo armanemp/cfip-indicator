@@ -113,5 +113,28 @@ namespace cAlgo
                     ? 0
                     : value;
         }
+        internal static DateTime ClosedBarBoundaryReference(
+            Bars bars,
+            int closedIndex,
+            DateTime fallback)
+        {
+            if (bars == null ||
+                closedIndex < 0 ||
+                closedIndex >= bars.Count - 1)
+                return fallback;
+
+            DateTime open =
+                bars.OpenTimes[closedIndex];
+
+            DateTime nextOpen =
+                bars.OpenTimes[closedIndex + 1];
+
+            if (nextOpen <= open)
+                return fallback;
+
+            return nextOpen;
+        }
+
+
     }
 }
