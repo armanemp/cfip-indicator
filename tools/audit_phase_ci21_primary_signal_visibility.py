@@ -33,7 +33,7 @@ renderer = read("src/CFIP.Indicator/UI/Chart/ParallelOpportunityRenderer.cs")
 execution_tf = read("src/CFIP.Indicator/Core/Math/ExecutionTimeframePolicy.cs")
 runtime = read("tools/CFIP.Runtime.Contracts/Program.cs")
 workflow = read(".github/workflows/source-check.yml")
-roadmap = read("docs/ROADMAP.md")
+roadmap = read("docs/CFIP-ROADMAP.md")
 continuation = read("docs/CONTINUATION-STATE.md")
 devlog = read("docs/DEVELOPMENT-LOG.md")
 
