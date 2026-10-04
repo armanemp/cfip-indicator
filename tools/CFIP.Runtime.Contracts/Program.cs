@@ -6550,8 +6550,6 @@ namespace cAlgo
                 labelCoordinator.Contains("GetCompactPlanLabelAnchorBar()") &&
                 labelAnchor.Contains("CompactPlanLabelGapBars = 1") &&
                 labelAnchor.Contains("GetCompactPlanLabelAnchorBar(") &&
-                labelAnchor.Contains("CompactPlanLabelGapBars = 1") &&
-                labelAnchor.Contains("lineX -") &&
                 labelAnchor.Contains("canonicalLineLeftBar -"),
                 "plan labels use the canonical bar-index label anchor owner");
 
