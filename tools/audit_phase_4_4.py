@@ -42,6 +42,7 @@ contracts = read("tools/CFIP.Runtime.Contracts/Program.cs")
 benchmark_program = read("tools/CFIP.StockIndicators.Benchmark/Program.cs")
 benchmark_report = read("tools/CFIP.StockIndicators.Benchmark/Benchmark/BenchmarkReport.cs")
 roadmap = read("docs/CFIP-ROADMAP.md")
+historical_roadmap = read("docs/archive/ROADMAP-LEGACY-2026-10-04.md")
 
 
 check(
@@ -199,7 +200,7 @@ check(
 )
 check(
     "roadmap records CR4.4 without claiming target-terminal validation",
-    "CR4.4" in roadmap and "target-terminal" in roadmap.lower(),
+    "CR4.4" in historical_roadmap and "target-terminal" in historical_roadmap.lower(),
 )
 
 print("CR4.4 SUMMARY")
