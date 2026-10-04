@@ -18,7 +18,7 @@ for api in MUTATIONS:
 for source_name, source in (("CFIPPreflightBot.cs", bot), ("CFIPPreflightProbeIndicator.cs", probe)):
     for token in ("System.Reflection","GetType(","Invoke(","ChartObjects","Chart.Draw","File.","LocalStorage","HttpClient","WebSocket","static "):
         if token in source: errors.append(f"{source_name}: forbidden transport/mechanism token: {token}")
-for token in ("Indicators.GetIndicator<CFIPPreflightProbeIndicator>()","Indicators.GetIndicator<CFIPIndicator>(","_probe.Probe.LastValue","EnableAutoTrading = false","EnableAutomaticOrders = false","EnableAggressiveAutoEntry = false","AutoProtectBrokerPositions = false","CFIP PREFLIGHT RESULT"):
+for token in ("Indicators.GetIndicator<CFIPPreflightProbeIndicator>()","Indicators.GetIndicator<CFIPIndicator>(","_probe.Probe.LastValue","EnableAutoTrading = false","EnableAutomaticOrders = false","EnableAggressiveAutoEntry = false","AutoProtectBrokerPositions = false","CFIP PREFLIGHT RESULT","MaxProbeAgeSeconds","probeHealthy",'_result = "BLOCKED"'):
     if token not in bot: errors.append(f"CFIPPreflightBot.cs missing required token: {token}")
 for token in ("[Output(\"Probe\")]","public int Revision","public string Scope","public DateTime LastCalculatedUtc","public DateTime FirstCalculatedUtc"):
     if token not in probe: errors.append(f"CFIPPreflightProbeIndicator.cs missing required token: {token}")
