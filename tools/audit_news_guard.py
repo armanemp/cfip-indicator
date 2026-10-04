@@ -46,9 +46,14 @@ required = {
             "EconomicNewsFeedCoordinator.CompleteFailure(",
             "_economicNewsRequestInFlight",
             "_economicNewsRequestGeneration",
+        ],
+    "src/CFIP.Indicator/Trading/Intelligence/EconomicNewsCalendarSharedState.cs":
+        [
             "LocalStorageScope.Type",
             "EconomicNewsSharedStateSchema",
             "PersistSharedEconomicNewsState(",
+            "TryAdoptSharedEconomicNewsSnapshot(",
+            "PublishEconomicNewsSnapshot(",
         ],
     "src/CFIP.Indicator/Trading/Intelligence/EconomicNewsFeedCoordinator.cs":
         [
