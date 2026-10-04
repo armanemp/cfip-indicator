@@ -15,9 +15,9 @@
 
 **Macro phase:** P2 — Ownership / Single-Source / Dead-Code Closure  
 **Atomic package:** WP-05 — Preflight  
-**Status:** NEXT
+**Status:** PASS + TERMINAL PENDING
 
-WP-04 is the current executable package. The macro phase remains P2 while atomic packages advance independently.
+WP-05 repository implementation is complete and merged. Target-terminal acceptance remains the blocking external boundary. The macro phase remains P2 while atomic packages advance independently.
 
 # 1. Mission
 

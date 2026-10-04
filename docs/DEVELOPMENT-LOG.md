@@ -4016,3 +4016,17 @@ No production trading/runtime logic, strategy threshold, broker authority or MTF
 Next package: **WP-05 — Preflight**.
 
 Operator action after the merged closeout: pull canonical `main`; local execution commands remain limited to the project's pull/compile handoff when applicable.
+
+
+## 2026-10-04 — WP-05 Preflight Hardening
+
+Status: **PASS + TERMINAL PENDING**.
+
+PR #286 merged to `main` as `f43e83bac3d54e90d18e419320c3a5d4ca32d087`. The no-trade preflight cBot now fails closed when the probe is stale, loses scope identity, or observes invalid probe/quote data. The static audit enforces the fail-closed contract.
+
+Verification on implementation head `eb01b6faa716988018d90af2e690020cb8feaf68`:
+- Source/Architecture #4370: PASS;
+- Runtime Acceptance #4179: PASS;
+- cTrader Compile #4363: PASS.
+
+Target-terminal evidence remains genuinely pending. No broker mutation was introduced. WP-06 must not start until the target-terminal acceptance boundary is satisfied.
