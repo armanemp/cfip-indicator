@@ -509,3 +509,16 @@ P0 → WP-00
 یک package کامل را از شروع تا closeout انجام بده.
 
 **No partial work. No parallel logic. No second owner. No temporary workaround. No skipped files.**
+
+## Local command execution protocol
+
+Whenever an Atomic Work Package requires any action on the user's local machine, the assistant MUST explicitly provide the exact commands to run, in executable order, before asking the user to run them. This applies to every phase/package and every environment-dependent verification, including Git synchronization, local builds, tests, audits, cTrader/cBot compilation, runtime probes, generated artifacts, and final acceptance checks.
+
+For each required local command, the package closeout MUST state:
+1. the exact command;
+2. the directory/environment in which it must be run;
+3. when it must be run (before/after which change or verification);
+4. the expected success signal;
+5. whether the user must return the output to the assistant.
+
+The assistant MUST NOT assume a local command was executed merely because repository/CI checks passed. If local execution is required for the package, it remains an explicit package step until the user reports the result.
