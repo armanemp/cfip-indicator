@@ -109,9 +109,28 @@ namespace cAlgo
                     ResolveCanonicalPlanLineColor(
                         semanticColor);
 
+                DateTime expectedTime =
+                    Bars.OpenTimes[textBar];
+
                 ChartText label =
                     Chart.FindObject(name)
                     as ChartText;
+
+                // A ChartText object created by an older presentation contract
+                // can retain stale X/alignment geometry in the terminal. Recreate
+                // it when its canonical anchor/alignment contract is not exact.
+                // This remains inside the single label owner and avoids any
+                // secondary geometry or renderer.
+                if (label != null &&
+                    (label.Time != expectedTime ||
+                     label.HorizontalAlignment != HorizontalAlignment.Right ||
+                     label.VerticalAlignment != VerticalAlignment.Center ||
+                     label.FontSize != CompactPlanLabelFontSize ||
+                     label.IsBold))
+                {
+                    Chart.RemoveObject(name);
+                    label = null;
+                }
 
                 if (label == null)
                 {
@@ -125,7 +144,7 @@ namespace cAlgo
                         Chart.DrawText(
                             name,
                             text,
-                            Bars.OpenTimes[textBar],
+                            expectedTime,
                             labelPrice,
                             labelTextColor);
                 }
