@@ -3210,7 +3210,7 @@ label_anchor_code = label_anchor.read_text(encoding="utf-8")
 if "CompactPlanLabelGapBars = 1" not in label_anchor_code:
     raise SystemExit("Plan label gap must be owned by the canonical anchor calculator")
 if "targetX = lineX -" not in label_anchor_code:
-    raise SystemExit("Plan label anchor must be exactly one bar before line start")
+    raise SystemExit("Plan label anchor must use exactly one actual chart-bar width before line start")
 if "HorizontalAlignment.Right" not in compact_label_code:
     raise SystemExit("Plan labels must terminate at the left-of-line anchor")
 
