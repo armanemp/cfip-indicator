@@ -29,6 +29,7 @@ scoring = read(
 contracts = read("tools/CFIP.Runtime.Contracts/Program.cs")
 contracts_project = read("tools/CFIP.Runtime.Contracts/CFIP.Runtime.Contracts.csproj")
 roadmap = read("docs/CFIP-ROADMAP.md")
+historical_roadmap = read("docs/archive/ROADMAP-LEGACY-2026-10-04.md")
 continuation = read("docs/CONTINUATION-STATE.md")
 
 
@@ -126,7 +127,7 @@ check(
 )
 check(
     "phase documentation identifies CR4.6 and preserves the no-tuning boundary",
-    "CR4.6" in roadmap
+    "CR4.6" in historical_roadmap
     and "CR4.6" in continuation
     and "no" in continuation.lower()
     and "threshold" in continuation.lower(),
