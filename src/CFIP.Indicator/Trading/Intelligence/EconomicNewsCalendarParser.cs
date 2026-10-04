@@ -174,18 +174,28 @@ namespace cAlgo
                         relevantCurrencies);
                 }
             }
-            else if (trimmed.StartsWith(
-                       "<",
-                       StringComparison.Ordinal))
+            else if (IsWeeklyEventsXmlPayload(trimmed))
             {
                 XmlSerializer serializer =
                     new XmlSerializer(
                         typeof(CfipEconomicCalendar));
 
-                CfipEconomicCalendar parsed =
-                    serializer.Deserialize(
-                        new StringReader(payload))
-                    as CfipEconomicCalendar;
+                CfipEconomicCalendar parsed;
+                try
+                {
+                    parsed =
+                        serializer.Deserialize(
+                            new StringReader(payload))
+                        as CfipEconomicCalendar;
+                }
+                catch (Exception ex)
+                {
+                    throw new InvalidOperationException(
+                        "NEWS FEED XML PARSE FAILURE | prefix=" +
+                        BuildPayloadPrefix(trimmed) +
+                        " | exception=" +
+                        ex.Message);
+                }
 
                 if (parsed == null ||
                     parsed.Events == null)
@@ -255,6 +265,25 @@ namespace cAlgo
             return index == 0
                 ? payload
                 : payload.Substring(index);
+        }
+
+        private static bool IsWeeklyEventsXmlPayload(
+            string payload)
+        {
+            if (string.IsNullOrEmpty(payload))
+                return false;
+
+            const string root = "<weeklyevents";
+
+            return payload.StartsWith(
+                       root,
+                       StringComparison.OrdinalIgnoreCase) ||
+                   payload.StartsWith(
+                       "<?xml",
+                       StringComparison.OrdinalIgnoreCase) &&
+                   payload.IndexOf(
+                       root,
+                       StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
         private static string BuildPayloadPrefix(
