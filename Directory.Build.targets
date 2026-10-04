@@ -1,5 +1,7 @@
 <Project>
-  <Target Name="CFIP_OverrideAlgoOutputIdentity" BeforeTargets="_ExtractMetadata">
+  <Target Name="CFIP_OverrideAlgoOutputIdentity"
+          BeforeTargets="_ExtractMetadata"
+          Condition="'$(AssemblyName)' == 'CFIPIndicator' Or '$(AssemblyName)' == 'CFIPExecutionBot'">
     <PropertyGroup>
       <_AlgoFileName>$(AlgoName).algo</_AlgoFileName>
       <_AlgoFilePath>$(OutDir)$(_AlgoFileName)</_AlgoFilePath>
