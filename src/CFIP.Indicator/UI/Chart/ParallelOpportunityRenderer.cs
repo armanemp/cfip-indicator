@@ -380,7 +380,7 @@ namespace cAlgo
                     _opportunityCandidates[i];
 
                 if (candidate == null ||
-                    IsSameAsLivePlan(candidate))
+                    IsSameAsCanonicalPlan(candidate))
                     continue;
 
                 current.Add(
