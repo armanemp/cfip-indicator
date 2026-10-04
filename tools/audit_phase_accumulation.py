@@ -205,7 +205,7 @@ if "GetCanonicalSignalPanelStatus()" not in g4_overview_rows:
 parameter_source = "\n".join(
     p.read_text(encoding="utf-8") for p in PARAM_ROOT.glob("*.cs")
 )
-EXPECTED_CURRENT_PARAMETERS = 548
+EXPECTED_CURRENT_PARAMETERS = 545
 if len(re.findall(r"\[Parameter\s*\(", parameter_source)) != EXPECTED_CURRENT_PARAMETERS:
     raise SystemExit("public parameter contract changed unexpectedly")
 
@@ -215,6 +215,6 @@ print("Smart server TP + break-even ownership: PASS")
 print("Local TP/BE mutation yields to broker-owned advanced protection: PASS")
 print("All signal/plan level lines: Solid")
 print("Plan Level Line Thickness: canonical 1px mapping for all configured values")
-print("All compact level labels: white text inside canonical line-colored filled boxes")
+print("All compact level labels: white text with no background")
 print(f"Public parameter contract: {EXPECTED_CURRENT_PARAMETERS}")
 print("Signal lifecycle / recent calibration / broker telemetry: PASS")
