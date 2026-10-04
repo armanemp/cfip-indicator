@@ -33,6 +33,7 @@ micro = read("src/CFIP.Indicator/Planning/TradePlan/Sources/M1MicroTargetSource.
 liquidity = read("src/CFIP.Indicator/Planning/TradePlan/Sources/SupplyDemandLiquidityTargetSource.cs")
 prep = read("src/CFIP.Indicator/Runtime/Calculation/CalculationPreparation.cs")
 closed_stage = read("src/CFIP.Indicator/Runtime/Calculation/CalculationClosedBar.cs")
+stage = read("src/CFIP.Indicator/Runtime/Calculation/CalculationStageIsolation.cs")
 workflow = read(".github/workflows/source-check.yml")
 roadmap = read("docs/ROADMAP.md")
 continuation = read("docs/CONTINUATION-STATE.md")
@@ -99,8 +100,10 @@ check(
 
 check(
     "closed-bar analysis consumes the prepared canonical MTF context",
-    "RunClosedBarAnalysisStage(" in closed_stage and
-    "MtfClosedContext mtf" in prep
+    "RunClosedBarAnalysisStage(" in stage and
+    "ProcessNewClosedBar(" in stage and
+    "MtfClosedContext mtf" in prep and
+    "ProcessNewClosedBar(" in closed_stage
 )
 
 check(
