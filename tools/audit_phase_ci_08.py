@@ -38,7 +38,7 @@ alert_engine = read("src/CFIP.Indicator/Trading/Alerts/AlertEngine.cs")
 runtime = read("tools/CFIP.Runtime.Contracts/Program.cs")
 decision_runtime = read("tools/CFIP.Decision.Contracts/Program.cs")
 workflow = read(".github/workflows/source-check.yml")
-roadmap = read("docs/ROADMAP.md")
+roadmap = read("docs/CFIP-ROADMAP.md")
 continuation = read("docs/CONTINUATION-STATE.md")
 
 check(
