@@ -75,7 +75,7 @@ contract_project = read(
     "tools/CFIP.Planning.Contracts/CFIP.Planning.Contracts.csproj"
 )
 workflow = read(".github/workflows/source-check.yml")
-roadmap = read("docs/ROADMAP.md")
+roadmap = read("docs/CFIP-ROADMAP.md")
 
 check(
     "TargetSelector delegates coherent path selection",
