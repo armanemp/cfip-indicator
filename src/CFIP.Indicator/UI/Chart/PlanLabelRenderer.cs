@@ -14,6 +14,7 @@ namespace cAlgo
     public partial class CFIPIndicator : Indicator
     {
         private const double CompactPlanLabelFontSize = 11.0;
+
         private void DrawPlanLabel(
             string name,
             string text,
@@ -90,10 +91,10 @@ namespace cAlgo
                     !IsFinitePositive(price))
                     return;
 
-                // The line owns geometry. The label is only native ChartText.
-                // No rectangle, panel or marker is created for the label.
-                // labelBar is the exact RIGHT anchor of the label.
-                // PlanLabelAnchorCalculator already applied the one-bar gap.
+                // The canonical line renderer owns the line geometry.
+                // This renderer owns only the native ChartText object.
+                // labelBar is the RIGHT edge anchor of the visible text.
+                // PlanLabelAnchorCalculator owns the exact one-bar gap.
                 int textBar =
                     Math.Max(
                         0,
@@ -104,7 +105,6 @@ namespace cAlgo
                 double labelPrice =
                     NormalizePrice(price);
 
-                // Use the exact same materialized color as the line owner.
                 Color labelTextColor =
                     ResolveCanonicalPlanLineColor(
                         semanticColor);
@@ -116,24 +116,23 @@ namespace cAlgo
                     Chart.FindObject(name)
                     as ChartText;
 
-                // A ChartText object created by an older presentation contract
-                // can retain stale X/alignment geometry in the terminal. Recreate
-                // it when its canonical anchor/alignment contract is not exact.
-                // This remains inside the single label owner and avoids any
-                // secondary geometry or renderer.
-                if (label != null &&
-                    (label.Time != expectedTime ||
-                     label.HorizontalAlignment != HorizontalAlignment.Right ||
-                     label.VerticalAlignment != VerticalAlignment.Center ||
-                     label.FontSize != CompactPlanLabelFontSize ||
-                     label.IsBold))
-                {
-                    Chart.RemoveObject(name);
-                    label = null;
-                }
+                // X geometry is created exclusively with the bar-index overload.
+                // Never recreate/move the object through the DateTime overload or
+                // by assigning ChartText.Time: doing so can remap the visual X
+                // coordinate independently of the canonical bar geometry.
+                bool recreate =
+                    label == null ||
+                    label.Time != expectedTime ||
+                    label.HorizontalAlignment != HorizontalAlignment.Right ||
+                    label.VerticalAlignment != VerticalAlignment.Center ||
+                    label.FontSize != CompactPlanLabelFontSize ||
+                    label.IsBold;
 
-                if (label == null)
+                if (recreate)
                 {
+                    if (label != null)
+                        Chart.RemoveObject(name);
+
                     ChartObject existing =
                         Chart.FindObject(name);
 
@@ -144,7 +143,7 @@ namespace cAlgo
                         Chart.DrawText(
                             name,
                             text,
-                            expectedTime,
+                            textBar,
                             labelPrice,
                             labelTextColor);
                 }
@@ -152,15 +151,14 @@ namespace cAlgo
                 if (label == null)
                     return;
 
+                // Do not assign label.Time here. The bar-index-created object
+                // must remain anchored by its canonical bar coordinate.
                 label.Text =
                     text;
-                label.Time =
-                    Bars.OpenTimes[textBar];
                 label.Y =
                     labelPrice;
                 label.Color =
-                    ResolveCanonicalPlanLineColor(
-                        semanticColor);
+                    labelTextColor;
                 label.FontSize =
                     CompactPlanLabelFontSize;
                 label.FontFamily =
@@ -170,7 +168,6 @@ namespace cAlgo
                         : PanelFontFamily;
                 label.IsBold =
                     false;
-
                 label.HorizontalAlignment =
                     HorizontalAlignment.Right;
                 label.VerticalAlignment =
@@ -178,7 +175,7 @@ namespace cAlgo
                 label.IsInteractive =
                     false;
 
-                // Clean up every legacy label shape deterministically.
+                // Remove every legacy companion shape deterministically.
                 Chart.RemoveObject(name + "_BOX");
                 Chart.RemoveObject(name + "_ANCHOR");
             }
