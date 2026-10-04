@@ -124,6 +124,7 @@ for match in re.findall(r'<Compile\s+Include="([^"]+)"', runtime_text):
 # 5. Build matrix truth: CI must build the three active boundaries and the
 # source-linked Indicator compile harness, plus runtime/contract harnesses.
 ci = read(ROOT / ".github" / "workflows" / "ci-build.yml")
+runtime_ci = read(ROOT / ".github" / "workflows" / "runtime-acceptance.yml")
 required_ci = (
     "src/CFIP.Contracts/CFIP.Contracts.csproj",
     "src/CFIP.cBot/CFIP.cBot.csproj",
@@ -131,7 +132,8 @@ required_ci = (
     "tools/CFIP.Runtime.Contracts/CFIP.Runtime.Contracts.csproj",
 )
 for item in required_ci:
-    if item not in ci:
+    matrix = runtime_ci if item == "tools/CFIP.Runtime.Contracts/CFIP.Runtime.Contracts.csproj" else ci
+    if item not in matrix:
         fail(f"CI build matrix missing {item}")
 
 # 6. Tracked generated output must not become production source.
