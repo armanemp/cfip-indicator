@@ -254,10 +254,10 @@ check(
 )
 
 check(
-    "roadmap records CI-14 historical closeout and current certification state",
-    "CI-14" in roadmap and
-    "## 2.0.1 — Current certification state" in roadmap and
-    ("CI-17A" in roadmap or "CI-17" in roadmap)
+    "historical CI sequencing does not override canonical roadmap",
+    "Historical roadmaps" in roadmap and
+    "CFIP-LIST.md" in roadmap and
+    "CFIP_GATE.md" in roadmap
 )
 
 if errors:
