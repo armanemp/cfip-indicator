@@ -46,6 +46,13 @@ require(
     "latest-candle plan-line endpoint",
 )
 require(
+    LINE,
+    r"Chart\.DrawTrendLine\(\s*\n\s*name,\s*\n\s*expectedStartTime,",
+    "canonical DateTime/OpenTime signal-line creation",
+)
+if "line.Time1 =" in LINE.read_text(encoding="utf-8") or "line.Time2 =" in LINE.read_text(encoding="utf-8"):
+    raise SystemExit("canonical signal lines must not mutate Time1/Time2 after DateTime-native creation")
+require(
     ROOT / "src/CFIP.Indicator/UI/Chart/PlanLabelRenderCoordinator.cs",
     r"GetCompactPlanLabelAnchorTime\(\)",
     "canonical compact label anchor owner",
@@ -62,7 +69,7 @@ require(
 )
 require(
     LABEL,
-    r"Chart\.DrawText\(\s*\n\s*name,\s*\n\s*text,\s*\n\s*canonicalLabelBar,",
+    r"Chart\.DrawText\(\s*\n\s*name,\s*\n\s*text,\s*\n\s*expectedTime,",
     "chart-space time-based canonical label X creation",
 )
 ANCHOR = ROOT / "src/CFIP.Indicator/UI/Chart/PlanLabelAnchorCalculator.cs"
