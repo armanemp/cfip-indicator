@@ -26,6 +26,7 @@ contracts = read("tools/CFIP.Runtime.Contracts/Program.cs")
 contracts_project = read("tools/CFIP.Runtime.Contracts/CFIP.Runtime.Contracts.csproj")
 workflow = read(".github/workflows/source-check.yml")
 roadmap = read("docs/CFIP-ROADMAP.md")
+historical_roadmap = read("docs/archive/ROADMAP-LEGACY-2026-10-04.md")
 continuation = read("docs/CONTINUATION-STATE.md")
 review = read("docs/CLAUDE-REVIEW-REMEDIATION-ROADMAP.md")
 phase = read("docs/PHASE-CR6-9-F3-ORPHAN-MANAGED-POSITION-PROTECTION.md")
@@ -110,8 +111,8 @@ check(
 
 check(
     "F3 docs advance to Prompt 7 G1",
-    "CR6.9 / F3 closeout" in roadmap and
-    "CR7.1 / G1" in roadmap and
+    "CR6.9 / F3 closeout" in historical_roadmap and
+    "CR7.1 / G1" in historical_roadmap and
     "CR7.1 / G1" in continuation and
     "CR7.1 / G1" in review and
     "Next phase: CR7.1 / G1" in phase
