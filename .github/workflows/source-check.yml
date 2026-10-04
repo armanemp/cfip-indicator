@@ -19,6 +19,7 @@ jobs:
       - run: python tools/audit_runtime_ui.py
       - run: python tools/audit_parameter_semantics.py
       - run: python tools/audit_project_integrity.py
+      - run: python tools/audit_mtf_contract.py
       - run: python tools/audit_execution_capacity_semantics.py
       - run: python tools/audit_phase_accumulation.py
       - run: python tools/audit_optimization_readiness.py

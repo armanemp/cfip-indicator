@@ -1,3 +1,12 @@
+# 2026-10-04 — Canonical Forensic Remediation Reset
+
+Status: **ACTIVE**
+
+- Accidental M2 / 2-minute timeframe is excluded from active main and now explicitly prohibited by source audit.
+- Canonical MTF: M1/M5/M15/M30/H1/H4/D1/W1; M15 decision/reference, M5 trigger/entry precision, M1 optional confirmation.
+- Canonical remediation sequence: **F0 → F21** in docs/ROADMAP.md.
+- One complete vertical-slice phase per message; no phase closes without focused verification, regression/build evidence and docs closeout.
+
 ## 2026-10-04 — Smart Separated Signal Arrows
 
 Status: VERIFIED COMPLETE — PR #252 merged to main; target-terminal visual acceptance remains the final manual boundary.
@@ -61,7 +70,7 @@ Status: VERIFIED COMPLETE — merged to `main` via PR #249, merge commit `fb7dee
 Completed:
 - Signal/plan lines are fixed to Solid + 1px.
 - The canonical span is exactly 40 chart bars from the latest candle; legacy `FullWidthLevelLines` cannot expand signal geometry.
-- Compact level labels sit at the exact line price, use the canonical semantic line color with no background, and remain exactly one chart bar left of the line start with 10px regular-weight text.
+- Compact level labels sit at the exact line price, use white text with no background, and remain left of the line start with a deterministic minimum three-bar horizontal gap.
 - Active Plan and WATCH/Reaction directional markers share the canonical stacked-arrow lifecycle.
 - The user's Release-build CS0219 warning from the dead `PanelMainRenderer.buttonMargin` local was removed.
 - Dedicated Drawing audit, Source/Architecture, Runtime Acceptance and cTrader Compile all passed on the final implementation head before merge.
@@ -84,7 +93,7 @@ Status: VERIFIED COMPLETE — implemented directly on `main`.
 Closure:
 - One canonical directional-arrow renderer now owns active Plan/WATCH/Reaction arrows.
 - Signal/plan lines are Solid, one-pixel and finite 40-bar geometry.
-- Labels are native background-free ChartText using white 10px regular-weight text and exactly one chart bar of left clearance from the line start.
+- Labels are white regular-weight text inside filled line-colored boxes attached to the exact line endpoint.
 - User-reported Release-build CS0219 warning for dead `PanelMainRenderer.buttonMargin` was removed.
 - Source/Architecture, Runtime Acceptance and cTrader Compile all passed on code head `a3cd97f715ed6b6b91599b79fe3fa42c82690e1c`.
 

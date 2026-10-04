@@ -9,15 +9,15 @@
 
 - Repository: armanemp/cfip-indicator
 - Branch: main
-- Baseline commit: 8e061bfb70fcac356de190d8057d59246e22313a
+- Baseline commit: 7a9672774f54c4f9a23c72aa41472dd2b9cd66a8
 - Audit date: 2026-10-04
-- Total repository files: 1113
+- Total repository files: 1202
 - Directory entries: 82
-- Markdown documents: 204
-- C# files: 731
+- Markdown documents: 210
+- C# files: 732
 - Python audit/tool files: 155
 - Project files: 12
-- Production Indicator C# files: 667
+- Production Indicator C# files: 668
 - Production cBot C# files: 22
 - Contracts C# files: 22
 - Active production boundary: CFIP.Indicator + CFIP.Contracts + CFIP.cBot
@@ -26,6 +26,7 @@
 - M15: canonical decision/execution reference; M5: trigger/entry precision; M1: optional confirmation
 - Smart arrows: one nine-level canonical strength ladder; M1 is a Circle precision marker
 - Final execution target: zero broker mutation in Indicator; cBot is the sole broker execution authority
+- **M2-Timeframe prohibition:** active production MTF = M1/M5/M15/M30/H1/H4/D1/W1 only; 2-minute M2 is forbidden.
 
 ## 2. Audit scope
 

@@ -1,3 +1,10 @@
+## 2026-10-04 — Canonical Forensic Remediation Reset + M2-Timeframe Removal
+
+- Confirmed M2/2-minute implementation is not present in active main production source; it exists only on historical/unmerged phase/m2-timeframe-* branches.
+- Added a source-level regression guard so TimeFrame.Minute2 and M2-specific precision owners cannot return to production.
+- Established F0→F21 as the canonical one-complete-phase-per-message remediation sequence covering repository/build, ownership, MTF/time, numerical integrity, analysis, decision, planning, contracts, alerts, chart/panel, cBot, lifecycle, history, performance, replay, terminal and release certification.
+- Refreshed master-audit baseline to main f42b582060891977e5c90b4cb62bd30ccd135999: 1202 total tree entries, 732 C#, 668 Indicator C#, 22 cBot C#, 22 Contracts C#, 210 Markdown, 155 Python and 12 project files.
+
 ## 2026-10-04 — Smart Separated Signal Arrows
 
 Status: VERIFIED COMPLETE — PR #252 merged to main; target-terminal visual acceptance remains the final manual boundary.

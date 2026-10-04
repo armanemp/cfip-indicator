@@ -1,3 +1,173 @@
+# 0. Canonical Forensic Remediation Program — 2026-10-04
+
+> این بخش تنها مرجع فعال ترتیب اجرای بازبینی و اصلاح است. محتوای قدیمی M0–M45 / CI / CR / MTF پایین همین فایل فقط سابقه و mapping است و منبع دوم roadmap نیست.
+>
+> **قرارداد اجرایی:** هر پیام = یک فاز کامل و بسته. هیچ فاز نیمه‌تمامی به فاز بعد منتقل نمی‌شود. هر فاز باید root-cause، owner، تغییر، حذف مسیر موازی، regression، build/audit، performance، مستندسازی و closeout کامل داشته باشد.
+>
+> **تایم‌فریم M2 دو دقیقه‌ای ممنوع است.** مجموعه معتبر MTF فقط: M1 / M5 / M15 / M30 / H1 / H4 / D1 / W1؛ D1/W1 فقط context اختیاری. M15 مرجع canonical تصمیم/اجرا، M5 لایه trigger/entry precision و M1 confirmation اختیاری است.
+
+## 0.1 Global Definition of Done
+
+- root cause evidence-based مشخص و owner canonical تعیین شده باشد.
+- فقط همان owner اصلاح شود؛ duplicate calculation/render/audio/execution/contract ساخته نشود.
+- تمام caller/consumerهای مرتبط به owner متصل باشند.
+- dead/fallback/legacy مسیر رقیب حذف یا غیرقابل‌استفاده شده باشد.
+- null/zero/negative/NaN/Infinity/stale/open-vs-closed/index/timezone boundary بررسی شده باشد.
+- focused regression + relevant global audits + build پاس شده باشند.
+- هیچ parameter/threshold مخفی یا جدید بدون ضرورت معماری اضافه نشده باشد.
+- full-chain sanity: Analysis → Decision → Signal → Alert → cBot → Broker → Protection/Lifecycle → Outcome/History.
+- performance و code cleanliness همان فاز بررسی شده باشد.
+- ROADMAP + DEVELOPMENT-LOG + CONTINUATION-STATE در همان closeout به‌روز باشند.
+- target-terminal acceptance فقط با evidence واقعی PASS تلقی شود.
+- progress دقیق، files، commit/PR، verification و operator action ثبت شود.
+
+## 0.2 Canonical Phase Sequence
+
+### F0 — M2-Timeframe Eradication + Baseline Truth
+حذف کامل M2 دو دقیقه‌ای از active production surface، تثبیت baseline واقعی main، افزودن regression guard.
+**Gate:** هیچ M2 token/owner/provider/cache/panel/contract در production؛ MTF set فقط M1/M5/M15/M30/H1/H4/D1/W1؛ baseline با main برابر.
+
+### F1 — Repository / Build / Dependency Truth
+ممیزی solution/project/package/TargetFramework/ProjectReference/assembly/algo names، orphan/generated files، Release/Debug و CI drift.
+**Gate:** build matrix روشن، warning unresolved = 0، project/file boundary کامل.
+
+### F2 — Single-Owner / No-Duality / Dead-Code Closure
+ممیزی ownerهای محاسبه، state، decision، visual، audio، alerts، execution، lifecycle، persistence و auditهای موازی.
+**Gate:** one concept → one owner؛ duplicate method/parameter/helper و fallback رقیب برای scope = 0.
+
+### F3 — Price / Time / Closed-Bar / MTF Integrity
+bar index، closed index، current quote، cache freshness، age semantics، UTC/DST، Chart-TF independence، M15/M5/M1 roles.
+**Gate:** no look-ahead، no off-by-one، no open/closed mixing، deterministic MTF fixtures.
+
+### F4 — Numerical / Formula / Boundary Integrity
+ATR/ADX/EMA/volatility، pip/price conversions، rounding، normalization، divide-by-zero، NaN/Infinity، hidden clamps/constants.
+**Gate:** invalid-input suite کامل، تمام safety bounds نام‌گذاری و قابل‌توجیه.
+
+### F5 — Indicators / Structure / Swing / FVG / OB / Divergence / WaveTrend / Volume
+native/OSS adapters، swing/structure/retest/liquidity، FVG، OB، divergence، WaveTrend، volume-profile/VWAP فعال.
+**Gate:** هر feature یک detector/lifecycle owner و provenance دقیق داشته باشد.
+
+### F6 — Evidence Independence / Confluence / Regime
+double-counting، correlation groups، trend/momentum/context، OB/FVG، WaveTrend/divergence، live pressure، regime transitions.
+**Gate:** evidence مستقل فقط یک‌بار vote کند و provenance تا decision ردیابی شود.
+
+### F7 — Decision / Score / Confidence / Actionability
+Direction → score → quality → confidence → gates، semantics های WATCH/CONFIRMED/READY/BLOCKED/RESTRICTED، range handling.
+**Gate:** panel/visual/cBot تصمیم را بازسازی نکنند؛ block reason canonical باشد.
+
+### F8 — Entry / Trigger / Plan / SL / TP / RR / Trailing
+entry source، M5 trigger/retest/breakout، structural SL، TP1..TP4، RR، target obstacles/opposing zones، trailing.
+**Gate:** wrong-side target، TP regression، SL widening، RR-by-rounding و trailing-backtracking غیرممکن/آزمون‌شده.
+
+### F9 — Scenario / Identity / Contract Integrity
+SignalId/ScenarioId/ExecutionId/Broker identity، ActionableNow/FutureOrderReady، stale revision، idempotency، codec/version.
+**Gate:** duplicate execution، stale revision mutation و current/future semantic collision = 0.
+
+### F10 — Alert / Popup / Sound / Email
+event creation/queue/cooldown/dedup/retry/delivery، blocked-alert silence، popup lifecycle، audio ownership و email acknowledgement.
+**Gate:** یک causal event یک delivery؛ retry فقط طبق contract؛ blocked signals هیچ side effect نداشته باشند.
+
+### F11 — Chart Rendering / Arrow / Line / Label
+SignalVisualSnapshot، canonical arrow stack، M1 precision marker، plan lines 40 bars/1px/solid، exact-price labels، stale-object lifecycle.
+**Gate:** یک signal = یک visual set؛ no stale/duplicate chart objects؛ renderer business logic را محاسبه نکند.
+
+### F12 — Panel / Startup / Responsiveness
+async initialization، panel lifecycle، MTF lamp/text parity، footer/header/alerts، render throttling، hide/show، narrow widths، no I/O on UI hot path.
+**Gate:** measured first-use latency، no duplicate handlers/controls، no partial-stuck state.
+
+### F13 — Indicator ↔ Contracts ↔ cBot Boundary
+read-only indicator provider، cBot binding/rebind/restart، contract completeness، zero broker mutation in Indicator.
+**Gate:** execution authority = 1؛ cBot analytics را بازسازی نکند؛ missing Indicator = fail-closed.
+
+### F14 — cBot Preflight / Risk / Capacity / Broker
+account/connection، symbol/volume/margin، spread/session/news/daily loss، capacity، broker normalization، idempotency.
+**Gate:** unsafe requests never reach broker؛ migration risk is non-expanding.
+
+### F15 — Protection / Lifecycle / Recovery / Restart / Reconnect
+position/pending adoption، protection ordering، partial TP/BE/trailing، emergency paths، reconnect/restart reconciliation.
+**Gate:** broker-confirmed state authoritative؛ duplicate recovery = 0؛ protective mutation never widens risk.
+
+### F16 — History / Persistence / Outcome / Calibration
+90-day retention/archive، identity/dedup، local/device memory، buffered persistence، outcome attribution، calibration separation.
+**Gate:** no duplicate/lost history؛ no hot-path file I/O؛ calibration cannot silently mutate live policy.
+
+### F17 — Performance / Allocation / Cache / Hot Path
+startup، Calculate by stage، tick cadence، closed-bar rebuild، MTF/zone cache، allocation، chart-object churn، persistence queue.
+**Gate:** measured before/after؛ optimized path semantically identical to reference path.
+
+### F18 — Replay / OOS / Ablation / Signal-Quality Proof
+deterministic replay، live-vs-replay parity، walk-forward/OOS، ablation، confidence calibration، range quality، missed opportunities، MAE/MFE.
+**Gate:** هیچ tuning بدون root-cause و controlled evidence.
+
+### F19 — Target-Terminal Acceptance
+startup/attachment/rebind، panel freshness، MTF display، arrows/lines/labels، popup/sound، scenarios، broker lifecycle، restart/reconnect.
+**Gate:** evidence per scenario؛ static CI هرگز جای terminal acceptance نیست.
+
+### F20 — Final Repository Cleanup / Certification
+حذف legacy docs/anchors/audits پس از mapping، merge auditهای تکراری، parameter baseline، dependency/license، reproducible Release.
+**Gate:** P0/P1 unresolved = 0؛ no duplicate owner؛ no forbidden M2 timeframe؛ no broker mutation outside cBot.
+
+### F21 — Controlled Production Observation / Governed Calibration
+فقط بعد از F20: observation، drift، statistical safety switch، controlled calibration و آماده‌سازی cloud analysis از مسیر contract فعلی.
+**Gate:** هر تغییر production measurement-driven و governed باشد.
+
+## 0.3 Defect / Risk Gate Catalog
+
+### Repository / Build — R001..R010
+R001 stale source, R002 orphan production file, R003 missing build inclusion, R004 package/version drift, R005 duplicate reference, R006 generated artifact dependency, R007 compiler warning, R008 Debug/Release divergence, R009 CI command drift, R010 stale baseline.
+
+### Architecture / Ownership — D001..D015
+D001 duplicate owner, D002 duplicate calculation, D003 duplicate threshold, D004 duplicate state machine, D005 duplicate renderer, D006 duplicate audio owner, D007 duplicate execution, D008 duplicate contract, D009 consumer recomputation, D010 dead fallback, D011 partial-class ownership ambiguity, D012 duplicated helper, D013 obsolete audit acting as rule, D014 UI deciding, D015 cBot inventing analysis.
+
+### Time / Data / MTF — T001..T012
+T001 wrong timeframe, T002 hidden Chart-TF dependency, T003 M2 reintroduction, T004 open/closed mixing, T005 future leakage, T006 index error, T007 stale cache, T008 source-age error, T009 timezone/DST drift, T010 M15/M5/M1 role drift, T011 D1/W1 optionality leak, T012 quote used as closed-bar truth.
+
+### Numerical — N001..N014
+N001 division by zero, N002 NaN, N003 Infinity, N004 negative distance, N005 zero distance, N006 overflow, N007 unit/pip mismatch, N008 hidden clamp, N009 unreachable parameter bound, N010 duplicate constant, N011 inconsistent rounding, N012 normalization mismatch, N013 RR rounding distortion, N014 insufficient ATR/history.
+
+### Analysis — A001..A015
+A001 indicator duplication, A002 structure duplication, A003 swing plateau/index error, A004 FVG geometry drift, A005 FVG lifecycle drift, A006 OB disagreement, A007 OB quality inconsistency, A008 WaveTrend direction mismatch, A009 divergence inversion, A010 volume provenance loss, A011 liquidity double-count, A012 correlated evidence double-count, A013 regime transition lag, A014 live pressure overriding structure, A015 stale evidence after invalidation.
+
+### Decision / Signal — S001..S012
+S001 visual/decision direction mismatch, S002 panel/execution score mismatch, S003 downstream confidence recompute, S004 lost block reason, S005 range promotion, S006 valid low-risk/high-RR opportunity hidden, S007 M5 becomes competing clock, S008 M1 creates direction, S009 status-vocabulary overlap, S010 stale signal survives, S011 scenario collapse, S012 signal identity collision.
+
+### Planning / RR — P001..P015
+P001 wrong-side SL, P002 wrong-side TP, P003 TP regression, P004 SL widening, P005 RR by rounding, P006 ignored target obstacle, P007 ignored opposing zone, P008 broken TP cumulative chain, P009 overactive trailing, P010 trailing backtracking, P011 stale plan, P012 consumer changes entry source, P013 duplicate reward floor, P014 duplicate risk amount, P015 wrong distance unit.
+
+### Contract / Scenario — C001..C010
+C001 identity collision, C002 revision replay, C003 stale scenario accepted, C004 future-as-current, C005 current-as-pending, C006 pending identity drift, C007 codec mismatch, C008 missing provenance, C009 cBot reconstructs analytics, C010 duplicate execution.
+
+### Alert / Audio — L001..L010
+L001 duplicate alert, L002 duplicate sound, L003 blocked side effect, L004 early cooldown commit, L005 duplicate email, L006 causality loss on retry, L007 revision changes identity, L008 stale popup, L009 startup double cue, L010 Indicator/cBot audio overlap.
+
+### UI / Chart / Panel — U001..U018
+U001 stale object, U002 duplicate marker, U003 duplicate line, U004 duplicate label, U005 label-price mismatch, U006 detached label, U007 wrong glyph, U008 arrow overlap, U009 line span error, U010 width overflow, U011 footer clipping, U012 hide/show latency, U013 duplicate panel render, U014 UI recomputation, U015 blocking I/O, U016 lamp/text mismatch, U017 duplicate primary alert row, U018 startup partial freeze.
+
+### cBot / Broker / Lifecycle — B001..B018
+B001 Indicator mutation, B002 second executor, B003 no preflight, B004 risk bypass, B005 capacity mismatch, B006 margin mismatch, B007 volume mismatch, B008 spread/session bypass, B009 daily-loss bypass, B010 non-authoritative broker state, B011 duplicate restart execution, B012 orphan protection, B013 pending cleanup collision, B014 cooldown-as-ack, B015 risk-widening protection, B016 connection misreport, B017 wrong account scope, B018 local/cloud re-arm.
+
+### History / Persistence — H001..H010
+H001 duplicate outcome, H002 missing outcome, H003 wrong position identity, H004 partial TP accounting error, H005 BE accounting error, H006 retention drift, H007 hot-path persistence, H008 shutdown flush loss, H009 restart duplication, H010 calibration contamination.
+
+### Performance — X001..X010
+X001 repeated MTF rebuild, X002 duplicate indicator call, X003 excessive allocation, X004 chart churn, X005 synchronous persistence, X006 synchronous network/news, X007 panel repaint storm, X008 timer storm, X009 cache-miss amplification, X010 startup dependency waterfall.
+
+### Governance / Documentation — G001..G010
+G001 roadmap contradiction, G002 continuation contradiction, G003 historical doc treated as current, G004 parameter drift, G005 stale audit contract, G006 phase false-close, G007 terminal PASS claimed without terminal evidence, G008 missing operator action, G009 duplicate audit coverage, G010 obsolete planning material treated as instruction.
+
+## 0.4 Severity
+
+P0 = safety/architecture break: external broker mutation in Indicator, duplicate executor, wrong-side protection, look-ahead, risk-control bypass, M2 production reintroduction.
+P1 = core correctness: decision/signal mismatch, TP/SL regression, stale scenario execution, duplicate side effect, wrong MTF mapping.
+P2 = product correctness/performance: panel stale/slow, visual mismatch, cache waste, history attribution.
+P3 = hygiene/documentation: stale docs, duplicate audit naming, dead non-runtime planning material.
+
+## 0.5 Single-Phase Protocol
+
+Read کامل مسیر → Inventory فایل/caller/test/audit/doc → Root-cause → Repair canonical owner → Remove duplicate/dead path → Focused verification → Full-chain sanity → Performance check → Docs closeout → Exact progress/verification/operator action → معرفی فقط یک فاز بعد.
+
+هر فاز در صورت بزرگ بودن فقط به یک vertical slice کوچک‌تر با خروجی کامل شکسته می‌شود؛ هیچ «باقی‌مانده برای بعد» داخل همان slice قابل‌پذیرش نیست.
+
 ## 2026-10-04 — Native No-Box Signal Label Refinement
 
 The previous filled ChartRectangle label was rejected visually: it did not resemble native cTrader chart presentation and could make text appear outside/offset as zoom and price-range geometry changed. Official cTrader API documentation confirms ChartText is the native chart-bound text object with explicit horizontal/vertical anchoring, while rectangles are independent chart shapes. The canonical presentation is therefore changed to ChartText only, right-aligned against the line-start anchor, with the legacy rectangle explicitly removed. A single tiny native Circle ChartIcon marks the exact line/label junction; no panel/box is created. This minimizes chart objects and avoids a second price/time geometry surface.
@@ -127,7 +297,7 @@ Status: VERIFIED COMPLETE — merged to `main` via PR #249, merge commit `fb7dee
 Completed:
 - Signal/plan lines are fixed to Solid + 1px.
 - The canonical span is exactly 40 chart bars from the latest candle; legacy `FullWidthLevelLines` cannot expand signal geometry.
-- Compact level labels sit at the exact line price, use the canonical semantic line color with no background, and remain exactly one chart bar left of the line start with 10px regular-weight text.
+- Compact level labels sit at the exact line price, use white text with no background, and remain left of the line start with a deterministic minimum three-bar horizontal gap.
 - Active Plan and WATCH/Reaction directional markers share the canonical stacked-arrow lifecycle.
 - The user's Release-build CS0219 warning from the dead `PanelMainRenderer.buttonMargin` local was removed.
 - Dedicated Drawing audit, Source/Architecture, Runtime Acceptance and cTrader Compile all passed on the final implementation head before merge.
@@ -3118,7 +3288,7 @@ Mxx+1 — Title
 
 # 18. Current Starting Point
 
-**Canonical implementation start: M2 — Repository Hygiene / Dead Code / Ownership, with the CBOT separation track active; current execution migration phase is CBOT-P4E.**
+**Canonical implementation start: F0 — M2-Timeframe Eradication + Baseline Truth. The CBOT separation track remains active under its own migration gates.**
 
 M0 — Adoption / Freeze / Baseline, M1 — Full Forensic Audit and CBOT-P0 — Activation / Boundary Lock are **VERIFIED COMPLETE**.
 
