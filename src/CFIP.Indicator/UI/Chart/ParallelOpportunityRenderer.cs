@@ -306,11 +306,10 @@ namespace cAlgo
         private bool IsSameAsCanonicalPlan(
             TradeOpportunityCandidate candidate)
         {
-            // A parallel candidate that represents the already-canonical plan
-            // must never materialize a second line/label set, regardless of
-            // whether the plan is pre-trade or a live position.
             if (_plan == null ||
-                candidate == null)
+                candidate == null ||
+                candidate.CreatedM5 != _plan.CreatedM5 ||
+                candidate.Direction != _plan.Direction)
                 return false;
 
             double tolerance =
@@ -322,19 +321,59 @@ namespace cAlgo
                     0.10);
 
             return
-                _plan.Direction ==
-                candidate.Direction &&
+                SameCanonicalLevel(
+                    candidate.Entry,
+                    _plan.Entry,
+                    tolerance) &&
+                SameCanonicalLevel(
+                    candidate.IdealEntry,
+                    _plan.IdealEntry,
+                    tolerance) &&
+                SameCanonicalLevel(
+                    candidate.Trigger,
+                    _plan.EntryTrigger,
+                    tolerance) &&
+                SameCanonicalLevel(
+                    candidate.Stop,
+                    _plan.Stop,
+                    tolerance) &&
+                SameCanonicalLevel(
+                    candidate.Tp1,
+                    _plan.Tp1,
+                    tolerance) &&
+                SameCanonicalLevel(
+                    candidate.Tp2,
+                    _plan.Tp2,
+                    tolerance) &&
+                SameCanonicalLevel(
+                    candidate.Tp3,
+                    _plan.Tp3,
+                    tolerance) &&
+                SameCanonicalLevel(
+                    candidate.Tp4,
+                    _plan.Tp4,
+                    tolerance);
+        }
+
+        private bool SameCanonicalLevel(
+            double candidatePrice,
+            double canonicalPrice,
+            double tolerance)
+        {
+            bool candidateFinite =
+                IsFinitePositive(candidatePrice);
+            bool canonicalFinite =
+                IsFinitePositive(canonicalPrice);
+
+            if (!candidateFinite ||
+                !canonicalFinite)
+                return !candidateFinite &&
+                    !canonicalFinite;
+
+            return
                 Math.Abs(
-                    _plan.Entry -
-                    candidate.Entry) <=
-                tolerance &&
-                Math.Abs(
-                    _plan.Stop -
-                    candidate.Stop) <=
-                tolerance &&
-                Math.Abs(
-                    _plan.Tp1 -
-                    candidate.Tp1) <=
+                    candidatePrice -
+                    canonicalPrice) <=
                 tolerance;
         }
 
