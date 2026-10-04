@@ -19,7 +19,7 @@ Implementation merged to `main` as `d3e5f163659fcd72636a52d3033423c69ee10f5a`.
 Canonical contract:
 - `PlanLineRenderer` owns signal-line geometry and the final materialized line color.
 - `PlanLabelAnchorCalculator` is the sole owner of the horizontal gap and places the visible end of right-aligned label text exactly one chart bar before the canonical line start.
-- `PlanLabelRenderer` is the sole native `ChartText` label owner; labels are regular-weight, exact-price and background-free.
+- `PlanLabelRenderer` is the sole native `ChartText` label owner; labels are regular-weight, exact-price and background-free. Canonical X creation uses only the bar-index `DrawText` overload; `ChartText.Time` is never assigned after creation, preventing a second DateTime X-geometry path.
 - Label text uses exactly the same materialized color as its corresponding line; `Color.White` is not permitted for canonical line labels.
 - Pending, parallel and prediction label paths reuse the same renderer/anchor contract.
 
