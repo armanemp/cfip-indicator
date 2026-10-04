@@ -170,7 +170,12 @@ if "Chart.DrawRectangle(" in compact_label_renderer:
 if "semanticColor" not in compact_label_renderer or "label.Color =" not in compact_label_renderer:
     raise SystemExit("Plan label renderer must apply the exact semantic line color")
 anchor = read("UI/Chart/PlanLabelAnchorCalculator.cs")
-if "CompactPlanLabelGapBars = 1" not in anchor or "targetX = lineX -" not in anchor:
+if (
+    "CompactPlanLabelGapBars = 1" not in anchor or
+    "Chart.BarIndexToX(" not in anchor or
+    "double targetX =\n                lineX -" not in anchor or
+    "Chart.XToTime(" not in anchor
+):
     raise SystemExit("Plan labels must keep exactly one chart-bar left clearance in the canonical anchor owner")
 if "HorizontalAlignment.Right" not in compact_label_renderer:
     raise SystemExit("Plan labels must terminate at the left-of-line anchor")
