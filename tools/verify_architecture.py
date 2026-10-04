@@ -3052,8 +3052,8 @@ for required_scenario in ("TREND_UP", "TREND_DOWN", "RANGE", "REGIME_SHIFT"):
     if f'"{required_scenario}"' not in fixture_code:
         raise SystemExit(f"Track 19 benchmark scenario missing: {required_scenario}")
 canonical_roadmap = Path("docs/CFIP-ROADMAP.md").read_text(encoding="utf-8")
-if "P18 — Replay / OOS / Ablation / Signal-Quality Proof" not in canonical_roadmap:
-    raise SystemExit("Canonical roadmap must retain the governed benchmark/replay phase")
+if "F18 — Replay / OOS / Ablation / Signal-Quality Proof" not in canonical_roadmap:
+    raise SystemExit("Canonical roadmap must retain the governed F18 benchmark/replay phase")
 
 if PRODUCTION_PACKAGE not in benchmark_project:
     raise SystemExit("Production OSS package must also be covered by the benchmark")
