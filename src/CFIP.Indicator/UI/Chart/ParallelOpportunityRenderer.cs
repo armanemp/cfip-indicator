@@ -292,7 +292,7 @@ namespace cAlgo
             string text,
             double price,
             Color color,
-            int labelBar)
+            DateTime labelTime)
         {
             RenderCompactPlanLabel(
                 name,
