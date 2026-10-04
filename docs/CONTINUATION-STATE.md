@@ -2739,3 +2739,23 @@ Repository verification on the merged code is complete:
 
 Target-terminal acceptance remains required to prove a successful JSON fetch, shared adoption across instances, and absence of repeated upstream requests.
 
+
+
+## 2026-10-04 — Cross-Instance Alert/Audio Dedup Revalidation
+
+Status: **IMPLEMENTATION COMPLETE — VERIFICATION PENDING**
+
+New terminal evidence from 17:45 exposed a second-order alert transport defect: the exact same canonical BOS event/Alert ID was queued and sound-delivered by M5 and then M15 20 seconds later.
+
+The existing queue idempotency was instance-local, so it correctly prevented duplicates inside one queue but could not prevent two Indicator instances from independently accepting the same causal event.
+
+PR branch: `fix/cross-instance-alert-dedup-2026-10-04`.
+Implementation:
+- `AlertEventDedupCoordinator` provides the single shared causal-event claim boundary with a bounded five-minute lifetime and process-wide synchronization;
+- `AlertEventDedupState` persists claims through `LocalStorageScope.Type` and reloads them from the timer path;
+- `AlertEngine` claims before the canonical queue and releases the claim when queue acceptance fails;
+- buffered persistence flushes the shared dedup state with the existing Type-storage owner;
+- deterministic runtime contracts verify first claim, duplicate rejection, persisted cross-instance rejection and bounded re-arm;
+- the existing queue-level pending idempotency remains as the lower transport safety guard.
+
+Target-terminal revalidation remains required before DEF-P1-003 can be closed and before CI-17 alert/audio acceptance is marked PASS.
