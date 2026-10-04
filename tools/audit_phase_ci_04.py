@@ -157,7 +157,7 @@ check(
 
 check(
     "explicit restriction alerts are no longer accidentally dead",
-    'key.StartsWith(\n                                    "RESTRICT|"' in alert_engine and
+    'normalizedKey.StartsWith(\n                                    "RESTRICT|"' in alert_engine and
     'message.StartsWith(\n                                    "CFIP ENTRY BLOCKED"' in alert_engine and
     "restrictionAlert =" in alert_engine and
     "blockedCandidateAlert" in alert_engine and
