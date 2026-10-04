@@ -773,3 +773,8 @@ Canonical planning, inventory and acceptance authority was normalized across ROA
 
 ### Permanent workflow rule — local command handoff
 For every Atomic Work Package, if local execution is required, the package MUST explicitly give the user the exact commands, working directory/environment, execution point, expected success signal, and whether output must be returned. CI success never substitutes for a required local verification. This requirement applies to Git sync, build/test/audit, cTrader/cBot compile/runtime probes, artifact generation, and final acceptance.
+
+
+### Historical continuity registry — preserved canonical evidence
+
+- **CBOT-P5 historical continuity:** broker reconciliation/protection recovery remains represented by the canonical cBot/Indicator boundary, with detailed implementation evidence retained in docs/CONTINUATION-STATE.md and docs/DEVELOPMENT-LOG.md. This registry preserves the historical audit marker without restoring obsolete roadmap authority.
