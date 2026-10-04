@@ -72,14 +72,18 @@ check(
     "runtime contracts must cover queue duplicate suppression and post-delivery rearming",
 )
 
+dedup_coordinator = root_read("src/CFIP.Indicator/Core/Runtime/AlertEventDedupCoordinator.cs")
 check(
-    "AlertEventDedupCoordinator.TryClaim(" in root_read("src/CFIP.Indicator/Core/Runtime/AlertEventDedupCoordinator.cs") and
-    "AlertEventDedupCoordinator.Import(" in root_read("src/CFIP.Indicator/Trading/Alerts/AlertEventDedupState.cs") and
-    "TryClaimSharedAlertEvent(" in alerts and
-    "ReleaseSharedAlertEvent(" in alerts and
-    "RefreshSharedAlertEventDedupState(" in root_read("Runtime/Supervision/RuntimePanelHeartbeat.cs") and
+    "AlertEventDedupCoordinator.TryClaim(" in dedup_coordinator and
+    "public static void Import(" not in dedup_coordinator and
+    "public static string Serialize(" not in dedup_coordinator and
+    "LocalStorage" not in dedup_coordinator and
+    "AlertEventDedupCoordinator.TryClaim(" in alerts and
+    "AlertEventDedupCoordinator.Release(" in alerts and
+    "TryClaimSharedAlertEvent(" not in alerts and
+    "RefreshSharedAlertEventDedupState(" not in root_read("Runtime/Supervision/RuntimePanelHeartbeat.cs") and
     "AlertEventDedupCoordinatorContracts.Run();" in contracts,
-    "alert causal-event dedup must be shared across Indicator instances, timer-synchronized, persisted and runtime-tested",
+    "alert causal-event dedup must have one process-wide coordinator, no persisted storage path, direct AlertEngine ownership and runtime coverage",
 )
 
 check(

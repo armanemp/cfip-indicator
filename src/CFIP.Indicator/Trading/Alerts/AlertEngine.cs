@@ -145,7 +145,7 @@ if (SuppressDuplicateAlerts)
                                     envelope,
                                     normalizedKey);
 
-                            if (!TryClaimSharedAlertEvent(
+                            if (!AlertEventDedupCoordinator.TryClaim(
                                     alertEventKey,
                                     now))
                             {
@@ -195,9 +195,8 @@ if (SuppressDuplicateAlerts)
 
                             if (!queued)
                             {
-                                ReleaseSharedAlertEvent(
-                                    alertEventKey,
-                                    now);
+                                AlertEventDedupCoordinator.Release(
+                                    alertEventKey);
 
                                 Print(
                                     "CFIP ALERT QUEUE REJECTED | id={0} | revision={1} | retryable=true",

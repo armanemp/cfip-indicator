@@ -2756,6 +2756,23 @@ Target-terminal acceptance remains required to prove a successful JSON fetch, sh
 
 
 
+## 2026-10-04 — Alert Availability Regression After Shared Dedup
+
+Status: **IN PROGRESS — REPOSITORY CORRECTION READY / TERMINAL REVALIDATION PENDING**
+
+Target-terminal evidence at 18:59 showed M5 and M15 loading normally with history/audio/news healthy, but no alert queue or sound-delivery events after the previous shared-dedup rollout. The symptom is treated as a regression; no terminal success is inferred merely from the absence of errors.
+
+Repository correction:
+- AlertEventDedupState.cs and its LocalStorage persistence/heartbeat/flush integration were removed.
+- AlertEngine now calls the single AlertEventDedupCoordinator directly.
+- The coordinator is process-wide and bounded; it no longer imports or serializes persisted alert claims.
+- Runtime contracts now verify that an independent causal event is accepted even while another event is claimed, preventing accidental global suppression.
+- The existing canonical AlertDeliveryQueue and downstream sound-staging buffer remain unchanged.
+
+The official cTrader Algo documentation states that static fields/properties can be used to share data between instances of the same indicator/cBot.
+
+Acceptance requirement: with the corrected Release build, normal eligible alerts must resume; when the exact same causal event is produced by M5/M15, only one instance may queue/deliver the event sound and the other must emit CFIP ALERT DUPLICATE SUPPRESSED | ... | scope=SHARED.
+
 ## 2026-10-04 — Cross-Instance Alert/Audio Dedup Revalidation
 
 Status: **REPOSITORY VERIFIED — TERMINAL REVALIDATION PENDING**
