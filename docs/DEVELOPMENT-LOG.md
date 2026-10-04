@@ -845,7 +845,7 @@ Verification:
 - cTrader Compile #2749: **PASS**
 
 Completed:
-- established `docs/ROADMAP.md` as the single active development roadmap;
+- established `docs/CFIP-ROADMAP.md` as the single active development roadmap;
 - reconciled historical roadmap/audit continuity requirements after consolidation;
 - verified the 568-parameter baseline and repository structure;
 - preserved the frozen broker-mutation boundary and current single execution authority;
@@ -910,7 +910,7 @@ Phase record: `docs/PHASE-CI-07-MTF-REGIME-CONTEXT.md`.
 
 ## Continuity rules
 
-- `docs/ROADMAP.md` is authoritative for the next phase.
+- `docs/CFIP-ROADMAP.md` is authoritative for the next phase.
 - `docs/ARCHITECTURE.md` is authoritative for ownership and dependency boundaries.
 - This file records what was actually implemented and verified.
 - A phase is not marked complete until its required verification gates pass.
@@ -2848,7 +2848,7 @@ Next phase: **CBOT-0 — Boundary inventory and execution-authority freeze**.
 
 Documentation merge: PR #69 was squash-merged to `main` as `161f1972513e83685ea2364070d081af823fa7c6`.
 
-Roadmap continuation correction: `docs/ROADMAP.md` was aligned in follow-up commit
+Roadmap continuation correction: `docs/CFIP-ROADMAP.md` was aligned in follow-up commit
 `b92cc367083b0830278d799f49e29d21b83d1779` so the master continuation points to CBOT-0.
 
 Operator pull: **required** before beginning CBOT-0, so the local checkout contains the authoritative roadmap.
