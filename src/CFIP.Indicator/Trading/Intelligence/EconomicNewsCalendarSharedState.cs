@@ -120,6 +120,13 @@ namespace cAlgo
                                 successUtc,
                                 relevantCurrencies);
 
+                            Print(
+                                "CFIP ECONOMIC NEWS SHARED ADOPTED | source=LocalStorage | events={0} | successUtc={1}",
+                                CountRelevantEconomicNewsEvents(),
+                                successUtc.ToString(
+                                    "O",
+                                    System.Globalization.CultureInfo.InvariantCulture));
+
                             return true;
                         }
                     }
@@ -142,6 +149,13 @@ namespace cAlgo
                     payload,
                     successUtc,
                     relevantCurrencies);
+
+                Print(
+                    "CFIP ECONOMIC NEWS SHARED ADOPTED | source=Coordinator | events={0} | successUtc={1}",
+                    CountRelevantEconomicNewsEvents(),
+                    successUtc.ToString(
+                        "O",
+                        System.Globalization.CultureInfo.InvariantCulture));
 
                 sharedLastAttemptUtc =
                     successUtc;
