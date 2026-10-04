@@ -2683,3 +2683,34 @@ Closed as superseded after comparison with canonical `main`: PR #253 (smart arro
 Retained open for later canonical disposition because they contain substantive later-scope Trade/cBot work rather than proven duplicate-only content: PR #226 (actual-entry trade path), #235 (cBot capacity), #239 (live/realtime execution), and #258 (adaptive reward/risk/protection). These are not merged early and do not alter the current WP-05 terminal blocker or WP-06 sequencing.
 
 Program progress remains **5/70 fully PASS = 7.1%**. WP-05 repository scope remains 100% complete with **0/13 target-terminal scenarios** accepted; WP-06 remains BLOCKED.
+
+
+## 2026-10-04 — Economic News Feed Transport / Multi-Instance Hardening
+
+Status: **REPOSITORY VERIFIED — TARGET-TERMINAL REVALIDATION PENDING**
+
+The production economic-news path was hardened after target-terminal evidence showed two failure modes: HTTP failure on M1 and legacy XML parsing failure on the other attached timeframes. The correction stays within one semantic feed boundary.
+
+Completed:
+- PR #306 merged to `main` as `34be5ae2e9eb336c4c3396a70b5cc211294a97a0`.
+- `EconomicNewsFeedCoordinator` is the shared async transport/single-flight/cache owner.
+- `EconomicNewsCalendarParser` owns payload parsing and retired-XML-URI normalization to the current JSON feed.
+- `EconomicNewsCalendarClient` remains the per-instance relevance/state consumer; it does not create a second network path.
+- News refresh configuration now enforces a five-minute minimum consistent with the external weekly-feed constraint.
+- HTTP failures now expose the cTrader response status and exception for direct terminal diagnosis.
+- Exact merged `main` Source/Architecture, Runtime Acceptance and cTrader Compile/Build gates are all PASS.
+
+Terminal boundary still open:
+- CI-17 remains **0/13 PASS**.
+- The next terminal check must use the fresh Release artifact and existing saved cTrader instances, especially M1/M5/M15.
+- Required local handoff:
+```powershell
+cd C:\Users\armanemp\Desktop\cfip-indicator
+git checkout main
+git pull --ff-only
+dotnet build src/CFIP.Indicator/CFIP.Indicator.csproj --configuration Release
+```
+- Reload the resulting build in cTrader and return the complete M1/M5/M15 logs; additionally exercise concurrent higher supported timeframes to validate shared feed behavior.
+- Expected success evidence: no XML parse error, no M1 HTTP failure, history persistence PASS, audio configuration PASS, and only the canonical shared feed request path being used.
+
+**Next:** WP-05 remains PASS + TERMINAL PENDING; WP-06 Contracts stays blocked until the canonical CI-17 target-terminal evidence is complete.
