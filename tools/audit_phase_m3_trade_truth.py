@@ -172,11 +172,12 @@ require(
 )
 
 require(
-    "lineLeft - offset" in label_anchor and
+    "return GetPlanLineLeftBar(" in label_anchor and
     "Chart.RemoveObject(" in label_renderer and
     "GetReadableLabelTextColor(" in label_renderer and
-    "PlanLinePresentationRule.ResolveColor(" in label_renderer,
-    "M3: compact signal labels must stay left of the line, background-free and line-colored",
+    "return ResolvePlanLineColor(semanticColor);" in label_renderer and
+    "CompactPlanLabelGapPips = 2.0" in label_renderer,
+    "M3: compact signal labels must use canonical line geometry, semantic color and exact 2-pip clearance",
 )
 
 require(
