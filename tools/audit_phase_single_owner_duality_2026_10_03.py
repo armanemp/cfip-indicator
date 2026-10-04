@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Single-owner / no-duality audit for cBot lifecycle audio and chart signal presentation."""
+"""Single-owner / no-duality audit for cBot lifecycle audio and chart signal presentation.
+
+F2 extends the guard to prevent dead/no-op parallel-renderer helpers from becoming
+shadow ownership points during future visual changes."""
 
 from pathlib import Path
 
@@ -120,6 +123,13 @@ require(
     "Chart.DrawText(" not in pending_label and
     "Chart.DrawText(" not in parallel_label,
     "secondary label coordinators must not create competing chart text objects",
+)
+
+require(
+    "private string LaneLabel(" not in parallel and
+    "private void HashSetCurrentOpportunityVisuals(" not in parallel and
+    "HashSetCurrentOpportunityVisuals();" not in parallel,
+    "parallel opportunity renderer must not retain dead/no-op presentation helpers",
 )
 
 print("CFIP SINGLE-OWNER / NO-DUALITY AUDIT: PASS")
