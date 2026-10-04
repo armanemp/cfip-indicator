@@ -107,7 +107,7 @@ require(
 host_text = HOST.read_text(encoding="utf-8")
 if (
     not re.search(
-        r'\[Indicator\(\s*"CFIP Smart Indicator"\s*,[\s\S]*?IsOverlay\s*=',
+        r"\[Indicator\(\s*\n\s*IndicatorIdentity\.DisplayName\s*,[\s\S]*?IsOverlay\s*=",
         host_text,
     )
     and not re.search(
