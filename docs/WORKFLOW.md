@@ -2,7 +2,7 @@
 
 ## Canonical continuation rule
 
-One assistant implementation response = one complete phase.
+One assistant implementation response = one complete atomic work package.
 
 **Canonical control plane is only:**
 1. `docs/CFIP-ROADMAP.md` — macro order/objectives
@@ -34,7 +34,7 @@ Versioned/historical source identifiers may appear only in roadmap/workflow mate
 
 ## Permanent repository artifact hygiene rule
 
-Every implementation phase and every global checkpoint must inspect the entire tracked repository for unnecessary artifacts, not only source code and `docs/`.
+Every atomic work package and every global checkpoint must inspect the entire tracked repository for unnecessary artifacts, not only source code and `docs/`.
 
 Every tracked file must be classified as **KEEP / MIGRATE / ARCHIVE / DELETE**. This applies to source, tests, tools, audits, configuration, documentation, logs, screenshots, generated files, and temporary/debug artifacts.
 
@@ -86,17 +86,18 @@ Phase 0.1 must keep release-critical documentation aligned with machine-enforced
 
 ## Cross-chat project continuity
 
-The repository itself is the continuity source. For planning/order/acceptance, only `docs/CFIP-ROADMAP.md` and `docs/CFIP_GATE.md` are canonical.
+The repository itself is the continuity source. The three canonical control-plane files are authoritative for planning, inventory and acceptance.
 
 At the start of a new chat, read:
+- `docs/CFIP-PROMPT.md`;
 - `docs/CFIP-ROADMAP.md`;
-- `docs/ARCHITECTURE.md`;
-- `docs/WORKFLOW.md`;
-- `docs/DEVELOPMENT-LOG.md`.
+- `docs/CFIP-LIST.md`;
+- `docs/CFIP_GATE.md`;
+then inspect actual `main`, latest CI and the first `NEXT` atomic package. `docs/WORKFLOW.md`, `README.md`, `docs/ARCHITECTURE.md` and `docs/DEVELOPMENT-LOG.md` are supporting/reference documents and cannot override the canonical control plane.
 
 The first executable work package marked `NEXT` in `docs/CFIP-LIST.md` is the only implementation unit to execute in that response; macro objectives come from `docs/CFIP-ROADMAP.md` and acceptance from `docs/CFIP_GATE.md`.
 
-Record every completed phase in `docs/DEVELOPMENT-LOG.md`, including:
+Record every completed atomic work package in `docs/DEVELOPMENT-LOG.md`, including:
 - phase and status;
 - implementation summary;
 - important findings/fixes;
