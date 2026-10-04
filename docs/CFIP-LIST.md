@@ -1574,9 +1574,17 @@ At certification:
 
 # 17. Current state
 
-**Inventory source tree:** `26eed2df59bfe8972f379c44e7bde9180bc32b81`
+**Inventory source tree:** `f6ef574355a115393ef5279036724675ac18af4a`
 
-**Current executable package:** **WP-02 — NEXT**
+**Current executable package:** **WP-03 — NEXT**
+
+### WP-02 closeout — GitHub workflows
+
+**Status:** PASS — PR #282 merged as `f6ef574355a115393ef5279036724675ac18af4a`.
+
+Scope closed: four active workflows plus `tools/audit_github_workflows.py`; trigger/permission/concurrency/timeout/command/failure/artifact/duplication checks completed. The benchmark pipeline now propagates command failure and retains its report as a workflow artifact. Source/Architecture, Runtime Acceptance, cTrader Compile and OSS Benchmark all passed on the exact WP-02 head. Repository tree adds one intentional audit file, bringing the tracked-file baseline from 1131 to 1132.
+
+**Next:** WP-03 — Canonical control plane.
 
 **Canonical roadmap:** \`docs/CFIP-ROADMAP.md\`
 
