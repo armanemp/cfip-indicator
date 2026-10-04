@@ -164,11 +164,9 @@ check(
 )
 
 check(
-    "CI-09 continuity is recorded without losing historical markers",
-    "CI-08 implementation record" in roadmap and
-    "CI-09 implementation record" in continuation and
-    "## 2.0.1 — Current certification state" in roadmap and
-    ("CI-17A" in roadmap or "CI-17" in roadmap) and
+    "CI-09 continuity remains under canonical control plane",
+    "STATUS: ACTIVE / CANONICAL" in roadmap and
+    "WP-04" in roadmap and
     "CI-17" in continuation
 )
 
