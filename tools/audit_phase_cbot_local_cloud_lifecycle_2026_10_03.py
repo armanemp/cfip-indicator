@@ -49,7 +49,7 @@ check(
 check(
     "ChartIndicators.Custom" in binding and
     "candidate.Type.Name" in binding and
-    'DisplayName = "CFIP Smart Indicator"' in binding,
+    "IndicatorIdentity.TypeName" in binding,
     "cBot must bind only to an already attached canonical Indicator instance",
 )
 check(
