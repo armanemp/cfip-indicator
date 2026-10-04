@@ -80,16 +80,18 @@ require(
     "ResolveCanonicalPlanLineColor(" in line and
     "ResolveCanonicalPlanLineColor(" in label and
     "semanticColor" in label and
-    "GetCompactPlanLabelAnchorBar(" in label,
+    "GetCompactPlanLabelAnchorTime(" in label,
     "canonical chart labels must be native ChartText, background-free and separated one bar left of the line",
 )
 
 require(
-    "GetCompactPlanLabelAnchorBar(" in label_coord and
-    "GetCompactPlanLabelAnchorBar(" in pending_label and
-    "GetCompactPlanLabelAnchorBar(" in parallel_label and
-    "GetCompactPlanLabelAnchorBar(" in anchor and
-    "canonicalLineLeftBar -" in anchor and
+    "GetCompactPlanLabelAnchorTime(" in label_coord and
+    "GetCompactPlanLabelAnchorTime(" in pending_label and
+    "GetCompactPlanLabelAnchorTime(" in parallel_label and
+    "GetCompactPlanLabelAnchorTime(" in anchor and
+    "Chart.BarIndexToX(" in anchor and
+    "targetX = lineX -" in anchor and
+    "Chart.XToTime(" in anchor and
     "CompactPlanLabelGapBars = 1" in anchor,
     "all standard signal label paths must reuse one canonical left-of-line anchor with a deterministic one-bar gap",
 )
