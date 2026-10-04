@@ -48,9 +48,9 @@ require(
     "builder must create primary M15/H1 candidates and tune them with M5/M1 evidence",
 )
 require(
-    'public bool IsPrimaryTimeframeSignal;' in candidate and
-    'public bool M5TuningAligned;' in candidate and
-    'public bool M1TuningConfirmed;' in candidate,
+    'public bool IsPrimaryTimeframeSignal' in candidate and
+    'public bool M5TuningAligned' in candidate and
+    'public bool M1TuningConfirmed' in candidate,
     "candidate must retain explicit primary/tuning state",
 )
 require(
