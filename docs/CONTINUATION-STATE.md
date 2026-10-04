@@ -2714,3 +2714,20 @@ dotnet build src/CFIP.Indicator/CFIP.Indicator.csproj --configuration Release
 - Expected success evidence: no XML parse error, no M1 HTTP failure, history persistence PASS, audio configuration PASS, and only the canonical shared feed request path being used.
 
 **Next:** WP-05 remains PASS + TERMINAL PENDING; WP-06 Contracts stays blocked until the canonical CI-17 target-terminal evidence is complete.
+
+## 2026-10-04 — Economic News Provider Rate-Limit / Cross-Instance Cache Hardening
+
+Status: **IMPLEMENTATION COMPLETE — verification pending**
+
+New target-terminal evidence at 17:20–17:21 showed the expected payload-format diagnostic with an HTML `DOCTYPE` response. This identifies the upstream FairEconomy weekly-export rate-limit response rather than a parser failure.
+
+Implementation on branch `fix/economic-news-shared-cache-rate-limit-2026-10-04`:
+- hourly minimum refresh boundary replaces the former five-minute floor;
+- browser-compatible request identity is used for the provider;
+- the canonical Indicator news client persists shared feed metadata and the validated raw JSON payload in `LocalStorageScope.Type`;
+- recent shared attempts suppress duplicate refreshes across Indicator instances;
+- shared successful payloads are adopted by M1/M5/M15 instances without another upstream request;
+- the shared-storage reload cadence is bounded to 15 seconds and is not part of the per-tick calculation path.
+
+Target-terminal acceptance remains required to prove a successful JSON fetch, shared adoption across instances, and absence of repeated upstream requests.
+
