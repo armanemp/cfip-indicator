@@ -63,24 +63,38 @@ namespace cAlgo
                 int thickness =
                     ResolvePlanLineThickness(name);
 
+                DateTime expectedStartTime =
+                    Bars.OpenTimes[left];
+                DateTime expectedEndTime =
+                    Bars.OpenTimes[right];
+
                 ChartTrendLine line =
                     Chart.FindObject(name)
                     as ChartTrendLine;
 
-                if (line == null)
+                bool recreate =
+                    line == null ||
+                    line.Time1 != expectedStartTime ||
+                    line.Time2 != expectedEndTime;
+
+                if (recreate)
                 {
+                    if (line != null)
+                        Chart.RemoveObject(name);
+
                     ChartObject existing =
                         Chart.FindObject(name);
 
                     if (existing != null)
                         Chart.RemoveObject(name);
 
+                    // One canonical X system: DateTime/OpenTime.
                     line =
                         Chart.DrawTrendLine(
                             name,
-                            left,
+                            expectedStartTime,
                             normalized,
-                            right,
+                            expectedEndTime,
                             normalized,
                             ResolveCanonicalPlanLineColor(
                                 color),
@@ -91,12 +105,8 @@ namespace cAlgo
                 if (line == null)
                     return;
 
-                line.Time1 =
-                    Bars.OpenTimes[left];
                 line.Y1 =
                     normalized;
-                line.Time2 =
-                    Bars.OpenTimes[right];
                 line.Y2 =
                     normalized;
                 line.Color =
