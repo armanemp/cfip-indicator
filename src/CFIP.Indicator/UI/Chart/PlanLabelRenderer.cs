@@ -113,12 +113,17 @@ namespace cAlgo
                     Chart.FindObject(name)
                     as ChartText;
 
-                // X geometry is created exclusively with the bar-index overload.
-                // Reuse the existing native object instead of repeatedly removing
-                // and recreating it on every calculation tick. There is no second
-                // DateTime X path and no ChartText.Time mutation.
+                DateTime expectedTime =
+                    Bars.OpenTimes[textBar];
+
+                // X geometry has one source of truth: the bar-index anchor. Recreate
+                // the same named ChartText only when its current anchor or visual
+                // contract is stale. The replacement is still created exclusively
+                // through the bar-index DrawText overload.
                 bool recreate =
                     label == null ||
+                    (label != null &&
+                     label.Time != expectedTime) ||
                     label.HorizontalAlignment != HorizontalAlignment.Right ||
                     label.VerticalAlignment != VerticalAlignment.Center ||
                     label.FontSize != CompactPlanLabelFontSize ||
@@ -147,8 +152,9 @@ namespace cAlgo
                 if (label == null)
                     return;
 
-                // Do not assign label.Time here. The bar-index-created object
-                // must remain anchored by its canonical bar coordinate.
+                // Do not assign label.Time here. A stale X anchor is corrected by
+                // recreating the same named ChartText through the bar-index overload;
+                // the Time property is never used as a second movement path.
                 label.Text =
                     text;
                 label.Y =
