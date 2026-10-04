@@ -68,7 +68,7 @@ require(
 ANCHOR = ROOT / "src/CFIP.Indicator/UI/Chart/PlanLabelAnchorCalculator.cs"
 require(
     ANCHOR,
-    r"private int GetCompactPlanLabelAnchorBar\(\s*\n\s*\)",
+    r"private int GetCompactPlanLabelAnchorBar\(\)",
     "canonical bar-index anchor owner",
 )
 require(
