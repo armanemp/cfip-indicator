@@ -13,6 +13,7 @@
 **Macro phase:** P2 — Ownership / Single-Source / Dead-Code Closure  
 **Atomic package:** WP-05 — Preflight  
 **Status:** PASS + TERMINAL PENDING
+**Progress:** 5/70 atomic packages fully PASS (7.1%); WP-05 repository scope 100% complete; target-terminal acceptance 0/13 scenarios.
 
 # 1. Gate hierarchy
 
