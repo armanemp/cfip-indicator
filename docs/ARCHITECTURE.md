@@ -207,7 +207,7 @@ Production `.cs` files must not contain:
 - compatibility names for obsolete versions;
 - numbered execution comments/identifiers.
 
-Historical baseline/version information is allowed only in `docs/ROADMAP.md` or workflow material when it is necessary for continuity.
+Historical baseline/version information is allowed only in `docs/CFIP-ROADMAP.md` or workflow material when it is necessary for continuity.
 
 ## File-size rule
 
