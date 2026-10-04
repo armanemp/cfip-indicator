@@ -71,7 +71,6 @@ required = {
             "StartsWith(",
             "NEWS FEED PAYLOAD FORMAT FAILURE",
             "NEWS FEED XML PARSE FAILURE",
-            "Mozilla/5.0",
             "TryParseEconomicEventTime(",
         ],
     "src/CFIP.Indicator/Trading/Intelligence/EconomicNewsRiskEvaluator.cs":
