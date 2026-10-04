@@ -5,24 +5,23 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        // The canonical line and label share the same X coordinate system:
-        // integer chart bar indices. The visible right edge of the native
-        // right-aligned ChartText is anchored exactly one chart bar before
-        // the canonical line start.
+        // The label's visible right edge is anchored exactly one chart bar
+        // before the canonical signal-line start. Both line and label use
+        // the same DateTime/OpenTime X coordinate system.
         private const int CompactPlanLabelGapBars = 1;
 
-        private int GetCompactPlanLabelAnchorBar()
+        private DateTime GetCompactPlanLabelAnchorTime()
         {
-            return GetCompactPlanLabelAnchorBar(
+            return GetCompactPlanLabelAnchorTime(
                 GetPlanLineLeftBar());
         }
 
-        private int GetCompactPlanLabelAnchorBar(
+        private DateTime GetCompactPlanLabelAnchorTime(
             int lineLeftBar)
         {
             if (Bars == null ||
                 Bars.Count < 2)
-                return 0;
+                return DateTime.MinValue;
 
             int canonicalLineLeftBar =
                 Math.Max(
@@ -31,10 +30,13 @@ namespace cAlgo
                         Bars.Count - 1,
                         lineLeftBar));
 
-            return Math.Max(
-                0,
-                canonicalLineLeftBar -
-                CompactPlanLabelGapBars);
+            int anchorBar =
+                Math.Max(
+                    0,
+                    canonicalLineLeftBar -
+                    CompactPlanLabelGapBars);
+
+            return Bars.OpenTimes[anchorBar];
         }
     }
 }
