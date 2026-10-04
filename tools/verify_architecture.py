@@ -967,6 +967,7 @@ VISUAL_SNAPSHOT_BUILDER = ROOT / "UI" / "Chart" / "SignalVisualSnapshotBuilder.c
 VISUAL_CALCULATION = ROOT / "Runtime" / "Calculation" / "CalculationLiveCycle.cs"
 VISUAL_SIGNAL_RENDERER = ROOT / "UI" / "Chart" / "SignalRenderer.cs"
 VISUAL_PLAN_RENDERER = ROOT / "UI" / "Chart" / "PlanRenderCoordinator.cs"
+PLAN_RENDERER = VISUAL_PLAN_RENDERER
 PLAN_RENDERER_CODE = PLAN_RENDERER.read_text(encoding="utf-8")
 if "RenderPlanLabels(snapshot, true)" not in PLAN_RENDERER_CODE:
     raise SystemExit("Setup preview must render compact level labels")
