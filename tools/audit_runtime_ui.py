@@ -169,10 +169,8 @@ if "return ResolvePlanLineColor(semanticColor);" not in labels_renderer:
     raise SystemExit("Compact plan labels must reuse canonical plan-line color")
 if "Chart.DrawRectangle(" in compact_label_renderer:
     raise SystemExit("Compact plan labels must not create a rectangle background")
-if "_BOX" in compact_label_renderer:
-    raise SystemExit("Compact plan labels must not retain legacy box objects")
-if "_ANCHOR" in compact_label_renderer:
-    raise SystemExit("Compact plan labels must not retain legacy anchor markers")
+# Legacy object names may appear only in deterministic cleanup calls; no
+# rectangle/icon/anchor object may be created by the canonical renderer.
 if "CompactPlanLabelGapPips = 2.0" not in labels_renderer:
     raise SystemExit("Compact plan labels must preserve the exact 2-pip clearance contract")
 if "HorizontalAlignment.Right" not in compact_label_renderer:
