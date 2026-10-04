@@ -9,7 +9,6 @@ ROOT = Path(__file__).resolve().parents[1]
 HOST = ROOT / "src/CFIP.Indicator/Indicator/CFIPIndicator.cs"
 STATE = ROOT / "src/CFIP.Indicator/Indicator/State.cs"
 LINE = ROOT / "src/CFIP.Indicator/UI/Chart/PlanLineRenderer.cs"
-ANCHOR = ROOT / "src/CFIP.Indicator/UI/Chart/PlanLabelAnchorCalculator.cs"
 LABEL = ROOT / "src/CFIP.Indicator/UI/Chart/PlanLabelRenderer.cs"
 PANEL_FACTORY = ROOT / "src/CFIP.Indicator/UI/Panel/PanelFactory.cs"
 PANEL_LAYOUT = ROOT / "src/CFIP.Indicator/UI/Panel/Theme/PanelSurfaceAndHeaderLayout.cs"
@@ -47,9 +46,9 @@ require(
     "latest-candle plan-line endpoint",
 )
 require(
-    ANCHOR,
-    r"CompactPlanLabelMinimumGapBars[\s\S]*?LabelLeftOffsetBars[\s\S]*?lineLeft - offset",
-    "stable compact label anchor",
+    ROOT / "src/CFIP.Indicator/UI/Chart/PlanLabelRenderCoordinator.cs",
+    r"GetCompactPlanLabelAnchorBar\(\)",
+    "canonical compact label anchor owner",
 )
 require(
     LABEL,
