@@ -292,7 +292,7 @@ namespace cAlgo
             string text,
             double price,
             Color color,
-            DateTime labelTime)
+            int labelBar)
         {
             RenderCompactPlanLabel(
                 name,
@@ -300,7 +300,7 @@ namespace cAlgo
                 price,
                 color,
                 true,
-                labelTime);
+                labelBar);
         }
 
         private bool IsSameAsCanonicalPlan(
