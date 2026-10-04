@@ -91,7 +91,7 @@ namespace cAlgo
                 snapshot.PendingStop,
                 SlLineColor,
                 ShowSL,
-                labelBar);
+                labelTime);
 
             RenderCompactPlanLabel(
                 P + "PENDING_TP_LABEL",
@@ -107,7 +107,7 @@ namespace cAlgo
                 snapshot.PendingTarget,
                 TpLineColor,
                 ShowTP1,
-                labelBar);
+                labelTime);
         }
 
         private void RemoveManagedPendingOrderObjects()
