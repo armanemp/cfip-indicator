@@ -14,11 +14,6 @@ namespace cAlgo
     public partial class CFIPIndicator : Indicator
     {
         private const double CompactPlanLabelFontSize = 10.0;
-        private const int CompactPlanLabelGapBars = 1;
-
-        // ChartText uses time/bar coordinates on X. Keep one deterministic
-        // chart-bar separation to the LEFT of the canonical line start.
-
         private void DrawPlanLabel(
             string name,
             string text,
@@ -45,7 +40,8 @@ namespace cAlgo
                     text,
                     price,
                     color,
-                    canonicalLineLeftBar);
+                    GetCompactPlanLabelAnchorBar(
+                        canonicalLineLeftBar));
             }
             catch (Exception ex)
             {
@@ -96,23 +92,21 @@ namespace cAlgo
 
                 // The line owns geometry. The label is only native ChartText.
                 // No rectangle, panel or marker is created for the label.
-                int lineLeftBar =
+                // labelBar is the exact RIGHT anchor of the label.
+                // PlanLabelAnchorCalculator already applied the one-bar gap.
+                int textBar =
                     Math.Max(
                         0,
                         Math.Min(
                             Bars.Count - 1,
                             labelBar));
 
-                int textBar =
-                    Math.Max(
-                        0,
-                        lineLeftBar - CompactPlanLabelGapBars);
-
                 double labelPrice =
                     NormalizePrice(price);
 
+                // Use the exact same materialized color as the line owner.
                 Color labelTextColor =
-                    GetReadableLabelTextColor(
+                    ResolveCanonicalPlanLineColor(
                         semanticColor);
 
                 ChartText label =
@@ -146,7 +140,8 @@ namespace cAlgo
                 label.Y =
                     labelPrice;
                 label.Color =
-                    labelTextColor;
+                    ResolveCanonicalPlanLineColor(
+                        semanticColor);
                 label.FontSize =
                     CompactPlanLabelFontSize;
                 label.FontFamily =
@@ -174,14 +169,6 @@ namespace cAlgo
                     "CFIP native plan label failed: {0}",
                     ex.Message);
             }
-        }
-
-        private Color GetReadableLabelTextColor(
-            Color semanticColor)
-        {
-            // Label text is intentionally white; line semantics are kept by
-            // the line itself and must not leak into text presentation.
-            return Color.White;
         }
 
         private void RemovePlanLabel(
