@@ -167,7 +167,7 @@ A phase is complete only when all applicable items are true:
 # 6. Phase sequence
 
 ## P0 — Baseline Truth & Roadmap Bootstrap
-**Status: NEXT**
+**Status: PASS**
 
 Re-baseline from actual current \`main\`: exact HEAD, project graph, production inventory, CI, warnings, parameters, MTF surface, owner map, cBot boundary, known legacy/duplicate paths and target-terminal boundaries.
 
@@ -181,6 +181,7 @@ Mandatory first checks:
 Exit: reproducible baseline and filled P0 section in \`CFIP_GATE.md\`.
 
 ## P1 — Repository / Build / Dependency Integrity
+**Status: NEXT**
 
 Audit solution/projects, ProjectReference/PackageReference, target frameworks, source inclusion, generated artifacts, orphan files, Debug/Release parity, CI drift, warnings, assembly/algo names, dependency provenance and reproducible Release.
 
@@ -461,9 +462,9 @@ The following are P0 defects if reintroduced:
 
 # 17. Current state
 
-**Current macro phase: P0**
+**Current macro phase: P1**
 
-**Current executable package: WP-00 — NEXT**
+**Current executable package: WP-01 — NEXT**
 
 **Canonical inspection inventory:** \`docs/CFIP-LIST.md\`
 
@@ -473,6 +474,30 @@ The following are P0 defects if reintroduced:
 
 **Roadmap authority:** this file for macro order; CFIP-LIST for atomic scope.
 
+
+
+## 17.1 P0 / WP-00 closeout — 2026-10-04
+
+**Status: PASS**
+
+WP-00 established the reproducible baseline from actual `main` HEAD `207e43b7d5293db4445e3f00e9b2b008c95f8dea`.
+
+Evidence:
+- Git tree: 1,131 files, 82 directories, 218 Markdown files; tree not truncated.
+- Canonical inventory drift was found and corrected: four omitted files were `.vscode/extensions.json`, `docs/CFIP-LIST.md`, `docs/CFIP-PROMPT.md`, and `docs/CFIP-PREPROMPT.md`.
+- Production C# baseline: 668 files.
+- Public parameters: 545 unique declarations across 30 parameter source files; machine audits report zero unread candidates.
+- MTF contract: M1/M5/M15/M30/H1/H4/D1/W1; M2 absent.
+- Indicator direct broker mutation: zero.
+- cBot→Indicator ProjectReference: zero.
+- Source/Architecture, Runtime Acceptance and cTrader Compile are PASS on the exact HEAD.
+- Current accumulated ownership, UI, MTF, execution-boundary and realtime audits are PASS.
+- Target-terminal evidence remains pending for host-only behavior.
+
+Residual control-plane defect:
+- Active tooling still contains references to historical `docs/ROADMAP.md`; this is registered as DEF-P0-002 and is queued for WP-03/WP-04 migration/isolation. Historical documents do not override the canonical control plane.
+
+The next executable package is **WP-01 — Root/build metadata**.
 
 # 18. CFIP operator/product contract
 

@@ -22,10 +22,10 @@ A file is not "reviewed" merely because it was opened. It is reviewed only when 
 
 | Metric | Baseline |
 |---|---:|
-| Inventory source tree commit | \`d79a0c5a67537f3c6c9806e5eb7c85c33f7f94ac\` |
-| Repository files | 1130 |
+| Inventory source tree commit | \`207e43b7d5293db4445e3f00e9b2b008c95f8dea\` |
+| Repository files | 1131 |
 | Repository directories | 82 |
-| Markdown files | 211 |
+| Markdown files | 218 |
 | Production projects | CFIP.Indicator / CFIP.Contracts / CFIP.cBot |
 | Supported MTF | M1/M5/M15/M30/H1/H4/D1/W1 |
 | M2 | FORBIDDEN |
@@ -417,6 +417,9 @@ Old M0–M45, CR/CI numbering, former cBot sequencing, hotfix sequencing and sup
 - [ ] `ROUTINE.md`
 - [ ] `global.json`
 
+## .vscode
+- [ ] `.vscode/extensions.json`
+
 ## .github
 - [ ] `.github/workflows/ci-build.yml`
 - [ ] `.github/workflows/oss-benchmark.yml`
@@ -424,12 +427,15 @@ Old M0–M45, CR/CI numbering, former cBot sequencing, hotfix sequencing and sup
 - [ ] `.github/workflows/source-check.yml`
 
 ## docs
+- [ ] `docs/CFIP-LIST.md`
 - [ ] `docs/ACCEPTANCE-MATRIX.md`
 - [ ] `docs/ARCHITECTURE.md`
 - [ ] `docs/CBOT-0-BOUNDARY-INVENTORY.md`
 - [ ] `docs/CBOT-P0-EXECUTION-DEPENDENCY-CLOSURE.md`
 - [ ] `docs/CBOT-PREFLIGHT.md`
 - [ ] `docs/CBOT-SEPARATION-ROADMAP.md`
+- [ ] `docs/CFIP-PREPROMPT.md`
+- [ ] `docs/CFIP-PROMPT.md`
 - [ ] `docs/CFIP-ROADMAP.md`
 - [ ] `docs/CFIP_GATE.md`
 - [ ] `docs/CLAUDE-REVIEW-CR0-AUDIT.md`
@@ -1563,9 +1569,9 @@ At certification:
 
 # 17. Current state
 
-**Inventory source tree:** \`d79a0c5a67537f3c6c9806e5eb7c85c33f7f94ac\`
+**Inventory source tree:** \`207e43b7d5293db4445e3f00e9b2b008c95f8dea\`
 
-**Current executable package:** **WP-00 — NEXT**
+**Current executable package:** **WP-01 — NEXT**
 
 **Canonical roadmap:** \`docs/CFIP-ROADMAP.md\`
 
