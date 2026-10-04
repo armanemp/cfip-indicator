@@ -307,14 +307,14 @@ namespace cAlgo
             if (relevantCurrencies == null)
                 return;
 
-            string currency =
+            string normalizedCurrency =
                 item.Currency.Trim().ToUpperInvariant();
 
             for (int i = 0;
                  i < relevantCurrencies.Length;
                  i++)
             {
-                if (currency == relevantCurrencies[i])
+                if (normalizedCurrency == relevantCurrencies[i])
                 {
                     target.Add(item);
                     return;
