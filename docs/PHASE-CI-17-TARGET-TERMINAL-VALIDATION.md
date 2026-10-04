@@ -146,4 +146,6 @@ The automated contribution of this phase is complete and remains intentionally n
 
 ## Next step
 
-After the operator records the target-terminal evidence, the remaining Full-Stack track is **CI-FINAL — Full-stack Calculation Integrity Certification**.
+After the operator records the target-terminal evidence, the canonical next atomic package is **WP-06 — Contracts**, as defined by `docs/CFIP-ROADMAP.md`, `docs/CFIP-LIST.md`, and `docs/CFIP_GATE.md`.
+
+WP-06 remains blocked until the manual evidence table above contains actual target-terminal PASS results. Historical CI phase names do not override the canonical atomic package sequence.
