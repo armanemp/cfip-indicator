@@ -277,3 +277,9 @@ Mapping for the upcoming provider migration:
 - requested live management actions → `CFIP.Contracts.ManagementCommand`
 
 P2 must expose these canonical Contracts read-only from the Indicator. cBot must never reconstruct them from chart objects or private Indicator state. After P2/P3 parity, the temporary internal models can be reduced or removed as their callers are migrated.
+## F1 repository/build boundary clarification — 2026-10-04
+
+The Core/Math layer must remain free of cTrader API types. `PlanLinePresentationRule` therefore owns only platform-neutral presentation semantics (for example fixed line thickness/alpha). The existing `PlanLineRenderer` is the sole cTrader chart-rendering owner and materializes `Color.FromArgb` at the platform boundary. Runtime.Contracts may link the rule because it no longer requires cTrader.
+
+This preserves the single presentation semantic owner without moving chart mutation or platform types into Core.
+
