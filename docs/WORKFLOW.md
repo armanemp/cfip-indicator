@@ -1,17 +1,20 @@
 # CFIP Indicator — Workflow
 
-## Continuation rule
+## Canonical continuation rule
 
 One assistant implementation response = one complete phase.
 
-When resuming in another chat:
+**Planning and acceptance authority is only:**
+1. `docs/CFIP-ROADMAP.md`
+2. `docs/CFIP_GATE.md`
 
-1. Read `docs/CFIP-ROADMAP.md`.
-2. Read `docs/ARCHITECTURE.md`.
-3. Read this workflow.
-4. Inspect the current GitHub main branch.
-5. Continue from the first phase marked `next`.
-6. Do not repeat a completed phase unless a regression is found.
+When resuming in another chat/account:
+1. Read those two files first.
+2. Inspect the actual current `main` branch and latest CI.
+3. Find the first phase marked `NEXT` in `docs/CFIP-ROADMAP.md`.
+4. Use `docs/CFIP_GATE.md` for all acceptance/evidence decisions.
+5. Other documents are implementation/reference material only and cannot override the two canonical files.
+6. Do not repeat a completed phase unless a regression is proven.
 
 ## Implementation order inside every phase
 
@@ -71,7 +74,7 @@ Phase 0.1 must keep release-critical documentation aligned with machine-enforced
 
 ## Cross-chat project continuity
 
-The repository itself is the continuity source for development history and next-step state.
+The repository itself is the continuity source. For planning/order/acceptance, only `docs/CFIP-ROADMAP.md` and `docs/CFIP_GATE.md` are canonical.
 
 At the start of a new chat, read:
 - `docs/CFIP-ROADMAP.md`;
