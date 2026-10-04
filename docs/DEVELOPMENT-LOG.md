@@ -3993,3 +3993,7 @@ Root correction: downstream MTF/M1 consumers were using the opening timestamp of
 No strategy, threshold, RR, alert, rendering, broker execution or MTF role changed. M15 remains canonical decision/reference; M5 remains trigger/entry precision; M1 remains optional confirmation.
 
 Verification is pending on the exact branch head.
+
+
+## 2026-10-04 — F4 Closeout
+F4 closed the current Runtime.Contracts compiler-warning defect set by making existing model defaults explicit and repaired declaration-sensitive audits without weakening gates. Final verified head: 62f69dc703887486392fbfd59f0f726deea4bba4. All three required CI gates passed. PR #279 is pending merge at closeout.
