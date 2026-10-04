@@ -55,8 +55,8 @@ namespace cAlgo
                 !ShowSignalLabels)
                 return;
 
-            int labelBar =
-                GetCompactPlanLabelAnchorBar();
+            DateTime labelTime =
+                GetCompactPlanLabelAnchorTime();
 
             string typeText =
                 snapshot.PendingOrderType;
@@ -75,7 +75,7 @@ namespace cAlgo
                 snapshot.PendingEntry,
                 TriggerLineColor,
                 ShowTrigger,
-                labelBar);
+                labelTime);
 
             RenderCompactPlanLabel(
                 P + "PENDING_SL_LABEL",
