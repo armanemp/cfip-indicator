@@ -35,6 +35,7 @@ runtime = read('tools/CFIP.Runtime.Contracts/Program.cs')
 runtime_project = read('tools/CFIP.Runtime.Contracts/CFIP.Runtime.Contracts.csproj')
 workflow = read('.github/workflows/source-check.yml')
 roadmap = read('docs/CFIP-ROADMAP.md')
+historical_roadmap = read('docs/archive/ROADMAP-LEGACY-2026-10-04.md')
 continuation = read('docs/CONTINUATION-STATE.md')
 
 check('single numerical indicator-fusion owner', 'class IndicatorEvidenceFusionRule' in fusion and 'Evaluate(' in fusion)
@@ -87,9 +88,9 @@ check('CI-03 audit is accumulated immediately after CI-02',
       'audit_phase_ci_02.py' in workflow and 'audit_phase_ci_03.py' in workflow and
       workflow.index('audit_phase_ci_03.py') > workflow.index('audit_phase_ci_02.py'))
 check('CI-03 remains recorded as completed while a later CI phase is active',
-      'CI-03' in roadmap and
+      'CI-03' in historical_roadmap and
       'CI-03 is verified complete and merged to `main` via PR #157' in continuation and
-      'CI-04' in roadmap and
+      'CI-04' in historical_roadmap and
       any(marker in continuation for marker in (
           '**CI-04 — Structure / swing / liquidity semantics',
           '**CI-05 — FVG lifecycle',
