@@ -3214,7 +3214,7 @@ if (
     "GetCompactPlanLabelAnchorBar(" not in label_anchor_code
 ):
     raise SystemExit("Plan label anchor must use exactly one canonical bar before line start")
-if "HorizontalAlignment.Left" not in compact_label_code:
+if "HorizontalAlignment.Right" not in compact_label_code:
     raise SystemExit("Plan labels must terminate at the left-of-line anchor")
 
 live_calc = ROOT / "Runtime" / "Calculation" / "CalculationLiveCycle.cs"
