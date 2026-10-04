@@ -185,12 +185,12 @@ if "RecordPanelAlertDelivery(" not in read("UI/Panel/AlertDeliveryProcessor.cs")
     raise SystemExit("panel alert delivery handoff is missing")
 if "ResolvePanelAlertMessageColor(" not in read("UI/Panel/PanelAlertMessageRenderer.cs"):
     raise SystemExit("panel alert semantic color owner is missing")
-if "GetReadableLabelTextColor(" not in labels:
-    raise SystemExit("level label renderer must keep one canonical text-color resolver")
+if "ResolveCanonicalPlanLineColor(" not in labels:
+    raise SystemExit("level label renderer must consume the canonical signal-line color resolver")
 if "Chart.DrawRectangle(" in labels:
     raise SystemExit("level label renderer must remain background-free")
-if "CompactPlanLabelGapBars = 1" not in labels:
-    raise SystemExit("level label renderer must retain the one-bar left clearance")
+if "CompactPlanLabelGapBars = 1" not in label_anchor or "canonicalLineLeftBar -" not in label_anchor:
+    raise SystemExit("level label renderer must retain the one-bar left clearance in the canonical anchor owner")
 
 # Phase 7.4 / G4 — analysis-only panel after execution UI extraction.
 g4_overview_rows = read("UI/Panel/Rows/PanelOverviewStateRowsRenderer.cs")
