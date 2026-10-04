@@ -75,7 +75,7 @@ benchmark = read("tools/CFIP.StockIndicators.Benchmark/D10/NativeRegistryLookupB
 benchmark_program = read("tools/CFIP.StockIndicators.Benchmark/Program.cs")
 workflow = read(".github/workflows/source-check.yml")
 phase_doc = read("docs/PHASE-CR4-10-NATIVE-INDICATOR-SAFETY.md")
-roadmap = read("docs/ROADMAP.md")
+roadmap = read("docs/CFIP-ROADMAP.md")
 continuation = read("docs/CONTINUATION-STATE.md")
 review = read("docs/CLAUDE-REVIEW-REMEDIATION-ROADMAP.md")
 
