@@ -134,6 +134,15 @@ require(
     "parallel opportunity renderer must not retain dead/no-op presentation helpers",
 )
 
+
+require(
+    "IsSameAsCanonicalPlan(" in parallel and
+    "IsSameAsLivePlan(" not in parallel and
+    "if (_plan == null ||" in parallel and
+    "!_plan.IsLivePosition" not in parallel,
+    "parallel opportunity visuals must not duplicate the canonical plan before or during a live position",
+)
+
 print("CFIP SINGLE-OWNER / NO-DUALITY AUDIT: PASS")
 print("cBot startup audio: one owner / one cue")
 print("Signal/plan line geometry: one owner / 40 bars / Solid / 1px")
