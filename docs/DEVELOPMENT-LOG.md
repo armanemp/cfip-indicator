@@ -4070,3 +4070,23 @@ Closed as superseded after comparison with canonical `main`: PR #253 (smart arro
 Retained open for later canonical disposition because they contain substantive later-scope Trade/cBot work rather than proven duplicate-only content: PR #226 (actual-entry trade path), #235 (cBot capacity), #239 (live/realtime execution), and #258 (adaptive reward/risk/protection). These are not merged early and do not alter the current WP-05 terminal blocker or WP-06 sequencing.
 
 Program progress remains **5/70 fully PASS = 7.1%**. WP-05 repository scope remains 100% complete with **0/13 target-terminal scenarios** accepted; WP-06 remains BLOCKED.
+
+
+## 2026-10-04 — Target Ladder Closed-Bar Null-Stage Runtime Defect
+
+Status: **FIXED IN CODE — TARGET-TERMINAL REVALIDATION PENDING**.
+
+A real cTrader M15 runtime log exposed a System.NullReferenceException in TargetLadderSelectionRule.SelectBestPath during CLOSED-BAR ANALYSIS at UpdateExecutionModel. The canonical selector handled empty stages but could dereference a null intermediate stage during its second traversal.
+
+Root correction was made in the existing TargetLadderSelectionRule owner: a null/empty current stage now terminates ladder traversal fail-closed before any .Count or element access. No duplicate selector, fallback path, workaround, or parallel target calculation was introduced.
+
+A deterministic planning-contract regression fixture was added for a null intermediate stage.
+
+Evidence:
+- Real terminal log: 2026-10-04 15:47:48.244 | Info | CFIP runtime fault #1 [CLOSED-BAR ANALYSIS] ... NullReferenceException ... TargetLadderSelectionRule.SelectBestPath;
+- PR #302 merged to main as 2f8089e475b98a1cd4c688b9aada418f6067251c;
+- Runtime Acceptance #4221: PASS;
+- cTrader Compile #4405: PASS;
+- Source/Architecture #4412: PASS.
+
+The defect is registered as DEF-P1-001. It remains FIXED_UNVERIFIED until the updated production .algo is loaded in cTrader and the same M15 closed-bar execution path completes without the runtime fault.
