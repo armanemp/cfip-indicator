@@ -40,6 +40,7 @@ required = {
         [
             "RefreshEconomicNewsIfNeeded",
             "Http.SendAsync(",
+            "EconomicNewsCalendarParser.Parse(",
             "EconomicNewsFeedCoordinator.TryStart(",
             "EconomicNewsFeedCoordinator.CompleteSuccess(",
             "EconomicNewsFeedCoordinator.CompleteFailure(",
@@ -54,6 +55,13 @@ required = {
             "CompleteSuccess(",
             "CompleteFailure(",
             "RequestInFlight",
+        ],
+    "src/CFIP.Indicator/Trading/Intelligence/EconomicNewsCalendarParser.cs":
+        [
+            "NormalizePayloadPrefix(",
+            "StartsWith(",
+            "NEWS FEED PAYLOAD FORMAT FAILURE",
+            "TryParseEconomicEventTime(",
         ],
     "src/CFIP.Indicator/Trading/Intelligence/EconomicNewsRiskEvaluator.cs":
         [
