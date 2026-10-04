@@ -16,6 +16,9 @@
 **Macro phase:** P2 — Ownership / Single-Source / Dead-Code Closure  
 **Atomic package:** WP-05 — Preflight  
 **Status:** PASS + TERMINAL PENDING
+**Current repository head:** `902180754ce6f15df9a512cf5411de1f41b534e3`  
+**Latest post-merge repository gates:** Source/Architecture PASS; Runtime Acceptance PASS; cTrader Compile PASS.  
+**Alert regression scope:** DEF-P1-003 is intentionally deferred to a dedicated Alert/Audio package; no Alert production logic is changed by this rebaseline.  
 **Progress:** 5/70 atomic packages fully PASS (7.1%); WP-05 repository scope 100% complete, target-terminal acceptance 0/13 scenarios completed.
 
 WP-05 repository implementation is complete and merged. Target-terminal acceptance remains the blocking external boundary. The macro phase remains P2 while atomic packages advance independently.
