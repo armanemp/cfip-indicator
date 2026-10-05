@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Text.Json;
 
@@ -35,8 +34,19 @@ namespace CFIP.Contracts
                         payload,
                         Options);
 
-                if (parsed == null)
+                if (parsed == null ||
+                    !ContractVersion.IsSupported(parsed.ContractVersion) ||
+                    parsed.Scenarios == null)
                     return false;
+
+                foreach (SignalEnvelope scenario in parsed.Scenarios)
+                {
+                    if (scenario == null ||
+                        scenario.Identity == null ||
+                        !ContractVersion.IsSupported(
+                            scenario.Identity.ContractVersion))
+                        return false;
+                }
 
                 batch = parsed;
                 return true;
@@ -49,4 +59,3 @@ namespace CFIP.Contracts
         }
     }
 }
-#nullable enable
