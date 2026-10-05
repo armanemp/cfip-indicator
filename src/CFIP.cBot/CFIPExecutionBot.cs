@@ -649,6 +649,21 @@ namespace CFIP.cBot
             SignalEnvelope envelope,
             DateTime nowUtc)
         {
+            // An empty envelope is a normal idle analysis state. The Indicator
+            // is allowed to publish no executable intent while it is waiting
+            // for a valid M15/M5 setup. This must never become a blocked/error
+            // lifecycle event or an audible negative notification.
+            if (envelope == null ||
+                envelope.Plan == null ||
+                envelope.Intent == null ||
+                envelope.Intent.Action == ExecutionAction.None)
+            {
+                PublishExecutionState(
+                    "WAITING FOR EXECUTABLE SIGNAL",
+                    false);
+                return;
+            }
+
             if (!CbotSignalPreflight.TryValidate(
                     this,
                     envelope,
