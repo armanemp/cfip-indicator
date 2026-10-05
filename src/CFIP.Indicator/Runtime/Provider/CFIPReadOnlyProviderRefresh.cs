@@ -16,8 +16,16 @@ namespace cAlgo
                 closedM5 >= _m5Bars.Count)
                 return;
 
+            RefreshCanonicalMarketQuote();
+
+            CanonicalPriceSnapshot priceSnapshot =
+                GetCanonicalPriceSnapshot();
+
             DateTime observedUtc =
-                Server.TimeInUtc;
+                priceSnapshot == null ||
+                !priceSnapshot.IsObservationTimeValid
+                    ? Server.TimeInUtc
+                    : priceSnapshot.ObservedUtc;
 
             string signalId =
                 ResolveProviderSignalId(closedM5);
