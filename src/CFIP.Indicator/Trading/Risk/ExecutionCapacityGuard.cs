@@ -58,7 +58,7 @@ namespace cAlgo
                     "SINGLE ACTIVE PLAN EXISTS";
 
             if (ManagedPositionCount() >=
-                ExecutionCapacityRule.SupportedExecutionCapacityRule.SupportedMaximumOpenPositions)
+                ExecutionCapacityRule.SupportedMaximumOpenPositions)
                 return
                     "MANAGED POSITION CAPACITY REACHED";
 
