@@ -234,6 +234,15 @@ check(
     "Symbol.PipSize" in structural_stop,
 )
 
+check(
+    "TP2+ HTF reward gate does not reject TP1-only plans",
+    "bool hasTp2Plus" in plan_reward and
+    "plan.Tp2 > 0" in plan_reward and
+    "plan.Tp3 > 0" in plan_reward and
+    "plan.Tp4 > 0" in plan_reward and
+    "hasTp2Plus &&" in plan_reward
+)
+
 workflow = WORKFLOW.read_text(encoding="utf-8")
 check(
     "CI-14 audit is wired into accumulated Source/Architecture gate",
