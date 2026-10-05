@@ -4,7 +4,7 @@ Clean, modular cTrader indicator with a single execution authority.
 
 ## Current state
 
-- 545 configuration parameters are currently exposed; the count is machine-verified from the parameter source tree by `python tools/audit_parameter_count.py`.
+- 513 configuration parameters are currently exposed; the count is machine-verified from the parameter source tree by `python tools/audit_parameter_count.py`.
 - Strategy behavior decomposed into responsibility-isolated source modules.
 - Automatic market execution and automatic pending orders are owned by the cBot; the Indicator remains the analysis/signal authority.
 - Manual BUY/SELL/order-entry controls are absent.
