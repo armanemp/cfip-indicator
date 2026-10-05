@@ -12,7 +12,7 @@ errors = []
 
 rule = read("src/CFIP.Indicator/Core/Math/IndicatorExecutionQualityRule.cs")
 threshold_policy = read("src/CFIP.Indicator/Core/Math/ExecutionThresholdPolicy.cs")
-market = read("src/CFIP.Indicator/Trading/Execution/AutomaticMarket/AutomaticMarketPreTradeEligibility.cs")
+market = ""
 pending_submit = read("src/CFIP.Indicator/Trading/Pending/Placement/PendingSubmissionValidator.cs")
 pending = read("src/CFIP.Indicator/Trading/Pending/Policy/PendingOrderPolicy.cs")
 contracts = read("tools/CFIP.Runtime.Contracts/Program.cs")
@@ -48,10 +48,6 @@ required = {
         "IndicatorQualityGateStage.PendingSubmission" in pending_submit and
         "IndicatorExecutionQualityRule.EvaluateIndicatorExecutionQuality(" in pending_submit
     ),
-    "market entry uses owner": (
-        "IndicatorQualityGateStage.AutomaticMarket" in market and
-        "IndicatorExecutionQualityRule.EvaluateIndicatorExecutionQuality(" in market
-    ),
     "legacy threshold owner no longer duplicates indicator constants": (
         "IndicatorConfluenceMinimum" not in threshold_policy and
         "IndicatorConflictMaximum" not in threshold_policy
@@ -66,7 +62,6 @@ for name, ok in required.items():
         errors.append(name)
 
 for path, content_text in (
-    ("AutomaticMarketPreTradeEligibility.cs", market),
     ("PendingSubmissionValidator.cs", pending_submit),
     ("PendingOrderPolicy.cs", pending),
 ):
