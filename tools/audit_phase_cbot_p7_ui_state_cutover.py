@@ -103,10 +103,8 @@ require(
 for token in (
     "EffectiveAutoTradingEnabled",
     "EffectiveAutomaticOrdersEnabled",
-    "CbotAutoTradingEnabled",
-    "CbotAutomaticOrdersEnabled",
 ):
-    require(token in panel, "panel execution state missing cBot snapshot field " + token)
+    require(token in panel, "panel execution state missing effective cBot state field " + token)
 
 require(
     "CbotConnectionPanelText()" in overview and
