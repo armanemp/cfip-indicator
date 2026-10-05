@@ -23,6 +23,8 @@ roadmap = read("docs/CFIP-ROADMAP.md")
 historical_roadmap = read("docs/archive/ROADMAP-LEGACY-2026-10-04.md")
 continuation = read("docs/CONTINUATION-STATE.md")
 development = read("docs/DEVELOPMENT-LOG.md")
+data_flow = read("src/CFIP.Indicator/UI/Panel/PanelDataFlowCard.cs")
+factory = read("src/CFIP.Indicator/UI/Panel/PanelFactory.cs")
 
 checks = (
     (
@@ -72,6 +74,21 @@ checks = (
         "runtime contract is accumulated",
         "VerifyPanelLiveContentRefresh();" in runtime and
         "python tools/audit_phase_ci_17a.py" in workflow,
+    ),
+    (
+        "data-flow is fixed immediately above timeframe footer",
+        "if (_panelDataFlowCard != null)" in factory and
+        "_panelStack.AddChild(\n                                                _panelDataFlowCard)" in factory and
+        factory.index("_panelDataFlowCard);\n\n                                        if (_panelTrendTimeframeLampRow") <
+        factory.index("_panelTrendTimeframeLampRow);\n\n                                        _panelStack.AddChild(\n                                            _buttonStack"),
+    ),
+    (
+        "data-flow smoothing state has a single panel owner",
+        "_panelDataFlowBuyDisplayRatio" in state and
+        "_panelDataFlowSellDisplayRatio" in state and
+        "_panelDataFlowLoadDisplayRatio" in state and
+        "SmoothFlowRatio(" in data_flow and
+        "ResolveFlowFillColor(" in data_flow,
     ),
     (
         "continuity records CI-17A",

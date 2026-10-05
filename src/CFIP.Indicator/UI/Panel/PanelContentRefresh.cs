@@ -35,6 +35,7 @@ namespace cAlgo
                 // snapshot used by every live row in this refresh.
                 RefreshCbotExecutionStateIfDue();
                 UpdatePanelHeaderLiveState();
+                UpdatePanelDataFlowCard();
 
                 if (ownsVisualSnapshot)
                 {

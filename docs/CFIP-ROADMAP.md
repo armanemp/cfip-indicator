@@ -585,6 +585,12 @@ These requirements are treated as acceptance targets and must be verified agains
 - Chart geometry must not be recreated by panel, alert or cBot code.
 
 ## Panel/runtime contract
+- The panel includes a compact realtime **LIVE DATA FLOW** card owned by one renderer.
+- It displays current-bar tick-volume load plus estimated buy/sell pressure and delta; it must never label bar-direction estimates as true bid/ask volume.
+- Buy/sell bars use bounded intensity/width so low activity remains visible without allowing high-volume states to overflow the panel.
+- The card refreshes through the existing bounded 500ms panel content heartbeat and must not trigger full panel layout rebuilds.
+
+
 - Panel state, chart state, alert state and execution state must derive from the same authoritative semantic result.
 - Indicator and cBot identity must be visible with meaningful names; source/assembly placeholders must not be presented as operator identity.
 - The panel must clearly distinguish Indicator analysis state from cBot attachment/execution state.
@@ -800,3 +806,12 @@ PR #284 was merged to `main` as `2e98a4b4cd27dd8b083ee8aac1437cf1a3c6271e` after
 The completion protocol is now permanent: required CI must be green, the verified work must be merged to `main`, and merged `main` must be re-verified before the package is declared complete.
 
 **Next:** WP-05 — Preflight.
+
+
+### Panel Data-Flow Footer Refinement — 2026-10-06
+- **Owner:** `PanelDataFlowCard` remains the single presentation owner.
+- The realtime data-flow card is fixed immediately above the MTF timeframe-lamp footer and outside the normal scrolling rows.
+- Footer spacing is explicitly budgeted so the card, lamps, and action rail do not collapse into each other.
+- Buy/sell fill widths and data-load intensity use a smoothed display ratio on the existing bounded 500ms heartbeat; the UI therefore animates toward fresh values rather than jumping between states.
+- Fill intensity is alpha-weighted from faint to strong as the ratio increases/decreases, preserving a gradient-like visual impression without introducing a second rendering/animation engine.
+- Buy/sell pressure remains explicitly **estimated** from bar OHLC position and tick volume; it must never be presented as canonical bid/ask aggressor volume.
