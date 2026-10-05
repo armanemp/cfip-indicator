@@ -33,6 +33,13 @@ bad_legacy = sorted(LEGACY_FILES & rel)
 if bad_legacy:
     raise SystemExit("Legacy/monolithic files remain: " + ", ".join(bad_legacy))
 
+def normalized_source_size(path):
+    return len(
+        path.read_text(encoding="utf-8")
+        .replace("\r\n", "\n")
+        .encode("utf-8")
+    )
+
 def strip_for_static_checks(text):
     text = re.sub(r"/\*[\s\S]*?\*/", " ", text)
     text = re.sub(r"//[^\r\n]*", " ", text)
@@ -1786,7 +1793,7 @@ for p in files:
 # Trade-plan construction boundary.
 PLAN_BUILDER = ROOT / "Planning" / "TradePlan" / "PlanBuilder.cs"
 PLAN_BUILDER_CODE = PLAN_BUILDER.read_text(encoding="utf-8")
-if PLAN_BUILDER.stat().st_size > 4096:
+if normalized_source_size(PLAN_BUILDER) > 4096:
     raise SystemExit("PlanBuilder.cs must remain a thin orchestration boundary")
 for token in (
     "TryPreparePlanInputs(",
@@ -1819,7 +1826,7 @@ for required_path in (
 # Target-selection boundary.
 TARGET_SELECTOR = ROOT / "Planning" / "TradePlan" / "TargetSelector.cs"
 TARGET_SELECTOR_CODE = TARGET_SELECTOR.read_text(encoding="utf-8")
-if TARGET_SELECTOR.stat().st_size > 4096:
+if normalized_source_size(TARGET_SELECTOR) > 4096:
     raise SystemExit("TargetSelector.cs must remain a thin stage-orchestration boundary")
 for token in (
     "BuildTargetSelectionRequiredRR(",
@@ -1847,7 +1854,7 @@ for declaration in (
 # Order-block candidate construction boundary.
 OB_BUILDER = ROOT / "Analysis" / "Structure" / "Zones" / "OrderBlockCandidateBuilder.cs"
 OB_BUILDER_CODE = OB_BUILDER.read_text(encoding="utf-8")
-if OB_BUILDER.stat().st_size > 4096:
+if normalized_source_size(OB_BUILDER) > 4096:
     raise SystemExit("OrderBlockCandidateBuilder.cs must remain a thin candidate orchestration boundary")
 for token in (
     "TryBuildOrderBlockImpulseEvidence(",
@@ -1885,7 +1892,7 @@ for token in (
 
 FVG_LIFECYCLE = ROOT / "Analysis" / "Structure" / "Zones" / "FvgLifecycleAnalyzer.cs"
 FVG_LIFECYCLE_CODE = FVG_LIFECYCLE.read_text(encoding="utf-8")
-if FVG_LIFECYCLE.stat().st_size > 8192:
+if normalized_source_size(FVG_LIFECYCLE) > 8192:
     raise SystemExit("FvgLifecycleAnalyzer.cs must remain an orchestration boundary")
 for token in (
     "TryApplyFvgMitigation(",
@@ -1915,7 +1922,7 @@ for path, token in (
 # Structural-stop planning ownership.
 STRUCTURAL_STOP_SELECTOR = ROOT / "Planning" / "TradePlan" / "StructuralStopCandidateSelector.cs"
 STRUCTURAL_STOP_SELECTOR_CODE = STRUCTURAL_STOP_SELECTOR.read_text(encoding="utf-8")
-if STRUCTURAL_STOP_SELECTOR.stat().st_size > 4096:
+if normalized_source_size(STRUCTURAL_STOP_SELECTOR) > 4096:
     raise SystemExit("StructuralStopCandidateSelector.cs must remain a thin orchestration boundary")
 if "TrySelectBestStructuralStopCandidate(" not in STRUCTURAL_STOP_SELECTOR_CODE:
     raise SystemExit("Structural-stop selector orchestration call missing")
@@ -1952,7 +1959,7 @@ if STRUCTURAL_STOP_FINALIZER.exists():
 # Plan-integrity ownership.
 PLAN_INTEGRITY = ROOT / "Planning" / "TradePlan" / "PlanIntegrityValidator.cs"
 PLAN_INTEGRITY_CODE = PLAN_INTEGRITY.read_text(encoding="utf-8")
-if PLAN_INTEGRITY.stat().st_size > 4096:
+if normalized_source_size(PLAN_INTEGRITY) > 4096:
     raise SystemExit("PlanIntegrityValidator.cs must remain a thin orchestration boundary")
 for token in (
     "ValidatePlanProtectionAndEntry(",
@@ -2014,7 +2021,7 @@ for obsolete_path in OBSOLETE_PRODUCTION_PATHS:
 # Execution-zone planning ownership.
 EXECUTION_ZONE = ROOT / "Planning" / "Execution" / "ExecutionZoneBuilder.cs"
 EXECUTION_ZONE_CODE = EXECUTION_ZONE.read_text(encoding="utf-8")
-if EXECUTION_ZONE.stat().st_size > 4096:
+if normalized_source_size(EXECUTION_ZONE) > 4096:
     raise SystemExit("ExecutionZoneBuilder.cs must remain a planning orchestration boundary")
 for token in (
     "TrySelectExecutionZoneCandidate(",
@@ -2038,7 +2045,7 @@ for path in (
 # Panel row renderer ownership.
 PANEL_OVERVIEW = ROOT / "UI" / "Panel" / "Rows" / "PanelOverviewRowsRenderer.cs"
 PANEL_OVERVIEW_CODE = PANEL_OVERVIEW.read_text(encoding="utf-8")
-if PANEL_OVERVIEW.stat().st_size > 4096:
+if normalized_source_size(PANEL_OVERVIEW) > 4096:
     raise SystemExit("PanelOverviewRowsRenderer.cs must remain a composition boundary")
 for token in (
     "RenderPanelOverviewStateRows(",
@@ -2050,7 +2057,7 @@ for token in (
 
 PANEL_TRADE_PLAN = ROOT / "UI" / "Panel" / "Rows" / "PanelTradePlanRowsRenderer.cs"
 PANEL_TRADE_PLAN_CODE = PANEL_TRADE_PLAN.read_text(encoding="utf-8")
-if PANEL_TRADE_PLAN.stat().st_size > 4096:
+if normalized_source_size(PANEL_TRADE_PLAN) > 4096:
     raise SystemExit("PanelTradePlanRowsRenderer.cs must remain a composition boundary")
 for token in (
     "RenderPanelTradePlanLevelRows(",
@@ -2135,7 +2142,7 @@ for path, tokens in {
 # Pending placement boundary.
 PENDING_STOP = ROOT / "Trading" / "Pending" / "Placement" / "ContinuationStopPlacement.cs"
 PENDING_STOP_CODE = PENDING_STOP.read_text(encoding="utf-8")
-if PENDING_STOP.stat().st_size > 4096:
+if normalized_source_size(PENDING_STOP) > 4096:
     raise SystemExit("ContinuationStopPlacement.cs must remain a placement orchestration boundary")
 for token in (
     "PrepareContinuationStopForCbot(",
@@ -2151,7 +2158,7 @@ if not PENDING_STOP_PREP.exists() or "BuildStructuralStop(" not in PENDING_STOP_
 
 PENDING_LIMIT = ROOT / "Trading" / "Pending" / "Placement" / "ReversalLimitPlacement.cs"
 PENDING_LIMIT_CODE = PENDING_LIMIT.read_text(encoding="utf-8")
-if PENDING_LIMIT.stat().st_size > 4096:
+if normalized_source_size(PENDING_LIMIT) > 4096:
     raise SystemExit("ReversalLimitPlacement.cs must remain a placement orchestration boundary")
 for token in (
     "TryPrepareReversalLimit(",
@@ -2191,7 +2198,7 @@ for token in (
 # Aggressive execution boundary.
 AGGRESSIVE_PRETRADE = ROOT / "Trading" / "Execution" / "Aggressive" / "AggressivePreTradePreparation.cs"
 AGGRESSIVE_PRETRADE_CODE = AGGRESSIVE_PRETRADE.read_text(encoding="utf-8")
-if AGGRESSIVE_PRETRADE.stat().st_size > 4096:
+if normalized_source_size(AGGRESSIVE_PRETRADE) > 4096:
     raise SystemExit("AggressivePreTradePreparation.cs must remain an orchestration boundary")
 for token in (
     "PassAggressivePreTradeEligibility(",
@@ -2223,7 +2230,7 @@ for path, token in (
 # Live target progression boundary.
 TARGET_PROGRESSION = ROOT / "Trading" / "LiveManagement" / "TargetProgression.cs"
 TARGET_PROGRESSION_CODE = TARGET_PROGRESSION.read_text(encoding="utf-8")
-if TARGET_PROGRESSION.stat().st_size > 8192:
+if normalized_source_size(TARGET_PROGRESSION) > 8192:
     raise SystemExit("TargetProgression.cs must remain a live target orchestration owner")
 for token in (
     "BuildTargetLevels(",
@@ -2273,13 +2280,13 @@ for path, declarations in {
     for declaration in declarations:
         if declaration not in code:
             raise SystemExit(f"Reward-path owner declaration missing: {declaration}")
-    if path.stat().st_size > 8192:
+    if normalized_source_size(path) > 8192:
         raise SystemExit(f"Reward-path owner is too large: {path}")
 
 # Market-frame analysis boundary.
 MARKET_FRAME_ANALYZER = ROOT / "Analysis" / "Market" / "MarketFrameAnalyzer.cs"
 MARKET_FRAME_ANALYZER_CODE = MARKET_FRAME_ANALYZER.read_text(encoding="utf-8")
-if MARKET_FRAME_ANALYZER.stat().st_size > 4096:
+if normalized_source_size(MARKET_FRAME_ANALYZER) > 4096:
     raise SystemExit("MarketFrameAnalyzer.cs must remain a thin orchestration boundary")
 if "BuildMarketFrameEvidence(" not in MARKET_FRAME_ANALYZER_CODE:
     raise SystemExit("MarketFrameAnalyzer must delegate evidence construction")
@@ -2298,7 +2305,7 @@ for token in ("AddScore(", "BuildOssIndicatorSnapshot(", "BullStructure(", "Find
 # Calculation-cycle orchestration boundary.
 CALCULATION_CYCLE = ROOT / "Runtime" / "Calculation" / "CalculationCycle.cs"
 CALCULATION_CYCLE_CODE = CALCULATION_CYCLE.read_text(encoding="utf-8")
-if CALCULATION_CYCLE.stat().st_size > 4096:
+if normalized_source_size(CALCULATION_CYCLE) > 4096:
     raise SystemExit("CalculationCycle.cs must remain a thin orchestration boundary")
 if len(re.findall(r"\bpublic\s+override\s+void\s+Calculate\s*\(", CALCULATION_CYCLE_CODE)) != 1:
     raise SystemExit("CalculationCycle must own exactly one Calculate override")
