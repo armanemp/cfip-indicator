@@ -24,7 +24,10 @@ LEGACY_FILES = {
     "Indicator/Parameters.cs", "Indicator/Models.cs", "Core/Enums.cs",
 }
 
-files = sorted(ROOT.rglob("*.cs"))
+files = sorted(
+    p for p in ROOT.rglob("*.cs")
+    if not any(part in {"bin", "obj"} for part in p.relative_to(ROOT).parts)
+)
 rel = {str(p.relative_to(ROOT)).replace("\\", "/") for p in files}
 bad_legacy = sorted(LEGACY_FILES & rel)
 if bad_legacy:
