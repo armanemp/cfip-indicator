@@ -91,7 +91,6 @@ namespace cAlgo
                 private int _lastConfirmedDirection = 0;
                 private int _lastExitM5 = -1;
                 private bool _outcomeRegistered;
-                private int _lastAutoM5 = -1;
                 private int _lastEarlyAlertM5 = -1;
                 private int _lastActionableEntryAlertM5 = -1;
                 private int _lastActionableEntryAlertDirection = 0;
@@ -251,10 +250,6 @@ namespace cAlgo
 
                 private int _dailyLossTransactionCount = -1;
 
-                private bool _dailyLossDataReady;
-
-                private bool _dailyLossHistoryAvailable;
-
                 private bool _dailyLossTransactionsAvailable;
 
                 private DateTime _lastDailyLossSharedStateReloadUtc =
@@ -262,15 +257,12 @@ namespace cAlgo
 
                 private bool _dailyLossLocked;
 
-                private DailyLossEvaluation _dailyLossEvaluation;
-
                 private DateTime _lastDailyLossPersistUtc = DateTime.MinValue;
 
                 private string _dailyLossStateReason = "NOT EVALUATED";
 
                 private DateTime _lastRestrictionAlertUtc = DateTime.MinValue;
                 private int _lastPendingCleanupM5 = -1;
-                private int _lastAutoTradingReminderM5 = -1;
                 private int _lastVisualDirection = 0;
                 private string _lastAlertMessage = "";
                 private int _lastAlertDirection;
