@@ -111,7 +111,7 @@ namespace cAlgo
                 bool recreate =
                     label == null ||
                     label.Time != expectedTime ||
-                    label.HorizontalAlignment != HorizontalAlignment.Right ||
+                    label.HorizontalAlignment != HorizontalAlignment.Left ||
                     label.VerticalAlignment != VerticalAlignment.Center ||
                     label.FontSize != CompactPlanLabelFontSize ||
                     label.IsBold;
@@ -155,7 +155,7 @@ namespace cAlgo
                 label.IsBold =
                     false;
                 label.HorizontalAlignment =
-                    HorizontalAlignment.Right;
+                    HorizontalAlignment.Left;
                 label.VerticalAlignment =
                     VerticalAlignment.Center;
                 label.IsInteractive =

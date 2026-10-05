@@ -1,17 +1,3 @@
-## 2026-10-05 — PR #339 Canonical Label Clearance Correction
-
-Status: **MERGED — CI VERIFIED / TARGET-TERMINAL VISUAL REVALIDATION PENDING**.
-
-Fresh target-terminal evidence showed the previous left-aligned presentation allowed the complete level-label text to reach/intersect the signal-line start. The actual required spatial contract is: the complete label remains on the left side of the line, with its visible right edge exactly one chart bar before the canonical line start.
-
-PR #339 merged to `main` as `c8df96cf5c678d6fd83b6414f12c17f40e4d3328`.
-
-Canonical implementation now uses native `ChartText` `HorizontalAlignment.Right` while retaining the existing single `PlanLabelAnchorCalculator` one-bar gap, DateTime/OpenTime coordinates, 11px regular typography, exact line color, background-free rendering and shared label ownership for canonical/pending/parallel/prediction paths.
-
-Exact PR #339 head gates: Source/Architecture PASS, Runtime Acceptance PASS, cTrader Compile PASS.
-
-Fresh Release build + target-terminal visual evidence is still required before DEF-P1-004 / CI-18 visual acceptance is closed. No strategy, MTF role, signal scoring or broker-mutation authority changed.
-
 # 2026-10-04 — Canonical Forensic Remediation Reset
 
 ## Permanent progress reporting
@@ -33,7 +19,7 @@ PR #338 merged to `main` as `55d2ad4f146f373374e348bd706620f0831c13db`.
 Canonical contract:
 - `PlanLineRenderer` owns signal-line geometry and the final materialized line color.
 - `PlanLabelAnchorCalculator` is the sole owner of the horizontal gap and resolves the label anchor exactly one chart bar before the canonical line start in the same `Bars.OpenTimes` DateTime/OpenTime coordinate system used by the native label creation path.
-- `PlanLabelRenderer` is the sole native `ChartText` label owner; labels are 11px, regular-weight, exact-price, background-free and right-aligned. The visible right edge of the complete label text is anchored one chart bar before the canonical line start.
+- `PlanLabelRenderer` is the sole native `ChartText` label owner; labels are 11px, regular-weight, exact-price, background-free and `HorizontalAlignment.Left`. The visible start of the label text is anchored one chart bar before the canonical line start.
 - Label text uses exactly the same materialized color as its corresponding line.
 - Pending, parallel and prediction label paths reuse the same canonical renderer/anchor/formatter instead of creating a second geometry or presentation authority.
 - Obsolete `CFIP.cBot/Execution/CbotExecutionSettings.cs` was removed; current cBot execution settings remain owned by the active cBot execution-settings contract.
