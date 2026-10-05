@@ -107,14 +107,7 @@ namespace cAlgo
                     executionLabel))
                 return null;
 
-            DateTime? expiryUtc =
-                action == ExecutionAction.PendingStop ||
-                action == ExecutionAction.PendingLimit
-                    ? createdUtc.AddMinutes(
-                        Math.Max(
-                            15,
-                            PendingOrderExpiryMinutes))
-                    : (DateTime?)null;
+            DateTime? expiryUtc = null;
 
             ContractIdentity identity =
                 new ContractIdentity(
