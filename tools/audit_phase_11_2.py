@@ -53,7 +53,7 @@ require(
 require(
     LABEL,
     r"HorizontalAlignment\s*=\s*\n\s*HorizontalAlignment\.Right",
-    "right-aligned level labels at the left-of-line anchor",
+    "left-aligned level labels at the left-of-line anchor",
 )
 require(
     LABEL,
