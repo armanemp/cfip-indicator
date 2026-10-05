@@ -136,6 +136,143 @@ namespace CFIP.cBot
             MaxValue = 300)]
         public int ManagementCommandMaxAgeSeconds { get; set; }
 
+        [Parameter(
+            "Enable Automatic Trading",
+            Group = "Execution Policy",
+            DefaultValue = false)]
+        public bool EnableAutoTrading { get; set; }
+
+        [Parameter(
+            "Enable Automatic Orders",
+            Group = "Execution Policy",
+            DefaultValue = false)]
+        public bool EnableAutomaticOrders { get; set; }
+
+        [Parameter(
+            "Pending Order Expiry Minutes",
+            Group = "Execution Policy",
+            DefaultValue = 120,
+            MinValue = 15,
+            MaxValue = 1440)]
+        public int PendingOrderExpiryMinutes { get; set; }
+
+        [Parameter(
+            "Use Market Hours Guard",
+            Group = "Execution Safety",
+            DefaultValue = true)]
+        public bool UseMarketHoursGuard { get; set; }
+
+        [Parameter(
+            "Session Start UTC",
+            Group = "Execution Safety",
+            DefaultValue = 6,
+            MinValue = 0,
+            MaxValue = 23)]
+        public int SessionStartUtc { get; set; }
+
+        [Parameter(
+            "Session End UTC",
+            Group = "Execution Safety",
+            DefaultValue = 20,
+            MinValue = 0,
+            MaxValue = 23)]
+        public int SessionEndUtc { get; set; }
+
+        [Parameter(
+            "Use Spread Filter",
+            Group = "Execution Safety",
+            DefaultValue = true)]
+        public bool UseSpreadFilter { get; set; }
+
+        [Parameter(
+            "Maximum Spread / Stop Risk Ratio",
+            Group = "Execution Safety",
+            DefaultValue = 0.18,
+            MinValue = 0.02,
+            MaxValue = 0.50,
+            Step = 0.01)]
+        public double MaximumSpreadToStopRiskRatio { get; set; }
+
+        [Parameter(
+            "Enable Daily Loss Limit",
+            Group = "Execution Safety",
+            DefaultValue = true)]
+        public bool EnableDailyLossLimit { get; set; }
+
+        [Parameter(
+            "Maximum Daily Loss Percent",
+            Group = "Execution Safety",
+            DefaultValue = 3.0,
+            MinValue = 0.5,
+            MaxValue = 20,
+            Step = 0.5)]
+        public double MaximumDailyLossPercent { get; set; }
+
+        [Parameter(
+            "Maximum Open Positions",
+            Group = "Execution Safety",
+            DefaultValue = 1,
+            MinValue = 1,
+            MaxValue = 1)]
+        public int MaximumOpenPositions { get; set; }
+
+        [Parameter(
+            "One Order Per Signal",
+            Group = "Execution Safety",
+            DefaultValue = true)]
+        public bool OneOrderPerSignal { get; set; }
+
+        [Parameter(
+            "Managed Actions Only",
+            Group = "Execution Safety",
+            DefaultValue = true)]
+        public bool ManagedActionsOnly { get; set; }
+
+        [Parameter(
+            "Auto Trade Label",
+            Group = "Execution Identity",
+            DefaultValue = "CFIP-SMART")]
+        public string AutoTradeLabel { get; set; }
+
+        [Parameter(
+            "Enable Live Exit Management",
+            Group = "Management",
+            DefaultValue = false)]
+        public bool EnableLiveExitManagement { get; set; }
+
+        [Parameter(
+            "Enable Partial Take Profit",
+            Group = "Management",
+            DefaultValue = false)]
+        public bool EnablePartialTakeProfit { get; set; }
+
+        [Parameter(
+            "Smart Broker Protection",
+            Group = "Management",
+            DefaultValue = true)]
+        public bool AutoBrokerProtection { get; set; }
+
+        [Parameter(
+            "Auto Protect Broker Positions",
+            Group = "Management",
+            DefaultValue = false)]
+        public bool AutoProtectBrokerPositions { get; set; }
+
+        [Parameter(
+            "Sync Smart Broker Take Profit",
+            Group = "Management",
+            DefaultValue = true)]
+        public bool SyncBrokerTakeProfit { get; set; }
+
+        [Parameter(
+            "Broker Modify Cooldown ms",
+            Group = "Management",
+            DefaultValue = 750,
+            MinValue = 100,
+            MaxValue = 5000,
+            Step = 50)]
+        public int BrokerModifyCooldownMs { get; set; }
+
         private readonly DemoMarketExecutionCoordinator _market =
             new DemoMarketExecutionCoordinator();
 
@@ -195,29 +332,36 @@ namespace CFIP.cBot
         private string _lastObservedEnvelopeInstanceId = "";
 
         private bool EffectiveMarketExecutionEnabled =>
-            Account.IsLive
+            EnableAutoTrading &&
+            (Account.IsLive
                 ? EnableLiveMarketExecution
-                : EnableDemoMarketExecution;
+                : EnableDemoMarketExecution);
 
         private bool EffectivePendingStopExecutionEnabled =>
-            Account.IsLive
+            EnableAutoTrading &&
+            EnableAutomaticOrders &&
+            (Account.IsLive
                 ? EnableLivePendingStopExecution
-                : EnableDemoPendingStopExecution;
+                : EnableDemoPendingStopExecution);
 
         private bool EffectivePendingLimitExecutionEnabled =>
-            Account.IsLive
+            EnableAutoTrading &&
+            EnableAutomaticOrders &&
+            (Account.IsLive
                 ? EnableLivePendingLimitExecution
-                : EnableDemoPendingLimitExecution;
+                : EnableDemoPendingLimitExecution);
 
         private bool EffectiveAggressiveExecutionEnabled =>
-            Account.IsLive
+            EnableAutoTrading &&
+            (Account.IsLive
                 ? EnableLiveAggressiveExecution
-                : EnableDemoAggressiveExecution;
+                : EnableDemoAggressiveExecution);
 
         private bool EffectiveManagementExecutionEnabled =>
-            Account.IsLive
+            EnableAutoTrading &&
+            (Account.IsLive
                 ? EnableLiveManagementExecution
-                : EnableDemoManagementExecution;
+                : EnableDemoManagementExecution);
 
         private int EffectiveSessionExecutionCap =>
             Math.Max(
