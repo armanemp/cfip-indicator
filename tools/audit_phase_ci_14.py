@@ -31,6 +31,7 @@ live_exit = read("src/CFIP.Indicator/Core/Math/LiveExitGeometryRule.cs")
 target_envelope = read("src/CFIP.Indicator/Core/Math/TargetRewardEnvelopeRule.cs")
 target_preparation = read("src/CFIP.Indicator/Planning/TradePlan/PlanTargetPreparation.cs")
 plan_reward = read("src/CFIP.Indicator/Planning/TradePlan/PlanRewardIntegrityValidator.cs")
+plan_integrity = read("src/CFIP.Indicator/Planning/TradePlan/PlanIntegrityValidator.cs")
 actionability = read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityEvaluator.cs")
 auto_pretrade = read("src/CFIP.Indicator/Trading/Execution/AutomaticMarket/AutomaticMarketPreTradeEligibility.cs")
 auto_submission = read("src/CFIP.Indicator/Trading/Execution/AutomaticMarket/AutomaticMarketSubmissionValidator.cs")
@@ -90,8 +91,8 @@ check(
 
 check(
     "stored plan reward validation uses the same spread policy",
-    "ValidatePlanRewardStructure(" in reward_integrity and
-    "double spread)" in reward_integrity and
+    "ValidatePlanRewardStructure(" in plan_reward and
+    "double spread)" in plan_reward and
     "checkSpread" in plan_integrity and
     "Symbol.Ask - Symbol.Bid" in plan_integrity,
 )
