@@ -35,14 +35,14 @@ namespace CFIP.cBot.Execution
 
             if (!settings.EnableAutoTrading)
             {
-                reason = "AUTO TRADING DISABLED IN INDICATOR";
+                reason = "CBOT AUTO TRADING DISABLED";
                 return false;
             }
 
             if (pendingAction &&
                 !settings.EnableAutomaticOrders)
             {
-                reason = "AUTOMATIC ORDERS DISABLED IN INDICATOR";
+                reason = "CBOT AUTOMATIC ORDERS DISABLED";
                 return false;
             }
 
