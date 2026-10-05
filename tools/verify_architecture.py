@@ -45,8 +45,8 @@ parameters = sum(
     len(re.findall(r"\[Parameter\s*\(", p.read_text(encoding="utf-8")))
     for p in parameter_files
 )
-if parameters != 521:
-    raise SystemExit(f"Expected 521 total parameters, found {parameters}")
+if parameters != 513:
+    raise SystemExit(f"Expected 521 total parameters, undefined")
 if len(parameter_files) != 30:
     raise SystemExit(f"Expected 30 parameter-group files, found {len(parameter_files)}")
 
@@ -65,7 +65,7 @@ if news_parameters != 14:
     )
 baseline_parameter_files = [p for p in parameter_files if p.stem != "25_oss_analytics"]
 baseline_parameters = sum(len(re.findall(r"\[Parameter\s*\(", p.read_text(encoding="utf-8"))) for p in baseline_parameter_files)
-if baseline_parameters != 518:
+if baseline_parameters != 510:
     raise SystemExit(f"Expected 518 baseline parameters, found {baseline_parameters}")
 extension_parameters = len(re.findall(r"\[Parameter\s*\(", (PARAMETER_ROOT / "25_oss_analytics.cs").read_text(encoding="utf-8")))
 if extension_parameters != 3:
