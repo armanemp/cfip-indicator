@@ -33,10 +33,8 @@ private void AddLevel(
                                             if (age <= 5)
                                                 score += 15;
                                 
-                                            if (timeframe == "H1" ||
-                                                timeframe == "H4" ||
-                                                timeframe == "D1" ||
-                                                timeframe == "W1")
+                                            if (StructuralTimeframeRule.IsHigherThanM5(
+                                                    timeframe))
                                                 score += 8;
                                 
                                             if (kind.IndexOf(
