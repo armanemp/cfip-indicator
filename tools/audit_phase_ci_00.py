@@ -51,6 +51,15 @@ automatic_pretrade = ""
 runtime_project = read("tools/CFIP.Runtime.Contracts/CFIP.Runtime.Contracts.csproj")
 runtime = read("tools/CFIP.Runtime.Contracts/Program.cs")
 workflow = read(".github/workflows/source-check.yml")
+live_cycle = read(
+    "src/CFIP.Indicator/Runtime/Calculation/CalculationLiveCycle.cs"
+)
+provider_refresh = read(
+    "src/CFIP.Indicator/Runtime/Provider/CFIPReadOnlyProviderRefresh.cs"
+)
+provider_plan = read(
+    "src/CFIP.Indicator/Runtime/Provider/CFIPReadOnlyProviderPlan.cs"
+)
 
 
 check(
@@ -61,7 +70,11 @@ check(
     and "Midpoint" in canonical
     and "SpreadPips" in canonical
     and "PipSize" in canonical
-    and "TickSize" in canonical,
+    and "TickSize" in canonical
+    and "IsPriceMetadataValid" in canonical
+    and "IsObservationTimeValid" in canonical
+    and "IsUsableForExecution" in canonical
+    and "DateTime.SpecifyKind" in canonical,
 )
 
 check(
@@ -118,6 +131,31 @@ for name, source in checks:
     )
 
 check(
+    "live calculations refresh one canonical quote before reaction/actionability",
+    "RefreshCanonicalMarketQuote();" in live_cycle
+    and "GetCanonicalPriceSnapshot();" in live_cycle
+    and "priceSnapshot.IsUsableForExecution" in live_cycle,
+)
+
+check(
+    "provider refresh uses canonical observed time and provider intent fails closed",
+    "RefreshCanonicalMarketQuote();" in provider_refresh
+    and "priceSnapshot.ObservedUtc" in provider_refresh
+    and "priceSnapshot.IsUsableForExecution" in provider_plan
+    and "priceSnapshot.PipSize" in provider_plan,
+)
+
+check(
+    "execution-critical indicator consumers do not read Symbol quote state directly",
+    "Symbol.Ask" not in live_cycle
+    and "Symbol.Bid" not in live_cycle
+    and "Symbol.Ask" not in provider_refresh
+    and "Symbol.Bid" not in provider_refresh
+    and "Symbol.Ask" not in provider_plan
+    and "Symbol.Bid" not in provider_plan,
+)
+
+check(
     "price normalization uses canonical tick/digits",
     "CanonicalPriceSnapshot market" in price_math
     and "market.TickSize" in price_math
@@ -137,6 +175,19 @@ check(
     and "pip broker distances convert to price distance consistently" in runtime
     and "percentage broker distances use the executable reference price" in runtime
     and "invalid crossed quote cannot become an executable price" in runtime,
+)
+
+check(
+    "cBot remains live broker quote truth at final execution boundary",
+    "LIVE QUOTE INVALID" in read(
+        "src/CFIP.cBot/Execution/CbotExecutionEnvironmentGate.cs"
+    )
+    and "robot.Symbol.Ask -" in read(
+        "src/CFIP.cBot/Execution/CbotExecutionEnvironmentGate.cs"
+    )
+    and "robot.Symbol.Bid" in read(
+        "src/CFIP.cBot/Execution/CbotExecutionEnvironmentGate.cs"
+    ),
 )
 
 check(
