@@ -15,16 +15,53 @@ namespace cAlgo
     public partial class CFIPIndicator : Indicator
     {
         private Color PanelDirectionColor(
-                                    int direction)
-                                {
-                                    if (direction == 1)
-                                        return BuyArrowColor;
-                        
-                                    if (direction == -1)
-                                        return SellArrowColor;
-                        
-                                    return PanelTextColor;
-                                }
+            int direction)
+        {
+            if (direction == 0)
+                return PanelTextColor;
+
+            SignalVisualSnapshot snapshot =
+                _renderSignalVisualSnapshot;
+
+            if (snapshot != null &&
+                snapshot.MtfTrendDirection == direction &&
+                snapshot.MtfTrendStrengthLevel > 0)
+            {
+                return PanelNineLevelPresentationRule.ResolveColor(
+                    direction,
+                    snapshot.MtfTrendStrengthLevel,
+                    StrongBuyArrowColor,
+                    StrongSellArrowColor,
+                    ConfirmedBuyArrowColor,
+                    ConfirmedSellArrowColor,
+                    CautionBuyArrowColor,
+                    CautionSellArrowColor,
+                    BlockedReactionArrowColor);
+            }
+
+            PanelTimeframePresentationState m15State =
+                ResolvePanelTimeframeState(_m15Frame);
+
+            if (m15State.Direction == direction &&
+                m15State.Level > 0)
+                return m15State.Color;
+
+            PanelTimeframePresentationState h1State =
+                ResolvePanelTimeframeState(_h1Frame);
+
+            if (h1State.Direction == direction &&
+                h1State.Level > 0)
+                return h1State.Color;
+
+            PanelTimeframePresentationState m5State =
+                ResolvePanelTimeframeState(_m5Frame);
+
+            if (m5State.Direction == direction &&
+                m5State.Level > 0)
+                return m5State.Color;
+
+            return PanelTextColor;
+        }
         
         private int GetMarketBiasDirection()
                                 {
