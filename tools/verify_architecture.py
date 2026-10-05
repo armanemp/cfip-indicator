@@ -930,11 +930,11 @@ if "_entryArmed = false;" not in runtime_fault_machine_code:
 if "if (explicitEnableTransition &&" not in runtime_fault_machine_code:
     raise SystemExit("Runtime fault state machine must require an explicit enable transition for re-arm")
 
-if "CanAutomaticEntryProceed" not in runtime_fault_boundary_code:
-    raise SystemExit("Runtime fault boundary must expose the automatic-entry gate")
+if "RecordRecoverableFault(" not in runtime_fault_boundary_code:
+    raise SystemExit("Runtime fault boundary must record recoverable runtime faults")
 
-if "RecordRecoverableFault(" not in runtime_fault_boundary_code or    "BlockAutomaticEntry(" not in runtime_fault_boundary_code:
-    raise SystemExit("Runtime fault boundary must block entry through the state machine")
+if "MarkManagementReadyForRecovery(" not in runtime_fault_boundary_code:
+    raise SystemExit("Runtime fault boundary must preserve management-recovery readiness")
 
 if "ApplyRuntimeFaultState();" not in runtime_fault_boundary_code:
     raise SystemExit("Runtime fault state must be reflected in runtime authority")
