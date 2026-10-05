@@ -57,7 +57,8 @@ check(
     "MTF context resolves all eight canonical closed indices from one reference",
     mtf.count("ClosedIndex(") == 8 and
     "BuildMtfClosedContext(" in mtf and
-    "reference," in mtf
+    "DateTime normalizedReference" in mtf and
+    "normalizedReference)" in mtf
 )
 
 check(
