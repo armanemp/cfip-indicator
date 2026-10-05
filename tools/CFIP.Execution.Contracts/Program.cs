@@ -11,6 +11,7 @@ namespace cAlgo
             VerifyConfirmedPendingOrderIsAdopted();
             VerifyMissingEntitiesAreRejected();
             VerifyMutationSuccessRequiresResult();
+            VerifyContractVersionDecodeBoundary();
 
             VerifyLifecycleEventIdempotency();
             Console.WriteLine("Execution contracts OK");
@@ -114,6 +115,25 @@ namespace cAlgo
         }
 
 
+
+        private static void VerifyContractVersionDecodeBoundary()
+        {
+            Assert(
+                !CbotExecutionStateCodec.TryDeserializePresence(
+                    "{\"ContractVersion\":999}",
+                    out _),
+                "unsupported cBot presence contract version");
+
+            Assert(
+                !CbotExecutionStateCodec.TryDeserialize(
+                    "{\"ContractVersion\":999}",
+                    out _),
+                "unsupported cBot execution-state contract version");
+
+            Assert(
+                ContractVersion.Current == 2,
+                "current contract version remains canonical");
+        }
 
         private static void Assert(bool condition, string name)
         {
