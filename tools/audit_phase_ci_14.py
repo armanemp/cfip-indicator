@@ -52,6 +52,8 @@ signal_trace = read("src/CFIP.Indicator/Trading/Intelligence/SignalEvaluationTra
 structural_stop = read("src/CFIP.Indicator/Planning/TradePlan/StructuralStopCandidateEvaluator.cs")
 execution_prep = read("src/CFIP.Indicator/Trading/Execution/ExecutionPlanPreparation.cs")
 fill_reconciler = read("src/CFIP.Indicator/Trading/Lifecycle/LiveFillExitReconciler.cs")
+target_builder = read("src/CFIP.Indicator/Planning/TradePlan/TargetLevelBuilder.cs")
+target_state = read("src/CFIP.Indicator/Indicator/State.cs")
 
 check(
     "canonical RR owner exposes risk/reward/effective-RR fields",
