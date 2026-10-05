@@ -166,7 +166,7 @@ namespace CFIP.cBot
         private readonly CbotLifecycleAudioService _audio =
             new CbotLifecycleAudioService();
 
-        private CbotIndicatorExecutionSettings _executionSettings;
+        private CbotExecutionSettings _executionSettings;
 
         private CbotBrokerReconciliationResult _reconciliation;
         private readonly Dictionary<string, SignalEnvelope> _scenarioEnvelopes =
@@ -998,24 +998,13 @@ namespace CFIP.cBot
                 _executionSettings != null)
                 return;
 
-            if (!CfipIndicatorChartBinding.TryFind(
-                    this,
-                    _boundIndicatorInstanceId,
-                    out ChartIndicator indicator,
-                    out string reason))
-            {
-                _executionSettings = null;
-                LogBlockedState(reason);
-                return;
-            }
+            CbotExecutionSettings settings =
+                CbotExecutionSettings.Create(this);
 
-            if (!CbotIndicatorExecutionSettings.TryRead(
-                    indicator,
-                    out CbotIndicatorExecutionSettings settings,
-                    out reason))
+            if (settings == null)
             {
                 _executionSettings = null;
-                LogBlockedState(reason);
+                LogBlockedState("CBOT EXECUTION SETTINGS UNAVAILABLE");
                 return;
             }
 
