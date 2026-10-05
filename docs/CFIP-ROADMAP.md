@@ -585,6 +585,12 @@ These requirements are treated as acceptance targets and must be verified agains
 - Chart geometry must not be recreated by panel, alert or cBot code.
 
 ## Panel/runtime contract
+- The panel includes a compact realtime **LIVE DATA FLOW** card owned by one renderer.
+- It displays current-bar tick-volume load plus estimated buy/sell pressure and delta; it must never label bar-direction estimates as true bid/ask volume.
+- Buy/sell bars use bounded intensity/width so low activity remains visible without allowing high-volume states to overflow the panel.
+- The card refreshes through the existing bounded 500ms panel content heartbeat and must not trigger full panel layout rebuilds.
+
+
 - Panel state, chart state, alert state and execution state must derive from the same authoritative semantic result.
 - Indicator and cBot identity must be visible with meaningful names; source/assembly placeholders must not be presented as operator identity.
 - The panel must clearly distinguish Indicator analysis state from cBot attachment/execution state.
