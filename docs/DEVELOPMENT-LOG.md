@@ -4125,3 +4125,10 @@ Next package boundary: **WP-05 — Preflight remains PASS + TERMINAL PENDING; 13
 
 Operator action: pull canonical `main` before target-terminal validation.
 
+
+### 2026-10-06 — Realtime panel data-flow visualization
+- Added a single-owner LIVE DATA FLOW card to the Indicator panel.
+- Uses the existing 500ms bounded content heartbeat; no full panel/layout rebuild is triggered by the card.
+- Shows current M5 tick-volume load, estimated BUY/SELL pressure, delta and relative data-load intensity.
+- Buy/sell pressure is explicitly an estimate derived from bar position because cTrader Bars exposes tick volume but not a canonical bid/ask volume series at bar level.
+- Added CI-17A static guards and recorded the presentation contract in CFIP-ROADMAP.md.
