@@ -5391,6 +5391,61 @@ namespace cAlgo
                     Utc(12, 30),
                     index => opens[index]) == 2,
                 "reference after last open is bounded to last closed bar");
+
+            DateTime unspecified =
+                new DateTime(
+                    2026,
+                    1,
+                    1,
+                    12,
+                    5,
+                    0,
+                    DateTimeKind.Unspecified);
+
+            Assert(
+                ClosedBarReferenceRule.ResolveClosedIndex(
+                    opens.Length,
+                    unspecified,
+                    index => opens[index]) == 0,
+                "unspecified reference is interpreted by canonical UTC semantics");
+
+            DateTime[] unspecifiedOpens =
+            {
+                new DateTime(2026, 1, 1, 12, 0, 0, DateTimeKind.Unspecified),
+                new DateTime(2026, 1, 1, 12, 5, 0, DateTimeKind.Unspecified),
+                new DateTime(2026, 1, 1, 12, 15, 0, DateTimeKind.Unspecified),
+                new DateTime(2026, 1, 1, 12, 20, 0, DateTimeKind.Unspecified)
+            };
+
+            Assert(
+                ClosedBarReferenceRule.ResolveClosedIndex(
+                    unspecifiedOpens.Length,
+                    unspecified,
+                    index => unspecifiedOpens[index]) == 0,
+                "unspecified bar timestamps use the same canonical UTC ordering");
+
+            Assert(
+                !ClosedBarReferenceRule.IsFullyClosed(
+                    opens.Length,
+                    1,
+                    DateTime.MinValue,
+                    index => opens[index]),
+                "missing reference cannot authorize a closed bar");
+
+            DateTime[] invalidOpens =
+            {
+                DateTime.MinValue,
+                Utc(12, 5),
+                Utc(12, 15),
+                Utc(12, 20)
+            };
+
+            Assert(
+                ClosedBarReferenceRule.ResolveClosedIndex(
+                    invalidOpens.Length,
+                    Utc(12, 15),
+                    index => invalidOpens[index]) == -1,
+                "invalid bar timestamp fails closed");
         }
 
         private static DateTime Utc(int hour, int minute)
