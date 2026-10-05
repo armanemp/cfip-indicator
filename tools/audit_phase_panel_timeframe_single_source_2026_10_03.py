@@ -81,3 +81,25 @@ check(
 )
 
 print("Panel timeframe single-source-of-truth audit PASS")
+
+
+# Nine-level visual coherence: arrows, timeframe lamps and written timeframe
+# statuses must share the same presentation/color owner.
+nine = read("UI/Panel/PanelNineLevelPresentationRule.cs")
+timeframe_state = read("UI/Panel/PanelTimeframePresentationState.cs")
+lamp = read("UI/Panel/PanelTrendTimeframeLampRow.cs")
+text_format = read("UI/Panel/PanelTextFormatting.cs")
+signal_status = read("UI/Panel/PanelCanonicalSignalStatus.cs")
+arrow = read("UI/Chart/SignalStackedArrowRenderer.cs")
+
+check(
+    "nine-level visual owner is shared by arrows, lamps and timeframe text",
+    "class PanelNineLevelPresentationRule" in nine and
+    "ResolveColor(" in nine and
+    "LevelLabel(" in nine and
+    "PanelNineLevelPresentationRule.ResolveColor(" in timeframe_state and
+    "PanelNineLevelPresentationRule.ResolveColor(" in arrow and
+    "PanelNineLevelPresentationRule.LevelLabel(" in text_format and
+    "PanelNineLevelPresentationRule.LevelLabel(" in signal_status,
+    "arrows, lamps and panel status text must share one nine-level visual owner",
+)
