@@ -176,7 +176,11 @@ private List<Level> BuildTargetLevels(
                                                         x =>
                                                             IsFinitePositive(
                                                                 x.Price) &&
-                                                            x.Price != entry)
+                                                            x.Price != entry &&
+                                                            IsValidTarget(
+                                                                direction,
+                                                                entry,
+                                                                x.Price))
                                                     .OrderByDescending(
                                                         x => x.Score)
                                                     .ToList();
