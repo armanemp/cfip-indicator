@@ -22,7 +22,7 @@ namespace CFIP.Contracts
             string payload,
             out SignalScenarioBatch batch)
         {
-            batch = null;
+            batch = default(SignalScenarioBatch);
 
             if (string.IsNullOrWhiteSpace(payload))
                 return false;
@@ -53,7 +53,7 @@ namespace CFIP.Contracts
             }
             catch
             {
-                batch = null;
+                batch = default(SignalScenarioBatch);
                 return false;
             }
         }
