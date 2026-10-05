@@ -1,0 +1,26 @@
+<Project>
+  <!--
+    cTrader.Automate derives algo identity from the containing solution/project
+    boundary before the project-level AlgoName property can reliably win.
+    Reassert the single public algo identity at the canonical build target
+    immediately before cTrader extracts metadata.
+  -->
+  <Target Name="CFIP_SetStableAlgoIdentity"
+          BeforeTargets="_ExtractMetadata"
+          Condition="'$(AssemblyName)' == 'CFIPIndicator' Or '$(AssemblyName)' == 'CFIPExecutionBot'">
+    <PropertyGroup Condition="'$(AssemblyName)' == 'CFIPIndicator'">
+      <AlgoName>CFIP Smart Indicator</AlgoName>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(AssemblyName)' == 'CFIPExecutionBot'">
+      <AlgoName>CFIP Smart Execution Bot</AlgoName>
+    </PropertyGroup>
+
+    <PropertyGroup>
+      <_AlgoFileName>$(AlgoName).algo</_AlgoFileName>
+      <_AlgoFilePath>$(OutDir)$(_AlgoFileName)</_AlgoFilePath>
+      <_AlgoMetadataFileName>$(_AlgoFileName).metadata</_AlgoMetadataFileName>
+      <_AlgoMetadataFilePath>$(OutDir)$(_AlgoMetadataFileName)</_AlgoMetadataFilePath>
+    </PropertyGroup>
+  </Target>
+</Project>
