@@ -180,7 +180,8 @@ namespace cAlgo
                                             }
                                         }
 
-                                        if (SyncBrokerTakeProfit &&
+                                        if (_cBotExecutionState != null &&
+                                            _cBotExecutionState.ManagementExecutionEnabled &&
                                             !_serverSideTakeProfitLadderActive)
                                         {
                                             double target =
