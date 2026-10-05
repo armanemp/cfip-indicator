@@ -302,6 +302,12 @@ for relative, source, forbidden in (
             pattern not in source,
         )
 
+check(
+    "plan market constraints fail closed on unknown TP1 smart-target quality",
+    "MinimumSmartTargetQualityForTp1 > 0" in plan_market and
+    "plan.Tp1Quality <= 0" in plan_market
+)
+
 if errors:
     for error in errors:
         print(f"[FAIL] {error}")
