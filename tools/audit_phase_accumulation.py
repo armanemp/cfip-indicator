@@ -156,10 +156,10 @@ label_anchor = read("UI/Chart/PlanLabelAnchorCalculator.cs")
 if (
     "CompactPlanLabelGapBars = 1" not in label_anchor or
     "GetCompactPlanLabelAnchorTime(" not in label_anchor or
-    "canonicalLineLeftBar -\n                CompactPlanLabelGapBars" not in label_anchor
+    not re.search(r"canonicalLineLeftBar\\s*-\\s*CompactPlanLabelGapBars", label_anchor)
 ):
     raise SystemExit("level labels must keep exactly one chart-bar left clearance in the canonical DateTime/OpenTime anchor owner")
-if "HorizontalAlignment.Left" not in compact_label_renderer:
+if "HorizontalAlignment.Right" not in compact_label_renderer:
     raise SystemExit("level labels must use right-aligned text at the left-of-line anchor")
 if "PlanLinePresentationRule.ResolveThickness(" not in line:
     raise SystemExit("plan signal line thickness must use the canonical presentation rule")
@@ -193,7 +193,7 @@ if "ResolveCanonicalPlanLineColor(" not in labels:
     raise SystemExit("level label renderer must consume the canonical signal-line color resolver")
 if "Chart.DrawRectangle(" in labels:
     raise SystemExit("level label renderer must remain background-free")
-if "CompactPlanLabelGapBars = 1" not in label_anchor or "GetCompactPlanLabelAnchorBar(" not in label_anchor or "canonicalLineLeftBar -\n                CompactPlanLabelGapBars" not in label_anchor:
+if "CompactPlanLabelGapBars = 1" not in label_anchor or "GetCompactPlanLabelAnchorTime(" not in label_anchor or not re.search(r"canonicalLineLeftBar\\s*-\\s*CompactPlanLabelGapBars", label_anchor):
     raise SystemExit("level label renderer must retain the one-bar left clearance in the canonical anchor owner")
 
 # Phase 7.4 / G4 — analysis-only panel after execution UI extraction.
