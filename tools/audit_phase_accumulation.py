@@ -159,7 +159,7 @@ if (
     not re.search(r"canonicalLineLeftBar\s*-\s*CompactPlanLabelGapBars", label_anchor)
 ):
     raise SystemExit("level labels must keep exactly one chart-bar left clearance in the canonical DateTime/OpenTime anchor owner")
-if "HorizontalAlignment.Right" not in compact_label_renderer:
+if "HorizontalAlignment.Left" not in compact_label_renderer:
     raise SystemExit("level labels must use right-aligned text at the left-of-line anchor")
 if "PlanLinePresentationRule.ResolveThickness(" not in line:
     raise SystemExit("plan signal line thickness must use the canonical presentation rule")
