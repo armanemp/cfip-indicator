@@ -172,9 +172,8 @@ if "semanticColor" not in compact_label_renderer or "label.Color =" not in compa
 anchor = read("UI/Chart/PlanLabelAnchorCalculator.cs")
 if (
     "CompactPlanLabelGapBars = 1" not in anchor or
-    "GetCompactPlanLabelAnchorBar(" not in anchor or
-    "GetCompactPlanLabelAnchorBar(" not in anchor or
-    "canonicalLineLeftBar -\n                CompactPlanLabelGapBars" not in anchor
+    "GetCompactPlanLabelAnchorTime(" not in anchor or
+    not re.search(r"canonicalLineLeftBar\s*-\s*CompactPlanLabelGapBars", anchor)
 ):
     raise SystemExit("Plan labels must keep exactly one chart-bar left clearance in the canonical anchor owner")
 if "HorizontalAlignment.Right" not in compact_label_renderer:
