@@ -5,7 +5,7 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private const int PanelDataFlowHeight = 96;
+        private const int PanelDataFlowHeight = 86;
         private const int PanelDataFlowTrackHeight = 8;
         private const int PanelDataFlowLookback = 48;
 
@@ -132,7 +132,6 @@ namespace cAlgo
                     Child = content
                 };
 
-            _panelRowsStack.AddChild(_panelDataFlowCard);
             UpdatePanelDataFlowCard();
         }
 
@@ -332,25 +331,23 @@ namespace cAlgo
                 _panelDataFlowBuyTrack.Width = trackWidth;
                 _panelDataFlowSellTrack.Width = trackWidth;
 
-                _panelDataFlowBuyFill.Width =
-                    Math.Max(
-                        3,
-                        trackWidth * buyRatio);
+                double smoothing = 0.42;
+                _panelDataFlowBuyDisplayRatio =
+                    SmoothFlowRatio(_panelDataFlowBuyDisplayRatio, buyRatio, smoothing);
+                _panelDataFlowSellDisplayRatio =
+                    SmoothFlowRatio(_panelDataFlowSellDisplayRatio, sellRatio, smoothing);
+                _panelDataFlowLoadDisplayRatio =
+                    SmoothFlowRatio(_panelDataFlowLoadDisplayRatio, loadRatio, smoothing);
 
+                _panelDataFlowBuyFill.Width =
+                    Math.Max(2, trackWidth * _panelDataFlowBuyDisplayRatio);
                 _panelDataFlowSellFill.Width =
-                    Math.Max(
-                        3,
-                        trackWidth * sellRatio);
+                    Math.Max(2, trackWidth * _panelDataFlowSellDisplayRatio);
 
                 _panelDataFlowBuyFill.BackgroundColor =
-                    Color.FromArgb(
-                        FlowAlpha(buyRatio),
-                        Color.Lime);
-
+                    ResolveFlowFillColor(_panelDataFlowBuyDisplayRatio, Color.Lime);
                 _panelDataFlowSellFill.BackgroundColor =
-                    Color.FromArgb(
-                        FlowAlpha(sellRatio),
-                        Color.Red);
+                    ResolveFlowFillColor(_panelDataFlowSellDisplayRatio, Color.Red);
 
                 _panelDataFlowDeltaValue.ForegroundColor =
                     deltaRatio >= 0
@@ -358,7 +355,7 @@ namespace cAlgo
                         : Color.Red;
 
                 _panelDataFlowLoadValue.ForegroundColor =
-                    ResolveFlowLoadColor(loadRatio);
+                    ResolveFlowLoadColor(_panelDataFlowLoadDisplayRatio);
             }
             catch (Exception ex)
             {
@@ -433,12 +430,24 @@ namespace cAlgo
                     value));
         }
 
-        private int FlowAlpha(double ratio)
+        private double SmoothFlowRatio(
+            double current,
+            double target,
+            double smoothing)
         {
-            return
-                65 +
-                (int)Math.Round(
-                    Clamp01(ratio) * 190);
+            double safeCurrent = Clamp01(current);
+            double safeTarget = Clamp01(target);
+            double factor = Math.Max(0.15, Math.Min(0.75, smoothing));
+            return safeCurrent + ((safeTarget - safeCurrent) * factor);
+        }
+
+        private Color ResolveFlowFillColor(
+            double ratio,
+            Color baseColor)
+        {
+            double intensity = Clamp01(ratio);
+            int alpha = 48 + (int)Math.Round(intensity * 205);
+            return Color.FromArgb(alpha, baseColor);
         }
 
         private Color ResolveFlowLoadColor(double ratio)
@@ -482,6 +491,9 @@ namespace cAlgo
             _panelDataFlowSellTrack = null;
             _panelDataFlowBuyFill = null;
             _panelDataFlowSellFill = null;
+            _panelDataFlowBuyDisplayRatio = 0;
+            _panelDataFlowSellDisplayRatio = 0;
+            _panelDataFlowLoadDisplayRatio = 0;
         }
     }
 }
