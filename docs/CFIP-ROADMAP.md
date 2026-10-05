@@ -26,7 +26,9 @@ CFIP is reviewed as one complete system:
 
 **Market Data → Canonical Time/Price Context → MTF → Indicators/OSS → Structure/Zones/Liquidity/Regime → Evidence → Decision → Entry/Trigger → Plan → Risk → Scenario/Contract → Signal → Alert → Indicator/Contracts/cBot → Preflight → Broker → Broker Truth → Protection/Lifecycle → Outcome/History → Calibration → Presentation**
 
-This roadmap is a gated engineering program, not a feature wishlist. The objective is correctness first, then safety, consistency, robustness, predictive quality, performance and controlled evolution.
+This roadmap is a gated engineering program, not a feature wishlist.
+
+**Dedicated trade-chain roadmap:** `docs/CFIP-TRADE.md` is the canonical detailed roadmap for the complete Analysis → Decision → Plan → Risk → Signal → cBot → Broker → Protection/Lifecycle → Outcome chain. Trade-chain work must follow that document while remaining subject to this repository-wide roadmap and `CFIP_GATE.md`. The objective is correctness first, then safety, consistency, robustness, predictive quality, performance and controlled evolution.
 
 # 2. Non-negotiable laws
 
