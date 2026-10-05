@@ -143,8 +143,7 @@ namespace cAlgo
             }
 
             bool protectionRequired =
-                AutoBrokerProtection ||
-                AutoProtectBrokerPositions;
+                CbotCanManage();
 
             bool protectionMissing =
                 !protectionHealthy;
