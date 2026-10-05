@@ -659,22 +659,49 @@ Every execution can be traced backward to its originating decision/plan and forw
 
 ## T10 — Indicator → cBot Handoff
 
+### Mandatory execution-ownership migration register
+
+This is a required architectural work item, not optional cleanup.
+
+The Indicator must not remain the owner of broker/execution configuration, broker-mutation controls, execution-only switches, or execution-only lifecycle policy. Before T10 can close, every legacy execution-related setting and runtime state must be classified and either:
+
+1. moved to the canonical cBot owner, or
+2. reclassified into a genuine Indicator analysis/actionability/plan concern with a semantic name that no longer implies broker execution.
+
+The migration audit must explicitly cover the legacy execution surface, including:
+
+- automatic trading/order enablement: EnableAutoTrading, EnableAutomaticOrders;
+- pending execution policy: PendingOrderMode, PendingOrderExpiryMinutes, PendingEntryBufferAtr, PendingAutoCleanup;
+- execution-only quality gates: PendingMinimumConfidence, PendingMinimumSmartQuality, PendingMinimumTrendQuality, MinimumAutoConfidence, MinimumAutoSmartQuality, MinimumAutoLevelQuality, ConfirmedSignalsOnly;
+- sizing/risk execution controls: SizingMode, RiskPercentEquity, FixedLots, AggressiveRiskPercentEquity, UseAutoMarginGuard, MaxAutoMarginUsagePercent, MarginBufferPercent, IncludeSpreadInRiskSizing;
+- execution-session/account safety: UseMarketHoursGuard, SessionStartUtc, SessionEndUtc, EnableDailyLossLimit, MaximumDailyLossPercent, MaximumOpenPositions, OneOrderPerSignal, ManagedActionsOnly;
+- broker identity/protection/management: AutoTradeLabel, AutoBrokerProtection, AutoProtectBrokerPositions, ManagedPositionLabel, SyncBrokerTakeProfit, PreventBrokerTpBackwardMove, BrokerModifyCooldownMs, EnableLiveExitManagement, EnablePartialTakeProfit, PartialCloseTp1Percent, PartialCloseTp2Percent, MoveToBreakEvenAfterPartial;
+- execution-path selection: EnableAggressiveAutoEntry, AggressiveMinimumConfidence, AggressiveMinimumEvidence, AggressiveMinimumSmartQuality, AggressiveTpStage, AggressiveRequireSmartAgreement;
+- execution-only reversal/closure policy: EnableReversalProtectionClose, ReversalProtectionMinimumQuality, ReversalCloseMinimumEvidence, ReversalCloseMinimumMtf, ReversalCloseMinimumNetProfit;
+- obsolete Indicator UI/operator controls that must not survive as execution authority: AutoTradingReminder, ShowTradeActionButtons, AlwaysShowSafetyButtons, ActionButtonMargin, ActionButtonWidth, ActionButtonHeight.
+
+The migration must also audit non-parameter execution ownership that is more dangerous than the parameter list itself:
+
+- Indicator-side broker event subscriptions;
+- Indicator-side position/pending-order lifecycle mutation;
+- Indicator-side execution runtime flags/state;
+- Indicator-side direct broker submission, protection, close, or pending-order mutation;
+- Indicator-side execution-policy gates that can authorize/deny broker mutation;
+- cBot reads of execution settings from ChartIndicator.Parameters;
+- compatibility/shim classes that keep an Indicator-owned execution authority alive.
+
+### Mandatory T10 exit gates
+
+- cBot execution settings are cBot-owned and directly parameterized on the cBot;
+- no execution setting is read from the Indicator as an authority source;
+- no Indicator-side execution runtime mirror can authorize broker mutation;
+- no Indicator broker-mutation path remains;
+- strategy thresholds that genuinely belong to Decision/Actionability/Plan remain there under strategy semantics, not Auto* execution semantics;
+- legacy execution settings that are intentionally removed are explicitly recorded as removed, not silently dropped;
+- a static audit fails on any reintroduction of the legacy Indicator execution-owner surface;
+- cBot/Indicator configuration screens are semantically non-overlapping and cannot contradict each other.
+
 ### Audit
-
-- signal transport;
-- scenario-batch transport;
-- provider freshness;
-- chart binding;
-- instance identity;
-- symbol matching;
-- restart/rebind;
-- missing Indicator;
-- stale Indicator;
-- contract-version compatibility;
-- payload validation;
-- cBot does not rebuild analysis.
-
-### Exit
 
 The cBot consumes exactly the Indicator's canonical intent and rejects invalid/stale/mismatched payloads deterministically.
 
