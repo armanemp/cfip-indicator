@@ -85,11 +85,11 @@ require(
 )
 
 require(
-    "GetCompactPlanLabelAnchorBar(" in label_coord and
-    "GetCompactPlanLabelAnchorBar(" in pending_label and
-    "GetCompactPlanLabelAnchorBar(" in parallel_label and
-    "GetCompactPlanLabelAnchorBar(" in anchor and
-    "GetCompactPlanLabelAnchorBar(" in anchor and
+    "GetCompactPlanLabelAnchorTime(" in label_coord and
+    "GetCompactPlanLabelAnchorTime(" in pending_label and
+    "GetCompactPlanLabelAnchorTime(" in parallel_label and
+    "GetCompactPlanLabelAnchorTime(" in anchor and
+    "GetCompactPlanLabelAnchorTime(" in anchor and
     "canonicalLineLeftBar -\n                CompactPlanLabelGapBars" in anchor and
     "CompactPlanLabelGapBars = 1" in anchor,
     "all standard signal label paths must reuse one canonical bar-index anchor with a deterministic one-bar gap",
