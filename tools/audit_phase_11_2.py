@@ -52,8 +52,8 @@ require(
 )
 require(
     LABEL,
-    r"HorizontalAlignment\s*=\s*\n\s*HorizontalAlignment\.Left",
-    "left-aligned level labels at the left-of-line anchor",
+    r"HorizontalAlignment\s*=\s*\n\s*HorizontalAlignment\.Right",
+    "right-aligned level labels ending at the one-bar-left anchor",
 )
 require(
     LABEL,
