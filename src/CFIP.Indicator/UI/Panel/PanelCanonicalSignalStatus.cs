@@ -21,16 +21,48 @@ namespace cAlgo
             string direction =
                 DirectionText(_decision.Direction);
 
+            SignalVisualSnapshot snapshot =
+                _renderSignalVisualSnapshot != null
+                    ? _renderSignalVisualSnapshot
+                    : BuildSignalVisualSnapshot(
+                        Math.Max(
+                            1,
+                            _lastEvaluatedM5));
+
+            string strength =
+                snapshot != null &&
+                snapshot.MtfTrendDirection == _decision.Direction &&
+                snapshot.MtfTrendStrengthLevel > 0
+                    ? PanelNineLevelPresentationRule.LevelLabel(
+                        snapshot.MtfTrendStrengthLevel)
+                    : "WAIT";
+
             if (!_decision.EntryAllowed)
-                return "SIGNAL  •  " + direction + "  •  BLOCKED";
+                return
+                    "SIGNAL  •  " +
+                    direction +
+                    "  •  BLOCKED  •  " +
+                    strength;
 
             if (_decision.ActionableNow)
-                return "SIGNAL  •  " + direction + "  •  ACTIONABLE";
+                return
+                    "SIGNAL  •  " +
+                    direction +
+                    "  •  ACTIONABLE  •  " +
+                    strength;
 
             if (!_decision.TriggerReady)
-                return "SIGNAL  •  " + direction + "  •  WATCH";
+                return
+                    "SIGNAL  •  " +
+                    direction +
+                    "  •  WATCH  •  " +
+                    strength;
 
-            return "SIGNAL  •  " + direction + "  •  CONFIRMED";
+            return
+                "SIGNAL  •  " +
+                direction +
+                "  •  CONFIRMED  •  " +
+                strength;
         }
 
         private string GetPrimaryTimeframeSignalPanelStatus()
@@ -95,11 +127,32 @@ namespace cAlgo
             if (!_decision.EntryAllowed)
                 return PanelWarningColor;
 
-            return _decision.ActionableNow
-                ? TpLineColor
-                : _decision.TriggerReady
-                    ? PanelAccentColor
-                    : PanelSecondaryTextColor;
+            SignalVisualSnapshot snapshot =
+                _renderSignalVisualSnapshot != null
+                    ? _renderSignalVisualSnapshot
+                    : BuildSignalVisualSnapshot(
+                        Math.Max(
+                            1,
+                            _lastEvaluatedM5));
+
+            if (snapshot != null &&
+                snapshot.MtfTrendDirection == _decision.Direction &&
+                snapshot.MtfTrendStrengthLevel > 0)
+            {
+                return PanelNineLevelPresentationRule.ResolveColor(
+                    _decision.Direction,
+                    snapshot.MtfTrendStrengthLevel,
+                    StrongBuyArrowColor,
+                    StrongSellArrowColor,
+                    ConfirmedBuyArrowColor,
+                    ConfirmedSellArrowColor,
+                    CautionBuyArrowColor,
+                    CautionSellArrowColor,
+                    BlockedReactionArrowColor);
+            }
+
+            return PanelDirectionColor(
+                _decision.Direction);
         }
     }
 }
