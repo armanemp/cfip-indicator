@@ -164,7 +164,7 @@ namespace cAlgo
                 List<string> sources =
                     new List<string>
                     {
-                        candidate.Source
+                        candidateSource
                     };
 
                 for (int j = 0;
@@ -198,7 +198,7 @@ namespace cAlgo
                             sourceSnapshot[j]))
                     {
                         sources.Add(
-                            other.Source);
+                            sourceSnapshot[j]);
                     }
                 }
 
