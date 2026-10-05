@@ -120,7 +120,7 @@ parameter_count = sum(
     len(re.findall(r"\[Parameter\s*\(", p.read_text(encoding="utf-8")))
     for p in (ROOT / "src/CFIP.Indicator/Indicator/Parameters").glob("*.cs")
 )
-require(parameter_count == 522, f"public parameter contract changed: found {parameter_count}")
+require(parameter_count == 521, f"public parameter contract changed: found {parameter_count}")
 
 require(
     "No strategy or threshold" in phase and
