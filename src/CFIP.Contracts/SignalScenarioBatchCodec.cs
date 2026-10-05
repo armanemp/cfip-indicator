@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace CFIP.Contracts
@@ -20,16 +21,17 @@ namespace CFIP.Contracts
 
         public static bool TryDeserialize(
             string payload,
-            out SignalScenarioBatch batch)
+            out SignalScenarioBatch? batch)
         {
-            batch = default(SignalScenarioBatch);
+            batch = null;
 
             if (string.IsNullOrWhiteSpace(payload))
                 return false;
 
             try
             {
-                SignalScenarioBatch parsed =
+                SignalScenarioBatch? parsed =
+                    JsonSerializer.Deserialize<SignalScenarioBatch>(
                     JsonSerializer.Deserialize<SignalScenarioBatch>(
                         payload,
                         Options);
@@ -53,7 +55,7 @@ namespace CFIP.Contracts
             }
             catch
             {
-                batch = default(SignalScenarioBatch);
+                batch = null;
                 return false;
             }
         }
