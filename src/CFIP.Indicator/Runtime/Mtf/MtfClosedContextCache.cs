@@ -37,6 +37,16 @@ namespace cAlgo
             DateTime reference,
             out MtfClosedContext context)
         {
+            DateTime normalizedReference =
+                CanonicalTimeRule.EnsureUtc(
+                    reference);
+
+            if (normalizedReference == DateTime.MinValue)
+            {
+                context = null;
+                return false;
+            }
+
             if (_context != null &&
                 ReferenceEquals(_m1, m1) &&
                 ReferenceEquals(_m5, m5) &&
@@ -54,7 +64,7 @@ namespace cAlgo
                 _h4Count == Count(h4) &&
                 _d1Count == Count(d1) &&
                 _w1Count == Count(w1) &&
-                reference >= _context.Reference &&
+                normalizedReference >= _context.Reference &&
                 IsReferenceStable(_m1, _m1Count, _context.M1, reference) &&
                 IsReferenceStable(_m5, _m5Count, _context.M5, reference) &&
                 IsReferenceStable(_m15, _m15Count, _context.M15, reference) &&
@@ -64,7 +74,7 @@ namespace cAlgo
                 IsReferenceStable(_d1, _d1Count, _context.D1, reference) &&
                 IsReferenceStable(_w1, _w1Count, _context.W1, reference))
             {
-                context = _context.WithReference(reference);
+                context = _context.WithReference(normalizedReference);
                 return true;
             }
 
