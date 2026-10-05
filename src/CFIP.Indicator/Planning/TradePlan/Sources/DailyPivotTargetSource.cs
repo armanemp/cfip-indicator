@@ -58,7 +58,7 @@ namespace cAlgo
 
                                             double sourceAgeMinutes =
                                                 TargetAgeSemanticsRule.ElapsedMinutes(
-                                                    _d1Bars.OpenTimes[previous],
+                                                    _d1Bars.OpenTimes[closedIndex],
                                                     reference);
                                 
                                             AddLevel(levels, pivot, "PIVOT", "D1", 1, weight, sourceAgeMinutes);
