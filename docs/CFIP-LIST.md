@@ -160,6 +160,8 @@ If a proposed package cannot close in one response, split it into smaller packag
 | WP-04 | Historical isolation | old docs, obsolete phase/contracts and active tooling references; KEEP/MIGRATE/ARCHIVE/DELETE decisions |
 | WP-05 | Preflight | probe/host/compile/safety boundary |
 | WP-06 | Contracts | all CFIP.Contracts models/enums/codecs/identity/bus |
+
+WP-06 ownership refinement: ContractVersionPolicy.cs is the sole accepted-version policy owner for all incoming contract codecs, including cBot execution-state payloads; no codec-local duplicate version policy is permitted.
 | WP-07 | cBot host | main robot/project boundary |
 | WP-08 | cBot binding | Indicator/chart/device binding; remove Indicator-owned execution/auto-trading settings and migrate the binding to the cBot/Contracts authority without a compatibility mirror |
 | WP-09 | cBot execution | market/pending/management mutation paths |
