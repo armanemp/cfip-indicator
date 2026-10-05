@@ -46,6 +46,21 @@ namespace cAlgo
                 closedBars);
         }
 
+        private void RefreshCanonicalMarketQuote()
+        {
+            if (_calculationMarketContext == null ||
+                _lastMtfClosedContext == null)
+                return;
+
+            _calculationMarketContext =
+                BuildCalculationMarketContext(
+                    Bars == null
+                        ? -1
+                        : Bars.Count - 1,
+                    _calculationMarketContext.SignalReferenceUtc,
+                    _lastMtfClosedContext);
+        }
+
         private CanonicalPriceSnapshot GetCanonicalPriceSnapshot()
         {
             if (_calculationMarketContext != null &&
