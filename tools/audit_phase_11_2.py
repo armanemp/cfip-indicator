@@ -62,19 +62,19 @@ require(
 )
 require(
     LABEL,
-    r"Chart\.DrawText\(\s*\n\s*name,\s*\n\s*text,\s*\n\s*canonicalLabelBar,",
+    r"Chart\.DrawText\(\s*\n\s*name,\s*\n\s*text,\s*\n\s*expectedTime,",
     "chart-space time-based canonical label X creation",
 )
 ANCHOR = ROOT / "src/CFIP.Indicator/UI/Chart/PlanLabelAnchorCalculator.cs"
 require(
     ANCHOR,
-    r"private int GetCompactPlanLabelAnchorBar\(\)",
+    r"private DateTime GetCompactPlanLabelAnchorTime\(\)",
     "canonical bar-index anchor owner",
 )
 require(
     ANCHOR,
     r"canonicalLineLeftBar\s*-\s*\n\s*CompactPlanLabelGapBars",
-    "exact one-bar gap is owned by the canonical bar-index anchor",
+    "exact one-bar gap is owned by the canonical OpenTime anchor",
 )
 
 if re.search(r"label\.Time\s*=", LABEL.read_text(encoding="utf-8")):
