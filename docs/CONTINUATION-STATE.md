@@ -1,3 +1,17 @@
+## 2026-10-05 — PR #339 Canonical Label Clearance Correction
+
+Status: **MERGED — CI VERIFIED / TARGET-TERMINAL VISUAL REVALIDATION PENDING**.
+
+Fresh target-terminal evidence showed the previous left-aligned presentation allowed the complete level-label text to reach/intersect the signal-line start. The actual required spatial contract is: the complete label remains on the left side of the line, with its visible right edge exactly one chart bar before the canonical line start.
+
+PR #339 merged to `main` as `c8df96cf5c678d6fd83b6414f12c17f40e4d3328`.
+
+Canonical implementation now uses native `ChartText` `HorizontalAlignment.Right` while retaining the existing single `PlanLabelAnchorCalculator` one-bar gap, DateTime/OpenTime coordinates, 11px regular typography, exact line color, background-free rendering and shared label ownership for canonical/pending/parallel/prediction paths.
+
+Exact PR #339 head gates: Source/Architecture PASS, Runtime Acceptance PASS, cTrader Compile PASS.
+
+Fresh Release build + target-terminal visual evidence is still required before DEF-P1-004 / CI-18 visual acceptance is closed. No strategy, MTF role, signal scoring or broker-mutation authority changed.
+
 # 2026-10-04 — Canonical Forensic Remediation Reset
 
 ## Permanent progress reporting
