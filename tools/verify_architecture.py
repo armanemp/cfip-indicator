@@ -939,8 +939,10 @@ if "MarkManagementReadyForRecovery(" not in runtime_fault_boundary_code:
 if "ApplyRuntimeFaultState();" not in runtime_fault_boundary_code:
     raise SystemExit("Runtime fault state must be reflected in runtime authority")
 
-if "_autoTradingEnabledRuntime = false;" not in runtime_fault_boundary_code or    "_automaticOrdersEnabledRuntime = false;" not in runtime_fault_boundary_code:
-    raise SystemExit("Runtime recovery must not re-arm automatic flags")
+if "_autoTradingEnabledRuntime" in runtime_fault_boundary_code or    "_automaticOrdersEnabledRuntime" in runtime_fault_boundary_code:
+    raise SystemExit("Indicator runtime fault boundary must not own cBot execution-arm flags")
+if "RUNTIME ENTRY BLOCKED" not in runtime_fault_boundary_code:
+    raise SystemExit("Runtime fault boundary must expose the canonical Indicator-side block state")
 
 if "BeginRuntimeFaultCycle(" not in calculation_cycle_code or    "CompleteRuntimeFaultCycle(" not in calculation_cycle_code:
     raise SystemExit("Calculate must bracket each runtime cycle with explicit fault-state lifecycle")
