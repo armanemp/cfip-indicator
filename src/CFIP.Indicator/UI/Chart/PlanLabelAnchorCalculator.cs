@@ -5,7 +5,7 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        // The label's visible right edge is anchored exactly one chart bar
+        // The label's visible left edge is anchored exactly one chart bar
         // before the canonical signal-line start. Both line and label use
         // the same DateTime/OpenTime X coordinate system.
         private const int CompactPlanLabelGapBars = 1;

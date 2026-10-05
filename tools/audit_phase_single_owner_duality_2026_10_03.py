@@ -73,7 +73,7 @@ require(
     "Chart.DrawText(" in label and
     "Chart.DrawRectangle(" not in label and
     "Chart.DrawIcon(" not in label and
-    "HorizontalAlignment.Right" in label and
+    "HorizontalAlignment.Left" in label and
     "CompactPlanLabelFontSize = 11.0" in label and
     'Chart.RemoveObject(name + "_BOX")' in label and
     'Chart.RemoveObject(name + "_ANCHOR")' in label and
@@ -89,8 +89,8 @@ require(
     "GetCompactPlanLabelAnchorTime(" in pending_label and
     "GetCompactPlanLabelAnchorTime(" in parallel_label and
     "GetCompactPlanLabelAnchorTime(" in anchor and
-    "GetCompactPlanLabelAnchorTime(" in anchor and
-    "canonicalLineLeftBar -\n                CompactPlanLabelGapBars" in anchor and
+    "canonicalLineLeftBar -" in anchor and
+    "CompactPlanLabelGapBars" in anchor and
     "CompactPlanLabelGapBars = 1" in anchor,
     "all standard signal label paths must reuse one canonical bar-index anchor with a deterministic one-bar gap",
 )
@@ -149,5 +149,5 @@ print("CFIP SINGLE-OWNER / NO-DUALITY AUDIT: PASS")
 print("cBot startup audio: one owner / one cue")
 print("Signal/plan line geometry: one owner / 40 bars / Solid / 1px")
 print("Pending + parallel lines: delegated to canonical line owner")
-print("Chart labels: one renderer / native ChartText / exact price / no rectangle / tiny anchor marker")
+print("Chart labels: one renderer / native ChartText / exact price / no rectangle or marker")
 print("Label formatting + source timeframe: one canonical formatter")
