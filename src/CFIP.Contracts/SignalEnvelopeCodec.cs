@@ -23,7 +23,7 @@ namespace CFIP.Contracts
 
         public static bool TryDeserialize(
             string payload,
-            out SignalEnvelope? envelope)
+            [NotNullWhen(true)] out SignalEnvelope? envelope)
         {
             envelope = null;
 
