@@ -438,7 +438,7 @@ PASS را برای حفظ ظاهری وضعیت با ضعیف‌کردن gate ح
 
 # Historical-document and repository-cleanup rule
 
-فایل‌های قدیمی repository را فقط به‌عنوان evidence/archive ببین، و هر artifact قدیمی/زائد را تا تعیین تکلیف رها نکن.
+فقط محتوای موجود در مجموعهٔ اسناد فعال مبنای تصمیم است؛ سایر artifactها مبنای ادامهٔ کار نیستند و نباید به مسیر اجرای کار برگردند.
 
 هر فایل tracked باید یکی از این وضعیت‌ها را داشته باشد:
 **KEEP / MIGRATE / ARCHIVE / DELETE**.
@@ -468,7 +468,7 @@ PASS را برای حفظ ظاهری وضعیت با ضعیف‌کردن gate ح
 اول dependencyها را کامل trace کن،
 سپس owner canonical را به سه فایل جدید migrate کن،
 سپس dependency قدیمی را حذف کن،
-و فقط بعد از اثبات بی‌نیازی roadmap قدیمی را archive/delete کن.
+و هر سند یا artifact خارج از مجموعهٔ فعال را فقط پس از dependency trace و اثبات بی‌نیازی از مسیر فعال خارج کن.
 
 هرگز فقط برای سبزشدن CI یک workaround ایجاد نکن.
 
