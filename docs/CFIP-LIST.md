@@ -21,6 +21,10 @@
 - `docs/ENGINEERING-PRINCIPLES.md`
 - `docs/WORKFLOW.md`
 
+## Current trade-chain phase
+
+**T0 PASS → T1 NEXT**
+
 ## Trade-chain source domains
 
 1. Market data / time / price
