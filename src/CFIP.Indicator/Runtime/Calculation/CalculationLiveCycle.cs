@@ -11,17 +11,23 @@ namespace cAlgo
                 _m5Bars.Count < 10)
                 return;
 
+            RefreshCanonicalMarketQuote();
+
+            CanonicalPriceSnapshot priceSnapshot =
+                GetCanonicalPriceSnapshot();
+
+            if (priceSnapshot == null ||
+                !priceSnapshot.IsUsableForExecution)
+                return;
+
             int liveM5 =
                 _m5Bars.Count - 1;
 
             DateTime now =
-                Server.TimeInUtc;
+                priceSnapshot.ObservedUtc;
 
             double market =
-                Symbol.Ask > 0 &&
-                Symbol.Bid > 0
-                    ? (Symbol.Ask + Symbol.Bid) * 0.5
-                    : Symbol.Ask;
+                priceSnapshot.Midpoint;
 
             double atr =
                 liveM5 > 1
@@ -39,7 +45,7 @@ namespace cAlgo
                     market -
                     _lastReactionMarket) >=
                 Math.Max(
-                    Symbol.TickSize * 2,
+                    priceSnapshot.TickSize * 2,
                     atr * 0.01);
 
             bool intervalElapsed =
@@ -128,13 +134,18 @@ namespace cAlgo
             int direction =
                 _decision.Direction;
 
+            CanonicalPriceSnapshot priceSnapshot =
+                GetCanonicalPriceSnapshot();
+
+            if (priceSnapshot == null ||
+                !priceSnapshot.IsUsableForExecution)
+                return;
+
             double market =
-                direction == 1
-                    ? Symbol.Ask
-                    : Symbol.Bid;
+                priceSnapshot.GetExecutablePrice(direction);
 
             DateTime now =
-                Server.TimeInUtc;
+                priceSnapshot.ObservedUtc;
 
             double atr =
                 _m5Bars != null &&
@@ -184,6 +195,8 @@ namespace cAlgo
         private void RefreshLiveDecisionActionability(
             int closedM5)
         {
+            RefreshCanonicalMarketQuote();
+
             if (_decision == null)
                 return;
 
