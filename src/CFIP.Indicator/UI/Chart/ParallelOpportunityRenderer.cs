@@ -99,9 +99,16 @@ namespace cAlgo
                             ? ChartIconType.UpTriangle : ChartIconType.DownTriangle,
                         markerBar,
                         markerPrice,
-                        SignalArrowColorFor(
+                        PanelNineLevelPresentationRule.ResolveColor(
                             candidate.Direction,
-                            "WATCH"));
+                            1,
+                            StrongBuyArrowColor,
+                            StrongSellArrowColor,
+                            ConfirmedBuyArrowColor,
+                            ConfirmedSellArrowColor,
+                            CautionBuyArrowColor,
+                            CautionSellArrowColor,
+                            BlockedReactionArrowColor));
 
                     if (string.Equals(candidate.SourceTimeframe, "M15", StringComparison.OrdinalIgnoreCase))
                         primaryM15Rendered = true;
