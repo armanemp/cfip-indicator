@@ -4,7 +4,5 @@ namespace CFIP.Contracts
     {
         public const int Current = 2;
 
-        public static bool IsSupported(int version) =>
-            version == Current;
     }
 }
