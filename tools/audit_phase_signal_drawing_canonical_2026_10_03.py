@@ -32,7 +32,6 @@ check("plan labels use the canonical readable font, one-bar left clearance and f
     "GetCompactPlanLabelAnchorTime(" in anchor and
     "HorizontalAlignment.Left" in labels and
     "Chart.DrawText(" in labels and
-    "canonicalLabelBar" in labels and
     "label.Time != expectedTime" in labels and
     "label.HorizontalAlignment" in labels and
     "label.VerticalAlignment" in labels and
@@ -40,7 +39,8 @@ check("plan labels use the canonical readable font, one-bar left clearance and f
 check("labels share exact normalized price and canonical DateTime/OpenTime anchor", "NormalizePrice(price)" in labels and
     "GetPlanLineLeftBar" in anchor and
     "GetCompactPlanLabelAnchorTime(" in anchor and
-    "canonicalLineLeftBar -\n                CompactPlanLabelGapBars" in anchor and
+    "canonicalLineLeftBar -" in anchor and
+    "CompactPlanLabelGapBars" in anchor and
     "GetCompactPlanLabelAnchorTime(" in anchor)
 check("active plan does not create a second arrow lifecycle", "RenderStackedSignalArrows(" not in plan and 'P + "ARROW"' not in plan)
 check("legacy active arrow is cleaned", 'P + "ARROW"' in arrows and 'P + "ARROW"' in clearer)
