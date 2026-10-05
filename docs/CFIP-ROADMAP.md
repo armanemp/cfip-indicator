@@ -1,4 +1,6 @@
 # CFIP — Canonical Master Roadmap
+
+> Trade-chain sequencing is governed by `docs/CFIP-TRADE.md`; repository-wide acceptance remains governed by this roadmap and `docs/CFIP_GATE.md`.
 ## CFIP-ROADMAP.md
 ### Zero-to-Full Forensic Review, Hardening, Certification and Continuation Contract
 ### Canonical edition: 2026-10-04
