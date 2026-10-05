@@ -4099,3 +4099,29 @@ The updated CFIP `.algo` was loaded in the real cTrader M15 instance after PR #3
 The terminal evidence closes `DEF-P1-001` as **FIXED — TERMINAL REVALIDATED**. This evidence is intentionally scoped to the target-ladder runtime defect and does not manufacture PASS results for the separate CI-17 target-terminal scenarios.
 
 The same runtime evidence also showed two semantically distinct queued/delivered alerts for the same plan stage: `BOS` delivered `Doorbell` and `EARLY` delivered `Announcement`, with both platform `PlaySound` operations succeeding. No duplicate delivery was observed in this log excerpt.
+
+## 2026-10-05 — PR #338 Canonical Signal-Label Alignment Closeout
+
+Status: **MERGED — REPOSITORY VERIFIED / TARGET-TERMINAL VISUAL REVALIDATION PENDING**.
+
+PR #338 merged to `main` as `55d2ad4f146f373374e348bd706620f0831c13db`.
+
+Completed:
+- Restored the canonical left-aligned `PlanLabelRenderer` contract.
+- Kept the existing DateTime/OpenTime anchor geometry and one-bar gap owner; no alternate chart-coordinate path was introduced.
+- Removed obsolete `src/CFIP.cBot/Execution/CbotExecutionSettings.cs`, which conflicted with the active cBot execution-settings owner and previously caused cTrader compile failures.
+- Updated the affected signal-label, single-owner and architecture audits so the enforced contract matches the production implementation and is portable across Windows/CI line endings.
+- Synchronized continuation documentation with the final merged implementation.
+
+Verification:
+- Runtime Acceptance: PASS.
+- cTrader Compile: PASS.
+- Source/Architecture: PASS.
+- Focused single-owner and signal-drawing audits: PASS.
+
+No trading threshold, MTF role, broker mutation authority or signal-scoring behavior changed.
+
+Next package boundary: **WP-05 — Preflight remains PASS + TERMINAL PENDING; 13 target-terminal scenarios remain the blocker before WP-06 Contracts.**
+
+Operator action: pull canonical `main` before target-terminal validation.
+
