@@ -22,5 +22,7 @@
       <_AlgoMetadataFileName>$(_AlgoFileName).metadata</_AlgoMetadataFileName>
       <_AlgoMetadataFilePath>$(OutDir)$(_AlgoMetadataFileName)</_AlgoMetadataFilePath>
     </PropertyGroup>
+    <Message Importance="High"
+             Text="CFIP cTrader identity | Assembly=$(AssemblyName) | AlgoName=$(AlgoName) | AlgoFile=$(_AlgoFileName) | AlgoPath=$(_AlgoFilePath)" />
   </Target>
 </Project>
