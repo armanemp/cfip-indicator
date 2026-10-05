@@ -3003,7 +3003,6 @@ REQUIRED_RISK_FILES = {
     "MarketSuitabilityRefreshCoordinator.cs",
     "MarketSuitabilityGuard.cs",
     "SuitabilityRiskMultiplierCalculator.cs",
-    "AutoTradeSafetyGuard.cs",
     "RiskPercentPolicy.cs",
     "RiskAmountCalculator.cs",
     "MarginUsagePolicy.cs",
