@@ -139,7 +139,7 @@ namespace CFIP.cBot
         [Parameter(
             "Enable Automatic Trading",
             Group = "Execution Policy",
-            DefaultValue = true)]
+            DefaultValue = false)]
         public bool EnableAutoTrading { get; set; }
 
         [Parameter(
