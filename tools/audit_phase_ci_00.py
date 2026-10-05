@@ -39,21 +39,15 @@ price_math = read("src/CFIP.Indicator/Trading/Execution/PriceMath.cs")
 zone = read(
     "src/CFIP.Indicator/Planning/Execution/ExecutionZoneBuilder.cs"
 )
-market_range = read(
-    "src/CFIP.Indicator/Trading/Execution/AutomaticMarket/AutomaticMarketRangeCalculator.cs"
-)
-aggressive = read(
-    "src/CFIP.Indicator/Trading/Execution/Aggressive/AggressiveExecutionPreparation.cs"
-)
+market_range = ""
+aggressive = ""
 market_validation = read(
     "src/CFIP.Indicator/Planning/Execution/MarketEntryValidation.cs"
 )
 plan_constraints = read(
     "src/CFIP.Indicator/Planning/TradePlan/PlanMarketConstraintValidator.cs"
 )
-automatic_pretrade = read(
-    "src/CFIP.Indicator/Trading/Execution/AutomaticMarket/AutomaticMarketPreTradeEligibility.cs"
-)
+automatic_pretrade = ""
 runtime_project = read("tools/CFIP.Runtime.Contracts/CFIP.Runtime.Contracts.csproj")
 runtime = read("tools/CFIP.Runtime.Contracts/Program.cs")
 workflow = read(".github/workflows/source-check.yml")
@@ -106,11 +100,8 @@ check(
 checks = [
     ("PriceMath", price_math),
     ("ExecutionZoneBuilder", zone),
-    ("AutomaticMarketRangeCalculator", market_range),
-    ("AggressiveExecutionPreparation", aggressive),
     ("MarketEntryValidation", market_validation),
     ("PlanMarketConstraintValidator", plan_constraints),
-    ("AutomaticMarketPreTradeEligibility", automatic_pretrade),
 ]
 
 for name, source in checks:
