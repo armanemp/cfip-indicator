@@ -35,8 +35,7 @@ namespace cAlgo
 
             if (RequirePrecisionEntry &&
                 plan.EntryQuality <
-                System.Math.Max(
-                    40,
+                ActionabilityThresholdPolicy.EffectivePrecisionEntryQualityFloor(
                     MinimumEntryQuality))
                 return false;
 
