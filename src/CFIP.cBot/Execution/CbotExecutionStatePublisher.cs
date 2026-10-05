@@ -210,10 +210,10 @@ namespace CFIP.cBot.Execution
 
             snapshot = snapshot with
             {
-                IndicatorAutoTradingEnabled =
+                CbotAutoTradingEnabled =
                     executionSettings != null &&
                     executionSettings.EnableAutoTrading,
-                IndicatorAutomaticOrdersEnabled =
+                CbotAutomaticOrdersEnabled =
                     executionSettings != null &&
                     executionSettings.EnableAutomaticOrders,
                 EffectiveAutoTradingEnabled =
