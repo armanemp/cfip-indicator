@@ -13,7 +13,7 @@ WP-06 remains blocked by WP-05 target-terminal evidence (0/13 required scenarios
 ## Scope
 
 Audited:
-- `src/CFIP.Contracts` (23 C# sources on the baseline)
+- `src/CFIP.Contracts` and all active contract codecs, including the canonical `ContractVersionPolicy` boundary
 - contract schema audit `tools/audit_cbot_contract_schema.py`
 - canonical gate/roadmap state
 - available producer/consumer references for SignalEnvelope, PlanSnapshot, ExecutionIntent and AlertEnvelope
@@ -76,6 +76,14 @@ Required resolution:
 Fields such as IndicatorAutoTradingEnabled / IndicatorAutomaticOrdersEnabled / EffectiveAutoTradingEnabled remain in cBot execution-state compatibility paths.
 
 This is not duplicated as a new defect. It remains DEF-P0-003 and must be resolved by WP-08, where execution authority is cut over to cBot/Contracts.
+
+
+### CFIP-WP06-006 — cBot state codec must reject unsupported contract versions
+**Severity:** P1
+**Owner:** WP-06 / CbotExecutionStateCodec
+**Status:** IMPLEMENTED — verification pending
+
+Cbot presence and execution-state payloads carry ContractVersion, but their decode boundary previously accepted any non-null snapshot. Both decode paths now apply the same canonical version policy used by the other contract codecs.
 
 ### CFIP-WP06-005 — Domain-state strings require classification
 **Severity:** P2
