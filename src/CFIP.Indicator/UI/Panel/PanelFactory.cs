@@ -98,7 +98,9 @@ namespace cAlgo
                                                 Height =
                                                     Math.Max(
                                                         120,
-                                                        bootstrapHeight - 70),
+                                                        Math.Max(
+                                                            70,
+                                                            bootstrapHeight - 30 - 78 - 41 - 30 - 8)),
                                                 HorizontalAlignment =
                                                     HorizontalAlignment.Stretch,
                                                 VerticalAlignment =
@@ -186,8 +188,13 @@ namespace cAlgo
                                         _panelStack.AddChild(
                                             _panelScroll);
                         
-                                        // Fixed MTF trend status row: deliberately outside
-                                        // the ScrollViewer so it remains visible while rows scroll.
+                                        // Live data-flow card and MTF status are fixed footer content.
+                                        // The card intentionally sits immediately above the lamps so
+                                        // the realtime activity remains visible while normal rows scroll.
+                                        if (_panelDataFlowCard != null)
+                                            _panelStack.AddChild(
+                                                _panelDataFlowCard);
+
                                         if (_panelTrendTimeframeLampRow != null)
                                             _panelStack.AddChild(
                                                 _panelTrendTimeframeLampRow);
