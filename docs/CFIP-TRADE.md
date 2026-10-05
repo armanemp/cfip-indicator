@@ -152,6 +152,51 @@ Telemetry, panel, alert, persistence or visual failures must not silently author
 
 Safety-critical broker management must remain available independently where the architecture permits.
 
+## 2.11 Cross-cutting intelligence law
+
+CFIP intelligence is a cross-cutting control plane, not a collection of extra filters.
+
+“More intelligent” means the system uses more relevant context while preserving one semantic owner, bounded behavior, explainability and deterministic safety. It does not mean stacking unrelated thresholds until almost every trade is blocked.
+
+The canonical intelligence flow is:
+
+Data Quality → Evidence Quality/Independence → Decision Confidence/Quality → Actionability/Trigger Quality → Opportunity Quality → Plan/Reward Quality → Risk Capacity → Execution Quality → Broker Truth → Lifecycle Quality → Outcome Attribution → Calibration
+
+The following rules are permanent:
+
+1. Existing canonical outputs remain the source of truth. Decision.Confidence and Decision.SmartQuality are consumed downstream; a second hidden signal score must not be introduced unless a later phase proves that the existing model cannot represent the required semantics.
+2. Every intelligence factor must declare its semantic domain, owner, inputs, output range, monotonic safety behavior, and whether it is observational or execution-authoritative.
+3. The same underlying fact may not be rewarded twice under different names. Confidence, quality, timeframe agreement, evidence count, suitability, RR, volatility, spread and other factors must be traced to their causal source before contributing to another layer.
+4. Intelligence must be adaptive, not blindly aggressive: quality may reduce exposure, delay execution, change timing mode or reject a plan; it may never create a direction that the Decision owner did not produce.
+5. Intelligence must be risk-aware: position sizing may depend on canonical signal quality/confidence, market suitability, stop distance, volatility, spread/cost, margin, broker volume constraints, capacity, opportunity overlap/correlation, reward-path quality, setup age/freshness and historical calibration trust. No single factor may bypass account risk or broker safety.
+6. Any adaptive sizing rule must be monotonic with respect to safety: worsening quality, worse executable conditions or lower capacity must never increase size.
+7. Calibration is evidence, not strategy authority. Historical outcomes may change a bounded multiplier or confidence interpretation only through the canonical calibration owner; they may not silently invent a parallel decision engine.
+8. No new intelligence layer may introduce a duplicate document, duplicate runtime state, duplicate execution path or parallel UI/alert source solely to expose the same semantic result.
+
+### Intelligence coverage by trade-chain layer
+
+| Layer | Canonical intelligence responsibility |
+|---|---|
+| T1 Market Data | data validity, quote quality, executable-side correctness, scale and observation integrity |
+| T2 Time/MTF | temporal confidence, freshness and closed-bar integrity |
+| T3 Analysis | detector quality, provenance, regime/volatility interpretation |
+| T4 Evidence | independence, correlation and anti-double-counting |
+| T5 Decision | one direction + Confidence + SmartQuality + calibration context |
+| T6 Actionability | trigger quality, entry timing, opportunity maturity and trap risk |
+| T7 Plan | entry/stop/target quality, reward-path quality and executable cost |
+| T8 Risk | quality-aware sizing, risk budget, volatility, spread, margin, capacity, overlap/correlation |
+| T9 Identity | lineage trust, revision freshness and retry integrity |
+| T10 Handoff | contract validity, freshness and semantic fidelity |
+| T11 Preflight | final environment intelligence without strategy reconstruction |
+| T12 Submission | bounded slippage/range and cost-aware execution mode |
+| T13 Confirmation | certainty derived only from broker state |
+| T14 Protection | adaptive but risk-monotone protection/management |
+| T15 Recovery | lifecycle-state confidence, adoption/reconciliation and duplicate prevention |
+| T16 Outcome | complete outcome attribution |
+| T17 Calibration | empirical quality, MAE/MFE, R-distribution and OOS validation |
+| T18 Performance | performance intelligence without semantic drift |
+| T19 Certification | end-to-end proof that every layer agrees |
+
 ---
 
 # 3. Canonical chain
@@ -312,12 +357,15 @@ A complete owner map exists and no critical trade-chain concept is unaccounted f
 
 - BUY and SELL use correct executable sides.
 - Spread cannot disappear merely because a plan was built from mid/close data.
-- Invalid or stale price values fail closed.
+- Invalid price scale/quote/time observations fail closed.
+- Live reaction/actionability refreshes one canonical quote snapshot rather than reusing an older calculation-cycle quote.
+- The Indicator never treats a plan/request price as broker truth.
+- The cBot remains the final live broker-quote authority at the mutation boundary.
 - No downstream stage invents missing market values.
 
 ### Exit
 
-Every execution-relevant price has explicit provenance and executable-side semantics.
+Every execution-relevant price has explicit provenance, executable-side semantics, validated metadata and an explicitly refreshed observation boundary.
 
 ---
 
@@ -524,6 +572,29 @@ One canonical plan supplies all execution geometry.
 
 ## T8 — Risk / Sizing / Margin
 
+### Intelligence requirement
+
+Position size must become an explicit quality-aware risk decision, not a direct translation from stop distance alone.
+
+The future canonical sizing contract must consume, without recreating them:
+
+- Decision.SmartQuality (0–100) as setup-quality evidence;
+- Decision.Confidence (0–100) as directional certainty;
+- market suitability / regime / volatility state;
+- executable spread and cost pressure;
+- stop distance and structural risk;
+- account equity/balance policy;
+- free margin / margin level / stop-out proximity;
+- broker volume min/max/step and normalization;
+- open-position/order capacity;
+- overlapping or correlated opportunities;
+- reward-path / target quality and expected viable travel;
+- opportunity age/freshness and trigger quality;
+- historical calibration trust where eligible.
+
+The contract must distinguish quality from risk capacity. A high-quality signal in an overexposed account must still receive a reduced or zero size; a low-quality signal must never receive more size merely because its stop is tighter.
+
+No final sizing formula is being numerically tuned in T1. T5/T6/T7 will first close semantic ownership of quality/confidence/actionability/reward; T8 will then implement one bounded monotonic sizing policy on those canonical outputs.
 ### Audit
 
 - risk percent;
@@ -1248,3 +1319,22 @@ T0 does not claim that trading is already certified. It establishes the verified
 
 Primary target: canonical observation, executable Bid/Ask, spread, tick/pip/precision, freshness, history/gaps and price provenance.
 
+
+---
+
+# T1 closeout — Market Data Truth
+
+**Status: IMPLEMENTED — SOURCE CONTRACT HARDENED**
+
+The canonical market-data boundary now explicitly validates:
+
+- UTC-normalized quote observation time;
+- positive pip/tick metadata and valid precision;
+- executable BUY/SELL prices;
+- live quote refresh before reaction/actionability/provider intent use;
+- fail-closed provider intent construction when the canonical quote is unusable;
+- cBot live quote as the final broker-side truth at execution time.
+
+Historical Claude-review findings folded into the forward plan include revalidation of hard-coded smart-risk floors/multipliers, equity-vs-balance sizing semantics, repeated RR definitions, calibration quality metrics and duplicate semantic scoring. These remain assigned to their canonical T7/T8/T17 owners rather than being patched opportunistically in T1.
+
+**Next: T2 — Time / MTF / Closed-Bar Integrity**
