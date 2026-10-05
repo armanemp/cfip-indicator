@@ -29,7 +29,7 @@
 
 **Trade-chain work is the current priority.**
 
-**Trade-chain status: T1 IMPLEMENTED / GATE-READY → T2 NEXT**
+**Trade-chain status: T2 VERIFICATION → T3 NEXT AFTER GATES**
 
 Trade-chain intelligence is now a permanent cross-layer requirement: quality, confidence, suitability, reward quality, risk capacity and execution conditions must be derived once and consumed downstream without duplicate logic.
 
