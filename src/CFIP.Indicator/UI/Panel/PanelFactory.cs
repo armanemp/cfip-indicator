@@ -176,6 +176,7 @@ namespace cAlgo
                                             _panelHeaderStack.AddChild(
                                                 _processingLamp);
                         
+                                        CreatePanelDataFlowCard();
                                         CreatePanelRows();
                                         CreatePanelTrendTimeframeLampRow();
                         
