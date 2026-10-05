@@ -40,4 +40,15 @@
 
 ## Current
 
-**No phase is active until the user specifies the starting work package.**
+**Trade-chain T0 — PASS (SOURCE BASELINE)**
+
+**Next: T1 — Market Data Truth**
+
+### T0 open findings
+
+- Candidate branch is not yet merged to main.
+- Multi-opportunity capacity is not complete; current capacity is single-plan.
+- cBot capacity checks require owner consolidation.
+- Execution-intent construction has two related construction boundaries requiring T9/T10 ownership verification.
+- Lifecycle semantics cross Indicator/cBot and require formal ownership closure.
+- Current-head CI and target-terminal broker evidence are not claimed as T0 proof.
