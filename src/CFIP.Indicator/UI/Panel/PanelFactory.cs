@@ -30,9 +30,9 @@ namespace cAlgo
 
                                         int bootstrapHeight =
                                             Math.Max(
-                                                180,
+                                                250,
                                                 Math.Min(
-                                                    260,
+                                                    300,
                                                     PanelMaxHeight));
 
                                         _panelHeaderStack =
@@ -97,9 +97,9 @@ namespace cAlgo
                                                         bootstrapWidth - 8),
                                                 Height =
                                                     Math.Max(
-                                                        120,
+                                                        70,
                                                         Math.Max(
-                                                            70,
+                                                            55,
                                                             bootstrapHeight - 30 - 78 - 41 - 30 - 8)),
                                                 HorizontalAlignment =
                                                     HorizontalAlignment.Stretch,
