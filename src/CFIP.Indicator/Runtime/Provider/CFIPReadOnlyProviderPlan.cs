@@ -19,6 +19,13 @@ namespace cAlgo
                 DateTime observedUtc,
                 int closedM5)
         {
+            CanonicalPriceSnapshot priceSnapshot =
+                GetCanonicalPriceSnapshot();
+
+            if (priceSnapshot == null ||
+                !priceSnapshot.IsUsableForExecution)
+                return null;
+
             cAlgo.ExecutionIntent sourceIntent =
                 _cfipProviderExecutionIntent;
 
@@ -78,14 +85,14 @@ namespace cAlgo
                                 _plan.Entry -
                                 _plan.Stop) /
                             Math.Max(
-                                Symbol.PipSize,
+                                priceSnapshot.PipSize,
                                 1e-9),
                         TargetPips =
                             Math.Abs(
                                 planTarget -
                                 _plan.Entry) /
                             Math.Max(
-                                Symbol.PipSize,
+                                priceSnapshot.PipSize,
                                 1e-9),
                         Volume = _plan.OriginalVolume,
                         CreatedM5 = closedM5,
@@ -220,8 +227,7 @@ namespace cAlgo
             CanonicalPriceSnapshot priceSnapshot =
                 GetCanonicalPriceSnapshot();
 
-            if (priceSnapshot == null ||
-                !priceSnapshot.IsQuoteValid ||
+            if (!priceSnapshot.IsUsableForExecution ||
                 !IsFinitePositive(priceSnapshot.PipSize))
                 return null;
 
