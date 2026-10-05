@@ -18,7 +18,7 @@ Implementation merged to `main` as `d3e5f163659fcd72636a52d3033423c69ee10f5a`.
 
 Canonical contract:
 - `PlanLineRenderer` owns signal-line geometry and the final materialized line color.
-- `PlanLabelAnchorCalculator` is the sole owner of the horizontal gap and places the visible end of left-positioned label text exactly one chart bar before the canonical line start.
+- `PlanLabelAnchorCalculator` is the sole owner of the horizontal gap and places the visible start of left-aligned label text exactly one chart bar before the canonical line start.
 - `PlanLabelRenderer` is the sole native `ChartText` label owner; labels are regular-weight, exact-price and background-free. Canonical X creation uses only the bar-index `DrawText` overload; `ChartText.Time` is read only for stale-object detection and is never assigned, preventing a second DateTime X-geometry path. When the canonical line-left bar advances, the same named ChartText is recreated at the new canonical anchor, so the label never falls behind the moving line. Canonical Y is the same normalized price as the line with `VerticalAlignment.Center`.
 - Label text uses exactly the same materialized color as its corresponding line; `Color.White` is not permitted for canonical line labels.
 - Pending, parallel and prediction label paths reuse the same renderer/anchor contract. The sole anchor owner now derives the one-candle horizontal gap from `Chart.BarIndexToX`/`Chart.XToTime`, so the distance is measured in actual rendered chart space rather than a bar-index approximation. Parallel opportunities must suppress any candidate whose canonical direction/Entry/SL/TP1 matches the active plan, so one trade plan can never materialize a second visual label set.
@@ -91,7 +91,7 @@ Status: VERIFIED COMPLETE — merged to `main` via PR #249, merge commit `fb7dee
 Completed:
 - Signal/plan lines are fixed to Solid + 1px.
 - The canonical span is exactly 40 chart bars from the latest candle; legacy `FullWidthLevelLines` cannot expand signal geometry.
-- Compact level labels sit at the exact line price, use the exact line color with no background, and keep their visible text end one chart bar before the line start.
+- Compact level labels sit at the exact line price, use the exact line color with no background, and keep their visible text start one chart bar before the line start.
 - Active Plan and WATCH/Reaction directional markers share the canonical stacked-arrow lifecycle.
 - The user's Release-build CS0219 warning from the dead `PanelMainRenderer.buttonMargin` local was removed.
 - Dedicated Drawing audit, Source/Architecture, Runtime Acceptance and cTrader Compile all passed on the final implementation head before merge.
@@ -114,7 +114,7 @@ Status: VERIFIED COMPLETE — implemented directly on `main`.
 Closure:
 - One canonical directional-arrow renderer now owns active Plan/WATCH/Reaction arrows.
 - Signal/plan lines are Solid, one-pixel and finite 40-bar geometry.
-- Labels are regular-weight native ChartText using the exact line color, with their visible text end one chart bar before the canonical line start.
+- Labels are regular-weight native ChartText using the exact line color, with their visible text start one chart bar before the canonical line start.
 - User-reported Release-build CS0219 warning for dead `PanelMainRenderer.buttonMargin` was removed.
 - Source/Architecture, Runtime Acceptance and cTrader Compile all passed on code head `a3cd97f715ed6b6b91599b79fe3fa42c82690e1c`.
 
