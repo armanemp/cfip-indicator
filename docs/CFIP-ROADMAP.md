@@ -806,3 +806,12 @@ PR #284 was merged to `main` as `2e98a4b4cd27dd8b083ee8aac1437cf1a3c6271e` after
 The completion protocol is now permanent: required CI must be green, the verified work must be merged to `main`, and merged `main` must be re-verified before the package is declared complete.
 
 **Next:** WP-05 — Preflight.
+
+
+### Panel Data-Flow Footer Refinement — 2026-10-06
+- **Owner:** `PanelDataFlowCard` remains the single presentation owner.
+- The realtime data-flow card is fixed immediately above the MTF timeframe-lamp footer and outside the normal scrolling rows.
+- Footer spacing is explicitly budgeted so the card, lamps, and action rail do not collapse into each other.
+- Buy/sell fill widths and data-load intensity use a smoothed display ratio on the existing bounded 500ms heartbeat; the UI therefore animates toward fresh values rather than jumping between states.
+- Fill intensity is alpha-weighted from faint to strong as the ratio increases/decreases, preserving a gradient-like visual impression without introducing a second rendering/animation engine.
+- Buy/sell pressure remains explicitly **estimated** from bar OHLC position and tick volume; it must never be presented as canonical bid/ask aggressor volume.
