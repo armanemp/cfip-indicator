@@ -10,24 +10,28 @@ Status: **ACTIVE**
 - Canonical remediation sequence: **F0 → F21** in docs/CFIP-ROADMAP.md.
 - One complete vertical-slice phase per message; no phase closes without focused verification, regression/build evidence and docs closeout.
 
-## 2026-10-04 — Signal-Line Label Placement and Color Hardening
+## 2026-10-05 — Canonical Signal-Line Label Alignment Finalization
 
-Status: **FIXED — REPOSITORY VERIFIED / TERMINAL VISUAL REVALIDATION PENDING**
+Status: **MERGED / STATIC + BUILD + RUNTIME VERIFIED / TARGET-TERMINAL VISUAL REVALIDATION PENDING**
 
-Implementation merged to `main` as `d3e5f163659fcd72636a52d3033423c69ee10f5a`.
+PR #338 merged to `main` as `55d2ad4f146f373374e348bd706620f0831c13db`.
 
 Canonical contract:
 - `PlanLineRenderer` owns signal-line geometry and the final materialized line color.
-- `PlanLabelAnchorCalculator` is the sole owner of the horizontal gap and places the visible start of left-aligned label text exactly one chart bar before the canonical line start.
-- `PlanLabelRenderer` is the sole native `ChartText` label owner; labels are regular-weight, exact-price and background-free. Canonical X creation uses only the bar-index `DrawText` overload; `ChartText.Time` is read only for stale-object detection and is never assigned, preventing a second DateTime X-geometry path. When the canonical line-left bar advances, the same named ChartText is recreated at the new canonical anchor, so the label never falls behind the moving line. Canonical Y is the same normalized price as the line with `VerticalAlignment.Center`.
-- Label text uses exactly the same materialized color as its corresponding line; `Color.White` is not permitted for canonical line labels.
-- Pending, parallel and prediction label paths reuse the same renderer/anchor contract. The sole anchor owner now derives the one-candle horizontal gap from `Chart.BarIndexToX`/`Chart.XToTime`, so the distance is measured in actual rendered chart space rather than a bar-index approximation. Parallel opportunities must suppress any candidate whose canonical direction/Entry/SL/TP1 matches the active plan, so one trade plan can never materialize a second visual label set.
+- `PlanLabelAnchorCalculator` is the sole owner of the horizontal gap and resolves the label anchor exactly one chart bar before the canonical line start in the same `Bars.OpenTimes` DateTime/OpenTime coordinate system used by the native label creation path.
+- `PlanLabelRenderer` is the sole native `ChartText` label owner; labels are 11px, regular-weight, exact-price, background-free and `HorizontalAlignment.Left`. The visible start of the label text is anchored one chart bar before the canonical line start.
+- Label text uses exactly the same materialized color as its corresponding line.
+- Pending, parallel and prediction label paths reuse the same canonical renderer/anchor/formatter instead of creating a second geometry or presentation authority.
+- Obsolete `CFIP.cBot/Execution/CbotExecutionSettings.cs` was removed; current cBot execution settings remain owned by the active cBot execution-settings contract.
 
 Verification:
-- PR #319 merged with Runtime Acceptance, cTrader Compile and Source/Architecture all PASS.
-- Source/Architecture completed 162/162 audits successfully on the final implementation head.
-- Target-terminal visual revalidation is the remaining G7 boundary: confirm one-candle text-end clearance, exact line color, readability, BUY/SELL symmetry and absence of overlap across applicable line/label types.
+- Runtime Acceptance: PASS.
+- cTrader Compile: PASS.
+- Source/Architecture: PASS.
+- Focused single-owner and signal-drawing audits: PASS.
+- The remaining G7 boundary is target-terminal visual revalidation of Entry/Trigger/SL/TP/pending/parallel/prediction labels for one-candle left clearance, exact line color, readability, BUY/SELL symmetry and absence of overlap.
 
+Next: **WP-05 target-terminal acceptance remains the active blocker; WP-06 Contracts stays blocked until the canonical 13-scenario terminal evidence is complete.**
 ## 2026-10-04 — Smart Separated Signal Arrows
 
 Status: VERIFIED COMPLETE — PR #252 merged to main; target-terminal visual acceptance remains the final manual boundary.
