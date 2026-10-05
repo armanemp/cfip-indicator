@@ -62,9 +62,22 @@ private double SelectTarget(
                                                     minimumRR,
                                                     spread);
 
-                                            return IsFinitePositive(synthetic)
-                                                ? NormalizePrice(synthetic)
-                                                : 0;
+                                            if (!IsFinitePositive(synthetic))
+                                                return 0;
+
+                                            double previous =
+                                                FindPreviousSelectedTargetPrice(
+                                                    selected,
+                                                    position,
+                                                    entry);
+
+                                            if (!IsProgressiveTarget(
+                                                    direction,
+                                                    previous,
+                                                    synthetic))
+                                                return 0;
+
+                                            return NormalizePrice(synthetic);
                                         }
     }
 }
