@@ -18,7 +18,8 @@ namespace cAlgo
                 ClosedBarBoundaryReference(
                             _m5Bars,
                             closedM5,
-                            Server.TimeInUtc);
+                            CanonicalTimeRule.EnsureUtc(
+                                Server.TimeInUtc);
 
             MtfClosedContext context;
 
