@@ -59,8 +59,8 @@ namespace cAlgo
                     new Dictionary<int, ParallelScenarioGeometry>();
                 private readonly Dictionary<int, ExecutionModel> _parallelExecutionModelCache =
                     new Dictionary<int, ExecutionModel>();
-                private readonly Dictionary<int, TradeSetupPreview> _parallelPreviewCache =
-                    new Dictionary<int, TradeSetupPreview>();
+                private readonly Dictionary<long, TradeSetupPreview> _parallelPreviewCache =
+                    new Dictionary<long, TradeSetupPreview>();
 
                 private VolumeProfileSnapshot _m15VolumeProfile =
                     VolumeProfileSnapshot.Empty;
