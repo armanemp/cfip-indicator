@@ -212,18 +212,7 @@ namespace cAlgo
                                                         Symbol.TickSize,
                                                         Symbol.PipSize * 0.25);
 
-                                                bool configuredTpProgression =
-                                                    !true ||
-                                                    !brokerTargetValid ||
-                                                    ProtectionProgressionRule.ShouldAdvanceTarget(
-                                                        direction,
-                                                        NormalizePrice(
-                                                            planPosition.TakeProfit.Value),
-                                                        normalizedTarget,
-                                                        true);
-
                                                 if (materiallyDifferent &&
-                                                    configuredTpProgression &&
                                                     (!brokerTargetValid ||
                                                      LiveExitGeometryRule.ShouldAdvanceLiveTarget(
                                                          direction,
