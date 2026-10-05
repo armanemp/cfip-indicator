@@ -1559,6 +1559,7 @@ Old M0–M45, CR/CI numbering, former cBot sequencing, hotfix sequencing and sup
 - [ ] `tools/audit_phase_m5_panel_live.py`
 - [ ] `tools/audit_phase_mtf_primary_location_obfvg.py`
 - [ ] `tools/audit_phase_mtf_primary_panel.py`
+- [ ] `tools/audit_phase_cbot_execution_readiness_2026_10_05.py`
 - [ ] `tools/audit_phase_mtf_primary_provider_identity.py`
 - [ ] `tools/audit_phase_opportunity_mining_zone_selection_2026_10_02.py`
 - [ ] `tools/audit_phase_panel_clearance_restore_position.py`
