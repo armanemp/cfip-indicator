@@ -114,7 +114,10 @@ namespace CFIP.cBot.Shadow.Tests
                         e.Identity.CorrelationId,
                         "OTHER"),
                     ExecutionAction.Market, 100, 99, 101, 1000, "UNIT",
-                    Now, Now.AddMinutes(5), "bad");
+                    Now, Now.AddMinutes(5), "bad", "CFIP-SMART",
+                    new MarketExecutionProfile(
+                        0, 1, 1, false,
+                        0, 0, 0, 0, 0, null, null));
 
             SignalEnvelope invalid =
                 new SignalEnvelope(e.Identity, e.Stage, e.Plan, badIntent, Now);
@@ -317,7 +320,11 @@ namespace CFIP.cBot.Shadow.Tests
                     "UNIT",
                     Now,
                     Now.AddMinutes(5),
-                    "fixture");
+                    "fixture",
+                    "CFIP-SMART",
+                    new MarketExecutionProfile(
+                        0, 1, 1, false,
+                        0, 0, 0, 0, 0, null, null));
 
             SignalEnvelope second =
                 new SignalEnvelope(
@@ -593,7 +600,10 @@ namespace CFIP.cBot.Shadow.Tests
                     ? null
                     : new ExecutionIntent(
                         id, action, entry, stop, target, 1000, "UNIT",
-                        Now, expiry, "fixture");
+                        Now, expiry, "fixture", "CFIP-SMART",
+                        new MarketExecutionProfile(
+                            0, 1, 1, false,
+                            0, 0, 0, 0, 0, null, null));
 
             return new SignalEnvelope(id, stage, plan, intent, Now);
         }
