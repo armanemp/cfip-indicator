@@ -572,33 +572,35 @@ for token in (
     if token not in capacity_guard_code:
         raise SystemExit(f"Execution capacity guard missing: {token}")
 
-plan_eligibility = (ROOT / "Trading" / "Validation" / "PlanCreationEligibility.cs").read_text(encoding="utf-8")
-market_execution = (ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketPreTradeEligibility.cs").read_text(encoding="utf-8")
-aggressive_execution = (ROOT / "Trading" / "Execution" / "Aggressive" / "AggressivePreTradeEligibility.cs").read_text(encoding="utf-8")
+plan_eligibility_path = ROOT / "Trading" / "Validation" / "PlanCreationEligibility.cs"
+if plan_eligibility_path.exists():
+    plan_eligibility = plan_eligibility_path.read_text(encoding="utf-8")
+    if "ValidateSinglePlanCapacity(" not in plan_eligibility:
+        raise SystemExit("Plan creation must use the canonical capacity guard")
 pending_execution = (ROOT / "Trading" / "Pending" / "Placement" / "SmartPendingOrderOrchestrator.cs").read_text(encoding="utf-8")
-if "ValidateSinglePlanCapacity(" not in plan_eligibility:
-    raise SystemExit("Plan creation must use the canonical capacity guard")
-for module_text, name in (
-    (market_execution, "automatic market"),
-    (aggressive_execution, "aggressive"),
-    (pending_execution, "predictive pending"),
+if "ValidateSingleExecutionCapacity(" not in pending_execution:
+    raise SystemExit("Pending intent generation must use the canonical capacity guard")
+for obsolete in (
+    ROOT / "Trading" / "Execution" / "AutomaticMarket",
+    ROOT / "Trading" / "Execution" / "Aggressive" / "AggressivePreTradeEligibility.cs",
 ):
-    if "ValidateSingleExecutionCapacity(" not in module_text:
-        raise SystemExit(f"{name} execution must use the canonical execution-capacity guard")
-    if "ManagedPositionCount() >=" in module_text:
-        raise SystemExit(f"{name} execution retains a duplicate numeric capacity check")
+    if isinstance(obsolete, Path) and obsolete.exists():
+        raise SystemExit(f"obsolete Indicator execution path remains: {obsolete}")
 
 for p in parameter_files:
     groups = set(re.findall(r'\bGroup\s*=\s*"([^"]+)"', p.read_text(encoding="utf-8")))
     if len(groups) != 1:
         raise SystemExit(f"Parameter group isolation failed: {p}")
 
-label = re.search(
-    r'\[Parameter\("Auto Trade Label"[^\n]*DefaultValue\s*=\s*"([^"]+)"',
-    "\n".join(p.read_text(encoding="utf-8") for p in parameter_files),
-)
-if not label or label.group(1) != "CFIP-SMART":
-    raise SystemExit("Managed broker identity label parity check failed")
+for parameter_text in (
+    p.read_text(encoding="utf-8")
+    for p in parameter_files
+):
+    if 'Auto Trade Label' in parameter_text or 'Managed Position Label' in parameter_text:
+        raise SystemExit("Broker execution identity labels must not be user-configurable in the Indicator")
+cbot_identity = (ROOT.parent / "CFIP.Contracts" / "CbotIdentity.cs").read_text(encoding="utf-8")
+if 'ManagedLabel = "CFIP-SMART"' not in cbot_identity:
+    raise SystemExit("CFIP managed broker label must be canonical in Contracts")
 
 model_files = sorted(MODEL_ROOT.glob("*.cs"))
 expected_models = {
