@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace CFIP.Contracts
@@ -22,16 +23,17 @@ namespace CFIP.Contracts
 
         public static bool TryDeserialize(
             string payload,
-            out SignalEnvelope envelope)
+            out SignalEnvelope? envelope)
         {
-            envelope = default(SignalEnvelope);
+            envelope = null;
 
             if (string.IsNullOrWhiteSpace(payload))
                 return false;
 
             try
             {
-                SignalEnvelope parsed =
+                SignalEnvelope? parsed =
+                    JsonSerializer.Deserialize<SignalEnvelope>(
                     JsonSerializer.Deserialize<SignalEnvelope>(
                         payload,
                         Options);
@@ -47,7 +49,7 @@ namespace CFIP.Contracts
             }
             catch
             {
-                envelope = default(SignalEnvelope);
+                envelope = null;
                 return false;
             }
         }
