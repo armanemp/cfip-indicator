@@ -3214,11 +3214,14 @@ label_anchor_code = label_anchor.read_text(encoding="utf-8")
 if "CompactPlanLabelGapBars = 1" not in label_anchor_code:
     raise SystemExit("Plan label gap must be owned by the canonical anchor calculator")
 if (
-    "canonicalLineLeftBar -\n                CompactPlanLabelGapBars" not in label_anchor_code or
+    not re.search(
+        r"canonicalLineLeftBar\s*-\s*CompactPlanLabelGapBars",
+        label_anchor_code,
+    ) or
     "GetCompactPlanLabelAnchorTime(" not in label_anchor_code
 ):
     raise SystemExit("Plan label anchor must use exactly one canonical bar before line start")
-if "HorizontalAlignment.Left" not in compact_label_code:
+if "HorizontalAlignment.Right" not in compact_label_code:
     raise SystemExit("Plan labels must terminate at the left-of-line anchor")
 
 live_calc = ROOT / "Runtime" / "Calculation" / "CalculationLiveCycle.cs"
