@@ -156,7 +156,7 @@ label_anchor = read("UI/Chart/PlanLabelAnchorCalculator.cs")
 if (
     "CompactPlanLabelGapBars = 1" not in label_anchor or
     "GetCompactPlanLabelAnchorTime(" not in label_anchor or
-    not re.search(r"canonicalLineLeftBar\\s*-\\s*CompactPlanLabelGapBars", label_anchor)
+    not re.search(r"canonicalLineLeftBar\s*-\s*CompactPlanLabelGapBars", label_anchor)
 ):
     raise SystemExit("level labels must keep exactly one chart-bar left clearance in the canonical DateTime/OpenTime anchor owner")
 if "HorizontalAlignment.Right" not in compact_label_renderer:
