@@ -48,6 +48,12 @@ check(
 )
 
 check(
+    "closed-bar resolver rejects an invalid first bar before binary search",
+    "firstOpenTime" in closed and
+    "firstOpenTime == DateTime.MinValue" in closed
+)
+
+check(
     "closed-bar boundary reference has one reusable owner",
     "ClosedBarBoundaryReference(" in index_math and
     "bars.OpenTimes[closedIndex + 1]" in index_math and
