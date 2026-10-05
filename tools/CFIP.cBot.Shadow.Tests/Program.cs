@@ -114,7 +114,10 @@ namespace CFIP.cBot.Shadow.Tests
                         e.Identity.CorrelationId,
                         "OTHER"),
                     ExecutionAction.Market, 100, 99, 101, 1000, "UNIT",
-                    Now, Now.AddMinutes(5), "bad");
+                    Now, Now.AddMinutes(5), "bad", "CFIP-SMART",
+                    new MarketExecutionProfile(
+                        0, 1, 1, false,
+                        0, 0, 0, 0, 0, null, null));
 
             SignalEnvelope invalid =
                 new SignalEnvelope(e.Identity, e.Stage, e.Plan, badIntent, Now);
