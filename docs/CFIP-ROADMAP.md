@@ -391,6 +391,25 @@ Every phase also checks:
 - terminal implications;
 - documentation continuity.
 
+## 7.1 Mandatory Claude revalidation on every phase
+The historical Claude audit in `docs/CFIP-CALUDE.md` is a permanent evidence register, not a one-time checklist. From this phase onward, **every atomic work package MUST revalidate the Claude findings relevant to the touched ownership domain before declaring the package complete**.
+Required sequence:
+1. Read the relevant Claude finding IDs and proposed remediation.
+2. Re-check each finding against the exact current `main`/work-package baseline; never trust historical line numbers or prior status alone.
+3. Inspect canonical owner, callers, consumers, contracts, tests/audits, runtime and downstream effects.
+4. Classify each finding as `RESOLVED`, `CONFIRMED`, `REJECTED`, `OBSOLETE`, or `DEFERRED` with a reason.
+5. Apply confirmed remediation through the existing canonical owner when it belongs to the current package; do not create duplicate logic merely to satisfy the audit.
+6. Record the finding IDs and classification in the phase closeout / gate evidence.
+7. Re-run the relevant build, static audits and runtime contracts; add behavioral coverage when the risk is behavioral.
+8. Revalidate previously resolved high-severity findings when their owner or consumer graph changes.
+### Current T5 Claude revalidation register
+| Finding | Current result | Action / owner |
+|---|---|---|
+| H-25 | RESOLVED | Current `DecisionOrchestration` evaluates actionability/plan from the freshly built `decision`; no stale prior-decision handoff found. Keep under regression coverage. |
+| M-81 | CONFIRMED / DEFERRED | Hard-coded safety floors remain in decision/regime gates. They belong to the governed effective-threshold remediation (M-110), not an ad-hoc T5 patch. No duplicate threshold owner introduced. |
+| M-82 | CONFIRMED → FIXED | Neutral timeframes previously disappeared from the agreement denominator. Canonical `TimeframeAgreementAnalyzer` now includes every eligible frame in `totalWeight` while only matching direction contributes to `alignedWeight`. |
+| M-83 | CONFIRMED / DEFERRED | Empirical calibration now computes realized-R evidence for contextual snapshots, but live adjustment is still win-rate based. Full policy correction belongs to calibration/outcome phase; do not duplicate calibration logic in T5. |
+**Permanent rule:** the Claude revalidation step above must be repeated in every future phase and must never be skipped because a finding was previously marked resolved.
 # 8. Evidence package
 
 Every phase closeout records:
