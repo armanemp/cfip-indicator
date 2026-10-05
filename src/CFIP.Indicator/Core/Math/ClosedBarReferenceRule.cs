@@ -17,7 +17,12 @@ namespace cAlgo
                 normalizedReference == DateTime.MinValue)
                 return -1;
 
-            if (normalizedReference < CanonicalTimeRule.EnsureUtc(openTimeAt(0)))
+            DateTime firstOpenTime =
+                CanonicalTimeRule.EnsureUtc(
+                    openTimeAt(0));
+
+            if (firstOpenTime == DateTime.MinValue ||
+                normalizedReference < firstOpenTime)
                 return -1;
 
             int low = 0;
