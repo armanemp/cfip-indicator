@@ -1734,16 +1734,15 @@ if "ValidateSingleExecutionCapacity(" not in CAPACITY_CODE:
 plan_execution_path = ROOT / "Trading" / "Validation" / "PlanCreationEligibility.cs"
 if "ValidateSinglePlanCapacity(" not in plan_execution_path.read_text(encoding="utf-8"):
     raise SystemExit("Plan creation must use the single-plan capacity guard")
+# Indicator broker-execution preparation was removed when execution authority moved to the cBot.
+# These files must stay absent rather than being reintroduced as a second execution path.
 for execution_path in [
     ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketPreTradeEligibility.cs",
     ROOT / "Trading" / "Execution" / "Aggressive" / "AggressivePreTradeEligibility.cs",
-    ROOT / "Trading" / "Pending" / "Placement" / "SmartPendingOrderOrchestrator.cs",
 ]:
-    execution_code = execution_path.read_text(encoding="utf-8")
-    if "ValidateSingleExecutionCapacity(" not in execution_code:
-        raise SystemExit(f"Shared execution capacity guard missing in {execution_path.name}")
-    if "ManagedPositionCount() >=" in execution_code:
-        raise SystemExit(f"Duplicate position-capacity calculation remains in {execution_path.name}")
+    if execution_path.exists():
+        raise SystemExit(f"Indicator execution preparation leaked back into the analysis host: {execution_path.name}")
+
 
 # Market/Aggressive broker state ownership moved to cBot in CBOT-P4A.
 
