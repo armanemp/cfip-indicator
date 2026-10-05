@@ -6,7 +6,7 @@ Branch: `audit/p2-wp06-contract-boundary-2026-10-05`
 
 ## Status
 
-**BLOCKED — audit complete; implementation intentionally not started.**
+**BLOCKED — implementation applied on the audit branch; target-terminal evidence still blocks WP-06 closure.**
 
 WP-06 remains blocked by WP-05 target-terminal evidence (0/13 required scenarios at the current control-plane state). This document records the contract-boundary findings discovered before implementation.
 
@@ -34,7 +34,7 @@ Audited:
 ### CFIP-WP06-001 — Contract version is not a general decode invariant
 **Severity:** P1
 **Owner:** WP-06 / canonical contract codec boundary
-**Status:** OPEN
+**Status:** IMPLEMENTED — verification pending
 
 `ContractVersion.Current` exists, but the codec layer does not establish a single general rule that an incoming payload must carry an accepted contract version before it is materialized.
 
@@ -46,7 +46,7 @@ Required resolution:
 ### CFIP-WP06-002 — ExecutionIntent compatibility path permits null MarketProfile
 **Severity:** P1
 **Owner:** WP-06
-**Status:** OPEN
+**Status:** IMPLEMENTED — verification pending
 
 `ExecutionIntent` currently disables nullable analysis and has a compatibility constructor path that can pass null for `MarketProfile`.
 
