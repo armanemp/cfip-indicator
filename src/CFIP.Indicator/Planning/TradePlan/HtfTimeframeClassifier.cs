@@ -16,7 +16,7 @@ namespace cAlgo
 private bool IsHtfTimeframe(
                                     string timeframe)
                                 {
-                                    return StructuralTimeframeRule.IsSupported(
+                                    return StructuralTimeframeRule.IsHigherThanM5(
                                         timeframe);
                                 }
     }
