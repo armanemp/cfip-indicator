@@ -23,7 +23,7 @@ namespace CFIP.cBot
         [Parameter(
             "Enable Demo Market Execution",
             Group = "Execution",
-            DefaultValue = false)]
+            DefaultValue = true)]
         public bool EnableDemoMarketExecution { get; set; }
 
         [Parameter(
@@ -139,7 +139,7 @@ namespace CFIP.cBot
         [Parameter(
             "Enable Automatic Trading",
             Group = "Execution Policy",
-            DefaultValue = false)]
+            DefaultValue = true)]
         public bool EnableAutoTrading { get; set; }
 
         [Parameter(
@@ -795,9 +795,40 @@ namespace CFIP.cBot
                             : envelope.Intent.Action == ExecutionAction.Market &&
                           EffectiveMarketExecutionEnabled);
 
-            if (!executionEnabled ||
-                !actionEnabled ||
-                shadowResult == null ||
+            if (!executionEnabled)
+            {
+                string disarmReason;
+
+                if (!EnableAutoTrading)
+                    disarmReason = "CBOT AUTO TRADING DISABLED";
+                else if (pendingAction &&
+                         !EnableAutomaticOrders)
+                    disarmReason = "CBOT AUTOMATIC ORDERS DISABLED";
+                else
+                    disarmReason = "CBOT EXECUTION PATH DISARMED";
+
+                LogBlockedState(disarmReason);
+                PublishExecutionState(
+                    "EXECUTION DISARMED • " + disarmReason,
+                    true);
+                return;
+            }
+
+            if (!actionEnabled)
+            {
+                string actionReason =
+                    pendingAction
+                        ? "CBOT PENDING EXECUTION PATH DISARMED"
+                        : "CBOT MARKET EXECUTION PATH DISARMED";
+
+                LogBlockedState(actionReason);
+                PublishExecutionState(
+                    "EXECUTION DISARMED • " + actionReason,
+                    true);
+                return;
+            }
+
+            if (shadowResult == null ||
                 shadowResult.State != ShadowHostState.Ready)
                 return;
 
