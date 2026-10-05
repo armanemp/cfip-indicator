@@ -25,7 +25,7 @@ namespace cAlgo
             int latestOpenIndex = -1;
 
             // Resolve the latest bar whose open time is at or before the
-            // UTC reference. That bar is still open at the reference when
+            // canonical UTC reference. That bar is still open at the reference when
             // it opened exactly at, or immediately before, the reference.
             // Therefore the preceding bar is the latest fully closed bar.
             while (low <= high)
