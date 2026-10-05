@@ -2179,40 +2179,21 @@ if not PENDING_SUBMISSION.exists():
 PENDING_SUBMISSION_CODE = PENDING_SUBMISSION.read_text(encoding="utf-8")
 for token in (
     "ValidateExecutionIntent(",
-    "PassesAutoTradeSafetyGuards(",
     "PendingExpiration(",
 ):
     if token not in PENDING_SUBMISSION_CODE:
         raise SystemExit(f"Shared pending submission ownership missing: {token}")
 
-# Aggressive execution boundary.
-AGGRESSIVE_PRETRADE = ROOT / "Trading" / "Execution" / "Aggressive" / "AggressivePreTradePreparation.cs"
-AGGRESSIVE_PRETRADE_CODE = AGGRESSIVE_PRETRADE.read_text(encoding="utf-8")
-if AGGRESSIVE_PRETRADE.stat().st_size > 4096:
-    raise SystemExit("AggressivePreTradePreparation.cs must remain an orchestration boundary")
-for token in (
-    "PassAggressivePreTradeEligibility(",
-    "TryPrepareAggressiveExecution(",
+# Aggressive broker-execution preparation/eligibility/fill modules were removed from
+# Indicator. Their broker authority belongs to the cBot; keep the boundary explicit.
+for removed in (
+    ROOT / "Trading" / "Execution" / "Aggressive" / "AggressivePreTradeEligibility.cs",
+    ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveExecutionPreparation.cs",
+    ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveAcceptedFillHandler.cs",
+    ROOT / "Trading" / "Execution" / "Aggressive" / "AggressivePreTradePreparation.cs",
 ):
-    if token not in AGGRESSIVE_PRETRADE_CODE:
-        raise SystemExit(f"Aggressive pre-trade orchestration call missing: {token}")
-
-for path, token in (
-    (
-        ROOT / "Trading" / "Execution" / "Aggressive" / "AggressivePreTradeEligibility.cs",
-        "ValidateSingleExecutionCapacity("
-    ),
-    (
-        ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveExecutionPreparation.cs",
-        "BuildStructuralStop("
-    ),
-    (
-        ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveAcceptedFillHandler.cs",
-        "ValidateActualMarketFill("
-    ),
-):
-    if not path.exists() or token not in path.read_text(encoding="utf-8"):
-        raise SystemExit(f"Aggressive execution owner missing or incomplete: {path}")
+    if removed.exists():
+        raise SystemExit(f"Removed Indicator aggressive execution path was reintroduced: {removed.name}")
 
 # Aggressive broker execution owner was removed from the Indicator in CBOT-P4A.
 # Automatic-market broker execution owner was removed in the same cutover.
