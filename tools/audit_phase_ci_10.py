@@ -53,6 +53,22 @@ check(
 )
 
 check(
+    "M1 runtime delegates readiness to the canonical M1 evaluator",
+    "M1TriggerReady(" in m1_runtime and
+    "M1TriggerRule.IsReady(" not in m1_runtime and
+    "Highest(" not in m1_runtime and
+    "Lowest(" not in m1_runtime
+)
+
+check(
+    "M1 evaluator remains the sole owner of M1 readiness geometry",
+    "M1TriggerRule.IsReady(" in m1_eval and
+    "TriggerThresholdRule.ResolveRequiredScore(" in m1_eval and
+    "priorMicroHigh" in m1_eval and
+    "priorMicroLow" in m1_eval
+)
+
+check(
     "legacy duplicated precision/live threshold ternary is absent from trigger evaluators",
     "UsePrecisionExecutionModel\n                                    ? Math.Max(" not in m5_trigger and
     "UsePrecisionExecutionModel\n                ? Math.Max(" not in m1_eval and
