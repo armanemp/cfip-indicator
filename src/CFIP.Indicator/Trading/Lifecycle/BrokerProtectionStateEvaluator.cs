@@ -49,7 +49,7 @@ namespace cAlgo
             return
                 brokerStopValid &&
                 (serverTakeProfitLadderActive ||
-                 !SyncBrokerTakeProfit ||
+                 !CbotCanManage() ||
                  brokerTargetValid);
         }
     }
