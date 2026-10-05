@@ -169,11 +169,9 @@ namespace cAlgo
                 _dailyLossNetCashFlow = 0;
                 _dailyLossHistoryCount = -1;
                 _dailyLossTransactionCount = -1;
-                _dailyLossHistoryAvailable = false;
                 _dailyLossTransactionsAvailable = false;
                 _dailyLossLocked = locked;
                 _dailyLossLimitAlerted = alerted;
-                _dailyLossDataReady = false;
                 _lastDailyLossPersistUtc =
                     DateTime.MinValue;
                 _lastDailyLossSharedStateReloadUtc =
