@@ -303,7 +303,15 @@ htf_source = read("src/CFIP.Indicator/Planning/TradePlan/HtfSourceClassifier.cs"
 htf_timeframe = read("src/CFIP.Indicator/Planning/TradePlan/HtfTimeframeClassifier.cs")
 htf_presence = read("src/CFIP.Indicator/Trading/Validation/HtfTargetPresenceValidator.cs")
 htf_merger = read("src/CFIP.Indicator/Planning/TradePlan/TargetLevelCandidateMerger.cs")
+target_cache_state = read("src/CFIP.Indicator/Indicator/State.cs")
 
+check(
+    "target-level cache returns isolated Level instances",
+    "CloneLevels(" in target_builder and
+    "_targetLevelCache =\n                                                CloneLevels(" in target_builder and
+    "return CloneLevels(" in target_builder and
+    "deep copies so callers can never mutate cached levels" in target_cache_state,
+)
 check(
     "synthetic target stages are validated against the prior selected target",
     "FindPreviousSelectedTargetPrice(" in target_stage and
