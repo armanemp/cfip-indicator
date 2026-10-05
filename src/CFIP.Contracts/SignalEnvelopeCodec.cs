@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Text.Json;
 
@@ -37,7 +36,10 @@ namespace CFIP.Contracts
                         payload,
                         Options);
 
-                if (parsed == null)
+                if (parsed == null ||
+                    parsed.Identity == null ||
+                    !ContractVersion.IsSupported(
+                        parsed.Identity.ContractVersion))
                     return false;
 
                 envelope = parsed;
@@ -51,4 +53,3 @@ namespace CFIP.Contracts
         }
     }
 }
-#nullable enable
