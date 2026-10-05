@@ -4100,6 +4100,25 @@ The terminal evidence closes `DEF-P1-001` as **FIXED — TERMINAL REVALIDATED**.
 
 The same runtime evidence also showed two semantically distinct queued/delivered alerts for the same plan stage: `BOS` delivered `Doorbell` and `EARLY` delivered `Announcement`, with both platform `PlaySound` operations succeeding. No duplicate delivery was observed in this log excerpt.
 
+
+## 2026-10-05 — Target-terminal visual revalidation reopened label clearance
+
+Status: **CORRECTIVE IMPLEMENTATION — CI VERIFIED / TARGET-TERMINAL REVALIDATION PENDING**.
+
+The supplied fresh cTrader screenshot showed the label body reaching/intersecting the signal-line start despite the one-bar anchor. The visual requirement is therefore interpreted by the actual spatial contract: the complete label must remain to the left of the line, with its visible right edge one full chart bar before the line start.
+
+Completed in PR #339 (fix/plan-label-text-clearance-left-2026-10-05):
+- `PlanLabelRenderer` now uses native `ChartText` right alignment, pinning the complete label's visible right edge to the canonical one-bar-left anchor.
+- The single `PlanLabelAnchorCalculator` owner, DateTime/OpenTime coordinate system, 11px regular typography, exact line color and background-free presentation remain unchanged.
+- Active architecture/runtime/single-owner audits were aligned with the corrected contract.
+
+CI evidence on the exact corrected head:
+- Source/Architecture: PASS.
+- Runtime Acceptance: PASS.
+- cTrader Compile: PASS.
+
+No trading, MTF, signal-scoring or broker-mutation semantics changed. Fresh Release target-terminal validation is still required before DEF-P1-004 can be accepted.
+
 ## 2026-10-05 — PR #338 Canonical Signal-Label Alignment Closeout
 
 Status: **MERGED — REPOSITORY VERIFIED / TARGET-TERMINAL VISUAL REVALIDATION PENDING**.
