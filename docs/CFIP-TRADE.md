@@ -794,7 +794,6 @@ Lifecycle remains coherent through all recoverable disruptions and remains idemp
 - rejected execution;
 - duplicate suppression;
 - persistence;
-- archive;
 - account/symbol/strategy identity.
 
 ### Exit
@@ -1101,26 +1100,12 @@ Exactly one trade phase may be **NEXT** at a time.
 
 ---
 
-# 12. Relationship to the repository master roadmap
+# 12. Relationship to project control
 
-`docs/CFIP-ROADMAP.md` remains the repository-wide execution roadmap.
-
-`docs/CFIP_GATE.md` remains the repository-wide acceptance/defect authority.
-
-`docs/CFIP-LIST.md` remains the exhaustive inventory.
-
-**CFIP-TRADE.md** specializes and expands only the complete **analysis-to-trade chain**.
-
-When documents disagree:
-
-1. actual current source and verified evidence establish implementation truth;
-2. `CFIP_GATE.md` establishes acceptance truth;
-3. `CFIP-ROADMAP.md` establishes repository-wide execution order;
-4. `CFIP-TRADE.md` establishes trade-chain scope, sequence and completeness.
-
-Historical documents never override these control-plane rules.
-
----
+- This document defines the dedicated trade-chain scope and sequence.
+- Project control documents define repository-wide acceptance and boundaries.
+- Only current active source and explicit user instructions determine implementation work.
+- The next trade phase is not inferred from older material.
 
 # 13. Operator protocol
 
@@ -1144,11 +1129,11 @@ Operator commands must always be explicit and limited to commands actually requi
 
 **Current trade-chain roadmap status: ACTIVE**
 
-**Current trade-chain phase: T0 — Trade Baseline**
+**Current trade-chain phase: USER-DEFINED START**
 
-**T0 objective:** build the verified current trade-chain owner/consumer graph from the actual repository head and use it as the starting point for all later trade phases.
+**No trade phase is active until the user specifies the starting point.**
 
-**No later trade phase is considered PASS before its required evidence is completed.**
+**No phase is considered PASS before its required evidence is completed.**
 
 ---
 
