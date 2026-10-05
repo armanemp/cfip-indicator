@@ -1689,3 +1689,8 @@ Verification on the exact final implementation head:
 No production trading logic, public strategy threshold, broker authority or MTF contract was changed.
 
 **Next:** WP-05 — Preflight.
+
+
+# Trade-chain roadmap registration
+
+`docs/CFIP-TRADE.md` is an ACTIVE companion roadmap. It is indexed here so the trade-chain scope cannot become an untracked planning artifact. It remains subordinate to `CFIP-ROADMAP.md` for repository execution order and `CFIP_GATE.md` for acceptance.
