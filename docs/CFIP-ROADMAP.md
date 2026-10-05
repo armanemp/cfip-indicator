@@ -29,6 +29,6 @@
 
 **Trade-chain work is the current priority.**
 
-**Start point:** user-defined.
+**Trade-chain status: T0 PASS → T1 NEXT**
 
-تا زمانی که نقطهٔ شروع توسط کاربر تعیین نشده، phase جدیدی به‌عنوان NEXT تعیین نمی‌شود.
+جزئیات زنجیره فقط در `docs/CFIP-TRADE.md` ثبت می‌شود.
