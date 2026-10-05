@@ -153,16 +153,14 @@ private List<Level> BuildTargetLevels(
                                                     direction,
                                                     entry,
                                                     atr,
-                                                    _m5Bars.OpenTimes[
-                                                        closedM5]);
+                                                    closedM5Boundary);
                                 
                                                 AddPreviousPeriodLevels(
                                                     levels,
                                                     direction,
                                                     entry,
                                                     atr,
-                                                    _m5Bars.OpenTimes[
-                                                        closedM5]);
+                                                    closedM5Boundary);
                                             }
                                 
                                             AddSmartExtraTargetLevels(
