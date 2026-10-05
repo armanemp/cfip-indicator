@@ -23,6 +23,7 @@ namespace CFIP.cBot.Execution
             double maximumMarginUsagePercent,
             double marginBufferPercent,
             int maximumConcurrentScenarios,
+            int pendingOrderExpiryMinutes,
             CbotExecutionIdempotencyStore idempotencyStore,
             out BrokerExecutionReport report,
             out string reason)
@@ -220,6 +221,19 @@ namespace CFIP.cBot.Execution
             DateTime? expiration =
                 envelope.Intent.ExpiryUtc ??
                 envelope.Identity.ExpiryUtc;
+
+            if (!expiration.HasValue &&
+                (action == ExecutionAction.PendingStop ||
+                 action == ExecutionAction.PendingLimit))
+            {
+                expiration =
+                    nowUtc.AddMinutes(
+                        Math.Max(
+                            15,
+                            Math.Min(
+                                1440,
+                                pendingOrderExpiryMinutes)));
+            }
 
             if (expiration.HasValue &&
                 expiration.Value <= nowUtc)
