@@ -320,7 +320,11 @@ namespace CFIP.cBot.Shadow.Tests
                     "UNIT",
                     Now,
                     Now.AddMinutes(5),
-                    "fixture");
+                    "fixture",
+                    "CFIP-SMART",
+                    new MarketExecutionProfile(
+                        0, 1, 1, false,
+                        0, 0, 0, 0, 0, null, null));
 
             SignalEnvelope second =
                 new SignalEnvelope(
