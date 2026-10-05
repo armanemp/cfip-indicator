@@ -96,7 +96,7 @@ namespace cAlgo
                                         bool targetConfirmed =
                                             serverLadderTargetValid
                                                 ? true
-                                                : !SyncBrokerTakeProfit ||
+                                                : !CbotCanManage() ||
                                                   brokerTargetValid;
 
                                         bool mutationRequired = false;
@@ -212,7 +212,7 @@ namespace cAlgo
                                                         Symbol.PipSize * 0.25);
 
                                                 bool configuredTpProgression =
-                                                    !PreventBrokerTpBackwardMove ||
+                                                    !true ||
                                                     !brokerTargetValid ||
                                                     ProtectionProgressionRule.ShouldAdvanceTarget(
                                                         direction,
