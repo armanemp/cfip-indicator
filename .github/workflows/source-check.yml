@@ -24,6 +24,6 @@ jobs:
       - run: python tools/audit_github_workflows.py
       - run: python tools/audit_mtf_contract.py
       - run: python tools/audit_parameter_count.py
-      - run: python tools/audit_cbot_project_boundary.py
+      - run: python tools/audit_phase_cbot_execution_readiness_2026_10_05.py
       - run: python tools/audit_cbot_contract_schema.py
       - run: python tools/audit_cbot_preflight.py
