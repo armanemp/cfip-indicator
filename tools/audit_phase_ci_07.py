@@ -6,7 +6,6 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 errors = []
 
-
 def read(relative):
     path = ROOT / relative
     if not path.exists():
@@ -14,12 +13,10 @@ def read(relative):
         return ""
     return path.read_text(encoding="utf-8")
 
-
 def check(name, condition):
     print(f"{'PASS' if condition else 'FAIL'} | {name}")
     if not condition:
         errors.append(name)
-
 
 mtf_builder = read("src/CFIP.Indicator/Runtime/Mtf/MtfContextBuilder.cs")
 mtf_cache = read("src/CFIP.Indicator/Runtime/Mtf/MtfClosedContextCache.cs")
@@ -40,26 +37,24 @@ suitability = read("src/CFIP.Indicator/Trading/Risk/SuitabilityCalculator.cs")
 runtime = read("tools/CFIP.Runtime.Contracts/Program.cs")
 runtime_project = read("tools/CFIP.Runtime.Contracts/CFIP.Runtime.Contracts.csproj")
 workflow = read(".github/workflows/source-check.yml")
-roadmap = read("docs/CFIP-ROADMAP.md")
 historical_roadmap = read("docs/archive/ROADMAP-LEGACY-2026-10-04.md")
 continuation = read("docs/CONTINUATION-STATE.md")
 
-production_files = list((ROOT / "src" / "CFIP.Indicator").rglob("*.cs"))
-
-
 check(
-    "MTF builder resolves exactly eight canonical closed indices",
+    "MTF builder resolves exactly eight canonical closed indices from one normalized reference",
     mtf_builder.count("ClosedIndex(") == 8 and
-    "reference," in mtf_builder and
+    "DateTime normalizedReference" in mtf_builder and
+    "CanonicalTimeRule.EnsureUtc(reference)" in mtf_builder and
+    "normalizedReference," in mtf_builder and
     "TryGetStableContext(" in mtf_builder
 )
 
 check(
-    "MTF cache is reference-aware and re-materializes exact reference identity",
-    "DateTime reference" in mtf_cache and
-    "reference >= _context.Reference" in mtf_cache and
+    "MTF cache is reference-aware and re-materializes exact normalized reference identity",
+    "DateTime normalizedReference" in mtf_cache and
+    "normalizedReference >= _context.Reference" in mtf_cache and
     mtf_cache.count("IsReferenceStable(") >= 8 and
-    "_context.WithReference(reference)" in mtf_cache
+    "_context.WithReference(normalizedReference)" in mtf_cache
 )
 
 check(
@@ -99,7 +94,7 @@ check(
     "one canonical market-state snapshot aggregates all eight frames plus context",
     "internal sealed class MarketStateSnapshot" in state_model and
     "internal sealed class MarketStateFrameSnapshot" in state_frame_model and
-    state_builder.count('BuildMarketStateFrameSnapshot(') >= 8 and
+    state_builder.count("BuildMarketStateFrameSnapshot(") >= 8 and
     "PremiumDiscountBias(" in state_builder and
     "SessionWindowRule.IsInside(" in state_builder
 )
