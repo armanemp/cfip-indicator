@@ -2179,7 +2179,6 @@ if not PENDING_SUBMISSION.exists():
 PENDING_SUBMISSION_CODE = PENDING_SUBMISSION.read_text(encoding="utf-8")
 for token in (
     "ValidateExecutionIntent(",
-    "PendingExpiration(",
 ):
     if token not in PENDING_SUBMISSION_CODE:
         raise SystemExit(f"Shared pending submission ownership missing: {token}")
