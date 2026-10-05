@@ -33,9 +33,6 @@ if "DisplaySettings.QuickTradeButtons" in indicator_source or "DisplaySettings.Q
 if "Permissions.TradingPermission.Request()" in cbot_source:
     errors.append("cBot must not request the Indicator trading permission")
 
-if 'src/CFIP.Indicator/Indicator/Parameters/13_auto_trading.cs' in "":
-    errors.append("unreachable guard")
-
 parameter_dir = INDICATOR / "Indicator" / "Parameters"
 for path in parameter_dir.glob("*.cs"):
     if "EnableAutoTrading" in read(path) or "EnableAutomaticOrders" in read(path):
@@ -44,8 +41,8 @@ for path in parameter_dir.glob("*.cs"):
 if "EnableAutoTrading" not in host:
     errors.append("cBot master automatic-trading parameter is missing")
 
-if 'DefaultValue = true)]' not in host.split('"Enable Automatic Trading"', 1)[1].split('public bool EnableAutoTrading', 1)[0]:
-    errors.append("cBot master automatic trading must default ON for the demo-first execution path")
+if 'DefaultValue = false)]' not in host.split('"Enable Automatic Trading"', 1)[1].split('public bool EnableAutoTrading', 1)[0]:
+    errors.append("cBot master automatic trading must remain explicit opt-in")
 
 if 'DefaultValue = true)]' not in host.split('"Enable Demo Market Execution"', 1)[1].split('public bool EnableDemoMarketExecution', 1)[0]:
     errors.append("demo market execution capability must default ON")
