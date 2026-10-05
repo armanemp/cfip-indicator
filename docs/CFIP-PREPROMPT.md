@@ -380,7 +380,7 @@ Labels:
 - exact price;
 - readable regular-weight native ChartText;
 - canonical anchor owner: `PlanLabelAnchorCalculator`;
-- visible right edge of the complete right-aligned text exactly one chart bar before the canonical line start;
+- visible start of left-aligned text exactly one chart bar before the canonical line start;
 - label text must use the exact materialized color of its corresponding signal line;
 - `Color.White` is forbidden for canonical signal/plan line labels;
 - pending, parallel and prediction labels must reuse the same renderer/anchor contract;
