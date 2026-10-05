@@ -17,9 +17,19 @@ private double AdjustVolumeForMargin(
                             TradeType tradeType,
                             double volume)
                         {
-                            if (!IsFinitePositive(volume) ||
-                                !UseAutoMarginGuard)
-                                return volume;
+                            if (!IsFinitePositive(volume))
+                                return 0;
+
+                            double normalizedVolume =
+                                Symbol.NormalizeVolumeInUnits(
+                                    volume,
+                                    RoundingMode.Down);
+
+                            if (!IsFinitePositive(normalizedVolume))
+                                return 0;
+
+                            if (!UseAutoMarginGuard)
+                                return normalizedVolume;
                 
                             try
                             {
@@ -44,7 +54,7 @@ private double AdjustVolumeForMargin(
                                 double estimated =
                                     Symbol.GetEstimatedMargin(
                                         tradeType,
-                                        volume);
+                                        normalizedVolume);
                 
                                 if (!IsFinitePositive(estimated) ||
                                     estimated <= allowed)
@@ -54,31 +64,52 @@ private double AdjustVolumeForMargin(
                 
                                 double reduced =
                                     Symbol.NormalizeVolumeInUnits(
-                                        volume *
+                                        normalizedVolume *
                                         allowed /
                                         estimated,
                                         RoundingMode.Down);
                 
-                                while (reduced >= Symbol.VolumeInUnitsMin)
+                                double volumeStep =
+                                    Symbol.VolumeInUnitsStep;
+
+                                if (!IsFinitePositive(volumeStep))
+                                    return 0;
+
+                                const int maxReductionIterations = 10000;
+                                int reductionIterations = 0;
+
+                                while (reduced >= Symbol.VolumeInUnitsMin &&
+                                       reductionIterations++ < maxReductionIterations)
                                 {
                                     double check =
                                         Symbol.GetEstimatedMargin(
                                             tradeType,
                                             reduced);
-                
+
                                     if (!IsFinitePositive(check) ||
                                         check <= allowed)
                                         break;
-                
-                                    reduced =
+
+                                    double nextReduced =
                                         Symbol.NormalizeVolumeInUnits(
                                             reduced -
-                                            Symbol.VolumeInUnitsStep,
+                                            volumeStep,
                                             RoundingMode.Down);
+
+                                    if (!IsFinitePositive(nextReduced) ||
+                                        nextReduced >= reduced)
+                                        return 0;
+
+                                    reduced = nextReduced;
                                 }
-                
+
+                                if (reductionIterations >= maxReductionIterations)
+                                    return 0;
+
                                 return reduced >= Symbol.VolumeInUnitsMin
-                                    ? reduced
+                                    ? Symbol.NormalizeVolumeInUnits(
+                                        reduced,
+                                        RoundingMode.Down)
                                     : 0;
                             }
                             catch (Exception ex)
