@@ -89,6 +89,21 @@ check(
 )
 
 check(
+    "stored plan reward validation uses the same spread policy",
+    "ValidatePlanRewardStructure(" in reward_integrity and
+    "double spread)" in reward_integrity and
+    "checkSpread" in plan_integrity and
+    "Symbol.Ask - Symbol.Bid" in plan_integrity,
+)
+check(
+    "stored TP RR evaluations do not hard-code zero spread",
+    "plan.Tp1,\n                    0," not in reward_integrity and
+    "plan.Tp2,\n                        0," not in reward_integrity and
+    "plan.Tp3,\n                        0," not in reward_integrity and
+    "plan.Tp4,\n                        0," not in reward_integrity,
+)
+
+check(
     "PlanRewardRiskQualityRule consumes canonical RR geometry",
     "RiskRewardMathRule.Evaluate(" in plan_quality,
 )
