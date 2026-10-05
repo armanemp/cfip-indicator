@@ -23,6 +23,8 @@ roadmap = read("docs/CFIP-ROADMAP.md")
 historical_roadmap = read("docs/archive/ROADMAP-LEGACY-2026-10-04.md")
 continuation = read("docs/CONTINUATION-STATE.md")
 development = read("docs/DEVELOPMENT-LOG.md")
+data_flow = read("src/CFIP.Indicator/UI/Panel/PanelDataFlowCard.cs")
+factory = read("src/CFIP.Indicator/UI/Panel/PanelFactory.cs")
 
 checks = (
     (
