@@ -265,6 +265,7 @@ namespace cAlgo
                                         _buttonStack = null;
                                         _panelToggleButton = null;
                                         _panelRestoreButton = null;
+                                        RemovePanelDataFlowCard();
                                     }
                                 }
 
