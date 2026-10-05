@@ -31,6 +31,7 @@ stops = read("src/CFIP.Indicator/Planning/TradePlan/StructuralStopCandidateEvalu
 stop_collect = read("src/CFIP.Indicator/Planning/TradePlan/StructuralStopCandidateCollector.cs")
 micro = read("src/CFIP.Indicator/Planning/TradePlan/Sources/M1MicroTargetSource.cs")
 liquidity = read("src/CFIP.Indicator/Planning/TradePlan/Sources/SupplyDemandLiquidityTargetSource.cs")
+target_builder = read("src/CFIP.Indicator/Planning/TradePlan/TargetLevelBuilder.cs")
 prep = read("src/CFIP.Indicator/Runtime/Calculation/CalculationPreparation.cs")
 closed_stage = read("src/CFIP.Indicator/Runtime/Calculation/CalculationClosedBar.cs")
 stage = read("src/CFIP.Indicator/Runtime/Calculation/CalculationStageIsolation.cs")
@@ -91,6 +92,12 @@ check(
     "liquidity target age uses the same closed-bar boundary reference",
     "ClosedBarBoundaryReference(" in liquidity and
     "_m5Bars.OpenTimes[closedM5]" not in liquidity
+)
+
+check(
+    "target-level temporal sources use the closed-M5 boundary, not the closed bar open",
+    "ClosedBarBoundaryReference(" in target_builder and
+    "_m5Bars.OpenTimes[closedM5]" not in target_builder
 )
 
 check(
