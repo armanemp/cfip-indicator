@@ -11,7 +11,7 @@ namespace cAlgo
             out string reason)
         {
             if (!ExecutionCapacityRule.AllowsNewSinglePlan(
-                    MaximumOpenPositions,
+                    ExecutionCapacityRule.SupportedMaximumOpenPositions,
                     _plan != null,
                     ManagedPositionCount(),
                     ManagedPendingOrderCount()))
@@ -30,7 +30,7 @@ namespace cAlgo
             out string reason)
         {
             if (!ExecutionCapacityRule.AllowsNewSingleExecution(
-                    MaximumOpenPositions,
+                    ExecutionCapacityRule.SupportedMaximumOpenPositions,
                     ManagedPositionCount(),
                     ManagedPendingOrderCount()))
             {
@@ -48,7 +48,7 @@ namespace cAlgo
             bool includeActivePlan)
         {
             if (!ExecutionCapacityRule.IsSupportedSinglePlanCapacity(
-                    MaximumOpenPositions))
+                    ExecutionCapacityRule.SupportedMaximumOpenPositions))
                 return
                     "UNSUPPORTED CAPACITY • SINGLE PLAN ONLY";
 
@@ -58,7 +58,7 @@ namespace cAlgo
                     "SINGLE ACTIVE PLAN EXISTS";
 
             if (ManagedPositionCount() >=
-                ExecutionCapacityRule.SupportedMaximumOpenPositions)
+                ExecutionCapacityRule.SupportedExecutionCapacityRule.SupportedMaximumOpenPositions)
                 return
                     "MANAGED POSITION CAPACITY REACHED";
 
