@@ -40,9 +40,17 @@
 
 ## Current
 
-**Trade-chain T0 — PASS (SOURCE BASELINE)**
+**Trade-chain T1 — IMPLEMENTED / GATE-READY (MARKET DATA TRUTH)**
 
-**Next: T1 — Market Data Truth**
+**Next: T2 — Time / MTF / Closed-Bar Integrity**
+
+### T1 acceptance notes
+
+- Canonical quote/data semantics are owned by CanonicalPriceSnapshot / CalculationMarketContext.
+- Live indicator consumers refresh that canonical quote boundary before reaction/actionability/provider use.
+- Provider execution intent fails closed when canonical quote metadata/time/quote state is unusable.
+- cBot remains the final live broker quote authority.
+- T1 does not claim target-terminal execution evidence or current-head CI until those exact artifacts are observed.
 
 ### T0 open findings
 
@@ -52,3 +60,7 @@
 - Execution-intent construction has two related construction boundaries requiring T9/T10 ownership verification.
 - Lifecycle semantics cross Indicator/cBot and require formal ownership closure.
 - Current-head CI and target-terminal broker evidence are not claimed as T0 proof.
+
+### Global intelligence gate
+
+Any future smart behavior must reuse the canonical result of the upstream owner, define its causal inputs, remain monotonic with safety, avoid double-counting, and not introduce a parallel state/strategy/execution path. More intelligence is not permission to add contradictory filters or arbitrary hard-coded floors.
