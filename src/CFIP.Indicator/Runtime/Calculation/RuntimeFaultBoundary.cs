@@ -19,8 +19,6 @@ namespace cAlgo
         private void BeginRuntimeFaultCycle()
         {
             _runtimeFaultStateMachine.BeginCycle();
-            _runtimeFaultStateMachine.ObserveAutoTradingSetting(
-                AutoTradingEnabled);
             ApplyRuntimeFaultState();
         }
 
@@ -36,16 +34,6 @@ namespace cAlgo
             ApplyRuntimeFaultState();
         }
 
-        private bool CanRunAutomaticEntry()
-        {
-            return _runtimeFaultStateMachine.CanAutomaticEntryProceed;
-        }
-
-        private void ApplyRuntimeEntryGate()
-        {
-            ApplyRuntimeFaultState();
-        }
-
         private void ApplyRuntimeFaultState()
         {
             RuntimeFaultState state =
@@ -53,9 +41,6 @@ namespace cAlgo
 
             if (state == RuntimeFaultState.Healthy)
                 return;
-
-            _autoTradingEnabledRuntime = false;
-            _automaticOrdersEnabledRuntime = false;
 
             if (state == RuntimeFaultState.Recovering)
             {
