@@ -76,6 +76,21 @@ checks = (
         "python tools/audit_phase_ci_17a.py" in workflow,
     ),
     (
+        "data-flow is fixed immediately above timeframe footer",
+        "if (_panelDataFlowCard != null)" in factory and
+        "_panelStack.AddChild(\n                                                _panelDataFlowCard)" in factory and
+        factory.index("_panelDataFlowCard);\n\n                                        if (_panelTrendTimeframeLampRow") <
+        factory.index("_panelTrendTimeframeLampRow);\n\n                                        _panelStack.AddChild(\n                                            _buttonStack"),
+    ),
+    (
+        "data-flow smoothing state has a single panel owner",
+        "_panelDataFlowBuyDisplayRatio" in state and
+        "_panelDataFlowSellDisplayRatio" in state and
+        "_panelDataFlowLoadDisplayRatio" in state and
+        "SmoothFlowRatio(" in data_flow and
+        "ResolveFlowFillColor(" in data_flow,
+    ),
+    (
         "continuity records CI-17A",
         "CI-17A" in historical_roadmap and
         "CI-17A" in continuation and
