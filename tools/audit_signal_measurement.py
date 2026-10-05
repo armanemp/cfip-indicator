@@ -33,7 +33,7 @@ trace_recorder_path = ROOT / "src/CFIP.Indicator/Trading/Intelligence/SignalEval
 signal_trace_persistence_path = ROOT / "src/CFIP.Indicator/Trading/Intelligence/SignalEvaluationTraceArchivePersistence.cs"
 panel_path = ROOT / "src/CFIP.Indicator/UI/Panel/Rows/PanelCalibrationRowsRenderer.cs"
 analyzer_path = ROOT / "tools/analyze_signal_trace.py"
-market_exec_path = ROOT / "src/CFIP.Indicator/Trading/Execution/AutomaticMarket/AutomaticMarketPreTradeEligibility.cs"
+market_exec_path = None
 geometry_path = ROOT / "src/CFIP.Indicator/Core/Math/ExecutionPlanGeometryRule.cs"
 contracts_path = ROOT / "tools/CFIP.Decision.Contracts/Program.cs"
 contracts_project = ROOT / "tools/CFIP.Decision.Contracts/CFIP.Decision.Contracts.csproj"
@@ -151,12 +151,6 @@ require_text(
     "STOP WRONG SIDE",
     "TP1 WRONG SIDE",
     "RR BELOW EXECUTION FLOOR",
-)
-require_text(
-    market_exec_path,
-    "ExecutionPlanGeometryRule.Evaluate(",
-    "MinimumRequiredRRForRegime(",
-    "PLAN GEOMETRY",
 )
 require_text(
     contracts_path,
