@@ -32,7 +32,6 @@ namespace CFIP.Contracts
             {
                 SignalScenarioBatch? parsed =
                     JsonSerializer.Deserialize<SignalScenarioBatch>(
-                    JsonSerializer.Deserialize<SignalScenarioBatch>(
                         payload,
                         Options);
 
