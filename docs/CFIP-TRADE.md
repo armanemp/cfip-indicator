@@ -1129,9 +1129,11 @@ Operator commands must always be explicit and limited to commands actually requi
 
 **Current trade-chain roadmap status: ACTIVE**
 
-**Current trade-chain phase: USER-DEFINED START**
+**Current trade-chain phase: T0 — Trade Baseline**
 
-**No trade phase is active until the user specifies the starting point.**
+**T0 status: PASS — SOURCE BASELINE ESTABLISHED**
+
+**Next trade-chain phase: T1 — Market Data Truth**
 
 **No phase is considered PASS before its required evidence is completed.**
 
@@ -1152,3 +1154,97 @@ That is the definition of a **complete CFIP trading system**.
 ### 2026-10-05 — Initial canonical trade-chain roadmap
 
 Created as the dedicated roadmap for the full analysis-to-trade path. This document deliberately treats trading as one end-to-end system rather than as separate Indicator, cBot, risk, execution and management features.
+
+# T0 — Trade Baseline Closeout — 2026-10-05
+
+**Status: PASS — SOURCE BASELINE ESTABLISHED**
+
+### Repository baseline
+
+- Candidate branch: `fix/cbot-settings-arrow-visual-truth-2026-10-05`
+- Candidate HEAD: `7edba31687fb622875db3cfcac829487a3097405`
+- `main` HEAD: `dabba8629480aff82742c159714a8a573e616457`
+- Branch relationship to `main`: diverged; candidate is ahead and behind. Therefore the candidate branch is the current implementation baseline for trade-chain work, but it is not yet the canonical merged `main` baseline.
+- PR #337 remains open and unmerged.
+- No current-head GitHub Actions run exists for the candidate HEAD at baseline time; this is recorded as verification pending, not as PASS evidence.
+- User local Release builds of Indicator, Contracts and cBot were clean: 0 warnings / 0 errors.
+
+### Canonical owner map
+
+| Trade concept | Current owner / boundary | Baseline finding |
+|---|---|---|
+| Market context | `CanonicalMarketContextBuilder` + calculation context | Owner exists; T1/T2 must verify price/time provenance |
+| MTF closed context | `MtfContextBuilder`, `MtfClosedContextCache`, `CalculationClosedBar` | Eight-frame contract is present; M2 prohibited |
+| Analytical frame stack | Indicator Analysis domain | Exists across timeframe/indicator/structure domains; detailed ownership audit starts at T3 |
+| Structure / liquidity / FVG / OB | Structure and Zones analyzers/lifecycle owners | Present; T3 verifies lifecycle, mitigation and provenance |
+| Evidence / confluence | Decision evidence snapshot + independent-evidence analyzers | Present; T4 must prove independence and no double counting |
+| Decision | `DecisionEvaluator` + `DecisionOrchestration` | Canonical decision path identified |
+| Actionability | `TradeActionabilityDecisionGate` + final actionable quality gate | Canonical actionability gate identified |
+| Trigger | Closed-bar trigger evaluator + M1 trigger evaluator + execution trigger gate | M5/M1 separation exists; T6 must prove no competing decision clock |
+| Opportunity / scenarios | `ParallelOpportunityBuilder`, future-pending runtime, scenario policy | Multiple lanes exist; T6/T9 must prove one lineage and no duplicate semantic path |
+| Trade Plan | `PlanBuilder` → `PlanInputPreparation` → `PlanMaterialization` | Canonical plan owner identified |
+| Entry execution geometry | `ExecutionModelBuilder` / execution-zone pipeline | Canonical planning geometry exists |
+| Risk / volume | `RiskAmountCalculator`, `VolumeSizer`, risk/margin rules | Account-risk sizing exists; T8 must prove complete broker-aware sizing |
+| Contract intent | `CFIPReadOnlyProviderPlan` + Contracts `ExecutionIntent` | Main handoff identified |
+| Scenario batch | `CFIPDeviceScenarioBatchPublisher` + `SignalScenarioBatchCodec` | Batch transport exists |
+| Single signal transport | `CFIPDeviceSignalPublisher` + `SignalEnvelopeCodec` | Single-envelope transport exists |
+| cBot binding | `CfipIndicatorChartBinding` | Binding owner identified |
+| cBot preflight | `CbotSignalPreflight` | Boundary validator identified |
+| cBot environment gates | `CbotExecutionEnvironmentGate` | Final broker-environment safety gate identified |
+| Market broker mutation | `DemoMarketExecutionCoordinator` | Sole current market mutation owner |
+| Pending broker mutation | `DemoPendingOrderExecutionCoordinator` | Sole current pending mutation owner |
+| Management broker mutation | `ManagementExecutionCoordinator` in cBot | Sole current management mutation owner |
+| Broker truth / recovery | `CbotBrokerReconciliation` | Broker-state reconciliation owner identified |
+| Execution state publication | `CbotExecutionStatePublisher` | cBot-owned state publication identified |
+| Indicator management command publication | `ManagementCommandRequestCoordinator` | Indicator publishes commands; it must not mutate broker |
+| Outcome | `OutcomeTelemetryEngine` | Outcome attribution is present; T16 must prove broker-confirmed completeness |
+| Calibration | Outcome/calibration telemetry components | Present; T17 must ensure observational/policy isolation |
+
+### Baseline invariants verified from source
+
+- Indicator production source contains no direct broker execution mutation.
+- cBot is the only production broker-mutation project.
+- Production MTF contract is M1/M5/M15/M30/H1/H4/D1/W1; M2 is forbidden.
+- M15 is the decision/reference center; M5 is trigger/entry precision; M1 is optional precision/confirmation.
+- cBot execution settings are cBot-owned; Indicator no longer owns the production automatic-trading parameters.
+- cBot market/pending/management mutation owners are explicit.
+- Signal and scenario identity are transported through immutable contracts.
+- cBot performs preflight before broker mutation.
+- Broker reconciliation is separate from requested/planned state.
+- Indicator management calls are command publication, not broker mutation.
+
+### Baseline risks / open trade-chain findings
+
+**T0-F01 — Canonical branch is not yet merged to main.**  
+The current implementation candidate diverges from `main`. Trade-chain work continues on the candidate branch until its implementation is verified and can be safely integrated; no assumption is made that `main` already contains the candidate changes.
+
+**T0-F02 — Multi-opportunity capacity is not yet complete.**  
+`MaximumOpenPositions` is exposed by the cBot but its settings normalization currently clamps it to 1, and the Indicator execution-capacity rule is also single-plan. This conflicts with the product requirement for multiple independent opportunities and must be resolved in T8/T9 without introducing a second capacity owner.
+
+**T0-F03 — Capacity checking has repeated semantic checks.**  
+The cBot environment gate and the market/pending coordinators both check active managed capacity. T8/T11 must determine the exact canonical capacity owner and remove any redundant semantic gate.
+
+**T0-F04 — Execution-intent construction has more than one construction boundary.**  
+The Indicator has an internal `BuildExecutionIntent` path and the provider has a `BuildCanonicalExecutionIntent` path that can construct an internal intent before producing the Contracts intent. T9/T10 must prove these are distinct layers or collapse them into one canonical construction path.
+
+**T0-F05 — Lifecycle semantics cross Indicator and cBot boundaries.**  
+Indicator-side lifecycle/management logic remains as a read-only/command-producing semantic layer while cBot owns broker mutation and broker reconciliation. T14/T15 must formally prove the ownership boundary and eliminate any semantic duplication.
+
+**T0-F06 — Current-head automated verification is not yet evidenced.**  
+The candidate HEAD has no fresh Actions run at T0 closeout. This is not treated as a green result.
+
+**T0-F07 — Target-terminal broker truth remains unproven.**  
+The existence of broker mutation code does not prove real broker execution. T12/T13/T19 require target-terminal evidence.
+
+### T0 exit decision
+
+**PASS — source baseline established.**
+
+T0 does not claim that trading is already certified. It establishes the verified starting topology and the first open trade-chain findings that later phases must close.
+
+### Next phase
+
+**T1 — Market Data Truth**
+
+Primary target: canonical observation, executable Bid/Ask, spread, tick/pip/precision, freshness, history/gaps and price provenance.
+
