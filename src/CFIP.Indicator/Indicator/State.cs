@@ -289,6 +289,9 @@ namespace cAlgo
                 private StackPanel _panelRowsStack;
                 private ScrollViewer _panelScroll;
                 private Border _panelDataFlowCard;
+                private double _panelDataFlowBuyDisplayRatio;
+                private double _panelDataFlowSellDisplayRatio;
+                private double _panelDataFlowLoadDisplayRatio;
                 private TextBlock _panelDataFlowTitle;
                 private TextBlock _panelDataFlowMeta;
                 private TextBlock _panelDataFlowBuyValue;
