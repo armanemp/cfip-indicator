@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""CBOT-P6 account/execution-risk and connection-truth audit."""
+"""CBOT-P6 account/execution-risk and connection-truth audit. cBot owns execution settings."""
 
 from pathlib import Path
 import sys
