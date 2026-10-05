@@ -41,7 +41,7 @@ namespace cAlgo
                     text,
                     price,
                     color,
-                    GetCompactPlanLabelAnchorBar(
+                    GetCompactPlanLabelAnchorTime(
                         canonicalLineLeftBar));
             }
             catch (Exception ex)
@@ -58,7 +58,7 @@ namespace cAlgo
             double price,
             Color color,
             bool visible,
-            int labelBar)
+            DateTime labelTime)
         {
             if (!visible ||
                 !IsFinitePositive(price) ||
@@ -74,7 +74,7 @@ namespace cAlgo
                 text,
                 price,
                 color,
-                labelBar);
+                labelTime);
         }
 
         private void DrawCompactPlanLabel(
@@ -82,7 +82,7 @@ namespace cAlgo
             string text,
             double price,
             Color semanticColor,
-            int labelBar)
+            DateTime labelTime)
         {
             try
             {
@@ -91,12 +91,8 @@ namespace cAlgo
                     !IsFinitePositive(price))
                     return;
 
-                int canonicalLabelBar =
-                    Math.Max(
-                        0,
-                        Math.Min(
-                            Bars.Count - 1,
-                            labelBar));
+                if (labelTime == DateTime.MinValue)
+                    return;
 
                 double labelPrice =
                     NormalizePrice(price);
@@ -106,8 +102,7 @@ namespace cAlgo
                         semanticColor);
 
                 DateTime expectedTime =
-                    Bars.OpenTimes[
-                        canonicalLabelBar];
+                    labelTime;
 
                 ChartText label =
                     Chart.FindObject(name)
@@ -136,7 +131,7 @@ namespace cAlgo
                         Chart.DrawText(
                             name,
                             text,
-                            canonicalLabelBar,
+                            expectedTime,
                             labelPrice,
                             labelTextColor);
                 }
