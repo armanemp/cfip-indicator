@@ -24,6 +24,8 @@ index_math = read("src/CFIP.Indicator/Analysis/Market/Math/IndexMath.cs")
 mtf = read("src/CFIP.Indicator/Runtime/Mtf/MtfContextBuilder.cs")
 cache = read("src/CFIP.Indicator/Runtime/Mtf/MtfClosedContextCache.cs")
 scenario = read("src/CFIP.Indicator/Analysis/Market/TimeframeScenarioBuilder.cs")
+target_builder = read("src/CFIP.Indicator/Planning/TradePlan/TargetLevelBuilder.cs")
+
 direction = read("src/CFIP.Indicator/Analysis/Market/Decision/DirectionAcceptanceGate.cs")
 pending = read("src/CFIP.Indicator/Planning/Execution/PredictivePendingLevelSelector.cs")
 zones = read("src/CFIP.Indicator/Planning/Execution/ExecutionZoneCandidateSelectionCore.cs")
@@ -72,6 +74,13 @@ check(
     "scenario MTF lookups use the closed-bar boundary, not the closed bar's opening time",
     "ClosedBarBoundaryReference(" in scenario and
     "_m5Bars.OpenTimes[closedM5]" not in scenario
+)
+
+check(
+    "target planning uses the canonical closed-M5 boundary for HTF and previous-period sources",
+    "AddHtfTargets(" in target_builder and
+    "AddPreviousPeriodLevels(" in target_builder and
+    "_m5Bars.OpenTimes[closedM5]" not in target_builder
 )
 
 production = {
