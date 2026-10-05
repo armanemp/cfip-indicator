@@ -149,8 +149,7 @@ require(
     "CompactPlanLabelGapBars = 1" in read("src/CFIP.Indicator/UI/Chart/PlanLabelAnchorCalculator.cs") and
     "GetCompactPlanLabelAnchorTime(" in label_renderer and
     "HorizontalAlignment.Right" in label_renderer and
-    "GetCompactPlanLabelAnchorBar(" in read("src/CFIP.Indicator/UI/Chart/PlanLabelAnchorCalculator.cs") and
-    "GetCompactPlanLabelAnchorBar(" in read("src/CFIP.Indicator/UI/Chart/PlanLabelAnchorCalculator.cs"),
+    "GetCompactPlanLabelAnchorTime(" in read("src/CFIP.Indicator/UI/Chart/PlanLabelAnchorCalculator.cs"),
     "compact level labels must retain the canonical text-only presentation with one-bar left clearance",
 )
 
