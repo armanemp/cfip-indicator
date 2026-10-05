@@ -819,6 +819,9 @@ namespace CFIP.cBot
                         MaxExecutionMarginUsagePercent,
                         ExecutionMarginBufferPercent,
                         EffectiveConcurrentScenarioLimit,
+                        _executionSettings == null
+                            ? 120
+                            : _executionSettings.PendingOrderExpiryMinutes,
                         _idempotencyStore,
                         out BrokerExecutionReport pendingReport,
                         out string pendingReason))
