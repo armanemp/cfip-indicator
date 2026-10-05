@@ -25,7 +25,9 @@ namespace cAlgo
             int d1,
             int w1)
         {
-            Reference = reference;
+            Reference =
+                CanonicalTimeRule.EnsureUtc(
+                    reference);
             M5 = m5;
             M1 = m1;
             M15 = m15;
