@@ -1,0 +1,1430 @@
+# CFIP-TRADE — Canonical Trade-Chain Roadmap
+
+## Status
+
+**STATUS: ACTIVE / CANONICAL FOR THE TRADE CHAIN**
+
+This document is the dedicated roadmap for the complete CFIP trading chain:
+
+**Market Data → Canonical Context → MTF → Analysis → Evidence → Decision → Actionability → Trigger → Opportunity → Plan → Risk → Contract → cBot → Broker → Confirmation → Protection → Lifecycle → Outcome → History → Calibration**
+
+It is subordinate to the repository-wide control plane for acceptance gates, but authoritative for the sequencing and completeness of the **trade-chain audit itself**.
+
+This roadmap exists so that the core trading path is completed and certified **before non-critical UI, cosmetic, repository-cleanup or secondary-feature work is allowed to become the main focus**.
+
+---
+
+# 1. Mission
+
+The objective is not merely to make the cBot capable of submitting an order.
+
+The objective is to prove that every trade produced by CFIP is the result of one deterministic, internally consistent chain in which:
+
+1. market observations are valid and time-consistent;
+2. all supported timeframe contexts are correctly built;
+3. analytical evidence has provenance and is not double-counted;
+4. one canonical decision owner determines direction and quality;
+5. actionability is explicitly distinguished from prediction/future opportunity;
+6. M5 performs entry timing/precision rather than becoming a competing decision clock;
+7. M1 can only provide optional confirmation/precision;
+8. the plan contains coherent executable Entry/Trigger/SL/TP and reward-path geometry;
+9. risk and volume sizing are derived from the real account and executable broker constraints;
+10. every opportunity has stable identity;
+11. the Indicator publishes one canonical execution intent;
+12. the cBot validates the intent without rebuilding analysis;
+13. only the cBot can mutate broker state;
+14. broker confirmation becomes the authoritative execution truth;
+15. protection and management reduce risk without silently widening it;
+16. restart/reconnect/retry cannot duplicate or corrupt execution;
+17. the lifecycle reaches one broker-confirmed outcome;
+18. outcome/history/calibration remain observational and cannot silently rewrite live policy.
+
+A phase is not complete because code compiles. It is complete only when its semantic contract, ownership, implementation, tests and applicable terminal/broker evidence agree.
+
+---
+
+# 2. Non-negotiable trade-chain laws
+
+## 2.1 Single semantic owner
+
+One concept has one owner.
+
+Examples:
+
+- Decision direction → one Decision authority.
+- Actionability → one Actionability authority.
+- Entry/SL/TP geometry → one Plan authority.
+- Volume/risk policy → one Risk authority.
+- Scenario identity → one Identity/Contract authority.
+- Broker submission → one cBot execution owner.
+- Broker-confirmed state → broker truth, consumed read-only.
+- Lifecycle transition → one lifecycle authority.
+- Outcome → one outcome authority.
+
+Consumers must not silently recalculate or reinterpret the owner's result.
+
+## 2.2 No second strategy engine
+
+The cBot must never reconstruct the Indicator's analysis.
+
+The Indicator must never create an alternate execution engine.
+
+The Contracts project must transport semantic intent, not invent strategy decisions.
+
+## 2.3 Broker truth law
+
+These are distinct states:
+
+**Candidate → Decision → Plan → Intent → Submission → Acceptance → Fill/Creation → Confirmation → Protection → Lifecycle → Outcome**
+
+Submission is not confirmation.
+
+A successful API return is not permission to invent broker state.
+
+## 2.4 Timeframe law
+
+Production analytical timeframes are exactly:
+
+**M1 / M5 / M15 / M30 / H1 / H4 / D1 / W1**
+
+- **M15** = canonical decision/reference and execution-planning center.
+- **M5** = trigger/retest/breakout and entry-precision layer.
+- **M1** = optional precision/confirmation; it cannot create directional consensus alone.
+- **M30/H1/H4** = higher context.
+- **D1/W1** = broader optional context.
+- **M2 is permanently forbidden** as provider, source, cache, panel item, parameter, contract field, fallback or execution clock.
+
+## 2.5 Closed-bar law
+
+Confirmed decision analysis uses the canonical fully-closed bar context.
+
+Intrabar/reaction data must be explicitly classified as reaction data and must never be allowed to masquerade as closed-bar confirmation.
+
+No look-ahead, future-bar contamination or open/closed index substitution is permitted.
+
+## 2.6 Executable-price law
+
+Entry, Stop and Target validity must be evaluated against the actual executable side:
+
+- BUY entry uses Ask-side execution semantics;
+- SELL entry uses Bid-side execution semantics;
+- spread is part of entry/protection safety where relevant;
+- broker minimum distance, tick size, pip size and symbol precision are respected;
+- stale quotes cannot authorize execution.
+
+## 2.7 Risk monotonicity
+
+Automatic execution must not widen risk.
+
+After a protective Stop exists:
+
+- a protection update may preserve or reduce risk;
+- it must never silently move the Stop to a less protective location;
+- retries must not create a wider-risk duplicate request;
+- broker-confirmed protection is authoritative.
+
+## 2.8 Identity law
+
+The chain keeps these identities distinct:
+
+**SignalId → ScenarioId → ExecutionId → Broker position/order identity → Outcome identity**
+
+Retries preserve the same causal identity.
+
+A genuinely new opportunity receives a new ScenarioId.
+
+Stale revisions cannot mutate the current opportunity.
+
+## 2.9 Current/future law
+
+The system must explicitly distinguish:
+
+- **ActionableNow** — can be executed immediately after all gates;
+- **FutureOrderReady** — valid future opportunity eligible for a pending order;
+- **WATCH/PREDICTION** — informative, not executable;
+- **BLOCKED/RESTRICTED** — cannot cause trading side effects.
+
+One state must not be silently converted into another.
+
+## 2.10 Safety isolation
+
+Telemetry, panel, alert, persistence or visual failures must not silently authorize unsafe entry.
+
+Safety-critical broker management must remain available independently where the architecture permits.
+
+## 2.11 Cross-cutting intelligence law
+
+CFIP intelligence is a cross-cutting control plane, not a collection of extra filters.
+
+“More intelligent” means the system uses more relevant context while preserving one semantic owner, bounded behavior, explainability and deterministic safety. It does not mean stacking unrelated thresholds until almost every trade is blocked.
+
+The canonical intelligence flow is:
+
+Data Quality → Evidence Quality/Independence → Decision Confidence/Quality → Actionability/Trigger Quality → Opportunity Quality → Plan/Reward Quality → Risk Capacity → Execution Quality → Broker Truth → Lifecycle Quality → Outcome Attribution → Calibration
+
+The following rules are permanent:
+
+1. Existing canonical outputs remain the source of truth. Decision.Confidence and Decision.SmartQuality are consumed downstream; a second hidden signal score must not be introduced unless a later phase proves that the existing model cannot represent the required semantics.
+2. Every intelligence factor must declare its semantic domain, owner, inputs, output range, monotonic safety behavior, and whether it is observational or execution-authoritative.
+3. The same underlying fact may not be rewarded twice under different names. Confidence, quality, timeframe agreement, evidence count, suitability, RR, volatility, spread and other factors must be traced to their causal source before contributing to another layer.
+4. Intelligence must be adaptive, not blindly aggressive: quality may reduce exposure, delay execution, change timing mode or reject a plan; it may never create a direction that the Decision owner did not produce.
+5. Intelligence must be risk-aware: position sizing may depend on canonical signal quality/confidence, market suitability, stop distance, volatility, spread/cost, margin, broker volume constraints, capacity, opportunity overlap/correlation, reward-path quality, setup age/freshness and historical calibration trust. No single factor may bypass account risk or broker safety.
+6. Any adaptive sizing rule must be monotonic with respect to safety: worsening quality, worse executable conditions or lower capacity must never increase size.
+7. Calibration is evidence, not strategy authority. Historical outcomes may change a bounded multiplier or confidence interpretation only through the canonical calibration owner; they may not silently invent a parallel decision engine.
+8. No new intelligence layer may introduce a duplicate document, duplicate runtime state, duplicate execution path or parallel UI/alert source solely to expose the same semantic result.
+
+### Intelligence coverage by trade-chain layer
+
+| Layer | Canonical intelligence responsibility |
+|---|---|
+| T1 Market Data | data validity, quote quality, executable-side correctness, scale and observation integrity |
+| T2 Time/MTF | temporal confidence, freshness and closed-bar integrity |
+| T3 Analysis | detector quality, provenance, regime/volatility interpretation |
+| T4 Evidence | independence, correlation and anti-double-counting |
+| T5 Decision | one direction + Confidence + SmartQuality + calibration context |
+| T6 Actionability | trigger quality, entry timing, opportunity maturity and trap risk |
+| T7 Plan | entry/stop/target quality, reward-path quality and executable cost |
+| T8 Risk | quality-aware sizing, risk budget, volatility, spread, margin, capacity, overlap/correlation |
+| T9 Identity | lineage trust, revision freshness and retry integrity |
+| T10 Handoff | contract validity, freshness and semantic fidelity |
+| T11 Preflight | final environment intelligence without strategy reconstruction |
+| T12 Submission | bounded slippage/range and cost-aware execution mode |
+| T13 Confirmation | certainty derived only from broker state |
+| T14 Protection | adaptive but risk-monotone protection/management |
+| T15 Recovery | lifecycle-state confidence, adoption/reconciliation and duplicate prevention |
+| T16 Outcome | complete outcome attribution |
+| T17 Calibration | empirical quality, MAE/MFE, R-distribution and OOS validation |
+| T18 Performance | performance intelligence without semantic drift |
+| T19 Certification | end-to-end proof that every layer agrees |
+
+---
+
+# 3. Canonical chain
+
+The expected ownership direction is:
+
+```
+Market Data
+    ↓
+Canonical Time/Price Context
+    ↓
+MTF Closed Context
+    ↓
+Analytical Stack
+    ↓
+Evidence / Provenance / Independence
+    ↓
+Decision
+    ↓
+Actionability
+    ↓
+Trigger / Opportunity
+    ↓
+Trade Plan
+    ↓
+Risk / Volume / Margin / Spread
+    ↓
+Scenario + Execution Identity
+    ↓
+Signal Contract
+    ↓
+cBot Binding + Preflight
+    ↓
+Execution Environment Gates
+    ↓
+Broker Submission
+    ↓
+Broker Confirmation
+    ↓
+Protection / Management
+    ↓
+Lifecycle / Recovery
+    ↓
+Outcome
+    ↓
+History / Calibration
+```
+
+The direction of authority flows forward. Lower layers may reject an unsafe request, but they must not silently manufacture a new strategy decision.
+
+---
+
+# 4. Phase map
+
+The trade chain is divided into the following dedicated work packages.
+
+| ID | Phase | Primary objective | Exit condition |
+|---|---|---|---|
+| T0 | Trade Baseline | Freeze actual chain topology and evidence baseline | Every trade-chain owner and boundary identified |
+| T1 | Market Data Truth | Validate raw market data and executable quote semantics | Deterministic valid observation contract |
+| T2 | Time / MTF / Closed-Bar | Validate all timeframe and temporal semantics | No look-ahead, no M2, deterministic closed context |
+| T3 | Analytical Stack | Audit all indicators, structure, zones, liquidity and regime | One owner per detector, provenance intact |
+| T4 | Evidence Independence | Prevent double counting and correlated evidence inflation | Independent evidence reaches Decision exactly once |
+| T5 | Decision Engine | Audit direction, confidence, score, quality and filters | One canonical decision result |
+| T6 | Actionability / Trigger / Opportunity | Separate now/future/watch and validate M5/M1 timing | Only valid opportunities become actionable |
+| T7 | Trade Plan | Audit Entry, Trigger, SL, TP1–TP4, reward path and RR | Executable coherent plan |
+| T8 | Risk / Sizing / Margin | Audit monetary risk, volume, margin, capacity and spread | Safe broker-compatible size |
+| T9 | Identity / Scenario / Contract | Prove lineage and stale/retry semantics | No duplicate or stale execution |
+| T10 | Indicator → cBot Handoff | Prove transport, binding, freshness and ownership boundary | cBot receives canonical intent without re-analysis |
+| T11 | cBot Preflight | Validate final execution-time conditions | Unsafe requests stop before broker |
+| T12 | Broker Submission | Audit market, range, aggressive and pending submissions | One submission path and deterministic retry semantics |
+| T13 | Broker Confirmation | Separate accepted/submitted/filled/created states | Broker truth is authoritative |
+| T14 | Protection / Management | Stop, TP, BE, profit lock, trailing, partial and exit | Risk never widens; management is broker-confirmed |
+| T15 | Lifecycle / Recovery | Restart, reconnect, recovery, adoption and idempotency | No duplicate position/order or lost lifecycle |
+| T16 | Outcome / History | Record confirmed result and attribution | One complete broker-confirmed outcome |
+| T17 | Calibration / Quality Proof | MAE/MFE, reward distribution, false/missed signals, OOS | Quality evidence separated from live policy |
+| T18 | Performance / Resilience | Hot-path, allocations, cache, I/O and failure behavior | Measured performance with semantic equivalence |
+| T19 | End-to-End Trade Certification | Prove the complete path in target terminal | Full chain certified with evidence |
+
+No phase may bypass an earlier unresolved safety/ownership defect merely because a later layer appears functional.
+
+---
+
+# 5. Detailed phase contracts
+
+## T0 — Trade Baseline
+
+### Scope
+
+Establish the real current trade graph from source, not old documentation.
+
+Inventory:
+
+- Indicator entry point;
+- market-context builders;
+- MTF providers/caches;
+- indicator/OSS adapters;
+- structure/liquidity/FVG/OB detectors;
+- evidence/confluence;
+- decision;
+- actionability;
+- trigger/retest;
+- opportunity lanes;
+- plan construction;
+- risk/sizing;
+- execution intent;
+- scenario/identity;
+- provider/transport;
+- cBot binding;
+- preflight;
+- execution owners;
+- broker reconciliation;
+- protection/management;
+- lifecycle;
+- history/outcome;
+- calibration.
+
+### Required evidence
+
+- exact branch and commit;
+- current file inventory;
+- call/consumer graph for all critical concepts;
+- direct broker mutation scan;
+- M2 scan;
+- parameter ownership graph;
+- trade-state ownership graph.
+
+### Exit
+
+A complete owner map exists and no critical trade-chain concept is unaccounted for.
+
+---
+
+## T1 — Market Data Truth
+
+### Audit
+
+- symbol identity;
+- Bid/Ask;
+- Mid/reference price semantics;
+- tick size;
+- pip size;
+- digits/precision;
+- minimum executable distance;
+- spread;
+- quote freshness;
+- history availability;
+- missing bars;
+- gaps;
+- session state;
+- market status;
+- data source provenance;
+- observation timestamps;
+- history replacement events;
+- cache invalidation.
+
+### Required invariants
+
+- BUY and SELL use correct executable sides.
+- Spread cannot disappear merely because a plan was built from mid/close data.
+- Invalid price scale/quote/time observations fail closed.
+- Live reaction/actionability refreshes one canonical quote snapshot rather than reusing an older calculation-cycle quote.
+- The Indicator never treats a plan/request price as broker truth.
+- The cBot remains the final live broker-quote authority at the mutation boundary.
+- No downstream stage invents missing market values.
+
+### Exit
+
+Every execution-relevant price has explicit provenance, executable-side semantics, validated metadata and an explicitly refreshed observation boundary.
+
+---
+
+## T2 — Time / MTF / Closed-Bar Integrity
+
+### Audit
+
+- M1/M5/M15/M30/H1/H4/D1/W1 loading;
+- closed indexes;
+- OpenTime boundaries;
+- UTC and DST;
+- next-bar semantics;
+- reference timestamp;
+- cross-timeframe mapping;
+- history warm-up;
+- cache refresh;
+- MTF freshness;
+- bar replacement;
+- reaction/open-bar isolation;
+- M2 absence.
+
+### Special contract
+
+M15 remains the canonical decision/reference center.
+
+M5 provides trigger/entry precision and cannot become an alternate decision clock.
+
+M1 is optional precision/confirmation only.
+
+### Exit
+
+A decision can be reconstructed deterministically from the same closed context at the same reference time.
+
+---
+
+## T3 — Analytical Stack
+
+### Audit
+
+- trend/momentum;
+- native indicators;
+- OSS adapters;
+- EMA/ADX/DMI/RSI/MACD and other calculations;
+- volatility/range/choppiness;
+- swing points;
+- structure;
+- BOS/MSS/CHOCH;
+- liquidity sweeps;
+- equal levels;
+- FVG detection/lifecycle/mitigation;
+- order blocks and mitigation;
+- retests;
+- divergence;
+- WaveTrend;
+- VWAP/volume/volume-profile components;
+- higher-timeframe context;
+- market regime.
+
+### Owner rule
+
+Each detector has one canonical calculation/lifecycle owner.
+
+Adapters may translate; they must not recalculate a second version of the same semantic result.
+
+### Exit
+
+Analytical results are deterministic, provenance-preserving and free of competing detector logic.
+
+---
+
+## T4 — Evidence Independence
+
+### Audit
+
+- evidence grouping;
+- independence;
+- correlation;
+- duplicate structure evidence;
+- duplicate OB/FVG evidence;
+- trend/momentum double counting;
+- repeated timeframe representations;
+- context duplication;
+- conflict handling;
+- contribution weights;
+- negative/conflicting evidence.
+
+### Required invariant
+
+Multiple representations of the same underlying fact count as one semantic fact.
+
+Independent evidence may contribute separately.
+
+### Exit
+
+Decision input can explain exactly which independent evidence groups contributed and why.
+
+---
+
+## T5 — Decision Engine
+
+### Audit
+
+- direction;
+- score;
+- confidence;
+- quality;
+- smart quality;
+- consensus;
+- filters;
+- structural gates;
+- market gates;
+- confirmation gates;
+- higher-timeframe penalties;
+- range/chop handling;
+- restriction states;
+- block reasons;
+- calibration modifiers;
+- stale decision invalidation.
+
+### Required states
+
+At minimum, distinguish:
+
+**NONE / WATCH / CONFIRMED / READY / BLOCKED / RESTRICTED**
+
+Where applicable, the exact repository contract may add explicit sub-states without collapsing these meanings.
+
+### Exit
+
+One decision object is authoritative and all downstream consumers use it.
+
+---
+
+## T6 — Actionability / Trigger / Opportunity
+
+### Audit
+
+- ActionableNow;
+- FutureOrderReady;
+- WATCH/prediction;
+- M5 trigger;
+- retest;
+- breakout;
+- trigger buffer;
+- entry trap risk;
+- M1 optional confirmation;
+- opportunity lanes;
+- strategic/tactical/micro distinctions;
+- counter-HTF cases;
+- weak/range suppression;
+- opportunity magnitude and quality.
+
+### Required invariant
+
+No prediction, watch signal or restricted candidate may accidentally reach broker execution.
+
+### Exit
+
+Each opportunity has an explicit state and executable timing contract.
+
+---
+
+## T7 — Trade Plan
+
+### Audit
+
+- requested entry;
+- ideal entry;
+- executable entry;
+- trigger;
+- zone low/high;
+- invalidation;
+- structural stop;
+- Stop buffer;
+- TP1/TP2/TP3/TP4;
+- target source/provenance;
+- obstacles;
+- liquidity path;
+- HTF reward path;
+- target progression;
+- minimum reward distance;
+- RR;
+- price normalization;
+- spread impact;
+- broker distance constraints.
+
+### Mandatory checks
+
+- BUY targets are above entry where required.
+- SELL targets are below entry where required.
+- Stop is on the correct risk side.
+- Risk > 0.
+- RR is calculated from the canonical plan.
+- RR is not distorted by premature rounding.
+- Tiny stagnant-market targets are rejected where contract requires it.
+- Reward path is structurally valid rather than merely numerically distant.
+- No generic fixed 1:2 rule becomes the strategy owner.
+
+### Exit
+
+One canonical plan supplies all execution geometry.
+
+---
+
+## T8 — Risk / Sizing / Margin
+
+### Intelligence requirement
+
+Position size must become an explicit quality-aware risk decision, not a direct translation from stop distance alone.
+
+The future canonical sizing contract must consume, without recreating them:
+
+- Decision.SmartQuality (0–100) as setup-quality evidence;
+- Decision.Confidence (0–100) as directional certainty;
+- market suitability / regime / volatility state;
+- executable spread and cost pressure;
+- stop distance and structural risk;
+- account equity/balance policy;
+- free margin / margin level / stop-out proximity;
+- broker volume min/max/step and normalization;
+- open-position/order capacity;
+- overlapping or correlated opportunities;
+- reward-path / target quality and expected viable travel;
+- opportunity age/freshness and trigger quality;
+- historical calibration trust where eligible.
+
+The contract must distinguish quality from risk capacity. A high-quality signal in an overexposed account must still receive a reduced or zero size; a low-quality signal must never receive more size merely because its stop is tighter.
+
+No final sizing formula is being numerically tuned in T1. T5/T6/T7 will first close semantic ownership of quality/confidence/actionability/reward; T8 will then implement one bounded monotonic sizing policy on those canonical outputs.
+### Audit
+
+- risk percent;
+- risk amount;
+- fixed-volume mode where legitimately supported;
+- stop-distance sizing;
+- symbol volume constraints;
+- minimum/maximum volume;
+- normalization step;
+- account balance/equity;
+- free margin;
+- margin level;
+- stop-out proximity;
+- margin budget;
+- concurrent scenario capacity;
+- maximum open positions;
+- session execution cap;
+- daily loss;
+- spread-to-risk relationship;
+- minimum viable risk;
+- maximum viable reward-path requirements.
+
+### Special requirement
+
+The product requires multiple distinct opportunities to be representable. Any temporary capacity restriction must be a deliberate, visible risk policy and must not be an accidental hard-coded single-plan limitation.
+
+### Exit
+
+Requested volume is converted to one safe broker-compatible volume without bypassing account risk or margin safety.
+
+---
+
+## T9 — Identity / Scenario / Contract
+
+### Audit
+
+- SignalId;
+- ScenarioId;
+- ExecutionId;
+- Broker identity;
+- Outcome identity;
+- revision;
+- timestamps;
+- expiry;
+- idempotency key;
+- scenario lineage;
+- stale request rejection;
+- retry preservation;
+- market vs aggressive vs pending identity;
+- codec/schema/version compatibility;
+- identity mismatch rejection.
+
+### Required invariant
+
+A retry may repeat an attempt, but never create an unrelated execution identity for the same causal scenario.
+
+### Exit
+
+Every execution can be traced backward to its originating decision/plan and forward to broker/outcome identity.
+
+---
+
+## T10 — Indicator → cBot Handoff
+
+### Mandatory execution-ownership migration register
+
+This is a required architectural work item, not optional cleanup.
+
+The Indicator must not remain the owner of broker/execution configuration, broker-mutation controls, execution-only switches, or execution-only lifecycle policy. Before T10 can close, every legacy execution-related setting and runtime state must be classified and either:
+
+1. moved to the canonical cBot owner, or
+2. reclassified into a genuine Indicator analysis/actionability/plan concern with a semantic name that no longer implies broker execution.
+
+The migration audit must explicitly cover the legacy execution surface, including:
+
+- automatic trading/order enablement: EnableAutoTrading, EnableAutomaticOrders;
+- pending execution policy: PendingOrderMode, PendingOrderExpiryMinutes, PendingEntryBufferAtr, PendingAutoCleanup;
+- execution-only quality gates: PendingMinimumConfidence, PendingMinimumSmartQuality, PendingMinimumTrendQuality, MinimumAutoConfidence, MinimumAutoSmartQuality, MinimumAutoLevelQuality, ConfirmedSignalsOnly;
+- sizing/risk execution controls: SizingMode, RiskPercentEquity, FixedLots, AggressiveRiskPercentEquity, UseAutoMarginGuard, MaxAutoMarginUsagePercent, MarginBufferPercent, IncludeSpreadInRiskSizing;
+- execution-session/account safety: UseMarketHoursGuard, SessionStartUtc, SessionEndUtc, EnableDailyLossLimit, MaximumDailyLossPercent, MaximumOpenPositions, OneOrderPerSignal, ManagedActionsOnly;
+- broker identity/protection/management: AutoTradeLabel, AutoBrokerProtection, AutoProtectBrokerPositions, ManagedPositionLabel, SyncBrokerTakeProfit, PreventBrokerTpBackwardMove, BrokerModifyCooldownMs, EnableLiveExitManagement, EnablePartialTakeProfit, PartialCloseTp1Percent, PartialCloseTp2Percent, MoveToBreakEvenAfterPartial;
+- execution-path selection: EnableAggressiveAutoEntry, AggressiveMinimumConfidence, AggressiveMinimumEvidence, AggressiveMinimumSmartQuality, AggressiveTpStage, AggressiveRequireSmartAgreement;
+- execution-only reversal/closure policy: EnableReversalProtectionClose, ReversalProtectionMinimumQuality, ReversalCloseMinimumEvidence, ReversalCloseMinimumMtf, ReversalCloseMinimumNetProfit;
+- obsolete Indicator UI/operator controls that must not survive as execution authority: AutoTradingReminder, ShowTradeActionButtons, AlwaysShowSafetyButtons, ActionButtonMargin, ActionButtonWidth, ActionButtonHeight.
+
+The migration must also audit non-parameter execution ownership that is more dangerous than the parameter list itself:
+
+- Indicator-side broker event subscriptions;
+- Indicator-side position/pending-order lifecycle mutation;
+- Indicator-side execution runtime flags/state;
+- Indicator-side direct broker submission, protection, close, or pending-order mutation;
+- Indicator-side execution-policy gates that can authorize/deny broker mutation;
+- cBot reads of execution settings from ChartIndicator.Parameters;
+- compatibility/shim classes that keep an Indicator-owned execution authority alive.
+
+### Mandatory T10 exit gates
+
+- cBot execution settings are cBot-owned and directly parameterized on the cBot;
+- no execution setting is read from the Indicator as an authority source;
+- no Indicator-side execution runtime mirror can authorize broker mutation;
+- no Indicator broker-mutation path remains;
+- strategy thresholds that genuinely belong to Decision/Actionability/Plan remain there under strategy semantics, not Auto* execution semantics;
+- legacy execution settings that are intentionally removed are explicitly recorded as removed, not silently dropped;
+- a static audit fails on any reintroduction of the legacy Indicator execution-owner surface;
+- cBot/Indicator configuration screens are semantically non-overlapping and cannot contradict each other.
+
+### Audit
+
+The cBot consumes exactly the Indicator's canonical intent and rejects invalid/stale/mismatched payloads deterministically.
+
+---
+
+## T11 — cBot Preflight
+
+### Audit
+
+- master auto-trading state;
+- market/pending/aggressive/management path arms;
+- account Demo/Live state;
+- symbol;
+- session;
+- spread;
+- daily loss;
+- margin;
+- stop-out;
+- volume;
+- execution label;
+- capacity;
+- duplicate identity;
+- current quote;
+- current plan refresh where required;
+- market-hours state;
+- broker constraints;
+- fail-closed behavior.
+
+### Exit
+
+Every unsafe or stale request is stopped before broker mutation.
+
+---
+
+## T12 — Broker Submission
+
+### Market
+
+Audit:
+
+- market order;
+- market-range order;
+- aggressive market;
+- range semantics;
+- requested entry;
+- stop/target distances;
+- volume;
+- label;
+- idempotency.
+
+### Pending
+
+Audit:
+
+- Stop order;
+- Limit order;
+- correct side of current executable quote;
+- expiry;
+- distance;
+- stop/target;
+- capacity;
+- identity.
+
+### Retry
+
+One retry/backoff policy must exist.
+
+Retry must not become an alternate execution path.
+
+### Exit
+
+Each execution mode has one cBot broker owner and one submission lifecycle.
+
+---
+
+## T13 — Broker Confirmation
+
+### Audit
+
+Distinguish:
+
+1. request created;
+2. broker submission returned;
+3. broker accepted;
+4. Position actually exists;
+5. PendingOrder actually exists;
+6. broker-provided entry;
+7. broker-provided SL;
+8. broker-provided TP;
+9. fill/slippage;
+10. error/rejection;
+11. unknown/recovery-required state.
+
+### Exit
+
+Only broker-confirmed state is promoted to authoritative execution truth.
+
+---
+
+## T14 — Protection / Management
+
+### Audit
+
+- initial SL;
+- initial TP;
+- broker protection;
+- break-even;
+- profit lock;
+- trailing;
+- partial take profit;
+- target progression;
+- reversal protection;
+- structural invalidation exit;
+- smart exit;
+- pending cancellation;
+- position close;
+- stale management commands;
+- command dedup;
+- broker confirmation.
+
+### Safety invariants
+
+- Protection cannot silently widen risk.
+- Management acts on the active live broker object, not only the plan.
+- Partial close cannot accidentally exceed position volume.
+- Break-even after partial close must use broker-confirmed remaining volume/state.
+- Target advancement cannot regress.
+- Management commands remain identity-bound.
+
+### Exit
+
+Protection/management follows the live broker object and is fully reconciled.
+
+---
+
+## T15 — Lifecycle / Recovery
+
+### Audit
+
+- created;
+- submitted;
+- active;
+- modified;
+- partially closed;
+- fully closed;
+- pending created;
+- pending modified;
+- pending filled;
+- pending cancelled;
+- rejected;
+- expired;
+- orphan;
+- recovery required;
+- recovered;
+- restart;
+- reconnect;
+- cBot restart;
+- Indicator restart;
+- instance replacement;
+- provider loss;
+- broker state adoption.
+
+### Required invariant
+
+Restart/reconnect must reconcile broker truth before treating local state as authoritative.
+
+### Exit
+
+Lifecycle remains coherent through all recoverable disruptions and remains idempotent.
+
+---
+
+## T16 — Outcome / History
+
+### Audit
+
+- broker-confirmed close;
+- realized P/L;
+- R outcome;
+- entry/exit provenance;
+- MAE;
+- MFE;
+- time in trade;
+- target reached;
+- Stop reached;
+- manual/intervening close classification;
+- pending cancellation/expiry;
+- rejected execution;
+- duplicate suppression;
+- persistence;
+- account/symbol/strategy identity.
+
+### Exit
+
+Every executed scenario ends in one attributable confirmed outcome or an explicitly unresolved recovery state.
+
+---
+
+## T17 — Calibration / Quality Proof
+
+### Audit
+
+- historical outcome attribution;
+- MAE/MFE distributions;
+- confidence calibration;
+- win/loss distribution;
+- reward distribution;
+- false signals;
+- missed opportunities;
+- rejection reasons;
+- regime-specific quality;
+- timeframe-specific behavior;
+- OOS/walk-forward;
+- ablation of evidence groups;
+- parameter sensitivity.
+
+### Critical rule
+
+Calibration may produce evidence or governed policy inputs.
+
+It must never silently mutate live trading policy.
+
+### Exit
+
+Predictive quality is measured independently from execution mechanics and from cosmetic presentation.
+
+---
+
+## T18 — Performance / Resilience
+
+### Measure
+
+- startup;
+- history warm-up;
+- Calculate;
+- closed-bar rebuild;
+- MTF cache;
+- zone cache;
+- decision build;
+- plan build;
+- persistence;
+- LocalStorage;
+- cBot polling/timer;
+- event handlers;
+- broker reconciliation;
+- chart object churn;
+- memory;
+- allocations;
+- exception frequency.
+
+### Required invariant
+
+Optimization is permitted only after semantic equivalence is proven.
+
+### Exit
+
+Measured performance is acceptable, failure handling is bounded, and no optimization introduces a second semantic path.
+
+---
+
+## T19 — End-to-End Trade Certification
+
+### Mandatory terminal scenarios
+
+At minimum, cover:
+
+1. Indicator starts correctly.
+2. cBot attaches to the correct Indicator instance.
+3. cBot reports correct Demo/Live mode.
+4. Analysis reaches READY/valid states.
+5. A valid actionable signal is produced.
+6. Identity propagates across Signal/Scenario/Execution.
+7. cBot receives the canonical intent.
+8. Preflight allows a valid request.
+9. Broker creates/fills the expected object.
+10. Actual broker Position/PendingOrder is observed.
+11. Broker-confirmed SL/TP is observed.
+12. Rejected request is classified correctly.
+13. Duplicate request does not duplicate broker state.
+14. Stale request is rejected.
+15. Pending order is created with correct expiry.
+16. Pending order fills and converts into live lifecycle.
+17. Protection modification is broker-confirmed.
+18. Break-even/profit lock is broker-confirmed.
+19. Trailing never widens risk.
+20. Partial close is broker-confirmed.
+21. Full close ends the lifecycle.
+22. Restart reconciles the existing broker object.
+23. Reconnect reconciles without duplicate actions.
+24. Final outcome is persisted once.
+25. Visual/panel/alert presentation reflects the same authoritative state.
+
+### Exit
+
+No unresolved mandatory target-terminal or broker evidence remains for the completed chain.
+
+---
+
+# 6. Cross-phase invariants
+
+These are checked in every applicable trade-chain phase.
+
+## Direction parity
+
+BUY and SELL must be structurally symmetric except for intentional sign/side differences.
+
+## Price parity
+
+Every consumer must use the same canonical normalized Entry/SL/TP for the same plan unless an explicit broker-confirmed price supersedes planned values.
+
+## State parity
+
+Decision, Actionability, Plan, Intent, cBot state and broker lifecycle may differ only according to their defined state transition, never by accidental contradiction.
+
+## Identity parity
+
+No downstream stage may replace causal identity without an explicit new opportunity.
+
+## Freshness parity
+
+A stale signal cannot become executable merely because the cBot restarted or polled again.
+
+## Safety parity
+
+Demo/live must use the same execution architecture, with environment-specific safety arms rather than separate execution engines.
+
+## Execution-clock parity
+
+M15 remains the reference decision/execution-planning center; M5 refines timing; M1 remains optional precision.
+
+## Presentation parity
+
+Panel/chart/alerts mirror authoritative state; they do not create trading truth.
+
+---
+
+# 7. Trade-chain defect classes
+
+Every discovered defect is classified by root cause:
+
+### DATA
+Bad/missing/stale market information.
+
+### TIME
+Wrong bar, wrong timestamp, look-ahead, wrong MTF mapping.
+
+### ANALYSIS
+Incorrect detector, formula, lifecycle or provenance.
+
+### EVIDENCE
+Double counting, correlation, false independence.
+
+### DECISION
+Wrong direction/score/confidence/filter/state.
+
+### ACTIONABILITY
+Invalid now/future/watch conversion.
+
+### TRIGGER
+Bad M5/M1 timing or retest/breakout semantics.
+
+### PLAN
+Bad Entry/SL/TP/reward geometry.
+
+### RISK
+Bad risk amount, volume, margin or capacity.
+
+### IDENTITY
+Duplicate/stale/mismatched scenario or execution.
+
+### CONTRACT
+Invalid payload/schema/version/transport.
+
+### PREFLIGHT
+Unsafe condition not blocked, or valid condition blocked incorrectly.
+
+### SUBMISSION
+Incorrect broker API usage or retry behavior.
+
+### CONFIRMATION
+Submission confused with broker truth.
+
+### PROTECTION
+SL/TP/BE/trailing/partial behavior incorrect.
+
+### LIFECYCLE
+Open/modified/closed/recovery state incorrect.
+
+### OUTCOME
+Incorrect or missing attribution.
+
+### PERFORMANCE
+Unbounded hot-path work or pathological allocation/I/O.
+
+### RESILIENCE
+Restart/reconnect/failure causes semantic divergence.
+
+---
+
+# 8. Evidence standard
+
+Each completed trade phase records:
+
+- exact branch;
+- exact commit;
+- exact implementation files;
+- canonical owner(s);
+- callers/consumers audited;
+- competing paths removed;
+- focused tests;
+- static audits;
+- Release build;
+- runtime evidence;
+- terminal evidence;
+- broker evidence;
+- performance evidence;
+- safety impact;
+- remaining risks;
+- next phase.
+
+Evidence types are:
+
+**SOURCE / TEST / AUDIT / BUILD / RUNTIME / TERMINAL / BROKER / PERFORMANCE / DOC**
+
+Historical evidence cannot close a changed implementation.
+
+A screenshot can support visual evidence, but it cannot substitute for source/contract/broker truth.
+
+---
+
+# 9. Definition of Done for every trade phase
+
+A trade-chain phase can be marked **PASS** only when all applicable items are true:
+
+1. Root cause is evidence-based.
+2. Canonical owner is identified.
+3. Full affected caller/consumer graph is audited.
+4. Competing logic is removed or redirected.
+5. State transitions are explicit.
+6. BUY/SELL symmetry is checked.
+7. Time/index semantics are explicit.
+8. Price-side/spread semantics are explicit where relevant.
+9. Invalid numeric values are handled.
+10. Stale/retry/boundary cases are covered.
+11. Identity and lineage remain intact.
+12. Focused tests/contracts pass.
+13. Whole-project integrity gates pass.
+14. cTrader Release build passes.
+15. Safety implications are assessed.
+16. Performance implications are assessed.
+17. Required target-terminal/broker scenarios are recorded.
+18. `CFIP_GATE.md` is updated.
+19. `CFIP-ROADMAP.md` continuity is updated where the trade-chain package changes the repository execution state.
+20. Exactly one next trade phase is marked.
+21. No hidden workaround, duplicate owner or parallel path remains.
+
+---
+
+# 10. Trade-chain stop conditions
+
+The roadmap is BLOCKED immediately if any of these are introduced or rediscovered:
+
+- Indicator broker mutation;
+- second execution engine;
+- second decision engine;
+- second Plan builder for the same semantic path;
+- duplicate risk/volume authority;
+- M2;
+- look-ahead;
+- stale signal accepted as current;
+- duplicate Scenario/Execution identity;
+- plan state treated as broker truth;
+- submission treated as fill;
+- protection can widen risk;
+- retry can duplicate broker action;
+- recovery can create a second position/order;
+- cBot invents analysis;
+- downstream consumer silently rewrites strategy semantics;
+- performance workaround changes semantic results without proof.
+
+---
+
+# 11. Current priority
+
+The dedicated trade roadmap must be treated as the main engineering priority before unrelated cleanup or cosmetic work.
+
+**Priority order:**
+
+**T0 → T1 → T2 → T3 → T4 → T5 → T6 → T7 → T8 → T9 → T10 → T11 → T12 → T13 → T14 → T15 → T16 → T17 → T18 → T19**
+
+However, an urgent safety defect may reopen the earliest affected phase.
+
+Exactly one trade phase may be **NEXT** at a time.
+
+---
+
+# 12. Relationship to project control
+
+- This document defines the dedicated trade-chain scope and sequence.
+- Project control documents define repository-wide acceptance and boundaries.
+- Only current active source and explicit user instructions determine implementation work.
+- The next trade phase is not inferred from older material.
+
+# 13. Operator protocol
+
+For every work package:
+
+1. Synchronize the branch.
+2. Read the current CFIP-TRADE phase status.
+3. Inspect the real code around the owner and all consumers.
+4. Make one complete atomic repair package.
+5. Run the required local/CI verification.
+6. Perform target-terminal testing where required.
+7. Record evidence and defects.
+8. Mark exactly one next trade phase.
+9. Continue from verified repository state.
+
+Operator commands must always be explicit and limited to commands actually required for the current phase.
+
+---
+
+# 14. Initial status
+
+**Current trade-chain roadmap status: ACTIVE**
+
+**Current trade-chain phase: T2 — Time / MTF / Closed-Bar Integrity**
+
+**T0 status: PASS — SOURCE BASELINE ESTABLISHED**
+
+**T1 status: IMPLEMENTED — SOURCE CONTRACT HARDENED**
+
+**T2 status: VERIFICATION**
+
+**No phase is considered PASS before its required evidence is completed.**
+
+---
+
+# 15. Final certification target
+
+CFIP-TRADE is fully complete only when the following statement is provable:
+
+> A valid market observation is transformed exactly once into canonical MTF context, analytical evidence, decision, actionability, trigger, opportunity, plan and risk; that intent crosses the Indicator/Contracts/cBot boundary with stable identity; the cBot performs the only broker mutation after final safety validation; broker truth becomes authoritative; protection and lifecycle remain risk-safe through fills, modifications, exits, restart and reconnect; and the resulting outcome is attributed and persisted once, with quality/calibration evidence isolated from live-policy mutation.
+
+That is the definition of a **complete CFIP trading system**.
+
+---
+
+## Revision history
+
+### 2026-10-05 — Initial canonical trade-chain roadmap
+
+Created as the dedicated roadmap for the full analysis-to-trade path. This document deliberately treats trading as one end-to-end system rather than as separate Indicator, cBot, risk, execution and management features.
+
+# T0 — Trade Baseline Closeout — 2026-10-05
+
+**Status: PASS — SOURCE BASELINE ESTABLISHED**
+
+### Repository baseline
+
+- Candidate branch: `fix/cbot-settings-arrow-visual-truth-2026-10-05`
+- Candidate HEAD: `7edba31687fb622875db3cfcac829487a3097405`
+- `main` HEAD: `dabba8629480aff82742c159714a8a573e616457`
+- Branch relationship to `main`: diverged; candidate is ahead and behind. Therefore the candidate branch is the current implementation baseline for trade-chain work, but it is not yet the canonical merged `main` baseline.
+- PR #337 remains open and unmerged.
+- No current-head GitHub Actions run exists for the candidate HEAD at baseline time; this is recorded as verification pending, not as PASS evidence.
+- User local Release builds of Indicator, Contracts and cBot were clean: 0 warnings / 0 errors.
+
+### Canonical owner map
+
+| Trade concept | Current owner / boundary | Baseline finding |
+|---|---|---|
+| Market context | `CanonicalMarketContextBuilder` + calculation context | Owner exists; T1/T2 must verify price/time provenance |
+| MTF closed context | `MtfContextBuilder`, `MtfClosedContextCache`, `CalculationClosedBar` | Eight-frame contract is present; M2 prohibited |
+| Analytical frame stack | Indicator Analysis domain | Exists across timeframe/indicator/structure domains; detailed ownership audit starts at T3 |
+| Structure / liquidity / FVG / OB | Structure and Zones analyzers/lifecycle owners | Present; T3 verifies lifecycle, mitigation and provenance |
+| Evidence / confluence | Decision evidence snapshot + independent-evidence analyzers | Present; T4 must prove independence and no double counting |
+| Decision | `DecisionEvaluator` + `DecisionOrchestration` | Canonical decision path identified |
+| Actionability | `TradeActionabilityDecisionGate` + final actionable quality gate | Canonical actionability gate identified |
+| Trigger | Closed-bar trigger evaluator + M1 trigger evaluator + execution trigger gate | M5/M1 separation exists; T6 must prove no competing decision clock |
+| Opportunity / scenarios | `ParallelOpportunityBuilder`, future-pending runtime, scenario policy | Multiple lanes exist; T6/T9 must prove one lineage and no duplicate semantic path |
+| Trade Plan | `PlanBuilder` → `PlanInputPreparation` → `PlanMaterialization` | Canonical plan owner identified |
+| Entry execution geometry | `ExecutionModelBuilder` / execution-zone pipeline | Canonical planning geometry exists |
+| Risk / volume | `RiskAmountCalculator`, `VolumeSizer`, risk/margin rules | Account-risk sizing exists; T8 must prove complete broker-aware sizing |
+| Contract intent | `CFIPReadOnlyProviderPlan` + Contracts `ExecutionIntent` | Main handoff identified |
+| Scenario batch | `CFIPDeviceScenarioBatchPublisher` + `SignalScenarioBatchCodec` | Batch transport exists |
+| Single signal transport | `CFIPDeviceSignalPublisher` + `SignalEnvelopeCodec` | Single-envelope transport exists |
+| cBot binding | `CfipIndicatorChartBinding` | Binding owner identified |
+| cBot preflight | `CbotSignalPreflight` | Boundary validator identified |
+| cBot environment gates | `CbotExecutionEnvironmentGate` | Final broker-environment safety gate identified |
+| Market broker mutation | `DemoMarketExecutionCoordinator` | Sole current market mutation owner |
+| Pending broker mutation | `DemoPendingOrderExecutionCoordinator` | Sole current pending mutation owner |
+| Management broker mutation | `ManagementExecutionCoordinator` in cBot | Sole current management mutation owner |
+| Broker truth / recovery | `CbotBrokerReconciliation` | Broker-state reconciliation owner identified |
+| Execution state publication | `CbotExecutionStatePublisher` | cBot-owned state publication identified |
+| Indicator management command publication | `ManagementCommandRequestCoordinator` | Indicator publishes commands; it must not mutate broker |
+| Outcome | `OutcomeTelemetryEngine` | Outcome attribution is present; T16 must prove broker-confirmed completeness |
+| Calibration | Outcome/calibration telemetry components | Present; T17 must ensure observational/policy isolation |
+
+### Baseline invariants verified from source
+
+- Indicator production source contains no direct broker execution mutation.
+- cBot is the only production broker-mutation project.
+- Production MTF contract is M1/M5/M15/M30/H1/H4/D1/W1; M2 is forbidden.
+- M15 is the decision/reference center; M5 is trigger/entry precision; M1 is optional precision/confirmation.
+- cBot execution settings are cBot-owned; Indicator no longer owns the production automatic-trading parameters.
+- cBot market/pending/management mutation owners are explicit.
+- Signal and scenario identity are transported through immutable contracts.
+- cBot performs preflight before broker mutation.
+- Broker reconciliation is separate from requested/planned state.
+- Indicator management calls are command publication, not broker mutation.
+
+### Baseline risks / open trade-chain findings
+
+**T0-F01 — Canonical branch is not yet merged to main.**  
+The current implementation candidate diverges from `main`. Trade-chain work continues on the candidate branch until its implementation is verified and can be safely integrated; no assumption is made that `main` already contains the candidate changes.
+
+**T0-F02 — Multi-opportunity capacity is not yet complete.**  
+`MaximumOpenPositions` is exposed by the cBot but its settings normalization currently clamps it to 1, and the Indicator execution-capacity rule is also single-plan. This conflicts with the product requirement for multiple independent opportunities and must be resolved in T8/T9 without introducing a second capacity owner.
+
+**T0-F03 — Capacity checking has repeated semantic checks.**  
+The cBot environment gate and the market/pending coordinators both check active managed capacity. T8/T11 must determine the exact canonical capacity owner and remove any redundant semantic gate.
+
+**T0-F04 — Execution-intent construction has more than one construction boundary.**  
+The Indicator has an internal `BuildExecutionIntent` path and the provider has a `BuildCanonicalExecutionIntent` path that can construct an internal intent before producing the Contracts intent. T9/T10 must prove these are distinct layers or collapse them into one canonical construction path.
+
+**T0-F05 — Lifecycle semantics cross Indicator and cBot boundaries.**  
+Indicator-side lifecycle/management logic remains as a read-only/command-producing semantic layer while cBot owns broker mutation and broker reconciliation. T14/T15 must formally prove the ownership boundary and eliminate any semantic duplication.
+
+**T0-F06 — Current-head automated verification is not yet evidenced.**  
+The candidate HEAD has no fresh Actions run at T0 closeout. This is not treated as a green result.
+
+**T0-F07 — Target-terminal broker truth remains unproven.**  
+The existence of broker mutation code does not prove real broker execution. T12/T13/T19 require target-terminal evidence.
+
+### T0 exit decision
+
+**PASS — source baseline established.**
+
+T0 does not claim that trading is already certified. It establishes the verified starting topology and the first open trade-chain findings that later phases must close.
+
+### Next phase
+
+**T1 — Market Data Truth**
+
+Primary target: canonical observation, executable Bid/Ask, spread, tick/pip/precision, freshness, history/gaps and price provenance.
+
+
+---
+
+# T1 closeout — Market Data Truth
+
+**Status: IMPLEMENTED — SOURCE CONTRACT HARDENED**
+
+The canonical market-data boundary now explicitly validates:
+
+- UTC-normalized quote observation time;
+- positive pip/tick metadata and valid precision;
+- executable BUY/SELL prices;
+- live quote refresh before reaction/actionability/provider intent use;
+- fail-closed provider intent construction when the canonical quote is unusable;
+- cBot live quote as the final broker-side truth at execution time.
+
+Historical Claude-review findings folded into the forward plan include revalidation of hard-coded smart-risk floors/multipliers, equity-vs-balance sizing semantics, repeated RR definitions, calibration quality metrics and duplicate semantic scoring. These remain assigned to their canonical T7/T8/T17 owners rather than being patched opportunistically in T1.
+
+**Next: T2 — Time / MTF / Closed-Bar Integrity**
+
+
+---
+
+# T2 — Time / MTF / Closed-Bar Integrity — 2026-10-05
+
+**Status: VERIFICATION — implementation complete; exact-head automated and local Release verification pending**
+
+### Canonical owner chain
+
+- CanonicalTimeRule owns UTC normalization semantics.
+- ClosedBarReferenceRule owns fully-closed index resolution from actual next-bar open times.
+- IndexMath.ClosedBarBoundaryReference owns the reusable boundary timestamp for a known closed M5 bar.
+- MtfContextBuilder owns the eight canonical MTF closed indices.
+- MtfClosedContextCache owns reference-aware cache reuse and invalidation when any frame crosses its next-open boundary.
+- CalculationPreparation and CalculationStartupSeed capture the same canonical UTC reference before building the MTF context.
+- Trade-plan temporal target sources consume the closed-M5 boundary rather than the closed M5 opening timestamp.
+
+### Implemented hardening
+
+1. Closed-bar reference inputs and bar timestamps are normalized through CanonicalTimeRule.
+2. Invalid DateTime.MinValue reference/timestamp states fail closed in ClosedBarReferenceRule.
+3. MTF context references and cache comparisons use canonical UTC semantics.
+4. Startup seed and normal calculation preparation use the same canonical reference contract.
+5. Daily-pivot, HTF-target and previous-period planning lookups now use the actual closed-M5 boundary.
+6. Existing reference-aware MTF cache semantics remain the only cache path; no second MTF engine was introduced.
+7. M2 remains absent and permanently guarded by the existing canonical MTF audit.
+8. Existing label geometry and HorizontalAlignment.Left were not changed.
+
+### Boundary regression coverage
+
+The existing runtime contract suite was extended to prove:
+- exact next-open closure;
+- irregular/gapped bar boundaries;
+- unspecified DateTime values follow canonical UTC semantics;
+- unspecified bar timestamps preserve the same ordering;
+- missing reference fails closed;
+- invalid bar timestamps fail closed.
+
+The existing F3 temporal audit was strengthened to cover canonical UTC normalization and target-plan temporal consumers, and it is wired into Source/Architecture CI.
+
+### T2 acceptance
+
+The semantic implementation is complete. T2 cannot be marked PASS until the exact branch HEAD has:
+- Release build success for Indicator, Contracts and cBot;
+- runtime contract suite success;
+- Source/Architecture and MTF/F3 audits success;
+- cTrader Release compile success;
+- local target branch verification recorded.
+
+No target-terminal broker evidence is required to establish the source-level T2 contract itself; terminal timing evidence remains relevant at the later end-to-end acceptance boundary.
+
+### Remaining trade-chain risk
+
+T2 intentionally does not change analytical formulas, decision thresholds, risk policy, execution ownership, label placement or broker mutation.
+
+### Next trade phase
+
+**T3 — Analytical Stack**
+
+T3 becomes executable only after the T2 verification gates above are green.
