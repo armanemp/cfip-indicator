@@ -42,7 +42,7 @@ check(
     "ClosedBarReferenceRule is the canonical fully-closed index owner",
     "ResolveClosedIndex(" in closed and
     "IsFullyClosed(" in closed and
-    "nextOpenTime <= reference" in closed
+    "nextOpenTime <= normalizedReference" in closed
 )
 
 check(
@@ -64,7 +64,7 @@ check(
     "MTF cache cannot reuse a context after any series crosses its next open",
     cache.count("IsReferenceStable(") >= 8 and
     "bars.OpenTimes[closedIndex + 1] > reference" in cache and
-    "_context.WithReference(reference)" in cache
+    "_context.WithReference(normalizedReference)" in cache
 )
 
 check(
@@ -109,7 +109,7 @@ check(
 
 check(
     "MTF/closed-context reference is canonicalized at the context/cache boundary",
-    "CanonicalTimeRule.EnsureUtc(" in mtf or False
+    "CanonicalTimeRule.EnsureUtc(" in mtf and\n    "normalizedReference" in mtf
 )
 
 check(
