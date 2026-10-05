@@ -24,7 +24,7 @@ def require(condition, message):
 reader = read("src/CFIP.Indicator/Runtime/Cbot/CbotExecutionStateReader.cs")
 binding = read("src/CFIP.cBot/Binding/CfipIndicatorChartBinding.cs")
 bot = read("src/CFIP.cBot/CFIPExecutionBot.cs")
-settings = read("src/CFIP.cBot/Execution/CbotIndicatorExecutionSettings.cs")
+settings = read("src/CFIP.cBot/Execution/CbotExecutionSettings.cs")
 gate = read("src/CFIP.cBot/Execution/CbotExecutionEnvironmentGate.cs")
 daily = read("src/CFIP.cBot/Risk/CbotDailyLossGuard.cs")
 intent = read("src/CFIP.Contracts/ExecutionIntent.cs")
@@ -44,10 +44,11 @@ require(
 )
 
 require(
-    "CbotIndicatorExecutionSettings.TryRead" in bot and
-    "CbotIndicatorExecutionSettings" in settings and
-    "ChartIndicator.Parameters" not in settings or "indicator.Parameters" in settings,
-    "cBot must consume the actual attached Indicator settings without duplicate parameters",
+    "CbotExecutionSettings" in settings and
+    "CbotExecutionSettings.Create(" in settings and
+    "robot.EnableAutoTrading" in settings and
+    "robot.MaximumOpenPositions" in settings,
+    "cBot must consume its canonical execution settings without an Indicator execution-settings bridge",
 )
 
 for token in (
