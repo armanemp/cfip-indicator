@@ -13,7 +13,8 @@ namespace cAlgo
 
         private bool ValidatePlanRewardStructure(
             Plan plan,
-            int direction)
+            int direction,
+            double spread)
         {
             if (plan == null ||
                 !IsFinitePositive(plan.Entry) ||
@@ -57,7 +58,7 @@ namespace cAlgo
                     plan.Entry,
                     plan.Stop,
                     plan.Tp1,
-                    0,
+                    spread,
                     minimumRR,
                     maximumRR,
                     Symbol.PipSize);
@@ -95,7 +96,7 @@ namespace cAlgo
                         plan.Entry,
                         plan.Stop,
                         plan.Tp2,
-                        0,
+                        spread,
                         requiredTp2RR,
                         maximumRR,
                         Symbol.PipSize);
@@ -125,7 +126,7 @@ namespace cAlgo
                             plan.Entry,
                             plan.Stop,
                             plan.Tp2,
-                            0,
+                            spread,
                             0,
                             double.PositiveInfinity,
                             Symbol.PipSize).NominalRR
@@ -145,7 +146,7 @@ namespace cAlgo
                         plan.Entry,
                         plan.Stop,
                         plan.Tp3,
-                        0,
+                        spread,
                         requiredTp3RR,
                         maximumRR,
                         Symbol.PipSize);
@@ -179,7 +180,7 @@ namespace cAlgo
                             plan.Entry,
                             plan.Stop,
                             plan.Tp3,
-                            0,
+                            spread,
                             0,
                             double.PositiveInfinity,
                             Symbol.PipSize).NominalRR
@@ -189,7 +190,7 @@ namespace cAlgo
                                 plan.Entry,
                                 plan.Stop,
                                 plan.Tp2,
-                                0,
+                                spread,
                                 0,
                                 double.PositiveInfinity,
                                 Symbol.PipSize).NominalRR
@@ -209,7 +210,7 @@ namespace cAlgo
                         plan.Entry,
                         plan.Stop,
                         plan.Tp4,
-                        0,
+                        spread,
                         requiredTp4RR,
                         maximumRR,
                         Symbol.PipSize);
