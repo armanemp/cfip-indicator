@@ -29,6 +29,8 @@
 
 A higher gate never excuses a lower-gate failure.
 
+**Trade-chain companion:** `docs/CFIP-TRADE.md` defines the detailed end-to-end trading-chain scope and phase sequence. Its work remains subject to this gate's evidence, PASS/BLOCKED rules, and target-terminal requirements.
+
 # 2. STOP conditions
 
 Mark BLOCKED when any occurs:
