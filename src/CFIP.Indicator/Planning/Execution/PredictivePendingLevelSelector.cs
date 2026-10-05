@@ -136,6 +136,11 @@ namespace cAlgo
                 return false;
             }
 
+            List<string> sourceSnapshot =
+                candidates
+                    .Select(c => c == null ? string.Empty : c.Source ?? string.Empty)
+                    .ToList();
+
             for (int i = 0;
                  i < candidates.Count;
                  i++)
@@ -143,13 +148,16 @@ namespace cAlgo
                 PredictivePendingCandidate candidate =
                     candidates[i];
 
+                string candidateSource =
+                    sourceSnapshot[i];
+
                 HashSet<string> confluenceKeys =
                     new HashSet<string>(
                         StringComparer.OrdinalIgnoreCase);
 
                 confluenceKeys.Add(
                     PredictivePendingSourceKey(
-                        candidate.Source));
+                        candidateSource));
 
                 int confluence = 1;
 
@@ -177,7 +185,7 @@ namespace cAlgo
 
                     string otherKey =
                         PredictivePendingSourceKey(
-                            other.Source);
+                            sourceSnapshot[j]);
 
                     if (!confluenceKeys.Add(
                             otherKey))
@@ -187,7 +195,7 @@ namespace cAlgo
 
                     if (sources.Count < 3 &&
                         !sources.Contains(
-                            other.Source))
+                            sourceSnapshot[j]))
                     {
                         sources.Add(
                             other.Source);
