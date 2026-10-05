@@ -1,3 +1,5 @@
+using CFIP.Contracts;
+
 // CFIP Indicator — TradeLabelFormatter.cs
 // Single-responsibility execution state module.
 
