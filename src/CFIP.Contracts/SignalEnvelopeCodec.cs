@@ -4,12 +4,6 @@ using System.Text.Json;
 
 namespace CFIP.Contracts
 {
-    internal static class ContractVersionPolicy
-    {
-        public static bool IsSupported(int version) =>
-            version == ContractVersion.Current;
-    }
-
     public static class SignalEnvelopeCodec
     {
         private static readonly JsonSerializerOptions Options =
