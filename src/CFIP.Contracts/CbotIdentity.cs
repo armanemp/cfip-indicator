@@ -4,5 +4,6 @@ namespace CFIP.Contracts
     {
         public const string DisplayName = "CFIP Smart Execution Bot";
         public const string TypeName = "CFIPExecutionBot";
+        public const string ManagedLabel = "CFIP-SMART";
     }
 }

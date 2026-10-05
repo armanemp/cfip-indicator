@@ -71,7 +71,7 @@ namespace CFIP.cBot.Execution
             string executionScenarioId,
             SignalEnvelope envelope,
             CbotBrokerReconciliationResult reconciliation,
-            CbotIndicatorExecutionSettings executionSettings,
+            CbotExecutionSettings executionSettings,
             bool force)
         {
             if (robot == null ||
@@ -210,10 +210,10 @@ namespace CFIP.cBot.Execution
 
             snapshot = snapshot with
             {
-                IndicatorAutoTradingEnabled =
+                CbotAutoTradingEnabled =
                     executionSettings != null &&
                     executionSettings.EnableAutoTrading,
-                IndicatorAutomaticOrdersEnabled =
+                CbotAutomaticOrdersEnabled =
                     executionSettings != null &&
                     executionSettings.EnableAutomaticOrders,
                 EffectiveAutoTradingEnabled =

@@ -220,13 +220,11 @@ for path in (BROKER_PROTECTION, BOUND_PROTECTION):
         )
 
 bound_source = read(BOUND_PROTECTION)
-if "PreventBrokerTpBackwardMove" not in bound_source:
+# The legacy Indicator TP progression switch was removed with execution settings.
+# Live TP progression is now governed by the canonical geometry/protection owners.
+if "ProtectionProgressionRule.ShouldAdvanceTarget(" in bound_source:
     ERRORS.append(
-        "BoundPlanProtection must retain the configured TP progression switch"
-    )
-if "ProtectionProgressionRule.ShouldAdvanceTarget(" not in bound_source:
-    ERRORS.append(
-        "BoundPlanProtection must enforce configured TP progression"
+        "BoundPlanProtection must not retain the removed Indicator-owned TP progression policy"
     )
 
 if "protections.LastTakeProfit.Price" not in server_text:

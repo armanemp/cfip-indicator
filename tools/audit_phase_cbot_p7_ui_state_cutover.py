@@ -32,8 +32,6 @@ overview = read("src/CFIP.Indicator/UI/Panel/Rows/PanelOverviewExecutionRowsRend
 workflow = read(".github/workflows/source-check.yml")
 
 for token in (
-    "IndicatorAutoTradingEnabled",
-    "IndicatorAutomaticOrdersEnabled",
     "EffectiveAutoTradingEnabled",
     "EffectiveAutomaticOrdersEnabled",
 ):

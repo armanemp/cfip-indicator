@@ -16,15 +16,10 @@ parameter_source = "\n".join(
     for p in sorted(parameter_root.glob("*.cs"))
 )
 
-# CFIP is single-plan until a real multi-plan lifecycle exists. Keep the public
-# setting for preset/API compatibility, but expose only the one supported value.
-if not re.search(
-    r'\[Parameter\("Maximum Open Positions"[^\n]*MinValue\s*=\s*1[^\n]*MaxValue\s*=\s*1',
-    parameter_source,
-):
-    raise SystemExit(
-        "MaximumOpenPositions must expose only the supported single-plan value 1"
-    )
+# Execution capacity is cBot-owned. The Indicator must not expose a broker
+# execution-capacity parameter or recreate the cBot setting.
+if "MaximumOpenPositions" in parameter_source:
+    raise SystemExit("MaximumOpenPositions must be absent from Indicator parameters")
 
 if "BlockNewSignalWhileActive" in production:
     raise SystemExit(
@@ -66,27 +61,22 @@ if "ValidateSinglePlanCapacity(" not in plan_text:
         "Plan creation must consume the canonical single-plan capacity guard"
     )
 
-execution_paths = {
-    "automatic_market": ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketPreTradeEligibility.cs",
-    "aggressive": ROOT / "Trading" / "Execution" / "Aggressive" / "AggressivePreTradeEligibility.cs",
-    "predictive_pending": ROOT / "Trading" / "Pending" / "Placement" / "SmartPendingOrderOrchestrator.cs",
-}
-for name, path in execution_paths.items():
-    text = path.read_text(encoding="utf-8")
-    if "ValidateSingleExecutionCapacity(" not in text:
-        raise SystemExit(
-            f"{name} execution path does not consume the shared execution-capacity guard"
-        )
-    if "ManagedPositionCount() >=" in text:
-        raise SystemExit(
-            f"{name} execution path contains a duplicate position-capacity formula"
-        )
+for removed_path in (
+    ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketPreTradeEligibility.cs",
+    ROOT / "Trading" / "Execution" / "Aggressive" / "AggressivePreTradeEligibility.cs",
+):
+    if removed_path.exists():
+        raise SystemExit(f"Removed Indicator execution path was reintroduced: {removed_path}")
+
+pending_path = ROOT / "Trading" / "Pending" / "Placement" / "SmartPendingOrderOrchestrator.cs"
+if "ValidateSingleExecutionCapacity(" not in pending_path.read_text(encoding="utf-8"):
+    raise SystemExit("Pending intent path does not consume the shared execution-capacity guard")
 
 print("Phase 7.4 execution-capacity semantics audit PASS")
 print(f"Production C# files scanned: {len(files)}")
-print("MaximumOpenPositions: retained, hard-constrained to 1")
+print("MaximumOpenPositions: cBot-owned; absent from Indicator")
 print("Unsupported BlockNewSignalWhileActive parameter: absent")
 print("Single-plan capacity rule: PASS")
 print("New-plan and new-execution semantics: PASS")
 print("Shared cTrader capacity guard: PASS")
-print("Automatic market / aggressive / predictive-pending consumers: PASS")
+print("Indicator execution paths removed; pending intent capacity remains guarded: PASS")

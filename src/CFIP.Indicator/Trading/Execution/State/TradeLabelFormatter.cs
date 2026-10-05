@@ -1,3 +1,5 @@
+using CFIP.Contracts;
+
 // CFIP Indicator — TradeLabelFormatter.cs
 // Single-responsibility execution state module.
 
@@ -11,13 +13,9 @@ namespace cAlgo
     public partial class CFIPIndicator : Indicator
     {
         private string NormalizeLabel()
-                                {
-                                    return
-                                        string.IsNullOrWhiteSpace(
-                                            AutoTradeLabel)
-                                            ? "CFIP-SMART"
-                                            : AutoTradeLabel.Trim();
-                                }
+        {
+            return CbotIdentity.ManagedLabel;
+        }
 
         private string ManagedExecutionLabel()
         {

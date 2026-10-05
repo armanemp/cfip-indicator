@@ -39,7 +39,7 @@ if duplicates:
         print(f"DUPLICATE PARAMETER: {name} -> {owners}")
     fail(f"Found {len(duplicates)} duplicate public parameter names")
 
-EXPECTED_UNIQUE_PUBLIC_PARAMETER_MATCHES = 533
+EXPECTED_UNIQUE_PUBLIC_PARAMETER_MATCHES = 501
 if len(param_decls) != EXPECTED_UNIQUE_PUBLIC_PARAMETER_MATCHES:
     fail(
         f"Project integrity public-property match count changed: "
@@ -56,16 +56,13 @@ declared_parameter_count = len(
         parameter_source,
     )
 )
-if declared_parameter_count != 545:
+if declared_parameter_count != 513:
     fail(
-        f"Project integrity expects 545 parameter declarations, "
+        f"Project integrity expects 521 parameter declarations, "
         f"found {declared_parameter_count}"
     )
-if not re.search(
-    r'\[Parameter\("Maximum Open Positions"[^\n]*MinValue\s*=\s*1[^\n]*MaxValue\s*=\s*1',
-    parameter_source,
-):
-    fail("MaximumOpenPositions must advertise only single-plan capacity")
+if "MaximumOpenPositions" in parameter_source:
+    fail("MaximumOpenPositions must remain cBot-owned and absent from Indicator parameters")
 if "BlockNewSignalWhileActive" in parameter_source:
     fail("Unsupported BlockNewSignalWhileActive parameter remains")
 
@@ -80,12 +77,17 @@ for token in ("ValidateSinglePlanCapacity(", "ValidateSingleExecutionCapacity(")
 
 for relative, token in (
     ("Trading/Validation/PlanCreationEligibility.cs", "ValidateSinglePlanCapacity("),
-    ("Trading/Execution/AutomaticMarket/AutomaticMarketPreTradeEligibility.cs", "ValidateSingleExecutionCapacity("),
-    ("Trading/Execution/Aggressive/AggressivePreTradeEligibility.cs", "ValidateSingleExecutionCapacity("),
     ("Trading/Pending/Placement/SmartPendingOrderOrchestrator.cs", "ValidateSingleExecutionCapacity("),
 ):
     if token not in texts[ROOT / relative]:
         fail(f"Canonical capacity guard missing from {relative}")
+
+for removed in (
+    ROOT / "Trading/Execution/AutomaticMarket/AutomaticMarketPreTradeEligibility.cs",
+    ROOT / "Trading/Execution/Aggressive/AggressivePreTradeEligibility.cs",
+):
+    if removed.exists():
+        fail(f"Removed Indicator execution path was reintroduced: {removed}")
 
 # 2) Exact duplicate method signatures across partial production files.
 # Include the containing type in the key. A method such as GetHashCode() is

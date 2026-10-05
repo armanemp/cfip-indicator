@@ -90,8 +90,6 @@ required = {
         ],
     "src/CFIP.Indicator/Analysis/Market/Decision/DecisionMarketGates.cs":
         ["NewsBlocked("],
-    "src/CFIP.Indicator/Trading/Risk/AutoTradeSafetyGuard.cs":
-        ["NewsBlocked("],
     "src/CFIP.Indicator/Runtime/Supervision/RuntimePanelHeartbeat.cs":
         ["RefreshEconomicNewsIfNeeded("],
 }

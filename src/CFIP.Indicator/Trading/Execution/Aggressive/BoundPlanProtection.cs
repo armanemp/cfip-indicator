@@ -96,7 +96,7 @@ namespace cAlgo
                                         bool targetConfirmed =
                                             serverLadderTargetValid
                                                 ? true
-                                                : !SyncBrokerTakeProfit ||
+                                                : !CbotCanManage() ||
                                                   brokerTargetValid;
 
                                         bool mutationRequired = false;
@@ -180,7 +180,8 @@ namespace cAlgo
                                             }
                                         }
 
-                                        if (SyncBrokerTakeProfit &&
+                                        if (_cBotExecutionState != null &&
+                                            _cBotExecutionState.ManagementExecutionEnabled &&
                                             !_serverSideTakeProfitLadderActive)
                                         {
                                             double target =
@@ -211,18 +212,7 @@ namespace cAlgo
                                                         Symbol.TickSize,
                                                         Symbol.PipSize * 0.25);
 
-                                                bool configuredTpProgression =
-                                                    !PreventBrokerTpBackwardMove ||
-                                                    !brokerTargetValid ||
-                                                    ProtectionProgressionRule.ShouldAdvanceTarget(
-                                                        direction,
-                                                        NormalizePrice(
-                                                            planPosition.TakeProfit.Value),
-                                                        normalizedTarget,
-                                                        true);
-
                                                 if (materiallyDifferent &&
-                                                    configuredTpProgression &&
                                                     (!brokerTargetValid ||
                                                      LiveExitGeometryRule.ShouldAdvanceLiveTarget(
                                                          direction,

@@ -210,7 +210,7 @@ if "GetCanonicalSignalPanelStatus()" not in g4_overview_rows:
 parameter_source = "\n".join(
     p.read_text(encoding="utf-8") for p in PARAM_ROOT.glob("*.cs")
 )
-EXPECTED_CURRENT_PARAMETERS = 545
+EXPECTED_CURRENT_PARAMETERS = 513
 if len(re.findall(r"\[Parameter\s*\(", parameter_source)) != EXPECTED_CURRENT_PARAMETERS:
     raise SystemExit("public parameter contract changed unexpectedly")
 

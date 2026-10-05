@@ -123,7 +123,6 @@ namespace cAlgo
                 private DateTime _lastAutoOrderAttemptUtc = DateTime.MinValue;
                 private bool _autoTradingEnabledRuntime;
                 private bool _automaticOrdersEnabledRuntime;
-                private bool _executionRuntimeInitialized;
                 private bool _executionToggleSyncing;
                 private CalculationMarketContext _calculationMarketContext;
 
@@ -184,8 +183,6 @@ namespace cAlgo
                         InvalidatePanelExecutionProtectionStateCache();
                     }
                 }
-                private bool _lastConfiguredAutoTrading;
-                private bool _lastConfiguredAutomaticOrders;
                 private bool _outcomeTelemetryTimedOut;
                 private string _lastExecutionTelemetryPath = "";
                 private string _lastExecutionTelemetryState = "IDLE";

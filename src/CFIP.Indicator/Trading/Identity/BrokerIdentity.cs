@@ -1,3 +1,5 @@
+using CFIP.Contracts;
+
 // ============================================================================
 // CFIP Indicator — BrokerIdentity.cs
 // ============================================================================
@@ -14,8 +16,6 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private bool _managedActionsOnlySafetyNoticeIssued;
-
         // ============================================================
                 
                         private bool HasTradingPermission()
@@ -68,66 +68,40 @@ namespace cAlgo
                         }
         
         private bool ValidateTradeIdentityConfiguration()
-                        {
-                            if (!ManagedIdentityRule.TryBuildLabel(
-                                    NormalizeLabel(),
-                                    InstanceId,
-                                    out _))
-                            {
-                                Print(
-                                    "CFIP managed identity unavailable: InstanceId is empty. Automatic execution is blocked.");
-                                return false;
-                            }
+        {
+            string managed;
+            bool valid =
+                ManagedIdentityRule.TryBuildLabel(
+                    CbotIdentity.ManagedLabel,
+                    InstanceId,
+                    out managed);
 
-                            if (string.IsNullOrWhiteSpace(
-                                    ManagedPositionLabel))
-                                return true;
+            if (!valid)
+            {
+                Print(
+                    "CFIP managed identity unavailable: InstanceId is empty.");
+            }
 
-                            string managed =
-                                ManagedPositionLabel.Trim();
-
-                            string execution =
-                                NormalizeLabel();
-
-                            if (string.Equals(
-                                    managed,
-                                    execution,
-                                    StringComparison.Ordinal))
-                                return true;
-
-                            Print(
-                                "CFIP identity configuration mismatch: Managed Position Label '{0}' != Auto Trade Label '{1}'. Automatic execution is blocked until they match.",
-                                managed,
-                                execution);
-
-                            return false;
-                        }
+            return valid;
+        }
 
         private bool IsManagedPosition(Position position)
-                        {
-                            if (position == null ||
-                                position.SymbolName != SymbolName)
-                                return false;
-                
-                            if (!ManagedActionsOnly &&
-                                !_managedActionsOnlySafetyNoticeIssued)
-                            {
-                                Print(
-                                    "CFIP Managed Actions Only=false is safety-restricted: foreign/manual positions are never auto-managed; exact CFIP instance identity is still required.");
-                                _managedActionsOnlySafetyNoticeIssued = true;
-                            }
+        {
+            if (position == null ||
+                position.SymbolName != SymbolName)
+                return false;
 
-                            string managedLabel =
-                                ManagedExecutionLabel();
+            string managedLabel =
+                ManagedExecutionLabel();
 
-                            return
-                                !string.IsNullOrWhiteSpace(managedLabel) &&
-                                string.Equals(
-                                    position.Label,
-                                    managedLabel,
-                                    StringComparison.Ordinal);
-                        }
-        
+            return
+                !string.IsNullOrWhiteSpace(managedLabel) &&
+                string.Equals(
+                    position.Label,
+                    managedLabel,
+                    StringComparison.Ordinal);
+        }
+
         private bool IsManagedPendingOrder(PendingOrder order)
                         {
                             return

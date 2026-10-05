@@ -14,80 +14,9 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private void InitializeExecutionRuntimeState()
-                                {
-                                    _autoTradingEnabledRuntime =
-                                        EnableAutoTrading;
-                        
-                                    _automaticOrdersEnabledRuntime =
-                                        EnableAutomaticOrders;
-                        
-                                    _lastConfiguredAutoTrading =
-                                        EnableAutoTrading;
-                        
-                                    _lastConfiguredAutomaticOrders =
-                                        EnableAutomaticOrders;
-                        
-                                    _outcomeTelemetryTimedOut =
-                                        false;
-                        
-                                    _executionRuntimeInitialized =
-                                        true;
-                        
-                                    _autoExecutionBlockReason =
-                                        _autoTradingEnabledRuntime
-                                            ? "NOT EVALUATED"
-                                            : "DISABLED";
-                        
-                                    _autoOrdersBlockReason =
-                                        _automaticOrdersEnabledRuntime
-                                            ? "NOT EVALUATED"
-                                            : "DISABLED";
-                                }
-        
-        private void EnsureExecutionRuntimeState()
-                                {
-                                    if (!_executionRuntimeInitialized)
-                                    {
-                                        InitializeExecutionRuntimeState();
-                                        return;
-                                    }
-                        
-                                    if (EnableAutoTrading != _lastConfiguredAutoTrading)
-                                    {
-                                        _lastConfiguredAutoTrading =
-                                            EnableAutoTrading;
-                        
-                                        _autoTradingEnabledRuntime =
-                                            EnableAutoTrading;
-                        
-                                        _autoExecutionBlockReason =
-                                            EnableAutoTrading
-                                                ? "AWAITING EXECUTION"
-                                                : "DISABLED";
-                                    }
-                        
-                                    if (EnableAutomaticOrders !=
-                                        _lastConfiguredAutomaticOrders)
-                                    {
-                                        _lastConfiguredAutomaticOrders =
-                                            EnableAutomaticOrders;
-                        
-                                        _automaticOrdersEnabledRuntime =
-                                            EnableAutomaticOrders;
-                        
-                                        _autoOrdersBlockReason =
-                                            EnableAutomaticOrders
-                                                ? "AWAITING ORDER SETUP"
-                                                : "DISABLED";
-                                    }
-                                }
-
         private void SetInitializationFault(Exception exception, string stage)
                                 {
                                     _initializationReady = false;
-                                    _autoTradingEnabledRuntime = false;
-                                    _automaticOrdersEnabledRuntime = false;
                                     _autoExecutionBlockReason = "INITIALIZATION FAULT";
                                     _autoOrdersBlockReason = "INITIALIZATION FAULT";
                                     _autoTradingState = "ERROR";
@@ -251,7 +180,6 @@ namespace cAlgo
                 Positions.Opened += OnPositionOpened;
                 Positions.Closed += OnPositionClosed;
                 Positions.Modified += OnPositionModified;
-                Account.Switched += OnAccountSwitched;
                 Account.Switched += OnOutcomeMemoryAccountSwitched;
                 PendingOrders.Created += OnPendingOrderCreated;
                 PendingOrders.Modified += OnPendingOrderModified;
@@ -265,17 +193,12 @@ namespace cAlgo
                     ex.ToString());
             }
 
-            InitializeExecutionRuntimeState();
             HookHistoricalBarsEvents();
 
             if (!ValidateTradeIdentityConfiguration())
             {
-                _autoTradingEnabledRuntime = false;
-                _automaticOrdersEnabledRuntime = false;
-                _autoExecutionBlockReason =
-                    "IDENTITY CONFIGURATION";
-                _autoOrdersBlockReason =
-                    "IDENTITY CONFIGURATION";
+                _autoExecutionBlockReason = "IDENTITY CONFIGURATION";
+                _autoOrdersBlockReason = "IDENTITY CONFIGURATION";
             }
 
             SetLifecycleState(
@@ -283,12 +206,8 @@ namespace cAlgo
                 "READY");
 
             SetAutoTradingState(
-                AutoTradingEnabled
-                    ? "ARMED"
-                    : "OFF",
-                AutoTradingEnabled
-                    ? "INITIALIZING"
-                    : "DISABLED");
+                "READY",
+                "SIGNAL / INTENT ONLY");
 
             _status = "READY";
             _initializationReady = true;
@@ -533,7 +452,6 @@ namespace cAlgo
                                         Positions.Opened -= OnPositionOpened;
                                         Positions.Closed -= OnPositionClosed;
                                         Positions.Modified -= OnPositionModified;
-                                        Account.Switched -= OnAccountSwitched;
                                         Account.Switched -= OnOutcomeMemoryAccountSwitched;
                                         PendingOrders.Created -= OnPendingOrderCreated;
                                         PendingOrders.Modified -= OnPendingOrderModified;

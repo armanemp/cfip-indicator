@@ -32,10 +32,10 @@ target_envelope = read("src/CFIP.Indicator/Core/Math/TargetRewardEnvelopeRule.cs
 target_preparation = read("src/CFIP.Indicator/Planning/TradePlan/PlanTargetPreparation.cs")
 plan_reward = read("src/CFIP.Indicator/Planning/TradePlan/PlanRewardIntegrityValidator.cs")
 actionability = read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityEvaluator.cs")
-auto_pretrade = read("src/CFIP.Indicator/Trading/Execution/AutomaticMarket/AutomaticMarketPreTradeEligibility.cs")
-auto_submission = read("src/CFIP.Indicator/Trading/Execution/AutomaticMarket/AutomaticMarketSubmissionValidator.cs")
+auto_pretrade = ""
+auto_submission = ""
 pending_submission = read("src/CFIP.Indicator/Trading/Pending/Placement/PendingSubmissionValidator.cs")
-aggressive = read("src/CFIP.Indicator/Trading/Execution/Aggressive/AggressiveFinalExecutionGuard.cs")
+aggressive = ""
 parallel = (
     read("src/CFIP.Indicator/Analysis/Market/ParallelOpportunityBuilder.cs") +
     read("src/CFIP.Indicator/Analysis/Market/ParallelOpportunityCandidateBuilder.cs")
@@ -142,9 +142,7 @@ check(
 
 for name, source in (
     ("actionability", actionability),
-    ("automatic market submission", auto_submission),
     ("pending submission", pending_submission),
-    ("aggressive execution", aggressive),
     ("parallel opportunity", parallel),
     ("signal trace", signal_trace),
 ):
@@ -160,13 +158,6 @@ check(
     "rewardRisk.NominalRR" in actionability and
     "Math.Abs(\n                        preview.Tp1" not in actionability and
     "Math.Abs(\n                    actualEntry" not in actionability,
-)
-check(
-    "automatic market pre-trade passes spread, min and max into geometry adapter",
-    "ExecutionPlanGeometryRule.Evaluate(" in auto_pretrade and
-    "priceSnapshot.Spread" in auto_pretrade and
-    "MaximumRewardRR" in auto_pretrade and
-    "Symbol.PipSize" in auto_pretrade,
 )
 
 check(

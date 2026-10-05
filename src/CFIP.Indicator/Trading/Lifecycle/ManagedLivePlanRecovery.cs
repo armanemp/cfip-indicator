@@ -334,8 +334,8 @@ namespace cAlgo
                             minimumForwardDistance);
                 }
 
-                if (AutoProtectBrokerPositions ||
-                    AutoBrokerProtection)
+                if (CbotCanManage() ||
+                    CbotCanManage())
                 {
                     bool protectionOk =
                         EnsureBrokerProtectionForPosition(

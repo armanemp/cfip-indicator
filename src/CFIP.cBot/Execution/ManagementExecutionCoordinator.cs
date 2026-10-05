@@ -18,7 +18,7 @@ namespace CFIP.cBot.Execution
             string instanceId,
             DateTime nowUtc,
             int maximumCommandAgeSeconds,
-            CbotIndicatorExecutionSettings settings,
+            CbotExecutionSettings settings,
             out string status)
         {
             status = "NO MANAGEMENT COMMAND";
@@ -31,7 +31,10 @@ namespace CFIP.cBot.Execution
 
             if (!TryLoadCommands(robot, instanceId, out ManagementCommand[] commands))
             {
-                status = "MANAGEMENT COMMAND QUEUE UNAVAILABLE";
+                // No management command store is a normal state when the
+                // Indicator has not emitted a management instruction. Do not
+                // turn an absent queue into a repeated diagnostic/log storm.
+                status = "NO MANAGEMENT COMMAND";
                 return false;
             }
 
@@ -939,7 +942,7 @@ namespace CFIP.cBot.Execution
         private bool TryAllowProtectionMutation(
             Robot robot,
             ManagementCommand command,
-            CbotIndicatorExecutionSettings settings,
+            CbotExecutionSettings settings,
             DateTime nowUtc,
             out string reason)
         {

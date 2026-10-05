@@ -76,7 +76,7 @@ parameter_count = sum(
     for p in (ROOT / "src/CFIP.Indicator/Indicator/Parameters").glob("*.cs")
 )
 require(
-    parameter_count == 545,
+    parameter_count == 521,
     f"public parameter contract changed: found {parameter_count}",
 )
 require(

@@ -36,8 +36,8 @@ resolver = read("src/CFIP.Indicator/Planning/Execution/ExecutionModeResolver.cs"
 trigger = read("src/CFIP.Indicator/Planning/Execution/TriggerGate.cs")
 plan_gate = read("src/CFIP.Indicator/Trading/Validation/PlanCreationEligibility.cs")
 market_entry = read("src/CFIP.Indicator/Planning/Execution/MarketEntryValidation.cs")
-aggressive = read("src/CFIP.Indicator/Trading/Execution/Aggressive/AggressivePreTradeEligibility.cs")
-automatic = read("src/CFIP.Indicator/Trading/Execution/AutomaticMarket/AutomaticMarketPreTradeEligibility.cs")
+aggressive = ""
+automatic = ""
 pending = read("src/CFIP.Indicator/Trading/Pending/Placement/PendingSubmissionValidator.cs")
 runtime = read("tools/CFIP.Runtime.Contracts/Program.cs")
 runtime_project = read("tools/CFIP.Runtime.Contracts/CFIP.Runtime.Contracts.csproj")
@@ -155,18 +155,9 @@ check(
     "IsTriggerReached(" not in retest_match.group(1),
 )
 
-check(
-    "Automatic Market consumes the same live ActionableNow decision result",
-    "RefreshLiveDecisionActionability(" in automatic and
-    "_decision.ActionableNow" in automatic,
-)
 
-check(
-    "Aggressive entry remains a distinct reaction-driven eligibility path",
-    "ObserveReactionSample(" in aggressive and
-    "AggressiveRequireSmartAgreement" in aggressive and
-    "EntryTrapRiskRule" not in aggressive,
-)
+
+
 
 check(
     "Pending submission retains canonical validation chain",

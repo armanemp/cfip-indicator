@@ -108,12 +108,14 @@ namespace cAlgo
             }
 
             int arrowCount =
-                ((strength - 1) % 3) + 1;
+                strength <= 3
+                    ? strength
+                    : strength <= 6
+                        ? strength - 3
+                        : strength - 6;
 
             string state =
-                string.IsNullOrWhiteSpace(snapshot.MtfTrendStrengthTier)
-                    ? "WEAK"
-                    : snapshot.MtfTrendStrengthTier;
+                MtfTrendStrengthRule.ResolveTier(strength);
 
             Color arrowColor =
                 SignalArrowColorFor(

@@ -45,8 +45,8 @@ parameters = sum(
     len(re.findall(r"\[Parameter\s*\(", p.read_text(encoding="utf-8")))
     for p in parameter_files
 )
-if parameters != 545:
-    raise SystemExit(f"Expected 545 total parameters, found {parameters}")
+if parameters != 513:
+    raise SystemExit(f"Expected 521 total parameters, undefined")
 if len(parameter_files) != 30:
     raise SystemExit(f"Expected 30 parameter-group files, found {len(parameter_files)}")
 
@@ -65,8 +65,8 @@ if news_parameters != 14:
     )
 baseline_parameter_files = [p for p in parameter_files if p.stem != "25_oss_analytics"]
 baseline_parameters = sum(len(re.findall(r"\[Parameter\s*\(", p.read_text(encoding="utf-8"))) for p in baseline_parameter_files)
-if baseline_parameters != 542:
-    raise SystemExit(f"Expected 542 baseline parameters, found {baseline_parameters}")
+if baseline_parameters != 510:
+    raise SystemExit(f"Expected 518 baseline parameters, found {baseline_parameters}")
 extension_parameters = len(re.findall(r"\[Parameter\s*\(", (PARAMETER_ROOT / "25_oss_analytics.cs").read_text(encoding="utf-8")))
 if extension_parameters != 3:
     raise SystemExit(f"Expected 3 OSS extension parameters, found {extension_parameters}")
@@ -76,12 +76,15 @@ parameter_source = "\n".join(
     p.read_text(encoding="utf-8")
     for p in parameter_files
 )
-if not re.search(
-    r'\[Parameter\("Maximum Open Positions"[^\n]*MinValue\s*=\s*1[^\n]*MaxValue\s*=\s*1',
-    parameter_source,
-):
+if "MaximumOpenPositions" in parameter_source:
     raise SystemExit(
-        "MaximumOpenPositions must advertise only the supported single-plan capacity (1)"
+        "MaximumOpenPositions must be cBot-owned and must not be declared by the Indicator"
+    )
+capacity_rule = ROOT / "Core" / "Math" / "ExecutionCapacityRule.cs"
+capacity_code = capacity_rule.read_text(encoding="utf-8")
+if "SupportedMaximumOpenPositions = 1" not in capacity_code:
+    raise SystemExit(
+        "Canonical execution capacity must remain single-plan (1) after cBot extraction"
     )
 if "BlockNewSignalWhileActive" in parameter_source:
     raise SystemExit(
@@ -569,33 +572,35 @@ for token in (
     if token not in capacity_guard_code:
         raise SystemExit(f"Execution capacity guard missing: {token}")
 
-plan_eligibility = (ROOT / "Trading" / "Validation" / "PlanCreationEligibility.cs").read_text(encoding="utf-8")
-market_execution = (ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketPreTradeEligibility.cs").read_text(encoding="utf-8")
-aggressive_execution = (ROOT / "Trading" / "Execution" / "Aggressive" / "AggressivePreTradeEligibility.cs").read_text(encoding="utf-8")
+plan_eligibility_path = ROOT / "Trading" / "Validation" / "PlanCreationEligibility.cs"
+if plan_eligibility_path.exists():
+    plan_eligibility = plan_eligibility_path.read_text(encoding="utf-8")
+    if "ValidateSinglePlanCapacity(" not in plan_eligibility:
+        raise SystemExit("Plan creation must use the canonical capacity guard")
 pending_execution = (ROOT / "Trading" / "Pending" / "Placement" / "SmartPendingOrderOrchestrator.cs").read_text(encoding="utf-8")
-if "ValidateSinglePlanCapacity(" not in plan_eligibility:
-    raise SystemExit("Plan creation must use the canonical capacity guard")
-for module_text, name in (
-    (market_execution, "automatic market"),
-    (aggressive_execution, "aggressive"),
-    (pending_execution, "predictive pending"),
+if "ValidateSingleExecutionCapacity(" not in pending_execution:
+    raise SystemExit("Pending intent generation must use the canonical capacity guard")
+for obsolete in (
+    ROOT / "Trading" / "Execution" / "AutomaticMarket",
+    ROOT / "Trading" / "Execution" / "Aggressive" / "AggressivePreTradeEligibility.cs",
 ):
-    if "ValidateSingleExecutionCapacity(" not in module_text:
-        raise SystemExit(f"{name} execution must use the canonical execution-capacity guard")
-    if "ManagedPositionCount() >=" in module_text:
-        raise SystemExit(f"{name} execution retains a duplicate numeric capacity check")
+    if isinstance(obsolete, Path) and obsolete.exists():
+        raise SystemExit(f"obsolete Indicator execution path remains: {obsolete}")
 
 for p in parameter_files:
     groups = set(re.findall(r'\bGroup\s*=\s*"([^"]+)"', p.read_text(encoding="utf-8")))
     if len(groups) != 1:
         raise SystemExit(f"Parameter group isolation failed: {p}")
 
-label = re.search(
-    r'\[Parameter\("Auto Trade Label"[^\n]*DefaultValue\s*=\s*"([^"]+)"',
-    "\n".join(p.read_text(encoding="utf-8") for p in parameter_files),
-)
-if not label or label.group(1) != "CFIP-SMART":
-    raise SystemExit("Managed broker identity label parity check failed")
+for parameter_text in (
+    p.read_text(encoding="utf-8")
+    for p in parameter_files
+):
+    if 'Auto Trade Label' in parameter_text or 'Managed Position Label' in parameter_text:
+        raise SystemExit("Broker execution identity labels must not be user-configurable in the Indicator")
+cbot_identity = (ROOT.parent / "CFIP.Contracts" / "CbotIdentity.cs").read_text(encoding="utf-8")
+if 'ManagedLabel = "CFIP-SMART"' not in cbot_identity:
+    raise SystemExit("CFIP managed broker label must be canonical in Contracts")
 
 model_files = sorted(MODEL_ROOT.glob("*.cs"))
 expected_models = {
@@ -925,17 +930,19 @@ if "_entryArmed = false;" not in runtime_fault_machine_code:
 if "if (explicitEnableTransition &&" not in runtime_fault_machine_code:
     raise SystemExit("Runtime fault state machine must require an explicit enable transition for re-arm")
 
-if "CanAutomaticEntryProceed" not in runtime_fault_boundary_code:
-    raise SystemExit("Runtime fault boundary must expose the automatic-entry gate")
+if "RecordRecoverableFault(" not in runtime_fault_boundary_code:
+    raise SystemExit("Runtime fault boundary must record recoverable runtime faults")
 
-if "RecordRecoverableFault(" not in runtime_fault_boundary_code or    "BlockAutomaticEntry(" not in runtime_fault_boundary_code:
-    raise SystemExit("Runtime fault boundary must block entry through the state machine")
+if "MarkManagementReadyForRecovery(" not in runtime_fault_boundary_code:
+    raise SystemExit("Runtime fault boundary must preserve management-recovery readiness")
 
 if "ApplyRuntimeFaultState();" not in runtime_fault_boundary_code:
     raise SystemExit("Runtime fault state must be reflected in runtime authority")
 
-if "_autoTradingEnabledRuntime = false;" not in runtime_fault_boundary_code or    "_automaticOrdersEnabledRuntime = false;" not in runtime_fault_boundary_code:
-    raise SystemExit("Runtime recovery must not re-arm automatic flags")
+if "_autoTradingEnabledRuntime" in runtime_fault_boundary_code or    "_automaticOrdersEnabledRuntime" in runtime_fault_boundary_code:
+    raise SystemExit("Indicator runtime fault boundary must not own cBot execution-arm flags")
+if "RUNTIME ENTRY BLOCKED" not in runtime_fault_boundary_code:
+    raise SystemExit("Runtime fault boundary must expose the canonical Indicator-side block state")
 
 if "BeginRuntimeFaultCycle(" not in calculation_cycle_code or    "CompleteRuntimeFaultCycle(" not in calculation_cycle_code:
     raise SystemExit("Calculate must bracket each runtime cycle with explicit fault-state lifecycle")
@@ -1727,16 +1734,15 @@ if "ValidateSingleExecutionCapacity(" not in CAPACITY_CODE:
 plan_execution_path = ROOT / "Trading" / "Validation" / "PlanCreationEligibility.cs"
 if "ValidateSinglePlanCapacity(" not in plan_execution_path.read_text(encoding="utf-8"):
     raise SystemExit("Plan creation must use the single-plan capacity guard")
+# Indicator broker-execution preparation was removed when execution authority moved to the cBot.
+# These files must stay absent rather than being reintroduced as a second execution path.
 for execution_path in [
     ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketPreTradeEligibility.cs",
     ROOT / "Trading" / "Execution" / "Aggressive" / "AggressivePreTradeEligibility.cs",
-    ROOT / "Trading" / "Pending" / "Placement" / "SmartPendingOrderOrchestrator.cs",
 ]:
-    execution_code = execution_path.read_text(encoding="utf-8")
-    if "ValidateSingleExecutionCapacity(" not in execution_code:
-        raise SystemExit(f"Shared execution capacity guard missing in {execution_path.name}")
-    if "ManagedPositionCount() >=" in execution_code:
-        raise SystemExit(f"Duplicate position-capacity calculation remains in {execution_path.name}")
+    if execution_path.exists():
+        raise SystemExit(f"Indicator execution preparation leaked back into the analysis host: {execution_path.name}")
+
 
 # Market/Aggressive broker state ownership moved to cBot in CBOT-P4A.
 
@@ -2112,24 +2118,16 @@ for filename, tokens in CROSS_PATH_CONTRACTS.items():
         if token not in code:
             raise SystemExit(f"Cross-path execution contract missing in {filename}: {token}")
 
-for path, tokens in {
-    ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketSubmissionValidator.cs": (
-        "BuildExecutionIntent(",
-        "ValidateExecutionIntent(",
-    ),
-    ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketFillReconciliation.cs": (
-        "ReconcileLivePlanToActualFill(",
-        "IsExecutableFillPrice(",
-    ),
-    ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketPostFillTargetResolver.cs": (
-        "AutoTarget(",
-        "RequestLivePlanExit(",
-    ),
-}.items():
-    code = path.read_text(encoding="utf-8")
-    for token in tokens:
-        if token not in code:
-            raise SystemExit(f"Automatic-market owner contract missing: {path.name}: {token}")
+# Automatic market broker-submission/fill files were removed from Indicator.
+# The cBot is now the sole broker actuator; the Indicator emits intent only.
+for removed in (
+    ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketSubmissionValidator.cs",
+    ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketFillReconciliation.cs",
+    ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketPostFillTargetResolver.cs",
+):
+    if removed.exists():
+        raise SystemExit(f"Removed Indicator broker-execution owner was reintroduced: {removed.name}")
+
 
 # Pending placement boundary.
 PENDING_STOP = ROOT / "Trading" / "Pending" / "Placement" / "ContinuationStopPlacement.cs"
@@ -2181,40 +2179,20 @@ if not PENDING_SUBMISSION.exists():
 PENDING_SUBMISSION_CODE = PENDING_SUBMISSION.read_text(encoding="utf-8")
 for token in (
     "ValidateExecutionIntent(",
-    "PassesAutoTradeSafetyGuards(",
-    "PendingExpiration(",
 ):
     if token not in PENDING_SUBMISSION_CODE:
         raise SystemExit(f"Shared pending submission ownership missing: {token}")
 
-# Aggressive execution boundary.
-AGGRESSIVE_PRETRADE = ROOT / "Trading" / "Execution" / "Aggressive" / "AggressivePreTradePreparation.cs"
-AGGRESSIVE_PRETRADE_CODE = AGGRESSIVE_PRETRADE.read_text(encoding="utf-8")
-if AGGRESSIVE_PRETRADE.stat().st_size > 4096:
-    raise SystemExit("AggressivePreTradePreparation.cs must remain an orchestration boundary")
-for token in (
-    "PassAggressivePreTradeEligibility(",
-    "TryPrepareAggressiveExecution(",
+# Aggressive broker-execution preparation/eligibility/fill modules were removed from
+# Indicator. Their broker authority belongs to the cBot; keep the boundary explicit.
+for removed in (
+    ROOT / "Trading" / "Execution" / "Aggressive" / "AggressivePreTradeEligibility.cs",
+    ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveExecutionPreparation.cs",
+    ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveAcceptedFillHandler.cs",
+    ROOT / "Trading" / "Execution" / "Aggressive" / "AggressivePreTradePreparation.cs",
 ):
-    if token not in AGGRESSIVE_PRETRADE_CODE:
-        raise SystemExit(f"Aggressive pre-trade orchestration call missing: {token}")
-
-for path, token in (
-    (
-        ROOT / "Trading" / "Execution" / "Aggressive" / "AggressivePreTradeEligibility.cs",
-        "ValidateSingleExecutionCapacity("
-    ),
-    (
-        ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveExecutionPreparation.cs",
-        "BuildStructuralStop("
-    ),
-    (
-        ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveAcceptedFillHandler.cs",
-        "ValidateActualMarketFill("
-    ),
-):
-    if not path.exists() or token not in path.read_text(encoding="utf-8"):
-        raise SystemExit(f"Aggressive execution owner missing or incomplete: {path}")
+    if removed.exists():
+        raise SystemExit(f"Removed Indicator aggressive execution path was reintroduced: {removed.name}")
 
 # Aggressive broker execution owner was removed from the Indicator in CBOT-P4A.
 # Automatic-market broker execution owner was removed in the same cutover.
@@ -2448,8 +2426,8 @@ if "IsValidManagedStop(" not in BOUND_PROTECTION_CODE:
     raise SystemExit("Live broker protection must validate managed stops against market price")
 if "ProtectionProgressionRule.ShouldAdvanceStop(" not in BOUND_PROTECTION_CODE:
     raise SystemExit("Live broker protection must enforce monotonic SL progression")
-if "ProtectionProgressionRule.ShouldAdvanceTarget(" not in BOUND_PROTECTION_CODE:
-    raise SystemExit("Live broker protection must enforce configured TP progression")
+if "LiveExitGeometryRule.ShouldAdvanceLiveTarget(" not in BOUND_PROTECTION_CODE:
+    raise SystemExit("Live broker protection must enforce hard forward-only TP geometry")
 if "brokerStopValid" not in BOUND_PROTECTION_CODE:
     raise SystemExit("Live broker protection must inspect actual broker SL validity before clearing recovery")
 if "brokerTargetValid" not in BOUND_PROTECTION_CODE:
@@ -3012,7 +2990,6 @@ for relative in REQUIRED_PLANNING_FILES:
         raise SystemExit(f"Planning owner missing: {relative}")
 
 REQUIRED_RISK_FILES = {
-    "DailyLossGuard.cs",
     "AutoRiskPolicy.cs",
     "AggressiveRiskPolicy.cs",
     "MarginSafetyCalculator.cs",
@@ -3026,7 +3003,6 @@ REQUIRED_RISK_FILES = {
     "MarketSuitabilityRefreshCoordinator.cs",
     "MarketSuitabilityGuard.cs",
     "SuitabilityRiskMultiplierCalculator.cs",
-    "AutoTradeSafetyGuard.cs",
     "RiskPercentPolicy.cs",
     "RiskAmountCalculator.cs",
     "MarginUsagePolicy.cs",

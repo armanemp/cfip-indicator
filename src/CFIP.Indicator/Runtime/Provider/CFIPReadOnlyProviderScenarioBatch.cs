@@ -233,14 +233,7 @@ namespace cAlgo
             if (action == ExecutionAction.None)
                 return false;
 
-            DateTime? expiryUtc =
-                action == ExecutionAction.PendingStop ||
-                action == ExecutionAction.PendingLimit
-                    ? observedUtc.AddMinutes(
-                        Math.Max(
-                            15,
-                            PendingOrderExpiryMinutes))
-                    : (DateTime?)null;
+            DateTime? expiryUtc = null;
 
             CFIP.Contracts.ExecutionIntent intent =
                 new CFIP.Contracts.ExecutionIntent(

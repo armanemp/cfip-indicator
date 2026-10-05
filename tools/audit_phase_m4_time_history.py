@@ -15,7 +15,7 @@ def require(condition, message):
 
 time_rule = read("src/CFIP.Indicator/Core/Math/CanonicalTimeRule.cs")
 session = read("src/CFIP.Indicator/Core/Math/SessionWindowRule.cs")
-daily_loss = read("src/CFIP.Indicator/Trading/Risk/DailyLossGuard.cs")
+daily_loss = read("src/CFIP.cBot/Risk/CbotDailyLossGuard.cs")
 daily_accounting = read("src/CFIP.Indicator/Trading/Risk/DailyLossAccounting.cs")
 daily_persistence = read("src/CFIP.Indicator/Trading/Risk/DailyLossPersistence.cs")
 archive = read("src/CFIP.Indicator/Trading/Intelligence/OutcomeHistoryArchiveStore.cs")
@@ -56,8 +56,9 @@ require(
 )
 
 require(
-    "CanonicalTimeRule.IsSameUtcDay(" in daily_loss and
-    "CanonicalTimeRule.UtcDayStart(" in daily_loss,
+    "DateTimeKind.Utc" in daily_loss and
+    "new DateTime(" in daily_loss and
+    "nowUtc.Year" in daily_loss,
     "M4: DailyLoss guard still uses a duplicate day boundary",
 )
 

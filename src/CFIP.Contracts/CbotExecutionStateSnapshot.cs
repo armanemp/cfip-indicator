@@ -32,8 +32,8 @@ namespace CFIP.Contracts
         string ExecutionScenarioId,
         long SignalRevision)
     {
-        public bool IndicatorAutoTradingEnabled { get; init; }
-        public bool IndicatorAutomaticOrdersEnabled { get; init; }
+        public bool CbotAutoTradingEnabled { get; init; }
+        public bool CbotAutomaticOrdersEnabled { get; init; }
         public bool EffectiveAutoTradingEnabled { get; init; }
         public bool EffectiveAutomaticOrdersEnabled { get; init; }
         public string LifecycleState { get; init; } = "UNKNOWN";

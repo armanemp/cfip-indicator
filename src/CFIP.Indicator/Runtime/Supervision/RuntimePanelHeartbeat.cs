@@ -43,9 +43,8 @@ namespace cAlgo
 
                 // Cross-instance DailyLoss storage reload is a timer concern.
                 // Calculate consumes the already-loaded value without disk I/O.
-                if (EnableDailyLossLimit)
-                    ReloadSharedDailyLossLockFromStorage(
-                        now);
+                ReloadSharedDailyLossLockFromStorage(
+                    now);
 
                 if (ShouldRunSafetySupervisor(now))
                     RunRuntimeSafetySupervisor(

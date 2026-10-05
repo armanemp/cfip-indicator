@@ -45,7 +45,9 @@ namespace cAlgo
 
             _panelAutoTradingState =
                 ExecutionProtectionPanelStateRule.ResolveAutoTrading(
-                    AutoTradingEnabled,
+                    _cBotExecutionState != null &&
+                    IsCbotExecutionStateFresh() &&
+                    _cBotExecutionState.EffectiveAutoTradingEnabled,
                     managedPosition != null,
                     string.Equals(
                         executionReason,
@@ -60,7 +62,9 @@ namespace cAlgo
 
             _panelAutoOrdersState =
                 ExecutionProtectionPanelStateRule.ResolveAutoOrders(
-                    AutomaticOrdersEnabled,
+                    _cBotExecutionState != null &&
+                    IsCbotExecutionStateFresh() &&
+                    _cBotExecutionState.EffectiveAutomaticOrdersEnabled,
                     managedPending != null ||
                     string.Equals(
                         ordersReason,
@@ -114,13 +118,12 @@ namespace cAlgo
 
             bool targetRequired =
                 livePosition &&
-                SyncBrokerTakeProfit &&
+                CbotCanManage() &&
                 !serverLadderActive;
 
             _panelProtectionState =
                 ExecutionProtectionPanelStateRule.ResolveProtection(
-                    AutoBrokerProtection ||
-                    AutoProtectBrokerPositions,
+                    CbotCanManage(),
                     livePosition,
                     brokerStopValid,
                     targetRequired,
@@ -147,9 +150,6 @@ namespace cAlgo
                 return
                     "CBOT AUTO TRADE ON • " +
                     CbotMarketModeText();
-
-            if (!_cBotExecutionState.IndicatorAutoTradingEnabled)
-                return "CBOT CONNECTED • AUTO TRADE OFF • INDICATOR SETTING OFF";
 
             if (!_cBotExecutionState.MarketExecutionEnabled &&
                 !_cBotExecutionState.AggressiveExecutionEnabled)
@@ -192,12 +192,6 @@ namespace cAlgo
                 return
                     "CBOT AUTO ORDERS ON • " +
                     CbotPendingModeText();
-
-            if (!_cBotExecutionState.IndicatorAutomaticOrdersEnabled)
-                return "CBOT CONNECTED • AUTO ORDERS OFF • INDICATOR SETTING OFF";
-
-            if (!_cBotExecutionState.IndicatorAutoTradingEnabled)
-                return "CBOT CONNECTED • AUTO ORDERS BLOCKED • AUTO TRADE OFF";
 
             if (!_cBotExecutionState.PendingStopExecutionEnabled &&
                 !_cBotExecutionState.PendingLimitExecutionEnabled)
