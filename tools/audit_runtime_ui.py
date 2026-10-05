@@ -67,7 +67,7 @@ if "MapM5ToChart(" in line or "anchorM5" in line:
     raise SystemExit("Plan-line geometry must not be tied to an M5 event-time anchor")
 if "MapM5ToChart(" in pending or "anchorBar" in pending:
     raise SystemExit("Pending level rendering must not discard levels because an M5 anchor cannot be mapped")
-if "GetCompactPlanLabelAnchorBar(" not in labels:
+if "GetCompactPlanLabelAnchorTime(" not in labels:
     raise SystemExit("Plan labels must use the canonical compact-label anchor owner")
 
 for field in (
