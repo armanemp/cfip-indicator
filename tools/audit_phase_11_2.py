@@ -47,7 +47,7 @@ require(
 )
 require(
     ROOT / "src/CFIP.Indicator/UI/Chart/PlanLabelRenderCoordinator.cs",
-    r"GetCompactPlanLabelAnchorBar\(\)",
+    r"GetCompactPlanLabelAnchorTime\(\)",
     "canonical compact label anchor owner",
 )
 require(
