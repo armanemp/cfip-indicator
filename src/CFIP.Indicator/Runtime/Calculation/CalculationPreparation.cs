@@ -21,7 +21,8 @@ namespace cAlgo
                 return false;
 
             DateTime now =
-                Server.TimeInUtc;
+                CanonicalTimeRule.EnsureUtc(
+                    Server.TimeInUtc);
 
             if (_lastMtfClosedContext != null)
             {
