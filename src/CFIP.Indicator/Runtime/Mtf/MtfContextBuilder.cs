@@ -17,9 +17,15 @@ namespace cAlgo
         private MtfClosedContext BuildMtfClosedContext(
                                     DateTime reference)
                                 {
+                                    DateTime normalizedReference =
+                                        CanonicalTimeRule.EnsureUtc(reference);
+
+                                    if (normalizedReference == DateTime.MinValue)
+                                        return null;
+
                                     if (_m5Bars == null)
                                         return new MtfClosedContext(
-                                            reference,
+                                            normalizedReference,
                                             -1,
                                             -1,
                                             -1,
@@ -38,21 +44,21 @@ namespace cAlgo
                                             _h4Bars,
                                             _d1Bars,
                                             _w1Bars,
-                                            reference,
+                                            normalizedReference,
                                             out MtfClosedContext cached))
                                         return cached;
 
                                     MtfClosedContext context =
                                         new MtfClosedContext(
-                                            reference,
-                                            ClosedIndex(_m5Bars, reference),
-                                            ClosedIndex(_m1Bars, reference),
-                                            ClosedIndex(_m15Bars, reference),
-                                            ClosedIndex(_m30Bars, reference),
-                                            ClosedIndex(_h1Bars, reference),
-                                            ClosedIndex(_h4Bars, reference),
-                                            ClosedIndex(_d1Bars, reference),
-                                            ClosedIndex(_w1Bars, reference));
+                                            normalizedReference,
+                                            ClosedIndex(_m5Bars, normalizedReference),
+                                            ClosedIndex(_m1Bars, normalizedReference),
+                                            ClosedIndex(_m15Bars, normalizedReference),
+                                            ClosedIndex(_m30Bars, normalizedReference),
+                                            ClosedIndex(_h1Bars, normalizedReference),
+                                            ClosedIndex(_h4Bars, normalizedReference),
+                                            ClosedIndex(_d1Bars, normalizedReference),
+                                            ClosedIndex(_w1Bars, normalizedReference));
 
                                     _mtfClosedContextCache.StoreStableContext(
                                         _m1Bars,

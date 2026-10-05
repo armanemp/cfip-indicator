@@ -118,19 +118,27 @@ namespace cAlgo
             int closedIndex,
             DateTime fallback)
         {
+            DateTime normalizedFallback =
+                CanonicalTimeRule.EnsureUtc(
+                    fallback);
+
             if (bars == null ||
                 closedIndex < 0 ||
                 closedIndex >= bars.Count - 1)
-                return fallback;
+                return normalizedFallback;
 
             DateTime open =
-                bars.OpenTimes[closedIndex];
+                CanonicalTimeRule.EnsureUtc(
+                    bars.OpenTimes[closedIndex]);
 
             DateTime nextOpen =
-                bars.OpenTimes[closedIndex + 1];
+                CanonicalTimeRule.EnsureUtc(
+                    bars.OpenTimes[closedIndex + 1]);
 
-            if (nextOpen <= open)
-                return fallback;
+            if (open == DateTime.MinValue ||
+                nextOpen == DateTime.MinValue ||
+                nextOpen <= open)
+                return normalizedFallback;
 
             return nextOpen;
         }

@@ -37,6 +37,16 @@ namespace cAlgo
             DateTime reference,
             out MtfClosedContext context)
         {
+            DateTime normalizedReference =
+                CanonicalTimeRule.EnsureUtc(
+                    reference);
+
+            if (normalizedReference == DateTime.MinValue)
+            {
+                context = null;
+                return false;
+            }
+
             if (_context != null &&
                 ReferenceEquals(_m1, m1) &&
                 ReferenceEquals(_m5, m5) &&
@@ -54,17 +64,17 @@ namespace cAlgo
                 _h4Count == Count(h4) &&
                 _d1Count == Count(d1) &&
                 _w1Count == Count(w1) &&
-                reference >= _context.Reference &&
-                IsReferenceStable(_m1, _m1Count, _context.M1, reference) &&
-                IsReferenceStable(_m5, _m5Count, _context.M5, reference) &&
-                IsReferenceStable(_m15, _m15Count, _context.M15, reference) &&
-                IsReferenceStable(_m30, _m30Count, _context.M30, reference) &&
-                IsReferenceStable(_h1, _h1Count, _context.H1, reference) &&
-                IsReferenceStable(_h4, _h4Count, _context.H4, reference) &&
-                IsReferenceStable(_d1, _d1Count, _context.D1, reference) &&
-                IsReferenceStable(_w1, _w1Count, _context.W1, reference))
+                normalizedReference >= _context.Reference &&
+                IsReferenceStable(_m1, _m1Count, _context.M1, normalizedReference) &&
+                IsReferenceStable(_m5, _m5Count, _context.M5, normalizedReference) &&
+                IsReferenceStable(_m15, _m15Count, _context.M15, normalizedReference) &&
+                IsReferenceStable(_m30, _m30Count, _context.M30, normalizedReference) &&
+                IsReferenceStable(_h1, _h1Count, _context.H1, normalizedReference) &&
+                IsReferenceStable(_h4, _h4Count, _context.H4, normalizedReference) &&
+                IsReferenceStable(_d1, _d1Count, _context.D1, normalizedReference) &&
+                IsReferenceStable(_w1, _w1Count, _context.W1, normalizedReference))
             {
-                context = _context.WithReference(reference);
+                context = _context.WithReference(normalizedReference);
                 return true;
             }
 
