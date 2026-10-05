@@ -34,7 +34,6 @@ namespace CFIP.Contracts
             {
                 SignalEnvelope? parsed =
                     JsonSerializer.Deserialize<SignalEnvelope>(
-                    JsonSerializer.Deserialize<SignalEnvelope>(
                         payload,
                         Options);
 
