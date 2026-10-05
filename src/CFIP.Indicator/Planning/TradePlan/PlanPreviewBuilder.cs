@@ -19,9 +19,10 @@ namespace cAlgo
                 geometry == null)
                 return false;
 
-            int cacheKey =
-                ((int)lane * 2) +
-                (execution.Direction == 1 ? 1 : 0);
+            long cacheKey =
+                ((long)closedM5 * 10_000L) +
+                ((long)(int)lane * 2L) +
+                (execution.Direction == 1 ? 1L : 0L);
 
             if (_parallelPreviewCache.TryGetValue(
                     cacheKey,
