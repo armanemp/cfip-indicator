@@ -15,23 +15,6 @@ namespace cAlgo
         {
             reason = "";
 
-            if (!CanRunAutomaticEntry())
-            {
-                ApplyRuntimeEntryGate();
-                reason =
-                    prefix +
-                    "RUNTIME ENTRY BLOCKED";
-                return false;
-            }
-
-            if (!EnsureTradingPermission())
-            {
-                reason =
-                    prefix +
-                    "TRADING PERMISSION NOT GRANTED";
-                return false;
-            }
-
             string intentReason;
 
             if (!ValidateExecutionIntent(
@@ -123,29 +106,10 @@ namespace cAlgo
                 }
             }
 
-            string safetyReason;
-
-            if (!PassesAutoTradeSafetyGuards(
-                    tradeType,
-                    volume,
-                    out safetyReason))
-            {
-                reason =
-                    prefix +
-                    safetyReason;
-                return false;
-            }
-
+            // Broker permission, margin, market-hours and execution
+            // safety are authoritative in the cBot. The Indicator only
+            // validates analytical intent geometry and market suitability.
             return true;
-        }
-
-        private DateTime PendingExpiration()
-        {
-            return
-                TimeInUtc.AddMinutes(
-                    Math.Max(
-                        15,
-                        PendingOrderExpiryMinutes));
         }
     }
 }
