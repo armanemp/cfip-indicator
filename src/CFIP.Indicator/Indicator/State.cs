@@ -288,6 +288,17 @@ namespace cAlgo
                 private TextBlock _panelHeaderTitle;
                 private StackPanel _panelRowsStack;
                 private ScrollViewer _panelScroll;
+                private Border _panelDataFlowCard;
+                private TextBlock _panelDataFlowTitle;
+                private TextBlock _panelDataFlowMeta;
+                private TextBlock _panelDataFlowBuyValue;
+                private TextBlock _panelDataFlowSellValue;
+                private TextBlock _panelDataFlowDeltaValue;
+                private TextBlock _panelDataFlowLoadValue;
+                private Border _panelDataFlowBuyTrack;
+                private Border _panelDataFlowSellTrack;
+                private Border _panelDataFlowBuyFill;
+                private Border _panelDataFlowSellFill;
                 private readonly List<TextBlock> _panelRows =
                     new List<TextBlock>();
                 private StackPanel _buttonStack;
