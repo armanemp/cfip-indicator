@@ -93,11 +93,11 @@ At the start of a new chat, read:
 - `docs/CFIP-ROADMAP.md`;
 - `docs/CFIP-LIST.md`;
 - `docs/CFIP_GATE.md`;
-then inspect actual `main`, latest CI and the first `NEXT` atomic package. `docs/WORKFLOW.md`, `README.md`, `docs/ARCHITECTURE.md` and `docs/DEVELOPMENT-LOG.md` are supporting/reference documents and cannot override the canonical control plane.
+then inspect actual current repository state and the active CFIP control documents. No other document is an execution authority.
 
 The first executable work package marked `NEXT` in `docs/CFIP-LIST.md` is the only implementation unit to execute in that response; macro objectives come from `docs/CFIP-ROADMAP.md` and acceptance from `docs/CFIP_GATE.md`.
 
-Record every completed atomic work package in `docs/DEVELOPMENT-LOG.md`, including:
+Record completed work only in the active CFIP control documents required by the current task.
 - phase and status;
 - implementation summary;
 - important findings/fixes;
@@ -111,14 +111,14 @@ The operator should normally pull once at a completed phase boundary, after the 
 
 ## Permanent full-project audit rule
 
-Every implementation phase must be accompanied by a whole-project audit, not only a local change review. The standing audit covers the production source tree, public parameter declarations and consumers, exact duplicate method/parameter signatures, module ownership, decision/execution authority boundaries, signal/level/presentation synchronization, BUY/SELL symmetry, safety invariants, and roadmap/development-log continuity.
+Every implementation phase must be accompanied by a whole-project audit, not only a local change review. The standing audit covers the production source tree, public parameter declarations and consumers, exact duplicate method/parameter signatures, module ownership, decision/execution authority boundaries, signal/level/presentation synchronization, BUY/SELL symmetry and safety invariants.
 
 The permanent machine gate is `tools/audit_project_integrity.py`. It is wired into Source / Architecture CI and must remain green for every phase. Specialized audits such as parameter semantics and runtime UI audits remain layered on top of it.
 
 A phase is not considered complete until:
 - the implementation and callers are synchronized;
 - the full-project audit is green;
-- the phase-specific audits/contracts are green;
+- the task-specific audits/contracts required by the current work are green;
 - cTrader compile is green;
 - documentation records the findings, decisions, verification and next phase;
 - the operator is explicitly told whether a local pull is required.
@@ -212,7 +212,7 @@ plan geometry after partial realization.
 
 ## Main branch canonicalization rule
 
-All final project changes must land on `main` as the single canonical implementation state. Work branches/PRs are temporary delivery mechanisms only and must not become parallel long-lived project states. After verification and merge, the authoritative state is `main`; continuation, roadmap, gate, and development-log references must point to that merged state. Do not leave the same completed behavior implemented or maintained independently on multiple branches.
+All final project changes must land on `main` as the single canonical implementation state. Work branches/PRs are temporary delivery mechanisms only and must not become parallel long-lived project states. After verification and merge, the authoritative implementation state is `main`; active control documents must match that state. Do not leave the same completed behavior implemented or maintained independently on multiple branches.
 
 ## Local execution handoff
 When a work package needs user-local execution, the assistant must hand off the exact commands and their execution context, expected success signal, and required returned output. This is mandatory for every applicable package and must not be inferred from CI status.
