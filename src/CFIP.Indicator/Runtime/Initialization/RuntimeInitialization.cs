@@ -180,7 +180,6 @@ namespace cAlgo
                 Positions.Opened += OnPositionOpened;
                 Positions.Closed += OnPositionClosed;
                 Positions.Modified += OnPositionModified;
-                Account.Switched += OnAccountSwitched;
                 Account.Switched += OnOutcomeMemoryAccountSwitched;
                 PendingOrders.Created += OnPendingOrderCreated;
                 PendingOrders.Modified += OnPendingOrderModified;
@@ -198,12 +197,8 @@ namespace cAlgo
 
             if (!ValidateTradeIdentityConfiguration())
             {
-                _autoTradingEnabledRuntime = false;
-                _automaticOrdersEnabledRuntime = false;
-                _autoExecutionBlockReason =
-                    "IDENTITY CONFIGURATION";
-                _autoOrdersBlockReason =
-                    "IDENTITY CONFIGURATION";
+                _autoExecutionBlockReason = "IDENTITY CONFIGURATION";
+                _autoOrdersBlockReason = "IDENTITY CONFIGURATION";
             }
 
             SetLifecycleState(
@@ -457,7 +452,6 @@ namespace cAlgo
                                         Positions.Opened -= OnPositionOpened;
                                         Positions.Closed -= OnPositionClosed;
                                         Positions.Modified -= OnPositionModified;
-                                        Account.Switched -= OnAccountSwitched;
                                         Account.Switched -= OnOutcomeMemoryAccountSwitched;
                                         PendingOrders.Created -= OnPendingOrderCreated;
                                         PendingOrders.Modified -= OnPendingOrderModified;
