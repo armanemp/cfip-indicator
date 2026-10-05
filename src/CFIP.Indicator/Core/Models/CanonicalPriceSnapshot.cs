@@ -26,6 +26,9 @@ namespace cAlgo
         public double MinimumStopDistanceRaw { get; }
         public double MinimumTakeProfitDistanceRaw { get; }
         public bool IsQuoteValid { get; }
+        public bool IsPriceMetadataValid { get; }
+        public bool IsObservationTimeValid { get; }
+        public bool IsUsableForExecution { get; }
         public bool HasBrokerDistanceMetadata { get; }
 
         private CanonicalPriceSnapshot(
@@ -39,7 +42,12 @@ namespace cAlgo
             double minimumStopDistanceRaw,
             double minimumTakeProfitDistanceRaw)
         {
-            ObservedUtc = observedUtc;
+            ObservedUtc =
+                observedUtc.Kind == DateTimeKind.Utc
+                    ? observedUtc
+                    : DateTime.SpecifyKind(
+                        observedUtc,
+                        DateTimeKind.Utc);
             Bid = bid;
             Ask = ask;
             PipSize = pipSize;
@@ -49,7 +57,18 @@ namespace cAlgo
             MinimumStopDistanceRaw = minimumStopDistanceRaw;
             MinimumTakeProfitDistanceRaw = minimumTakeProfitDistanceRaw;
 
+            IsPriceMetadataValid =
+                IsFinitePositiveCanonicalPrice(pipSize) &&
+                IsFinitePositiveCanonicalPrice(tickSize) &&
+                Digits >= 0;
+
+            IsObservationTimeValid =
+                ObservedUtc != DateTime.MinValue &&
+                ObservedUtc.Kind == DateTimeKind.Utc;
+
             IsQuoteValid =
+                IsPriceMetadataValid &&
+                IsObservationTimeValid &&
                 IsFinitePositiveCanonicalPrice(bid) &&
                 IsFinitePositiveCanonicalPrice(ask) &&
                 ask >= bid;
@@ -79,6 +98,11 @@ namespace cAlgo
                 IsQuoteValid
                     ? bid
                     : 0;
+
+            IsUsableForExecution =
+                IsQuoteValid &&
+                IsPriceMetadataValid &&
+                IsObservationTimeValid;
 
             HasBrokerDistanceMetadata =
                 BrokerDistanceUnit != BrokerDistanceUnit.Unknown &&
@@ -115,7 +139,7 @@ namespace cAlgo
 
         public double GetExecutablePrice(int direction)
         {
-            if (!IsQuoteValid)
+            if (!IsUsableForExecution)
                 return 0;
 
             return direction == 1
