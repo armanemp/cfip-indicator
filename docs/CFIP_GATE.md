@@ -40,9 +40,9 @@
 
 ## Current
 
-**Trade-chain T1 — IMPLEMENTED / GATE-READY (MARKET DATA TRUTH)**
+**Trade-chain T2 — VERIFICATION (TIME / MTF / CLOSED-BAR INTEGRITY)**
 
-**Next: T2 — Time / MTF / Closed-Bar Integrity**
+**Next: T3 — Analytical Stack after T2 gates are green**
 
 ### T1 acceptance notes
 
