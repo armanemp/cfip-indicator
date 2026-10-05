@@ -17,8 +17,7 @@ namespace cAlgo
         private void ProtectBrokerPositions(
                                     int closedM5)
                                 {
-                                    if (!AutoBrokerProtection &&
-                                        !AutoProtectBrokerPositions)
+                                    if (!CbotCanManage())
                                         return;
 
                                     if (_plan == null ||
@@ -27,12 +26,6 @@ namespace cAlgo
                                             LifecycleState.ExitRequested)
                                         return;
 
-                                    if ((TimeInUtc -
-                                         _lastBrokerModifyUtc).TotalMilliseconds <
-                                        Math.Max(
-                                            100,
-                                            BrokerModifyCooldownMs))
-                                        return;
 
                                     Position planPosition = null;
 
@@ -64,14 +57,8 @@ namespace cAlgo
                                         return;
                                     }
 
-                                    if (!AutoProtectBrokerPositions)
-                                        return;
-
                                     string label =
-                                        string.IsNullOrWhiteSpace(
-                                            ManagedPositionLabel)
-                                            ? NormalizeLabel()
-                                            : ManagedPositionLabel.Trim();
+                                        NormalizeLabel();
 
                                     foreach (Position position in Positions)
                                     {
