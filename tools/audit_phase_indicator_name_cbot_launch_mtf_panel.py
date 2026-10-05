@@ -24,12 +24,20 @@ panel_main = read("src/CFIP.Indicator/UI/Panel/PanelMainRenderer.cs")
 runtime = read("tools/CFIP.Runtime.Contracts/Program.cs")
 runtime_csproj = read("tools/CFIP.Runtime.Contracts/CFIP.Runtime.Contracts.csproj")
 workflow = read(".github/workflows/source-check.yml")
+build_identity = read("Directory.Build.targets")
 phase = read("docs/PHASE-INDICATOR-NAME-CBOT-LAUNCH-MTF-PANEL.md")
 
 require(
     '"CFIP Smart Indicator"' in indicator and
     "[Indicator(" in indicator,
     "Indicator must expose the requested stable cTrader display name",
+)
+require(
+    "CFIP_SetStableAlgoIdentity" in build_identity and
+    'BeforeTargets="_ExtractMetadata"' in build_identity and
+    "<AlgoName>CFIP Smart Indicator</AlgoName>" in build_identity and
+    "<AlgoName>CFIP Smart Execution Bot</AlgoName>" in build_identity,
+    "canonical cTrader build boundary must reassert both stable algo identities",
 )
 require(
     "CbotIdentity.DisplayName" in cbot and
