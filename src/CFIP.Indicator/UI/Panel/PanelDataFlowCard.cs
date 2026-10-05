@@ -9,18 +9,6 @@ namespace cAlgo
         private const int PanelDataFlowTrackHeight = 8;
         private const int PanelDataFlowLookback = 48;
 
-        private Border _panelDataFlowCard;
-        private TextBlock _panelDataFlowTitle;
-        private TextBlock _panelDataFlowMeta;
-        private TextBlock _panelDataFlowBuyValue;
-        private TextBlock _panelDataFlowSellValue;
-        private TextBlock _panelDataFlowDeltaValue;
-        private TextBlock _panelDataFlowLoadValue;
-        private Border _panelDataFlowBuyTrack;
-        private Border _panelDataFlowSellTrack;
-        private Border _panelDataFlowBuyFill;
-        private Border _panelDataFlowSellFill;
-
         private void CreatePanelDataFlowCard()
         {
             if (_panelDataFlowCard != null)
