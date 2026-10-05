@@ -22,6 +22,7 @@ jobs:
         with:
           python-version: '3.12'
       - run: python tools/audit_github_workflows.py
+      - run: python tools/audit_phase_ci_00.py
       - run: python tools/audit_mtf_contract.py
       - run: python tools/audit_parameter_count.py
       - run: python tools/audit_phase_cbot_execution_readiness_2026_10_05.py
