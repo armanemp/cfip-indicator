@@ -76,12 +76,15 @@ parameter_source = "\n".join(
     p.read_text(encoding="utf-8")
     for p in parameter_files
 )
-if not re.search(
-    r'\[Parameter\("Maximum Open Positions"[^\n]*MinValue\s*=\s*1[^\n]*MaxValue\s*=\s*1',
-    parameter_source,
-):
+if "MaximumOpenPositions" in parameter_source:
     raise SystemExit(
-        "MaximumOpenPositions must advertise only the supported single-plan capacity (1)"
+        "MaximumOpenPositions must be cBot-owned and must not be declared by the Indicator"
+    )
+capacity_rule = ROOT / "Core" / "Math" / "ExecutionCapacityRule.cs"
+capacity_code = capacity_rule.read_text(encoding="utf-8")
+if "SupportedMaximumOpenPositions = 1" not in capacity_code:
+    raise SystemExit(
+        "Canonical execution capacity must remain single-plan (1) after cBot extraction"
     )
 if "BlockNewSignalWhileActive" in parameter_source:
     raise SystemExit(
