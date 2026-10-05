@@ -109,7 +109,8 @@ check(
 
 check(
     "MTF/closed-context reference is canonicalized at the context/cache boundary",
-    "CanonicalTimeRule.EnsureUtc(" in mtf and\n    "normalizedReference" in mtf
+    "CanonicalTimeRule.EnsureUtc(" in mtf and
+    "normalizedReference" in mtf
 )
 
 check(
