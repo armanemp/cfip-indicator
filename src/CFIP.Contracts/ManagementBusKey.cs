@@ -54,7 +54,7 @@ namespace CFIP.Contracts
                 {
                     if (command == null ||
                         command.Identity == null ||
-                        !ContractVersion.IsSupported(
+                        !ContractVersionPolicy.IsSupported(
                             command.Identity.ContractVersion))
                         return false;
                 }
@@ -108,7 +108,7 @@ namespace CFIP.Contracts
                 {
                     if (report == null ||
                         report.Identity == null ||
-                        !ContractVersion.IsSupported(
+                        !ContractVersionPolicy.IsSupported(
                             report.Identity.ContractVersion))
                         return false;
                 }
