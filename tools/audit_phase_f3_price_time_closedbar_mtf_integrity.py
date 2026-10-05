@@ -49,7 +49,8 @@ check(
     "closed-bar boundary reference has one reusable owner",
     "ClosedBarBoundaryReference(" in index_math and
     "bars.OpenTimes[closedIndex + 1]" in index_math and
-    "nextOpen <= open" in index_math
+    "nextOpen <= open" in index_math and
+    "CanonicalTimeRule.EnsureUtc(" in index_math
 )
 
 check(
@@ -93,8 +94,8 @@ check(
 )
 
 check(
-    "calculation captures one current UTC reference before MTF context creation",
-    "DateTime now =\n                Server.TimeInUtc" in prep and
+    "calculation captures one canonical UTC reference before MTF context creation",
+    "DateTime now =\n                CanonicalTimeRule.EnsureUtc(" in prep and
     "BuildMtfClosedContext(\n                    reference)" in prep
 )
 
@@ -104,6 +105,11 @@ check(
     "ProcessNewClosedBar(" in stage and
     "MtfClosedContext mtf" in prep and
     "ProcessNewClosedBar(" in closed_stage
+)
+
+check(
+    "MTF/closed-context reference is canonicalized at the context/cache boundary",
+    "CanonicalTimeRule.EnsureUtc(" in mtf or False
 )
 
 check(
