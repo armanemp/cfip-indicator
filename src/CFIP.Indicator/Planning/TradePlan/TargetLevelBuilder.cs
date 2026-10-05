@@ -129,6 +129,13 @@ private List<Level> BuildTargetLevels(
                                                 entry,
                                                 atr);
                                 
+                                            DateTime closedM5Boundary =
+                                                ClosedBarBoundaryReference(
+                                                    _m5Bars,
+                                                    closedM5,
+                                                    CanonicalTimeRule.EnsureUtc(
+                                                        Server.TimeInUtc));
+
                                             if (UseDailyPivots)
                                             {
                                                 AddDailyPivotLevels(
@@ -136,7 +143,7 @@ private List<Level> BuildTargetLevels(
                                                     direction,
                                                     entry,
                                                     atr,
-                                                    _m5Bars.OpenTimes[closedM5]);
+                                                    closedM5Boundary);
                                             }
                                 
                                             if (UseMultiTfLevelMap)
