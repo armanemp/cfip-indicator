@@ -23,7 +23,7 @@
 
 ## Current trade-chain phase
 
-**T0 PASS → T1 NEXT**
+**T1 IMPLEMENTED / GATE-READY → T2 NEXT**
 
 ## Trade-chain source domains
 
