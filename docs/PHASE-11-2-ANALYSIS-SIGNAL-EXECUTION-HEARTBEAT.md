@@ -13,7 +13,7 @@ Local Release build completed with zero errors but two warnings.
 
 ### Level-label separation
 
-The historical implementation described below is superseded by the current canonical label contract: native right-aligned ChartText, exact line color, no background/box, and exactly one chart-bar gap between the visible text end and the line start. Current behavior is owned by PlanLineRenderer + PlanLabelAnchorCalculator + PlanLabelRenderer; no price-space pip/ATR offset or alternate label renderer is permitted.
+The historical implementation described below is superseded by the current canonical label contract: native left-aligned ChartText, exact line color, no background/box, and exactly one chart-bar gap from the visible text start to the line start. Current behavior is owned by PlanLineRenderer + PlanLabelAnchorCalculator + PlanLabelRenderer; no price-space pip/ATR offset or alternate label renderer is permitted.
 
 ### Signal pipeline diagnostics
 
