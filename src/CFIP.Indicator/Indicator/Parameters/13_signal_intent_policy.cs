@@ -5,12 +5,7 @@ namespace cAlgo
     public partial class CFIPIndicator : Indicator
     {
         [Parameter("Pending Order Mode", Group = "13 · SIGNAL / INTENT POLICY", DefaultValue = PendingOrderMode.Adaptive)]
-        public PendingOrderMode PendingOrderMode { get; set; }
-
-        [Parameter("Pending Order Expiry Minutes", Group = "13 · SIGNAL / INTENT POLICY", DefaultValue = 120, MinValue = 15, MaxValue = 1440)]
-        public int PendingOrderExpiryMinutes { get; set; }
-
-        [Parameter("Pending Entry Buffer ATR", Group = "13 · SIGNAL / INTENT POLICY", DefaultValue = 0.10, MinValue = 0.02, MaxValue = 1.00, Step = 0.01)]
+        public PendingOrderMode PendingOrderMode { get; set; }[Parameter("Pending Entry Buffer ATR", Group = "13 · SIGNAL / INTENT POLICY", DefaultValue = 0.10, MinValue = 0.02, MaxValue = 1.00, Step = 0.01)]
         public double PendingEntryBufferAtr { get; set; }
 
         [Parameter("Pending Minimum Confidence", Group = "13 · SIGNAL / INTENT POLICY", DefaultValue = 84, MinValue = 50, MaxValue = 99)]
