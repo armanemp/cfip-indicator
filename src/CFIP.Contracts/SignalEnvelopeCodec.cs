@@ -1,5 +1,5 @@
-#nullable disable
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace CFIP.Contracts
@@ -23,7 +23,7 @@ namespace CFIP.Contracts
 
         public static bool TryDeserialize(
             string payload,
-            out SignalEnvelope envelope)
+            [NotNullWhen(true)] out SignalEnvelope? envelope)
         {
             envelope = null;
 
@@ -32,12 +32,15 @@ namespace CFIP.Contracts
 
             try
             {
-                SignalEnvelope parsed =
+                SignalEnvelope? parsed =
                     JsonSerializer.Deserialize<SignalEnvelope>(
                         payload,
                         Options);
 
-                if (parsed == null)
+                if (parsed == null ||
+                    parsed.Identity == null ||
+                    !ContractVersionPolicy.IsSupported(
+                        parsed.Identity.ContractVersion))
                     return false;
 
                 envelope = parsed;
@@ -51,4 +54,3 @@ namespace CFIP.Contracts
         }
     }
 }
-#nullable enable
