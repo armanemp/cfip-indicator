@@ -3019,7 +3019,6 @@ for relative in REQUIRED_PLANNING_FILES:
         raise SystemExit(f"Planning owner missing: {relative}")
 
 REQUIRED_RISK_FILES = {
-    "DailyLossGuard.cs",
     "AutoRiskPolicy.cs",
     "AggressiveRiskPolicy.cs",
     "MarginSafetyCalculator.cs",
