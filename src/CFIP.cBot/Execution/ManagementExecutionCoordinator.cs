@@ -31,7 +31,10 @@ namespace CFIP.cBot.Execution
 
             if (!TryLoadCommands(robot, instanceId, out ManagementCommand[] commands))
             {
-                status = "MANAGEMENT COMMAND QUEUE UNAVAILABLE";
+                // No management command store is a normal state when the
+                // Indicator has not emitted a management instruction. Do not
+                // turn an absent queue into a repeated diagnostic/log storm.
+                status = "NO MANAGEMENT COMMAND";
                 return false;
             }
 
