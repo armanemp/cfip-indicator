@@ -9,8 +9,12 @@ namespace cAlgo
             DateTime reference,
             Func<int, DateTime> openTimeAt)
         {
+            DateTime normalizedReference =
+                CanonicalTimeRule.EnsureUtc(reference);
+
             if (count < 2 ||
-                openTimeAt == null)
+                openTimeAt == null ||
+                normalizedReference == DateTime.MinValue)
                 return -1;
 
             if (reference < openTimeAt(0))
@@ -27,9 +31,14 @@ namespace cAlgo
             while (low <= high)
             {
                 int middle = low + ((high - low) / 2);
-                DateTime openTime = openTimeAt(middle);
+                DateTime openTime =
+                    CanonicalTimeRule.EnsureUtc(
+                        openTimeAt(middle));
 
-                if (openTime <= reference)
+                if (openTime == DateTime.MinValue)
+                    return -1;
+
+                if (openTime <= normalizedReference)
                 {
                     latestOpenIndex = middle;
                     low = middle + 1;
@@ -57,22 +66,30 @@ namespace cAlgo
             DateTime reference,
             Func<int, DateTime> openTimeAt)
         {
+            DateTime normalizedReference =
+                CanonicalTimeRule.EnsureUtc(reference);
+
             if (count < 2 ||
                 openTimeAt == null ||
                 index < 0 ||
-                index >= count - 1)
+                index >= count - 1 ||
+                normalizedReference == DateTime.MinValue)
                 return false;
 
             DateTime openTime =
-                openTimeAt(index);
+                CanonicalTimeRule.EnsureUtc(
+                    openTimeAt(index));
 
             DateTime nextOpenTime =
-                openTimeAt(index + 1);
+                CanonicalTimeRule.EnsureUtc(
+                    openTimeAt(index + 1));
 
             return
+                openTime != DateTime.MinValue &&
+                nextOpenTime != DateTime.MinValue &&
                 openTime <
                 nextOpenTime &&
-                nextOpenTime <= reference;
+                nextOpenTime <= normalizedReference;
         }
     }
 }
