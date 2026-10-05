@@ -1239,7 +1239,7 @@ if "MapM5ToChart(" in visual_line_code or "anchorM5" in visual_line_code:
     raise SystemExit("Plan line geometry must not end at an M5 event-time mapping")
 if "GetPlanLineLeftBar" not in visual_line_code:
     raise SystemExit("Plan line renderer must expose one canonical left-edge calculation")
-if "GetCompactPlanLabelAnchorBar(" not in plan_label_coordinator_code:
+if "GetCompactPlanLabelAnchorTime(" not in plan_label_coordinator_code:
     raise SystemExit("Plan label/level presentation must consume the canonical label anchor helper")
 if "Chart.DrawTrendLine(" not in visual_line_code or "expectedStartTime" not in visual_line_code or "expectedEndTime" not in visual_line_code:
     raise SystemExit("Plan signal lines must be created through the canonical DateTime/OpenTime X path")
@@ -2769,7 +2769,7 @@ if "CompactPlanLabelFontSize = 11.0" not in PLAN_LABEL_RENDERER_CODE:
     raise SystemExit("Compact plan labels must use the canonical readable font size")
 PLAN_LABEL_ANCHOR = ROOT / "UI" / "Chart" / "PlanLabelAnchorCalculator.cs"
 PLAN_LABEL_ANCHOR_CODE = PLAN_LABEL_ANCHOR.read_text(encoding="utf-8")
-if "CompactPlanLabelGapBars = 1" not in PLAN_LABEL_ANCHOR_CODE or "GetCompactPlanLabelAnchorBar(" not in PLAN_LABEL_ANCHOR_CODE:
+if "CompactPlanLabelGapBars = 1" not in PLAN_LABEL_ANCHOR_CODE or "GetCompactPlanLabelAnchorTime(" not in PLAN_LABEL_ANCHOR_CODE:
     raise SystemExit("Compact plan label gap must be owned by the canonical anchor calculator")
 if "canonicalLineLeftBar -\n                CompactPlanLabelGapBars" not in PLAN_LABEL_ANCHOR_CODE:
     raise SystemExit("Compact plan label anchor must use exactly one canonical bar before line start")
@@ -3215,7 +3215,7 @@ if "CompactPlanLabelGapBars = 1" not in label_anchor_code:
     raise SystemExit("Plan label gap must be owned by the canonical anchor calculator")
 if (
     "canonicalLineLeftBar -\n                CompactPlanLabelGapBars" not in label_anchor_code or
-    "GetCompactPlanLabelAnchorBar(" not in label_anchor_code
+    "GetCompactPlanLabelAnchorTime(" not in label_anchor_code
 ):
     raise SystemExit("Plan label anchor must use exactly one canonical bar before line start")
 if "HorizontalAlignment.Left" not in compact_label_code:
