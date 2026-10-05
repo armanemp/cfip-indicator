@@ -18,10 +18,7 @@ namespace cAlgo
                 string tf =
                     candidates[i].Timeframe;
 
-                if (tf == "H1" ||
-                    tf == "H4" ||
-                    tf == "D1" ||
-                    tf == "W1")
+                if (StructuralTimeframeRule.IsHigherThanM5(tf))
                     return true;
             }
 
