@@ -32,7 +32,7 @@ namespace cAlgo
                     "EXPANSION",
                     StringComparison.OrdinalIgnoreCase))
                 return Math.Max(
-                    2.10,
+                    ActionabilityThresholdPolicy.ExpansionMinimumTp1RRFloor,
                     Tp1MinimumRR + step);
 
             if (string.Equals(
@@ -43,7 +43,7 @@ namespace cAlgo
                 // actionable TP1 floor must never be relaxed below the
                 // dedicated range-quality contract.
                 return Math.Max(
-                    2.25,
+                    ActionabilityThresholdPolicy.RangeMinimumTp1RRFloor,
                     Tp1MinimumRR);
 
             return Tp1MinimumRR;
