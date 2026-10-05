@@ -798,3 +798,24 @@ PR #284 was merged to `main` as `2e98a4b4cd27dd8b083ee8aac1437cf1a3c6271e` after
 The completion protocol is now permanent: required CI must be green, the verified work must be merged to `main`, and merged `main` must be re-verified before the package is declared complete.
 
 **Next:** WP-05 — Preflight.
+
+
+## Trade-chain T6 working record — 2026-10-06
+
+T2 is still awaiting exact-head CI completion and remains the merge prerequisite. T6 work is isolated on branch `trade/t6-actionability-trigger-opportunity-2026-10-06` and must be rebased/synchronized with the post-T2 `main` before merge.
+
+### Claude revalidation
+- **M-69 — CONFIRMED → FIXED:** `M1TriggerRuntimeUpdater` duplicated M1 readiness geometry already owned by `M1TriggerReadyEvaluator`. Runtime now delegates readiness to `M1TriggerReady`; the updater retains only runtime lifecycle, latch/revision and telemetry state. CI-10 now guards against a second `M1TriggerRule.IsReady` implementation in the runtime updater.
+- **M-107 — CONFIRMED → DEFERRED:** `ActionabilityThresholdPolicy` still contains governed effective floors (64/64 upstream and 70/75/70 final). These are centralized policy constants, not a new duplicate owner. Full configurable-threshold remediation remains under M-110; no ad-hoc T6 duplicate policy was introduced.
+- **M-68 — CONFIRMED → DEFERRED:** market-fill distance semantics belong to the Indicator→cBot execution/fill boundary and must be revalidated in P13/P15 with broker-side consumers. No duplicate T6 validation was introduced.
+- **M-70 — CONFIRMED → DEFERRED:** TP1/TP2+ reward-integrity semantics belong to the Plan/RR phase (P8/T7 boundary). No T6 workaround was introduced.
+
+### T6 ownership invariant
+`DecisionOrchestration` consumes canonical decision/actionability state; `TradeActionabilityEvaluator` owns actionability evaluation; `TradeActionabilityDecisionGate` owns its ordered fail-closed gate sequence; `M1TriggerRule` owns platform-neutral M1 readiness semantics; `M1TriggerReadyEvaluator` binds those semantics to real closed bars; `M1TriggerRuntimeUpdater` owns only live lifecycle/latching state.
+
+### T6 acceptance status
+- M1 readiness duplication fix: IMPLEMENTED.
+- CI-10 regression guard: IMPLEMENTED.
+- Full Release build: PENDING local operator verification on the T6 branch.
+- Exact-head Source/Runtime/cTrader gates: PENDING after branch push.
+- T2 merge prerequisite: BLOCKED only by queued CI on T2 exact head, not by a known production defect.

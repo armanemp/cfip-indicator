@@ -186,29 +186,6 @@ namespace cAlgo
                         closedM1);
             }
 
-            double atr =
-                Atr(
-                    _m1Bars,
-                    closedM1);
-
-            if (atr <= 0)
-            {
-                _triggerRuntime.Ready =
-                    TriggerLifecycleRule.IsConfirmed(
-                        m5Ready,
-                        UseM1Trigger,
-                        _triggerRuntime.Latched);
-                _triggerRuntime.Reason =
-                    "M1 ATR UNAVAILABLE";
-                _triggerRuntime.UpdatedUtc = reference;
-
-                if (_decision != null)
-                    _decision.TriggerReady =
-                        _triggerRuntime.Latched;
-
-                return;
-            }
-
             _triggerRuntime.ClosedM1 = closedM1;
 
             int score =
@@ -226,60 +203,14 @@ namespace cAlgo
                     LiveTriggerScore,
                     PrecisionTriggerScore);
 
-            int start =
-                Math.Max(
-                    3,
-                    closedM1 - 8);
-
-            int end =
-                closedM1 - 1;
-
-            if (end < start)
-            {
-                _triggerRuntime.Ready =
-                    TriggerLifecycleRule.IsConfirmed(
-                        m5Ready,
-                        UseM1Trigger,
-                        _triggerRuntime.Latched);
-                _triggerRuntime.Reason =
-                    "M1 MICROSTRUCTURE WARMUP";
-                _triggerRuntime.UpdatedUtc = reference;
-                return;
-            }
-
-            double priorMicroHigh =
-                Highest(
-                    _m1Bars,
-                    start,
-                    end);
-
-            double priorMicroLow =
-                Lowest(
-                    _m1Bars,
-                    start,
-                    end);
-
             bool ready =
-                M1TriggerRule.IsReady(
-                    _decision.Direction,
-                    _m1Frame == null
-                        ? 0
-                        : _m1Frame.Direction,
-                    _m1Bars.OpenPrices[closedM1],
-                    _m1Bars.HighPrices[closedM1],
-                    _m1Bars.LowPrices[closedM1],
-                    _m1Bars.ClosePrices[closedM1],
-                    atr,
-                    MinimumTriggerBodyAtr,
-                    MinimumCloseLocation,
-                    MaximumTriggerRangeAtr,
-                    score,
-                    required,
-                    priorMicroHigh,
-                    priorMicroLow,
-                    StructureBreakAtr,
-                    UseDisplacement,
-                    DisplacementAtr);
+                M1TriggerReady(
+                    _m1Bars,
+                    _m5Bars,
+                    closedM1,
+                    closedM5,
+                    reference,
+                    _decision.Direction);
 
             _triggerRuntime.Score = score;
             _triggerRuntime.RequiredScore = required;
