@@ -108,7 +108,7 @@ namespace cAlgo
                     ? "PENDING FILL • BROKER PROTECTION MISSING"
                     : "PENDING FILL • LIVE");
 
-            if (!AutoBrokerProtection)
+            if (!CbotCanManage())
                 return;
 
             bool protectedOk =
