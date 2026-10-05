@@ -67,7 +67,9 @@ namespace CFIP.Contracts
                         payload,
                         Options);
 
-                return snapshot != null;
+                return snapshot != null &&
+                    ContractVersionPolicy.IsSupported(
+                        snapshot.ContractVersion);
             }
             catch
             {
@@ -100,7 +102,9 @@ namespace CFIP.Contracts
                         payload,
                         Options);
 
-                return snapshot != null;
+                return snapshot != null &&
+                    ContractVersionPolicy.IsSupported(
+                        snapshot.ContractVersion);
             }
             catch
             {
