@@ -47,8 +47,20 @@ namespace CFIP.Contracts
                         payload,
                         Options);
 
+                if (parsed == null)
+                    return false;
+
+                foreach (ManagementCommand command in parsed)
+                {
+                    if (command == null ||
+                        command.Identity == null ||
+                        !ContractVersion.IsSupported(
+                            command.Identity.ContractVersion))
+                        return false;
+                }
+
                 commands = parsed;
-                return parsed != null;
+                return true;
             }
             catch
             {
@@ -89,8 +101,20 @@ namespace CFIP.Contracts
                         payload,
                         Options);
 
+                if (parsed == null)
+                    return false;
+
+                foreach (BrokerExecutionReport report in parsed)
+                {
+                    if (report == null ||
+                        report.Identity == null ||
+                        !ContractVersion.IsSupported(
+                            report.Identity.ContractVersion))
+                        return false;
+                }
+
                 reports = parsed;
-                return parsed != null;
+                return true;
             }
             catch
             {
