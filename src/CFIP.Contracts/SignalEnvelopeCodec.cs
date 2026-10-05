@@ -24,7 +24,7 @@ namespace CFIP.Contracts
             string payload,
             out SignalEnvelope envelope)
         {
-            envelope = null;
+            envelope = default(SignalEnvelope);
 
             if (string.IsNullOrWhiteSpace(payload))
                 return false;
@@ -47,7 +47,7 @@ namespace CFIP.Contracts
             }
             catch
             {
-                envelope = null;
+                envelope = default(SignalEnvelope);
                 return false;
             }
         }
