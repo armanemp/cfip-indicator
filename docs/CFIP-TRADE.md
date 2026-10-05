@@ -1200,11 +1200,13 @@ Operator commands must always be explicit and limited to commands actually requi
 
 **Current trade-chain roadmap status: ACTIVE**
 
-**Current trade-chain phase: T0 — Trade Baseline**
+**Current trade-chain phase: T2 — Time / MTF / Closed-Bar Integrity**
 
 **T0 status: PASS — SOURCE BASELINE ESTABLISHED**
 
-**Next trade-chain phase: T1 — Market Data Truth**
+**T1 status: IMPLEMENTED — SOURCE CONTRACT HARDENED**
+
+**T2 status: VERIFICATION**
 
 **No phase is considered PASS before its required evidence is completed.**
 
@@ -1338,3 +1340,64 @@ The canonical market-data boundary now explicitly validates:
 Historical Claude-review findings folded into the forward plan include revalidation of hard-coded smart-risk floors/multipliers, equity-vs-balance sizing semantics, repeated RR definitions, calibration quality metrics and duplicate semantic scoring. These remain assigned to their canonical T7/T8/T17 owners rather than being patched opportunistically in T1.
 
 **Next: T2 — Time / MTF / Closed-Bar Integrity**
+
+
+---
+
+# T2 — Time / MTF / Closed-Bar Integrity — 2026-10-05
+
+**Status: VERIFICATION — implementation complete; exact-head automated and local Release verification pending**
+
+### Canonical owner chain
+
+- CanonicalTimeRule owns UTC normalization semantics.
+- ClosedBarReferenceRule owns fully-closed index resolution from actual next-bar open times.
+- IndexMath.ClosedBarBoundaryReference owns the reusable boundary timestamp for a known closed M5 bar.
+- MtfContextBuilder owns the eight canonical MTF closed indices.
+- MtfClosedContextCache owns reference-aware cache reuse and invalidation when any frame crosses its next-open boundary.
+- CalculationPreparation and CalculationStartupSeed capture the same canonical UTC reference before building the MTF context.
+- Trade-plan temporal target sources consume the closed-M5 boundary rather than the closed M5 opening timestamp.
+
+### Implemented hardening
+
+1. Closed-bar reference inputs and bar timestamps are normalized through CanonicalTimeRule.
+2. Invalid DateTime.MinValue reference/timestamp states fail closed in ClosedBarReferenceRule.
+3. MTF context references and cache comparisons use canonical UTC semantics.
+4. Startup seed and normal calculation preparation use the same canonical reference contract.
+5. Daily-pivot, HTF-target and previous-period planning lookups now use the actual closed-M5 boundary.
+6. Existing reference-aware MTF cache semantics remain the only cache path; no second MTF engine was introduced.
+7. M2 remains absent and permanently guarded by the existing canonical MTF audit.
+8. Existing label geometry and HorizontalAlignment.Left were not changed.
+
+### Boundary regression coverage
+
+The existing runtime contract suite was extended to prove:
+- exact next-open closure;
+- irregular/gapped bar boundaries;
+- unspecified DateTime values follow canonical UTC semantics;
+- unspecified bar timestamps preserve the same ordering;
+- missing reference fails closed;
+- invalid bar timestamps fail closed.
+
+The existing F3 temporal audit was strengthened to cover canonical UTC normalization and target-plan temporal consumers, and it is wired into Source/Architecture CI.
+
+### T2 acceptance
+
+The semantic implementation is complete. T2 cannot be marked PASS until the exact branch HEAD has:
+- Release build success for Indicator, Contracts and cBot;
+- runtime contract suite success;
+- Source/Architecture and MTF/F3 audits success;
+- cTrader Release compile success;
+- local target branch verification recorded.
+
+No target-terminal broker evidence is required to establish the source-level T2 contract itself; terminal timing evidence remains relevant at the later end-to-end acceptance boundary.
+
+### Remaining trade-chain risk
+
+T2 intentionally does not change analytical formulas, decision thresholds, risk policy, execution ownership, label placement or broker mutation.
+
+### Next trade phase
+
+**T3 — Analytical Stack**
+
+T3 becomes executable only after the T2 verification gates above are green.
