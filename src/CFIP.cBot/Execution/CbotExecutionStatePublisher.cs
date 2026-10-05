@@ -71,7 +71,7 @@ namespace CFIP.cBot.Execution
             string executionScenarioId,
             SignalEnvelope envelope,
             CbotBrokerReconciliationResult reconciliation,
-            CbotIndicatorExecutionSettings executionSettings,
+            CbotExecutionSettings executionSettings,
             bool force)
         {
             if (robot == null ||
