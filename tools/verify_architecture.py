@@ -2426,8 +2426,8 @@ if "IsValidManagedStop(" not in BOUND_PROTECTION_CODE:
     raise SystemExit("Live broker protection must validate managed stops against market price")
 if "ProtectionProgressionRule.ShouldAdvanceStop(" not in BOUND_PROTECTION_CODE:
     raise SystemExit("Live broker protection must enforce monotonic SL progression")
-if "ProtectionProgressionRule.ShouldAdvanceTarget(" not in BOUND_PROTECTION_CODE:
-    raise SystemExit("Live broker protection must enforce configured TP progression")
+if "LiveExitGeometryRule.ShouldAdvanceLiveTarget(" not in BOUND_PROTECTION_CODE:
+    raise SystemExit("Live broker protection must enforce hard forward-only TP geometry")
 if "brokerStopValid" not in BOUND_PROTECTION_CODE:
     raise SystemExit("Live broker protection must inspect actual broker SL validity before clearing recovery")
 if "brokerTargetValid" not in BOUND_PROTECTION_CODE:
