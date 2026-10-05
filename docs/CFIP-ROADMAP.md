@@ -572,9 +572,9 @@ These requirements are treated as acceptance targets and must be verified agains
 ## Chart contract
 - One signal produces one canonical visual set.
 - Directional arrows are separated deterministically and use the canonical nine-level strength ladder.
-- Signal/plan line labels are owned by `PlanLabelRenderer`; the label’s visible text end (right edge) must sit exactly one chart-bar width left of the canonical `PlanLineRenderer` line start in actual chart X space. `PlanLabelAnchorCalculator` is the sole owner of that one-bar gap, and native `ChartText` uses right alignment so the anchor pins the label’s visible right edge without a second geometry path. `PlanLabelRenderer` consumes only that canonical anchor and never mutates `ChartText.Time`.
+- Signal/plan line labels are owned by `PlanLabelRenderer`; the label’s visible text start must sit exactly one chart-bar width left of the canonical `PlanLineRenderer` line start in actual chart X space. `PlanLabelAnchorCalculator` is the sole owner: it measures the real bar width with `Chart.BarIndexToX`, moves exactly one such width left, then resolves that X to the label's canonical `DateTime` anchor with `Chart.XToTime`. `PlanLabelRenderer` consumes only that canonical anchor and never mutates `ChartText.Time`.
 - `PlanLabelAnchorCalculator` is the sole owner of that one-bar gap, and `PlanLineRenderer` is the sole owner of the materialized line color consumed by the label.
-- Label text must use the exact same materialized color as its corresponding line; `Color.White` is forbidden for canonical line labels. Native level labels remain 11px, regular-weight, background-free and right-aligned so the complete label stays on the left side of the line start.
+- Label text must use the exact same materialized color as its corresponding line; `Color.White` is forbidden for canonical line labels.
 - Pending, parallel and prediction labels must continue through the same renderer/anchor contract; no secondary label geometry is allowed. A parallel candidate matching the canonical plan is not a second opportunity and must not render a second line/label set.
 - There is no secondary directional arrow path.
 - M1 precision evidence must be distinguishable from directional consensus.
