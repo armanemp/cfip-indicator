@@ -21,7 +21,7 @@ namespace CFIP.Contracts
 
         public static bool TryDeserialize(
             string payload,
-            out SignalScenarioBatch? batch)
+            [NotNullWhen(true)] out SignalScenarioBatch? batch)
         {
             batch = null;
 
