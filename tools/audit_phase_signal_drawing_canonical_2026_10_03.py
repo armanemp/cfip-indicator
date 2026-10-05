@@ -29,7 +29,7 @@ check("plan labels use canonical line-owned color", "Chart.DrawText(" in labels 
 check("plan labels use the canonical readable font, one-bar left clearance and follow the moving line anchor",
     "CompactPlanLabelFontSize = 11.0" in labels and
     "CompactPlanLabelGapBars = 1" in anchor and
-    "GetCompactPlanLabelAnchorBar(" in anchor and
+    "GetCompactPlanLabelAnchorTime(" in anchor and
     "HorizontalAlignment.Right" in labels and
     "Chart.DrawText(" in labels and
     "canonicalLabelBar" in labels and
@@ -37,7 +37,7 @@ check("plan labels use the canonical readable font, one-bar left clearance and f
     "label.HorizontalAlignment" in labels and
     "label.VerticalAlignment" in labels and
     "GetCompactPlanLabelAnchorBar(" in labels)
-check("labels share exact normalized price and canonical bar-index anchor", "NormalizePrice(price)" in labels and
+check("labels share exact normalized price and canonical DateTime/OpenTime anchor", "NormalizePrice(price)" in labels and
     "GetPlanLineLeftBar" in anchor and
     "GetCompactPlanLabelAnchorBar(" in anchor and
     "canonicalLineLeftBar -\n                CompactPlanLabelGapBars" in anchor and
