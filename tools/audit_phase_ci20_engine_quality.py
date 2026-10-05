@@ -75,6 +75,12 @@ require(
     "audit_phase_ci20_engine_quality.py" in workflow,
     "CI-20 engine quality audit is not wired into Source/Architecture",
 )
+require(
+    "totalWeight +=\n                                            weights[i]" in read("src/CFIP.Indicator/Analysis/Market/Decision/TimeframeAgreementAnalyzer.cs") and
+    "if (frames[i].Direction == 0)\n                                            continue" not in read("src/CFIP.Indicator/Analysis/Market/Decision/TimeframeAgreementAnalyzer.cs"),
+    "timeframe agreement must retain eligible neutral frames in its denominator",
+)
+
 
 if errors:
     print("CI-20 ANALYSIS / SIGNAL QUALITY+PERFORMANCE AUDIT: FAIL")
