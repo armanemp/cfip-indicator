@@ -596,7 +596,10 @@ namespace CFIP.cBot.Shadow.Tests
                     ? null
                     : new ExecutionIntent(
                         id, action, entry, stop, target, 1000, "UNIT",
-                        Now, expiry, "fixture");
+                        Now, expiry, "fixture", "CFIP-SMART",
+                        new MarketExecutionProfile(
+                            0, 1, 1, false,
+                            0, 0, 0, 0, 0, null, null));
 
             return new SignalEnvelope(id, stage, plan, intent, Now);
         }
