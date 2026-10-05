@@ -80,7 +80,7 @@ require(
     "ResolveCanonicalPlanLineColor(" in line and
     "ResolveCanonicalPlanLineColor(" in label and
     "semanticColor" in label and
-    "GetCompactPlanLabelAnchorBar(" in label,
+    "GetCompactPlanLabelAnchorTime(" in label,
     "canonical chart labels must be native ChartText, background-free and separated one bar left of the line",
 )
 
