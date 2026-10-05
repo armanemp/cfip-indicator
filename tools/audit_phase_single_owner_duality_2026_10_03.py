@@ -73,7 +73,7 @@ require(
     "Chart.DrawText(" in label and
     "Chart.DrawRectangle(" not in label and
     "Chart.DrawIcon(" not in label and
-    "HorizontalAlignment.Left" in label and
+    "HorizontalAlignment.Right" in label and
     "CompactPlanLabelFontSize = 11.0" in label and
     'Chart.RemoveObject(name + "_BOX")' in label and
     'Chart.RemoveObject(name + "_ANCHOR")' in label and
