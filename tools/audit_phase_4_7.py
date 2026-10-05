@@ -170,6 +170,13 @@ check(
     and "target-terminal" in phase_doc.lower(),
 )
 
+check(
+    "daily pivot uses the canonical latest closed D1 bar",
+    "int closedIndex = index;" in pivot and
+    "_d1Bars.HighPrices[closedIndex]" in pivot and
+    "_d1Bars.HighPrices[previous]" not in pivot
+)
+
 print("CR4.7 SUMMARY")
 print("=" * 72)
 print(f"Failures: {len(errors)}")
