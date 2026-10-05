@@ -50,7 +50,8 @@ namespace cAlgo
         public static MtfTrendStrengthResult Evaluate(
             Frame[] frames,
             double[] weights,
-            double livePrice)
+            double livePrice,
+            int authoritativeDirection = 0)
         {
             if (frames == null ||
                 frames.Length == 0 ||
@@ -140,7 +141,11 @@ namespace cAlgo
                     bullAverage,
                     bearAverage);
 
-            int arrowDirection = overallDirection;
+            int arrowDirection =
+                authoritativeDirection == 1 ||
+                authoritativeDirection == -1
+                    ? authoritativeDirection
+                    : overallDirection;
 
             double selectedStrength =
                 arrowDirection == 1
@@ -229,7 +234,7 @@ namespace cAlgo
             return new MtfTrendStrengthResult(0, 0, 0, 0, 0, "NONE");
         }
 
-        private static string ResolveTier(int level)
+        internal static string ResolveTier(int level)
         {
             if (level <= 0) return "NONE";
             if (level <= 3) return "WEAK";
