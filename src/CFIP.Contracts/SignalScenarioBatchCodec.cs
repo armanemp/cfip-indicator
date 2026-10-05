@@ -36,7 +36,7 @@ namespace CFIP.Contracts
                         Options);
 
                 if (parsed == null ||
-                    !ContractVersion.IsSupported(parsed.ContractVersion) ||
+                    !ContractVersionPolicy.IsSupported(parsed.ContractVersion) ||
                     parsed.Scenarios == null)
                     return false;
 
@@ -44,7 +44,7 @@ namespace CFIP.Contracts
                 {
                     if (scenario == null ||
                         scenario.Identity == null ||
-                        !ContractVersion.IsSupported(
+                        !ContractVersionPolicy.IsSupported(
                             scenario.Identity.ContractVersion))
                         return false;
                 }
