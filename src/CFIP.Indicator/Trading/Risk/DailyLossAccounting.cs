@@ -43,8 +43,6 @@ namespace cAlgo
             DateTime referenceUtc)
         {
             _dailyLossRealizedNetProfit = 0;
-            _dailyLossHistoryAvailable = false;
-
             if (History == null)
                 return;
 
@@ -84,12 +82,9 @@ namespace cAlgo
                 _dailyLossHistoryCount =
                     History.Count;
 
-                _dailyLossHistoryAvailable = true;
             }
             catch (Exception ex)
             {
-                _dailyLossHistoryAvailable = false;
-
                 Print(
                     "CFIP daily realized history refresh failed: {0}",
                     ex.Message);
