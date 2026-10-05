@@ -2118,24 +2118,16 @@ for filename, tokens in CROSS_PATH_CONTRACTS.items():
         if token not in code:
             raise SystemExit(f"Cross-path execution contract missing in {filename}: {token}")
 
-for path, tokens in {
-    ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketSubmissionValidator.cs": (
-        "BuildExecutionIntent(",
-        "ValidateExecutionIntent(",
-    ),
-    ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketFillReconciliation.cs": (
-        "ReconcileLivePlanToActualFill(",
-        "IsExecutableFillPrice(",
-    ),
-    ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketPostFillTargetResolver.cs": (
-        "AutoTarget(",
-        "RequestLivePlanExit(",
-    ),
-}.items():
-    code = path.read_text(encoding="utf-8")
-    for token in tokens:
-        if token not in code:
-            raise SystemExit(f"Automatic-market owner contract missing: {path.name}: {token}")
+# Automatic market broker-submission/fill files were removed from Indicator.
+# The cBot is now the sole broker actuator; the Indicator emits intent only.
+for removed in (
+    ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketSubmissionValidator.cs",
+    ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketFillReconciliation.cs",
+    ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketPostFillTargetResolver.cs",
+):
+    if removed.exists():
+        raise SystemExit(f"Removed Indicator broker-execution owner was reintroduced: {removed.name}")
+
 
 # Pending placement boundary.
 PENDING_STOP = ROOT / "Trading" / "Pending" / "Placement" / "ContinuationStopPlacement.cs"
