@@ -8,6 +8,8 @@ namespace cAlgo
     {
         public int Direction;
         public int Strength;
+        public int Level;
+        public string Tier;
         public string DirectionLabel;
         public bool Ready;
         public Color Color;
@@ -25,67 +27,74 @@ namespace cAlgo
                 {
                     Direction = 0,
                     Strength = 0,
+                    Level = 0,
+                    Tier = "NONE",
                     DirectionLabel = "WAIT",
                     Ready = false,
                     Color = PanelSecondaryTextColor
                 };
             }
 
-            int direction =
-                PanelFrameDirectionRule.ResolveDisplayDirection(
-                    frame.Direction,
-                    frame.BullScore,
-                    frame.BearScore,
-                    frame.TrendBull,
-                    frame.TrendBear);
+            double livePrice =
+                Symbol.Ask > 0 &&
+                Symbol.Bid > 0
+                    ? (Symbol.Ask + Symbol.Bid) * 0.5
+                    : Symbol.Ask;
 
-            if (direction == 0)
+            MtfTrendStrengthResult trendStrength =
+                MtfTrendStrengthRule.Evaluate(
+                    new[] { frame },
+                    new[] { 1.0 },
+                    livePrice);
+
+            int direction =
+                trendStrength.Direction;
+
+            int level =
+                PanelNineLevelPresentationRule.NormalizeLevel(
+                    trendStrength.Level);
+
+            if (direction == 0 ||
+                level <= 0)
             {
                 return new PanelTimeframePresentationState
                 {
                     Direction = 0,
                     Strength = 0,
+                    Level = 0,
+                    Tier = "NONE",
                     DirectionLabel = "NEUTRAL",
                     Ready = true,
                     Color = PanelSecondaryTextColor
                 };
             }
 
-            int score =
-                direction == 1
-                    ? frame.BullScore
-                    : frame.BearScore;
-
-            double adx =
-                double.IsNaN(frame.Adx) ||
-                double.IsInfinity(frame.Adx)
-                    ? 0
-                    : frame.Adx;
-
             int strength =
-                score >= 70 || adx >= 25
-                    ? 3
-                    : score >= 55 || adx >= 20
-                        ? 2
-                        : 1;
+                PanelNineLevelPresentationRule.ArrowCountForLevel(
+                    level);
+
+            string tier =
+                PanelNineLevelPresentationRule.TierForLevel(
+                    level);
 
             Color color =
-                direction == 1
-                    ? strength >= 3
-                        ? StrongBuyArrowColor
-                        : strength == 2
-                            ? ConfirmedBuyArrowColor
-                            : CautionBuyArrowColor
-                    : strength >= 3
-                        ? StrongSellArrowColor
-                        : strength == 2
-                            ? ConfirmedSellArrowColor
-                            : CautionSellArrowColor;
+                PanelNineLevelPresentationRule.ResolveColor(
+                    direction,
+                    level,
+                    StrongBuyArrowColor,
+                    StrongSellArrowColor,
+                    ConfirmedBuyArrowColor,
+                    ConfirmedSellArrowColor,
+                    CautionBuyArrowColor,
+                    CautionSellArrowColor,
+                    BlockedReactionArrowColor);
 
             return new PanelTimeframePresentationState
             {
                 Direction = direction,
                 Strength = strength,
+                Level = level,
+                Tier = tier,
                 DirectionLabel =
                     PanelFrameDirectionRule.ResolveLabel(
                         frame.Direction,
