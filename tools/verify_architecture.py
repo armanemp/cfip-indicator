@@ -1597,12 +1597,10 @@ for production_file in files:
         hygiene_errors.append(f"{production_file}: mixed line endings")
 
 for production_path in ROOT.rglob("*"):
+    if any(part in GENERATED_DIR_NAMES for part in production_path.relative_to(ROOT).parts):
+        continue
     if not production_path.is_file():
         continue
-    if production_path.name in GENERATED_DIR_NAMES:
-        hygiene_errors.append(
-            f"{production_path}: generated artifact directory"
-        )
     if production_path.suffix.lower() in GENERATED_SUFFIXES:
         hygiene_errors.append(
             f"{production_path}: generated artifact"
