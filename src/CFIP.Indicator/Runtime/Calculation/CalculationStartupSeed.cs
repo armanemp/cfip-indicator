@@ -24,7 +24,8 @@ namespace cAlgo
                 BeginRuntimeFaultCycle();
 
                 DateTime reference =
-                    Server.TimeInUtc;
+                    CanonicalTimeRule.EnsureUtc(
+                        Server.TimeInUtc);
 
                 RunPreDecisionBrokerReconciliation(
                     Bars.Count - 1);
