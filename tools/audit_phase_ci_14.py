@@ -293,6 +293,44 @@ for relative, source, forbidden in (
             pattern not in source,
         )
 
+
+
+# T7 Claude revalidation: target progression, candidate ordering and HTF semantics.
+target_stage = read("src/CFIP.Indicator/Planning/TradePlan/TargetStageSelector.cs")
+target_builder = read("src/CFIP.Indicator/Planning/TradePlan/TargetLevelBuilder.cs")
+htf_rule = read("src/CFIP.Indicator/Core/Math/StructuralTimeframeRule.cs")
+htf_source = read("src/CFIP.Indicator/Planning/TradePlan/HtfSourceClassifier.cs")
+htf_timeframe = read("src/CFIP.Indicator/Planning/TradePlan/HtfTimeframeClassifier.cs")
+htf_presence = read("src/CFIP.Indicator/Trading/Validation/HtfTargetPresenceValidator.cs")
+htf_merger = read("src/CFIP.Indicator/Planning/TradePlan/TargetLevelCandidateMerger.cs")
+
+check(
+    "synthetic target stages are validated against the prior selected target",
+    "FindPreviousSelectedTargetPrice(" in target_stage and
+    "IsProgressiveTarget(" in target_stage and
+    "if (!IsProgressiveTarget(" in target_stage,
+)
+check(
+    "target candidates are direction-filtered before merge/cap",
+    "IsValidTarget(" in target_builder and
+    "MergeLevels(" in target_builder and
+    target_builder.find("IsValidTarget(") < target_builder.find("MergeLevels(") and
+    target_builder.find(".Take(") > target_builder.find("MergeLevels("),
+)
+check(
+    "higher-timeframe classification has one semantic owner",
+    "IsHigherThanM5(" in htf_rule and
+    "ContainsHigherTimeframeMarker(" in htf_rule and
+    "StructuralTimeframeRule.ContainsHigherTimeframeMarker(" in htf_source and
+    "StructuralTimeframeRule.IsHigherThanM5(" in htf_timeframe and
+    "StructuralTimeframeRule.IsHigherThanM5(" in htf_presence and
+    "StructuralTimeframeRule.IsHigherThanM5(" in htf_merger,
+)
+check(
+    "HTF classifier does not treat M1 as higher timeframe",
+    '"M1"' not in htf_timeframe.split("private bool IsHtfTimeframe",1)[-1],
+)
+
 if errors:
     for error in errors:
         print(f"[FAIL] {error}")
