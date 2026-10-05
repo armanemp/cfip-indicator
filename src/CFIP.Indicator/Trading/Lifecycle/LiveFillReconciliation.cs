@@ -46,6 +46,13 @@ namespace cAlgo
                                     _plan.Entry =
                                         actualEntry;
                         
+                                    // Every initial fill path converges here. The live favorable-price
+                                    // baseline must start from the broker-confirmed fill, not stale
+                                    // pre-trade or zero-initialized state, so peak-RR/BE/trailing remain
+                                    // directionally correct immediately after a pending/market fill.
+                                    _peakPrice =
+                                        actualEntry;
+                        
                                     // The broker may fill at a slightly different price than the
                                     // executable quote. Reconcile the live exit geometry from the actual
                                     // fill without allowing an old/passed TP or a less-protective SL to
