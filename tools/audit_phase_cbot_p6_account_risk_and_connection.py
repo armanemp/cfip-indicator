@@ -45,7 +45,7 @@ require(
 
 require(
     "CbotExecutionSettings" in settings and
-    "CbotExecutionSettings.Create(" in settings and
+    "CbotExecutionSettings.Create(" in bot and
     "robot.EnableAutoTrading" in settings and
     "robot.MaximumOpenPositions" in settings,
     "cBot must consume its canonical execution settings without an Indicator execution-settings bridge",
