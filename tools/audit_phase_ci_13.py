@@ -120,7 +120,7 @@ check(
     "ResolveMaximumExtensionAtr(" in evaluator and
     "allowHtfExtension" in
     read("src/CFIP.Indicator/Core/Math/TargetRewardEnvelopeRule.cs") and
-    "HtfMaximumExtensionAtrCap = 24.0" in
+    "HtfMaximumExtensionAtrCap = 20.0" in
     read("src/CFIP.Indicator/Core/Math/TargetRewardEnvelopeRule.cs") and
     "maximumRR" in evaluator
 )
