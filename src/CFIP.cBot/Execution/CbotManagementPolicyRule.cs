@@ -11,6 +11,9 @@ namespace CFIP.cBot.Execution
             bool autoBrokerProtection,
             bool autoProtectBrokerPositions,
             bool syncBrokerTakeProfit,
+            bool cancelCfipPendingBeforeHighImpactNews,
+            bool protectCfipPositionBeforeHighImpactNews,
+            string commandReason,
             out string reason)
         {
             reason = "OK";
@@ -18,7 +21,23 @@ namespace CFIP.cBot.Execution
             switch (command)
             {
                 case ManagementCommandType.CancelPending:
+                    if (IsHighImpactNews(commandReason) &&
+                        !cancelCfipPendingBeforeHighImpactNews)
+                    {
+                        reason = "NEWS PENDING CANCELLATION DISABLED";
+                        return false;
+                    }
+                    return true;
+
                 case ManagementCommandType.FullClose:
+                    if (IsHighImpactNews(commandReason) &&
+                        !protectCfipPositionBeforeHighImpactNews)
+                    {
+                        reason = "NEWS POSITION PROTECTION DISABLED";
+                        return false;
+                    }
+                    return true;
+
                 case ManagementCommandType.Keep:
                     return true;
 
@@ -59,6 +78,14 @@ namespace CFIP.cBot.Execution
                     reason = "UNSUPPORTED MANAGEMENT COMMAND";
                     return false;
             }
+        }
+
+        private static bool IsHighImpactNews(string reason)
+        {
+            return !string.IsNullOrWhiteSpace(reason) &&
+                   reason.IndexOf(
+                       "HIGH IMPACT NEWS",
+                       System.StringComparison.OrdinalIgnoreCase) >= 0;
         }
     }
 }
