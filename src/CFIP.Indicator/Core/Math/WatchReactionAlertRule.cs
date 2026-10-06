@@ -151,7 +151,7 @@ namespace cAlgo
         {
             if (!alertEnabled ||
                 !liveReactionEnabled ||
-                !entryAllowed ||
+                !reactionReady ||
                 hasPlan ||
                 hasPendingOrder ||
                 hasLivePosition ||
