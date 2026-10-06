@@ -31,6 +31,54 @@ namespace cAlgo
                     maximumStructuralStopAtr));
         }
     
+        internal const double MicroStopRiskAtrFloor = 0.30;
+        internal const double MicroStopM1AtrMultiplier = 1.10;
+
+        public static double ResolveEffectiveMinimumStopRiskAtr(
+            double configuredMinimumAtr,
+            double riskReferenceAtr,
+            double microAtr,
+            double spread,
+            double pipSize,
+            double maximumSpreadToStopRiskRatio,
+            bool allowMicroRelaxation)
+        {
+            double configuredMinimum =
+                Math.Max(0.05, configuredMinimumAtr);
+
+            double safeReferenceAtr =
+                IsFinitePositive(riskReferenceAtr)
+                    ? riskReferenceAtr
+                    : 0;
+
+            double spreadMinimum =
+                safeReferenceAtr > 0
+                    ? Math.Max(0, spread) /
+                      safeReferenceAtr /
+                      Math.Max(0.02, maximumSpreadToStopRiskRatio)
+                    : double.PositiveInfinity;
+
+            if (!allowMicroRelaxation ||
+                !IsFinitePositive(microAtr) ||
+                !IsFinitePositive(safeReferenceAtr))
+            {
+                return Math.Max(
+                    configuredMinimum,
+                    spreadMinimum);
+            }
+
+            double microMinimum =
+                Math.Max(
+                    MicroStopRiskAtrFloor,
+                    microAtr *
+                    MicroStopM1AtrMultiplier /
+                    safeReferenceAtr);
+
+            return Math.Max(
+                microMinimum,
+                spreadMinimum);
+        }
+
         public static bool IsWithinPlanningRiskEnvelope(
             double riskAtr,
             double atr,
@@ -77,5 +125,14 @@ namespace cAlgo
             return riskAtr >= effectiveMinimum &&
                    riskAtr <= effectiveMaximum;
         }
+        private static bool IsFinitePositive(
+            double value)
+        {
+            return
+                !double.IsNaN(value) &&
+                !double.IsInfinity(value) &&
+                value > 0;
+        }
+
     }
 }
