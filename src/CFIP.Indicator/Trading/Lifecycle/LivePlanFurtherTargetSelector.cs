@@ -134,7 +134,8 @@ namespace cAlgo
                                         1,
                                         HtfRewardBonus,
                                         LiquidityRewardBonus,
-                                        ZoneRewardBonus);
+                                        ZoneRewardBonus,
+                                        level.Timeframe);
                 
                                 if (score > bestScore)
                                 {
