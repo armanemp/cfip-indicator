@@ -82,7 +82,7 @@ namespace cAlgo
             int direction,
             double atr)
         {
-            string timeframe = "M5";
+            string timeframe = "NONE";
 
             if (!string.IsNullOrWhiteSpace(source))
             {
