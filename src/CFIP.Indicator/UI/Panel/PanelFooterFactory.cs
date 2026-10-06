@@ -2,6 +2,7 @@
 // CFIP Indicator — PanelFooterFactory.cs
 // ============================================================================
 
+using System;
 using System.Collections.Generic;
 using cAlgo.API;
 
