@@ -169,6 +169,11 @@ namespace cAlgo
         private void RefreshPendingExecutionIntent(
             int closedM5)
         {
+            // An execution intent is valid only for the current calculation
+            // cycle. Clear the previous capture before evaluating fresh pending
+            // candidates so provider publication cannot reuse stale intent data.
+            ClearProviderExecutionIntentCapture();
+
             _lastAutoOrderAttemptUtc =
                 TimeInUtc;
 
