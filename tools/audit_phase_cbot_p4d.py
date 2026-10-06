@@ -128,11 +128,11 @@ check(
 )
 
 check(
-    "ChartIconType.Circle" in signal_renderer and
-    "P + \"M1_TRIGGER\"" in signal_renderer and
-    "ChartIconType.UpArrow" in signal_stack and
-    "ChartIconType.DownArrow" in signal_stack,
-    "directional signal presentation must use canonical arrows while M1 remains a precision-only Circle marker",
+    "ChartIconType.Circle" not in signal_renderer and
+    "M1_TRIGGER" not in signal_renderer and
+    "UpdateSignalArrowBox(" in signal_stack and
+    "RenderStackedSignalArrows(" in signal_stack,
+    "directional signal presentation must use the canonical bottom-right arrow box; no obsolete M1 Circle marker remains",
 )
 check(
     "RenderCanonicalMtfTrendArrows(" in read(IND / "Runtime/Calculation/CalculationLiveCycle.cs") and
