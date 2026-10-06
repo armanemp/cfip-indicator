@@ -492,10 +492,11 @@ namespace CFIP.cBot
                 envelope.Identity.Revision <= observedRevision)
                 return false;
 
+            if (!_lastRealtimeTimerRevisionByScenario.ContainsKey(key))
+                _lastRealtimeTimerScenarioOrder.Enqueue(key);
+
             _lastRealtimeTimerRevisionByScenario[key] =
                 envelope.Identity.Revision;
-
-            _lastRealtimeTimerScenarioOrder.Enqueue(key);
 
             while (_lastRealtimeTimerScenarioOrder.Count >
                    MaxRealtimeTimerScenarioRevisions)
