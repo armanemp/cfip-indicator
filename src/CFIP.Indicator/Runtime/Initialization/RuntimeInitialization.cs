@@ -239,6 +239,7 @@ namespace cAlgo
             RegisterNative(_h4Bars);
 
             RegisterNative(_m1Bars);
+            InitializeAggressiveFlowRuntime();
 
             if (_d1Bars != null)
                 RegisterNative(_d1Bars);
@@ -433,22 +434,11 @@ namespace cAlgo
 
             if (!_initializationDataReady)
             {
-                TimeSpan elapsed =
-                    TimeInUtc -
-                    _initializationStartedUtc;
-
-                if (elapsed.TotalSeconds >=
-                    30)
-                {
-                    Timer.Stop();
-
-                    SetInitializationFault(
-                        new TimeoutException(
-                            "ASYNC MARKET DATA INITIALIZATION TIMEOUT"),
-                        "DATA LOAD");
-                    return;
-                }
-
+                // Market-data loading is intentionally not time-limited.
+                // cTrader may need an unbounded amount of time to provide
+                // required history after reconnect, symbol switch or a slow
+                // broker data source. We remain in BUILDING/LOADING state
+                // until the required data actually arrives.
                 _status =
                     _initializationPendingDataLoads > 0
                         ? "LOADING DATA"
