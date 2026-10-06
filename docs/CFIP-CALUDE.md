@@ -282,10 +282,10 @@ M-118 (AccessRights.None و file/HTTP روی cTrader نصب‌شده)، M-45 (In
 | M-93 | متوسط | ثبت‌شده | SwingPointAnalyzer.cs:278-379 | swing شکسته‌شده هنوز target شمرده می‌شود | IsActiveUnbrokenLevel |
 | M-94 | متوسط | محتمل | StructureAnalyzer.cs:95-165 | MSS عملاً همان Structure (شمارش دوگانه) | تأیید در فاز ۱۴ |
 | M-95 | متوسط | ثبت‌شده | StructureAnalyzer.cs:173-245 | BullChoch فقط برگشت یک‌کندلی را می‌گیرد | بازنگری |
-| M-96 | متوسط | ثبت‌شده | NativeIndicatorRegistry.cs:72-91; wrappers | Native نیمه‌ساخته ذخیره می‌شود؛ مقدار خنثی ≈ «آماده نیست» | پرچم Ready |
+| M-96 | متوسط | **حل‌شده** | NativeIndicatorRegistry.cs; native wrappers | وضعیت initialization صریح شد؛ wrapperهای Native در شکست initialization و warm-up fail-closed می‌شوند و fallback عددی خنثی ندارند | ✅ IsInitialized + NaN/readiness guard |
 | M-97 | متوسط | قطعی | SkenderStoch.cs:38-43 | null در warm-up با ?? 0 صفر می‌شود ⇒ رأی کاذب | رد |
-| M-98 | متوسط | ثبت‌شده | OssQuoteSeriesCache.cs:44-362 | رویدادها بدون لغو؛ لیست داخلی بیرون داده می‌شود؛ cast decimal NaN | کپی/گارد |
-| M-99 | متوسط | ثبت‌شده | ReactionAnalyzer.cs:85-223 | Confidence بعد از Clamp تنظیم می‌شود (>100 یا <0) | clamp نهایی |
+| M-98 | متوسط | **جزئی/باز** | OssQuoteSeriesCache.cs | unsubscribe رویدادها در OnDestroy و گارد OHLC/decimal cast اصلاح شد؛ exposure مستقیم List هنوز نیازمند تصمیم encapsulation است | ✅ lifecycle + numeric guard; ⏳ list encapsulation |
+| M-99 | متوسط | **حل‌شده** | ReactionAnalyzer.cs | کیفیت بعد از تعدیل regime ممکن بود از 100/<0 خارج شود؛ اکنون قبل از مصرف نهایی دوباره clamp می‌شود | ✅ final ClampInt(0..100) |
 | L-64 | پایین | ثبت‌شده | ReactionAnalyzer.cs:19-80 | TriggerReady/Confidence روی کندل زنده نوسان دارد (عمدی) | مستندسازی |
 | L-65 | پایین | ثبت‌شده | FvgDetectionAnalyzer.cs:54-61; OrderBlockAnalyzer.cs:58-65 | Lookback بی‌صدا به MaximumZoneAgeBars محدود می‌شود | مستندسازی |
 | L-66 | پایین | ثبت‌شده | OrderBlockAnalyzer.cs:83,157-181 | کف Max(50) و ثابت‌ها در امتیاز انتخاب | پارامتر |
