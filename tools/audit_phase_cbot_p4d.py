@@ -207,8 +207,8 @@ print("Unified pending Stop/Limit owner: ACTIVE")
 print("Chart timeframe execution dependency: NONE")
 print("Arrow-only signal markers: ENFORCED")
 print("Three directional arrow intensity colors: ENFORCED")
-print("Popup location: BottomRight")
-print("Popup persistence: until next alert/manual close")
+print("Canonical signal box: fixed 66x66 BottomRight")
+print("Legacy popup surface: REMOVED")
 print("Important-alert classifier: ENFORCED")
 
 if errors:
