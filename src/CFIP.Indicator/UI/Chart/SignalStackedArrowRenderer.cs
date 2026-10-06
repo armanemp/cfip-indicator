@@ -63,28 +63,20 @@ namespace cAlgo
                 return;
             }
 
-            int direction = snapshot.MtfTrendDirection;
+            int direction =
+                snapshot.AuthoritativeDirection != 0
+                    ? snapshot.AuthoritativeDirection
+                    : snapshot.MtfTrendDirection;
 
-            // A canonical actionable/active plan owns the trade direction.
-            // Never display a contradictory MTF arrow above a live decision.
-            int decisionDirection =
-                snapshot.PlanDirection != 0
-                    ? snapshot.PlanDirection
-                    : snapshot.DecisionDirection;
+            int mtfDirection =
+                snapshot.MtfTrendDirection;
 
             bool decisionOwnsDirection =
                 snapshot.PlanActive ||
                 snapshot.ActionableNow ||
-                snapshot.DecisionEntryAllowed;
-
-            if (decisionOwnsDirection &&
-                decisionDirection != 0 &&
-                direction != 0 &&
-                decisionDirection != direction)
-            {
-                RemoveStackedSignalArrows();
-                return;
-            }
+                snapshot.DecisionEntryAllowed ||
+                snapshot.DecisionDirection != 0 ||
+                snapshot.PlanDirection != 0;
 
             if (direction == 0)
             {
@@ -100,11 +92,21 @@ namespace cAlgo
                     0,
                     9);
 
-            if (strength <= 0 ||
-                snapshot.MtfTrendDirection != direction)
+            if (strength <= 0)
             {
                 RemoveStackedSignalArrows();
                 return;
+            }
+
+            // MTF disagreement is a quality/conflict state, not a reason to
+            // make a valid canonical decision disappear or change direction.
+            // Keep the authoritative direction and downgrade the displayed
+            // strength to the caution band.
+            if (decisionOwnsDirection &&
+                mtfDirection != 0 &&
+                mtfDirection != direction)
+            {
+                strength = Math.Min(3, strength);
             }
 
             int arrowCount =
@@ -116,9 +118,16 @@ namespace cAlgo
                     : snapshot.MtfTrendStrengthTier;
 
             Color arrowColor =
-                SignalArrowColorFor(
+                SignalPresentationColorRule.Resolve(
                     direction,
-                    state);
+                    strength,
+                    StrongBuyArrowColor,
+                    StrongSellArrowColor,
+                    ConfirmedBuyArrowColor,
+                    ConfirmedSellArrowColor,
+                    CautionBuyArrowColor,
+                    CautionSellArrowColor,
+                    BlockedReactionArrowColor);
 
             // Keep every glyph outside the candle body and ensure the visible
             // arrow glyphs have a real vertical clearance from each other.
