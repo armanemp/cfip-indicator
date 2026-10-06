@@ -224,11 +224,24 @@ namespace cAlgo
             Color sellColor =
                 SellArrowColor;
 
+            double totalLiquidity =
+                buyLiquidity +
+                sellLiquidity;
+
+            double buyShare =
+                ready &&
+                totalLiquidity > 0
+                    ? buyLiquidity / totalLiquidity
+                    : 0;
+
+            double sellShare =
+                ready &&
+                totalLiquidity > 0
+                    ? sellLiquidity / totalLiquidity
+                    : 0;
+
             if (!ready)
             {
-                buyPressure = 0.5;
-                sellPressure = 0.5;
-
                 _panelBuyPressureLabel.Text = "BUY LIQ --";
                 _panelSellPressureLabel.Text = "SELL LIQ --";
 
@@ -244,10 +257,6 @@ namespace cAlgo
             }
             else
             {
-                double totalLiquidity =
-                    buyLiquidity +
-                    sellLiquidity;
-
                 int buyPercent =
                     totalLiquidity > 0
                         ? (int)Math.Round(
@@ -297,10 +306,7 @@ namespace cAlgo
                     (int)Math.Round(
                         contentWidth *
                         NumericGuards.ClampDouble(
-                            buyLiquidity /
-                            Math.Max(
-                                1,
-                                totalLiquidity),
+                            buyShare,
                             0,
                             1)));
 
@@ -310,10 +316,7 @@ namespace cAlgo
                     (int)Math.Round(
                         contentWidth *
                         NumericGuards.ClampDouble(
-                            sellLiquidity /
-                            Math.Max(
-                                1,
-                                totalLiquidity),
+                            sellShare,
                             0,
                             1)));
         }
@@ -378,8 +381,8 @@ namespace cAlgo
                     "CFIP realtime market-depth snapshot failed: {0}",
                     ex.Message);
 
-                buyPressure = 0;
-                sellPressure = 0;
+                buyLiquidity = 0;
+                sellLiquidity = 0;
                 return false;
             }
         }
