@@ -179,6 +179,12 @@ check(
 )
 
 check(
+    "reaction quality is clamped to a finite 0..100 domain",
+    "quality =\n                ClampInt(" in read("src/CFIP.Indicator/Analysis/Reaction/ReactionAnalyzer.cs") and
+    "0,\n                    100" in read("src/CFIP.Indicator/Analysis/Reaction/ReactionAnalyzer.cs"),
+)
+
+check(
     "non-M5 regime stability is derived from recent regime cores",
     "int stability = 1;" in read("src/CFIP.Indicator/Analysis/Market/MarketRegimeAnalyzer.cs") and
     "beforePrevious" in read("src/CFIP.Indicator/Analysis/Market/MarketRegimeAnalyzer.cs"),
