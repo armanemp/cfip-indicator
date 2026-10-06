@@ -416,6 +416,11 @@ namespace cAlgo
                 int level = ResolveDataBarLevel(bars);
                 bool ready = bars != null && bars.Count >= 2;
 
+                bar.Width =
+                    ready
+                        ? 12 + (level * 3)
+                        : 12;
+
                 bar.BackgroundColor =
                     ready
                         ? ResolveDataBarLevelColor(level)
