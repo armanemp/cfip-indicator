@@ -389,18 +389,11 @@ namespace cAlgo
 
         private void UpdatePanelDataStatusRail()
         {
-            if (_panelDataStatusText == null)
+            if (_panelDataStatusBars == null ||
+                _panelDataStatusBarControls == null)
                 return;
 
-            _panelDataStatusText.FontFamily =
-                string.IsNullOrWhiteSpace(PanelFontFamily)
-                    ? "Arial"
-                    : PanelFontFamily;
-            _panelDataStatusText.FontSize =
-                Math.Max(9, PanelFontSize - 2);
-            _panelDataStatusText.ForegroundColor =
-                PanelMutedTextColor;
-            _panelDataStatusText.IsVisible =
+            _panelDataStatusBars.IsVisible =
                 ShowUnifiedPanel && !_panelHidden;
 
             Bars[] frames =
@@ -412,57 +405,48 @@ namespace cAlgo
                 _h4Bars
             };
 
-            string[] labels =
+            for (int i = 0;
+                 i < frames.Length &&
+                 i < _panelDataStatusBarControls.Count;
+                 i++)
             {
-                "M1",
-                "M5",
-                "M15",
-                "H1",
-                "H4"
-            };
+                Border bar = _panelDataStatusBarControls[i];
+                Bars bars = frames[i];
 
-            string text = "DATA  ";
+                int level = ResolveDataBarLevel(bars);
+                bool ready = bars != null && bars.Count >= 2;
 
-            for (int i = 0; i < frames.Length; i++)
-            {
-                text += labels[i] + " " +
-                    ResolveDataBarGlyph(frames[i]);
+                bar.BackgroundColor =
+                    ready
+                        ? ResolveDataBarLevelColor(level)
+                        : Color.FromArgb(45, PanelWarningColor);
 
-                if (i < frames.Length - 1)
-                    text += "  ";
+                bar.BorderColor =
+                    ready
+                        ? ResolveDataStatusColor(frames)
+                        : PanelWarningColor;
+
+                bar.IsVisible = true;
             }
 
-            _panelDataStatusText.Text = text;
             _panelDataStatusText.ForegroundColor =
                 ResolveDataStatusColor(frames);
         }
 
-        private string ResolveDataBarGlyph(Bars bars)
+        private int ResolveDataBarLevel(Bars bars)
         {
-            if (bars == null ||
-                bars.Count < 2)
-                return "—";
+            if (bars == null || bars.Count < 2)
+                return 0;
 
-            int index =
-                Math.Max(
-                    0,
-                    Math.Min(
-                        bars.Count - 1,
-                        bars.Count - 1));
-
-            double current =
-                bars.TickVolumes[index];
+            int index = bars.Count - 1;
+            double current = bars.TickVolumes[index];
 
             if (double.IsNaN(current) ||
                 double.IsInfinity(current) ||
                 current <= 0)
-                return "▁";
+                return 1;
 
-            int start =
-                Math.Max(
-                    0,
-                    index - 20);
-
+            int start = Math.Max(0, index - 20);
             double sum = 0;
             int count = 0;
 
@@ -480,15 +464,12 @@ namespace cAlgo
             }
 
             if (count == 0 || sum <= 0)
-                return "▂";
+                return 1;
 
             double ratio =
-                current /
-                Math.Max(
-                    1e-9,
-                    sum / count);
+                current / Math.Max(1e-9, sum / count);
 
-            int level =
+            return
                 ratio >= 2.50 ? 8 :
                 ratio >= 2.00 ? 7 :
                 ratio >= 1.70 ? 6 :
@@ -497,9 +478,22 @@ namespace cAlgo
                 ratio >= 0.90 ? 3 :
                 ratio >= 0.65 ? 2 :
                 1;
+        }
 
-            const string glyphs = "▁▂▃▄▅▆▇█";
-            return glyphs[level - 1].ToString();
+        private Color ResolveDataBarLevelColor(int level)
+        {
+            if (level <= 0)
+                return PanelWarningColor;
+
+            int direction = GetMarketBiasDirection();
+
+            if (direction > 0)
+                return PanelDirectionColor(1);
+
+            if (direction < 0)
+                return PanelDirectionColor(-1);
+
+            return PanelSecondaryTextColor;
         }
 
         private Color ResolveDataStatusColor(Bars[] frames)
