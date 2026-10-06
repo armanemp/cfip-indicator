@@ -1235,8 +1235,8 @@ if "class TradeSetupPreview" not in preview_model_code:
     raise SystemExit("Visual setup preview model is missing")
 if "BuildTradeSetupPreview(" not in preview_builder_code:
     raise SystemExit("Visual setup preview builder is missing")
-if "BuildStructuralStop(" not in preview_builder_code or "BuildTargetLevels(" not in preview_builder_code:
-    raise SystemExit("Visual preview must reuse structural stop and target authorities")
+if "TryBuildParallelScenarioGeometry(" not in preview_builder_code or "BuildTargetLevels(" not in preview_builder_code:
+    raise SystemExit("Visual preview must reuse canonical parallel geometry and target authorities")
 if "SetupPreviewActive" not in visual_state_code or "SetupEntry" not in visual_state_code:
     raise SystemExit("Visual setup preview fields are missing")
 if "_setupPreview" not in visual_builder_code and "_setupPreview" not in visual_calc_code:
