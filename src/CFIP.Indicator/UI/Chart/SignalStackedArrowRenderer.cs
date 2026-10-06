@@ -122,11 +122,12 @@ namespace cAlgo
                     new TextBlock
                     {
                         Text = string.Empty,
-                        Width = 18,
-                        Height = 30,
-                        FontFamily = "Arial",
-                        FontSize = 24,
-                        FontWeight = FontWeight.Bold,
+                        Width = 20,
+                        Height = 36,
+                        FontFamily = "Segoe UI Symbol",
+                        FontSize = 28,
+                        FontWeight = FontWeight.ExtraBold,
+                        LineHeight = 32,
                         TextAlignment = TextAlignment.Center,
                         HorizontalAlignment = HorizontalAlignment.Center,
                         VerticalAlignment = VerticalAlignment.Center,
@@ -160,7 +161,8 @@ namespace cAlgo
                         Math.Max(8, PanelMargin),
                         Math.Max(8, PanelMargin)),
                     IsHitTestVisible = false,
-                    Child = _signalArrowBoxStack
+                    Child = _signalArrowBoxStack,
+                    IsVisible = false
                 };
 
             Chart.AddControl(_signalArrowBox);
