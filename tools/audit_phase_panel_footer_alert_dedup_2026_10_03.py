@@ -113,8 +113,8 @@ constants = read("UI/Panel/PanelConstants.cs")
 canonical_arrows = read("UI/Chart/SignalStackedArrowRenderer.cs")
 
 check(
-    "PanelFooterMinHeight = 70" in constants and
-    "PanelFlowPressureRailHeight = 42" in constants and
+    "PanelFooterMinHeight = 112" in constants and
+    "PanelFlowPressureRailHeight = 84" in constants and
     "ResolvePanelFooterAreaHeight(" in layout and
     "ResolvePanelFooterAreaHeight(" in panel and
     "ResolvePanelFooterAreaHeight(" in visual and
