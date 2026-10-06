@@ -816,3 +816,12 @@ Current fixes under validation:
 - sound delivery retries a failed canonical delivery and retains bounded burst capacity.
 
 The remaining analytical signal-quality work is still WP-20 family-level Evidence Fusion; this continuation is not a substitute for that rebuild.
+
+
+## 2026-10-06 — UI signal presentation / footer hardening
+
+- [x] Replace candle-anchored directional arrow presentation with one fixed bottom-right signal box; Show Signal Arrow remains the single default-on visibility control.
+- [x] Preserve canonical 9-level strength and centralized signal color ownership in the box.
+- [x] Move M1/M5/M15/H1/H4 data/tick-volume status bars into the fixed panel footer rather than the scrollable body.
+- [x] Add a CI source gate for arrow-box single ownership and footer data-status placement.
+- [ ] Target-terminal visual acceptance of the Release artifact remains required before declaring this UI work unit complete.
