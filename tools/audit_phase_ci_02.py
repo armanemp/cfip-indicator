@@ -109,10 +109,13 @@ check(
     and "MatchesStableWindowBoundaries" in cache
 )
 check(
-    "history replacement/reload invalidates cached state",
+    "history replacement/reload invalidates cached state and lifecycle disposes handlers",
     "bars.HistoryLoaded +=" in cache
     and "bars.Reloaded +=" in cache
     and "InvalidationPending" in cache
+    and "DisposeOssQuoteSeriesCache()" in cache
+    and "cache.Bars.HistoryLoaded -=" in cache
+    and "cache.Bars.Reloaded -=" in cache
 )
 
 for filename, expected in stable_adapters.items():
@@ -183,6 +186,9 @@ check(
 )
 
 check(
+    "indicator lifecycle disposes OSS cache subscriptions",
+    "DisposeOssQuoteSeriesCache();" in read("src/CFIP.Indicator/Runtime/Initialization/RuntimeInitialization.cs")
+)\n\ncheck(
     "runtime contracts execute canonical OSS window semantics",
     "VerifyOssQuoteProjectionSemantics();" in runtime
     and "VerifyOssQuoteWindowSemantics();" in runtime
