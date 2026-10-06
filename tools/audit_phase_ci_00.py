@@ -39,9 +39,6 @@ price_math = read("src/CFIP.Indicator/Trading/Execution/PriceMath.cs")
 zone = read(
     "src/CFIP.Indicator/Planning/Execution/ExecutionZoneBuilder.cs"
 )
-market_range = read(
-    "src/CFIP.Indicator/Trading/Execution/AutomaticMarket/AutomaticMarketRangeCalculator.cs"
-)
 aggressive = read(
     "src/CFIP.Indicator/Trading/Execution/Aggressive/AggressiveExecutionPreparation.cs"
 )
@@ -106,7 +103,6 @@ check(
 checks = [
     ("PriceMath", price_math),
     ("ExecutionZoneBuilder", zone),
-    ("AutomaticMarketRangeCalculator", market_range),
     ("AggressiveExecutionPreparation", aggressive),
     ("MarketEntryValidation", market_validation),
     ("PlanMarketConstraintValidator", plan_constraints),
