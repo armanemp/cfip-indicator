@@ -49,5 +49,11 @@ namespace cAlgo
                 intent.CreatedM5;
         }
 
+        private void ClearProviderExecutionIntentCapture()
+        {
+            _cfipProviderExecutionIntent = null;
+            _cfipProviderExecutionIntentM5 = -1;
+        }
+
     }
 }
