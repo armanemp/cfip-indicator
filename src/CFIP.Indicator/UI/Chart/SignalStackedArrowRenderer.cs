@@ -108,17 +108,20 @@ namespace cAlgo
             }
 
             int arrowCount =
-                ((strength - 1) % 3) + 1;
-
-            string state =
-                string.IsNullOrWhiteSpace(snapshot.MtfTrendStrengthTier)
-                    ? "WEAK"
-                    : snapshot.MtfTrendStrengthTier;
+                PanelNineLevelPresentationRule.ArrowCountForLevel(
+                    strength);
 
             Color arrowColor =
-                SignalArrowColorFor(
+                PanelNineLevelPresentationRule.ResolveColor(
                     direction,
-                    state);
+                    strength,
+                    StrongBuyArrowColor,
+                    StrongSellArrowColor,
+                    ConfirmedBuyArrowColor,
+                    ConfirmedSellArrowColor,
+                    CautionBuyArrowColor,
+                    CautionSellArrowColor,
+                    BlockedReactionArrowColor);
 
             // Keep every glyph outside the candle body and ensure the visible
             // arrow glyphs have a real vertical clearance from each other.
@@ -164,29 +167,6 @@ namespace cAlgo
                     arrowColor);
             }
         }
-
-        private Color SignalArrowColorFor(
-                            int direction,
-                            string state)
-                        {
-                            if (state == "REACTION")
-                                return BlockedReactionArrowColor;
-                
-                            if (state == "WATCH")
-                                return direction == 1
-                                    ? CautionBuyArrowColor
-                                    : CautionSellArrowColor;
-                
-                            if (state == "CONFIRMED")
-                                return direction == 1
-                                    ? ConfirmedBuyArrowColor
-                                    : ConfirmedSellArrowColor;
-                
-                            return direction == 1
-                                ? StrongBuyArrowColor
-                                : StrongSellArrowColor;
-                        }
-        
 
         private void RemoveStackedSignalArrows()
         {

@@ -70,6 +70,13 @@ check(
 )
 
 check(
+    "nine-level presentation has one shared visual owner",
+    "class PanelNineLevelPresentationRule" in read("src/CFIP.Indicator/UI/Panel/PanelNineLevelPresentationRule.cs") and
+    "ArrowCountForLevel" in read("src/CFIP.Indicator/UI/Panel/PanelNineLevelPresentationRule.cs") and
+    "ResolveColor" in read("src/CFIP.Indicator/UI/Panel/PanelNineLevelPresentationRule.cs"),
+)
+
+check(
     "canonical arrow renderer consumes snapshot strength only",
     "snapshot.MtfTrendStrengthLevel" in stack and
     "snapshot.MtfTrendDirection" in stack and

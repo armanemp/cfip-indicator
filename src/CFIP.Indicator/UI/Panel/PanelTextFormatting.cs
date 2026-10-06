@@ -158,8 +158,16 @@ namespace cAlgo
                                                 ? " | FVG+OB S"
                                                 : "");
 
+                                    string levelText =
+                                        state.Level > 0
+                                            ? PanelNineLevelPresentationRule.LevelLabel(
+                                                state.Level)
+                                            : "WAIT";
+
                                     return
                                         state.DirectionLabel +
+                                        " | " +
+                                        levelText +
                                         " | Q" +
                                         frame.Quality +
                                         " | E" +
