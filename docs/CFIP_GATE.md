@@ -801,7 +801,7 @@ P0 must produce:
 - Canonical inventory before closeout enumerated 1,127 files. The four-file delta was: `.vscode/extensions.json`, `docs/CFIP-LIST.md`, `docs/CFIP-PROMPT.md`, `docs/CFIP-PREPROMPT.md`. All four are now indexed.
 - Production projects: `CFIP.Indicator`, `CFIP.Contracts`, `CFIP.cBot`.
 - Production C# baseline from the machine gate: **668 files**.
-- Public parameter baseline: **543 declarations / 543 unique**, across **30 parameter source files**; zero unread candidates and no duplicate public parameter names.
+- Public parameter baseline: **534 declarations / 534 unique**, across **30 parameter source files**; zero unread candidates and no duplicate public parameter names.
 - Canonical MTF: **M1/M5/M15/M30/H1/H4/D1/W1**; M2 absent.
 
 ### CI / build evidence
