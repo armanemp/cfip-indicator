@@ -92,10 +92,36 @@ namespace cAlgo
                 double risk = geometry.Risk;
                 double riskAtr = geometry.RiskAtr;
 
+                bool allowMicroStopRelaxation =
+                    string.Equals(
+                        candidate.Timeframe,
+                        "M1",
+                        StringComparison.OrdinalIgnoreCase) &&
+                    _m5Frame != null &&
+                    _m15Frame != null &&
+                    _m5Frame.Direction == direction &&
+                    _m15Frame.Direction == direction &&
+                    _m5Frame.Quality >= SmartStopQuality;
+
+                double effectiveMinimumStopRiskAtr =
+                    StructuralStopRiskRule.ResolveEffectiveMinimumStopRiskAtr(
+                        MinimumSlAtr,
+                        atr,
+                        string.Equals(
+                            candidate.Timeframe,
+                            "M1",
+                            StringComparison.OrdinalIgnoreCase)
+                            ? frameAtr
+                            : double.NaN,
+                        spread,
+                        Symbol.PipSize,
+                        MaximumSpreadToStopRiskRatio,
+                        allowMicroStopRelaxation);
+
                 if (!StructuralStopRiskRule.IsWithinPlanningRiskEnvelope(
                         riskAtr,
                         atr,
-                        MinimumSlAtr,
+                        effectiveMinimumStopRiskAtr,
                         MaximumSlAtr,
                         MaximumStructuralStopAtr,
                         spread,
