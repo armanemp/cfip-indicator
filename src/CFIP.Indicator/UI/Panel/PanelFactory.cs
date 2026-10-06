@@ -249,9 +249,13 @@ namespace cAlgo
                                         _panelRows.Clear();
                                         _buttonStack = null;
                                         _panelFooterActions = null;
-                                        _panelDataStatusText = null;
-                                        _panelDataStatusBars = null;
-                                        _panelDataStatusBarControls.Clear();
+                                        _panelFlowPressureRail = null;
+                                        _panelBuyPressureTrack = null;
+                                        _panelSellPressureTrack = null;
+                                        _panelBuyPressureFill = null;
+                                        _panelSellPressureFill = null;
+                                        _panelBuyPressureLabel = null;
+                                        _panelSellPressureLabel = null;
                                         _panelToggleButton = null;
                                         _panelRestoreButton = null;
                                     }
