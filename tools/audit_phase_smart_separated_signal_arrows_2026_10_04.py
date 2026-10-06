@@ -117,15 +117,19 @@ check(
     "trade-direction conflict downgrades rather than erases the authoritative signal",
     "AuthoritativeDirection" in stack and
     "decisionOwnsDirection" in stack and
-    "MTF disagreement is a quality/conflict state" in stack and
+    "mtfDirection != 0" in stack and
+    "mtfDirection != direction" in stack and
     "strength = Math.Min(3, strength)" in stack,
 )
 
 check(
-    "non-canonical event/history/opportunity markers are not directional arrows",
+    "non-canonical event/history/opportunity visuals remain separate from canonical directional arrows",
     "ChartIconType.UpTriangle" in read("src/CFIP.Indicator/Trading/Alerts/ContextAlertEmitter.cs") and
-    "ChartIconType.UpTriangle" in read("src/CFIP.Indicator/UI/Chart/ParallelOpportunityRenderer.cs") and
-    "ChartIconType.UpTriangle" in read("src/CFIP.Indicator/UI/Historical/HistoricalRenderer.cs"),
+    "ChartIconType.DownTriangle" in read("src/CFIP.Indicator/Trading/Alerts/ContextAlertEmitter.cs") and
+    "ChartIconType.UpTriangle" in read("src/CFIP.Indicator/UI/Historical/HistoricalRenderer.cs") and
+    "ChartIconType.DownTriangle" in read("src/CFIP.Indicator/UI/Historical/HistoricalRenderer.cs") and
+    "ChartIconType.UpArrow" not in read("src/CFIP.Indicator/UI/Chart/ParallelOpportunityRenderer.cs") and
+    "ChartIconType.DownArrow" not in read("src/CFIP.Indicator/UI/Chart/ParallelOpportunityRenderer.cs"),
 )
 
 check(
@@ -155,7 +159,7 @@ check(
     "phase documentation records the single-owner contract",
     "Smart Separated Signal Arrows" in phase and
     ("single-owner" in phase.lower() or "single owner" in phase.lower()) and
-    "fixed signal box" in phase.lower() and
+    ("fixed 66×66" in phase.lower() or "fixed 66x66" in phase.lower()) and
     "git pull --ff-only" in phase,
 )
 
