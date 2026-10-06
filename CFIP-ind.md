@@ -725,3 +725,97 @@
 - [ ] Family-level vote matrix برای تمام native/OSS indicators
 - [ ] Structure/OB/FVG evidence audit
 - [ ] Flow/DOM/aggressive-flow evidence audit
+
+## 14. ممیزی عمیق — Batch 03 (Structure / Liquidity / FVG / OB / Reaction)
+
+### 14.1 Structure
+- `StructureAnalyzer` از `StructuralEventRule` برای شکست تازه و CHOCH استفاده می‌کند.
+- Structure، MSS و CHOCH در یک فریم causal eventهای کاملاً مستقل فرض نمی‌شوند؛ `StructuralEvidenceRule` downstream آن‌ها را به یک canonical structural event فرو می‌ریزد.
+- BullMss/BearMss از نظر هندسه به شکست ساختار نزدیک‌اند و بنابراین نباید به‌صورت رأی دوم وارد consensus شوند.
+- BullChoch/BearChoch فقط زمانی معتبرند که ساختار قبلی مخالف و شکست تازه جهت جدید وجود داشته باشد؛ این transition است، نه رأی مستقل دوم.
+- ریسک باقی‌مانده: قرارداد freshness/episode identity برای eventهای structure باید در anti-flip lifecycle صریح‌تر شود تا یک break در چند مسیر downstream دوباره event نشود.
+
+### 14.2 Liquidity Sweep
+- `LiquiditySweepAnalyzer` فقط swing تأییدشده و هنوز active/unbroken را مصرف می‌کند.
+- `LiquiditySweepRule.IsActiveUnbrokenLevel` مالک اعتبار سطح است و شکست قبلی سطح را از reuse به‌عنوان sweep تازه جلوگیری می‌کند.
+- penetration نسبت به ATR و حداقل pip/tick guard بررسی می‌شود.
+- این نتیجه باید «reaction to liquidity» تلقی شود، نه volume/executed-flow؛ در FX/spot، liquidity observable از یک broker/venue کل بازار جهانی نیست، چون بازار OTC و fragmented است. citeturn0search0turn0search1
+- ریسک باقی‌مانده: sweep، equal-level و structure break می‌توانند manifestations یک رویداد قیمتی باشند؛ در family/provenance matrix نهایی باید این هم‌پوشانی explicitly کنترل شود.
+
+### 14.3 FVG
+- `FvgRule` تنها مالک geometry است؛ 3-bar و optional 2-bar imbalance هر دو از همین owner استفاده می‌کنند.
+- minimum gap نسبت به ATR زمان ایجاد سنجیده می‌شود؛ lifecycle/partial mitigation/full fill مالک جداگانه دارد.
+- انتخاب FVG برای execution بین quality، distance و age توازن bounded دارد؛ FVG قدیمی یا دور صرفاً به‌خاطر quality بالا نباید برنده قطعی باشد.
+- FVG و OB در `LocationEvidenceRule` یک location family هستند و confluence به‌صورت bounded synergy اضافه می‌شود؛ این از رأی‌سازی مستقل برای هر zone جلوگیری می‌کند.
+- FVG opening-gap مفهومی نباید با structural FVG مخلوط شود؛ اگر بعداً داده gap اضافه شد، provenance جدا لازم است.
+
+### 14.4 Order Block
+- canonical ownership شامل `OrderBlockRule` برای geometry/qualification، `OrderBlockQualityRule` برای quality و `OrderBlockLifecycleRule` برای age/mitigation/invalidation است.
+- OB+FVG confluence در location owner نگه داشته شده و نباید در decision جای دیگری دوباره امتیاز کامل بگیرد.
+- ریسک باقی‌مانده: بعضی pending-candidate scorers هنوز context را به‌صورت feature-by-feature (FVG + OB + confluence + structure + MSS/CHOCH) امتیاز می‌دهند؛ این مسیر باید با canonical location/structural provenance تطبیق داده شود تا score مستقل موازی نسازد.
+
+### 14.5 Reaction
+- Reaction برای live M5 observation و closed-bar confirmation مسیر جدا و temporal-safe دارد.
+- `ReactionQualificationRule` کیفیت/حداقل evidence/context را مالک است و `ReactionTimingRule` جداسازی observation و confirmation را کنترل می‌کند.
+- Reaction direction نباید direction M15 را overwrite کند؛ در مسیر فعلی برای entry مخالف M15 gate وجود دارد.
+- Reaction شامل displacement/break-micro/RSI/EMA/zone/swing است؛ این‌ها evidenceهای هم‌خانواده‌اند و نباید به‌عنوان چند رأی مستقل وارد canonical directional consensus شوند.
+
+### 14.6 اصلاح واقعی Batch 03
+در `MarketFrameScoringService` یک defect واقعی پیدا شد: شمارنده `Evidence` قبلاً evidence صعودی و نزولی را در یک متغیر مشترک جمع می‌کرد. بنابراین فریمی که همزمان location/structure conflict داشت می‌توانست evidence و در نتیجه quality بیشتری بگیرد، حتی وقتی direction قوی و پاک وجود نداشت.
+
+اصلاح canonical:
+- `bullEvidence` و `bearEvidence` جدا شدند.
+- `Frame.Evidence` فقط evidence سمت غالب را نگه می‌دارد.
+- در exact tie، `Frame.Evidence = 0`.
+- این تغییر در همان owner انجام شد؛ هیچ score/gate موازی اضافه نشد.
+- commit: `77b64a875f7aaa7b41f12973029e3c21f84a6296`
+- static gate جدید: `tools/audit_phase_structure_zones_reaction_2026_10_07.py`
+- gate commit: `540d02b39d41a21c7e8990249308f5a350146f37`
+
+### 14.7 مبنای API/وب
+مستندات cTrader تأکید می‌کند Indicator وظیفه پردازش market data و نمایش/تحلیل است؛ داده‌های MarketData شامل Bars/Ticks/Depth هستند. برای FX نیز BIS تأکید می‌کند spot FX عمدتاً OTC، غیرمتمرکز و fragmented است؛ بنابراین liquidity/sweep و broker DOM نباید به‌عنوان تصویر کامل global executed flow معرفی شوند. citeturn0search4turn0search8turn0search0
+
+### 14.8 وضعیت Batch 03
+- [x] Structure ownership / causal event de-dup audit
+- [x] Active/unbroken liquidity audit
+- [x] FVG geometry/lifecycle/selection audit
+- [x] OB ownership/confluence audit
+- [x] Reaction temporal/quality audit
+- [x] Directional Evidence inflation fix
+- [x] Static acceptance gate added
+- [ ] Unified structural/liquidity/zone provenance matrix
+- [ ] Pending-candidate scorer migration to canonical evidence lineage
+- [ ] Anti-flip episode identity and hysteresis
+- [ ] Runtime/compile/architecture CI verification for this batch
+
+## 15. وضعیت پیشرفت کل پروژه — 2026-10-07
+
+این درصد، برآورد معماری/ممیزی است و به معنی درصد فایل‌های نوشته‌شده نیست.
+
+- پایه معماری و inventory: **100%**
+- Technical / Regime / primitive audit: **حدود 85%**
+- M15 / MTF / HTF / agreement: **حدود 85%**
+- Structure / Liquidity / FVG / OB / Reaction: **حدود 80%**
+- Flow / DOM / Aggressive Flow / volume semantics: **حدود 55%**
+- Decision anti-flip / hysteresis / family vote matrix: **حدود 60%**
+- Trade Plan / Entry / SL / TP / reward path: **حدود 70%**
+- Risk / XAU sizing / margin: **حدود 75%**
+- Indicator → cBot boundary: **حدود 75%**
+- cBot activation / real execution / reconciliation / lifecycle: **حدود 60%**
+- UI / arrows / flow bars / labels / alerts: **حدود 75%**
+- Outcome / calibration / leakage audit: **حدود 55%**
+
+### برآورد کلی
+**حدود 72% تکمیل معماری و ممیزی production.**
+
+برای رسیدن به «کامل و آماده اتکای واقعی»، هنوز حدود **28%** کار باقی است؛ مهم‌ترین بخش‌های باقی‌مانده:
+1. Flow/DOM/AggressiveFlow و نمایش حجم/میله‌ها با semantics دقیق.
+2. anti-flip + episode identity + family-level vote matrix.
+3. pending candidate scoring و حذف مسیرهای امتیازدهی موازی.
+4. cBot اجرای واقعی market/pending + idempotency + broker confirmation/reconciliation.
+5. protection/trailing/BE/partial lifecycle.
+6. UI final hardening و single-source visual/alert contract.
+7. end-to-end runtime/compile/architecture gates و تست واقعی روی cTrader/demo.
+8. outcome/calibration بدون leakage.
+
+**نکته مهم:** این 72% به معنی «72% کدنویسی» نیست؛ پروژه بخش زیادی از کد را دارد، اما درصد باقی‌مانده بر اساس owner integrity، correctness، runtime execution و acceptance gates محاسبه شده است.
