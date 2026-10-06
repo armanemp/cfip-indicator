@@ -70,17 +70,16 @@ namespace cAlgo
                         : 1;
 
             Color color =
-                direction == 1
-                    ? strength >= 3
-                        ? StrongBuyArrowColor
-                        : strength == 2
-                            ? ConfirmedBuyArrowColor
-                            : CautionBuyArrowColor
-                    : strength >= 3
-                        ? StrongSellArrowColor
-                        : strength == 2
-                            ? ConfirmedSellArrowColor
-                            : CautionSellArrowColor;
+                SignalPresentationColorRule.Resolve(
+                    direction,
+                    strength >= 3 ? 7 : strength == 2 ? 4 : 1,
+                    StrongBuyArrowColor,
+                    StrongSellArrowColor,
+                    ConfirmedBuyArrowColor,
+                    ConfirmedSellArrowColor,
+                    CautionBuyArrowColor,
+                    CautionSellArrowColor,
+                    BlockedReactionArrowColor);
 
             return new PanelTimeframePresentationState
             {
