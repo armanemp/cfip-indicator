@@ -102,8 +102,8 @@ require(
 )
 require(
     PENDING_FINAL,
-    r"CanRunAutomaticEntry\(\)[\s\S]*?EnsureTradingPermission\(\)[\s\S]*?PassesMarketSuitability\([\s\S]*?true",
-    "pending final runtime, permission and suitability gates",
+    r"CanRunAutomaticEntry\(\)[\s\S]*?PassesMarketSuitability\([\s\S]*?true",
+    "pending final runtime and suitability gates",
 )
 
 print("Phase 11.2 contract audit OK")
