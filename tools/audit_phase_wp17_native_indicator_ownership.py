@@ -45,8 +45,15 @@ for initializer in (
 
 check("InitializeMacd" in r, "native registry owns MACD initialization path")
 check("NativeIndicatorReadinessRule.IsFrameReady" in e, "frame evidence uses canonical native readiness")
-check("!set.IsInitialized" in r or "!set.IsInitialized" in n,
-      "native readiness is fail-closed after initialization failure")
+wrapper_sources = [
+    (ROOT / "src/CFIP.Indicator/Analysis/Indicators" / "AverageTrueRange.cs").read_text(encoding="utf-8"),
+    (ROOT / "src/CFIP.Indicator/Analysis/Indicators" / "AverageDirectionalIndex.cs").read_text(encoding="utf-8"),
+    (ROOT / "src/CFIP.Indicator/Analysis/Indicators" / "RelativeStrengthIndex.cs").read_text(encoding="utf-8"),
+    (ROOT / "src/CFIP.Indicator/Analysis/Indicators" / "DirectionalMovementIndex.cs").read_text(encoding="utf-8"),
+    (ROOT / "src/CFIP.Indicator/Analysis/Indicators" / "ExponentialMovingAverage.cs").read_text(encoding="utf-8"),
+]
+check(all("!set.IsInitialized" in source for source in wrapper_sources),
+      "native wrappers fail closed after initialization failure")
 check(re.search(r"\b(?:internal\s+static\s+)?bool\s+IsIndexedSeriesReady\s*\(", q) is not None,
       "indexed native series readiness is explicitly defined")
 
