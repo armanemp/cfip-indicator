@@ -5,6 +5,11 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
+        private Border _signalArrowBox;
+        private StackPanel _signalArrowBoxStack;
+        private readonly System.Collections.Generic.List<TextBlock> _signalArrowBoxArrows =
+            new System.Collections.Generic.List<TextBlock>(3);
+
         private void RenderCanonicalMtfTrendArrows(
             SignalVisualSnapshot snapshot,
             int bar)
