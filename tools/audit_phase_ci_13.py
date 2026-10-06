@@ -103,6 +103,25 @@ check(
 )
 
 check(
+    "HTF target candidates can use the adaptive reward extension envelope",
+    "ResolveMaximumExtensionAtr(" in evaluator and
+    "allowHtfExtension" in
+    read("src/CFIP.Indicator/Core/Math/TargetRewardEnvelopeRule.cs") and
+    "HtfMaximumExtensionAtrCap = 24.0" in
+    read("src/CFIP.Indicator/Core/Math/TargetRewardEnvelopeRule.cs") and
+    "maximumRR" in evaluator
+)
+
+check(
+    "HTF requirement is shared by stage feasibility and candidate filtering",
+    "bool requireHtf =" in stage_builder and
+    "TryValidateTargetStageFeasibility(" in stage_builder and
+    "requireHtf," in stage_builder and
+    "allowHtfExtension" in
+    read("src/CFIP.Indicator/Planning/TradePlan/TargetStageFeasibilityGate.cs")
+)
+
+check(
     "candidate evaluator retains canonical obstacle validation",
     "EvaluateTargetObstacle(" in evaluator and
     "HasOpposingZonePathObstacle(" in evaluator and
