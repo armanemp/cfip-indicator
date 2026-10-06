@@ -59,7 +59,6 @@ expected_scope = {
     "src/CFIP.Indicator/Trading/Pending/Placement/PendingSubmissionValidator.cs",
     "src/CFIP.Indicator/Trading/Intelligence/SignalEvaluationTraceRecorder.cs",
     "src/CFIP.Indicator/Analysis/Market/ParallelScenarioComputation.cs",
-    "src/CFIP.Indicator/Planning/TradePlan/PlanPreviewBuilder.cs",
     "src/CFIP.Indicator/Trading/Execution/Aggressive/OrphanManagedProtection.cs",
     "src/CFIP.Indicator/Trading/Lifecycle/ManagedLivePlanRecovery.cs",
     "src/CFIP.Indicator/Trading/Lifecycle/PendingFillPlanBuilder.cs",
