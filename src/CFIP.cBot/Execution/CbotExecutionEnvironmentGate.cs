@@ -12,7 +12,7 @@ namespace CFIP.cBot.Execution
             SignalEnvelope envelope,
             double maximumMarginUsagePercent,
             double marginBufferPercent,
-            CbotIndicatorExecutionSettings settings,
+            CbotExecutionSettings settings,
             CbotDailyLossGuard dailyLossGuard,
             bool pendingAction,
             int maximumConcurrentScenarios,
