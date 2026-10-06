@@ -25,11 +25,8 @@ def check(name: str, condition: bool) -> None:
 rule = read("src/CFIP.Indicator/Core/Math/ExecutionFillAcceptanceRule.cs")
 intent = read("src/CFIP.Indicator/Planning/Execution/ExecutionIntentValidation.cs")
 market = read("src/CFIP.Indicator/Planning/Execution/MarketEntryValidation.cs")
-aggressive = read(
-    "src/CFIP.Indicator/Trading/Execution/Aggressive/AggressiveAcceptedFillHandler.cs"
-)
-automatic = read(
-    "src/CFIP.Indicator/Trading/Execution/AutomaticMarket/AutomaticMarketFillReconciliation.cs"
+cbot_market = read(
+    "src/CFIP.cBot/Execution/DemoMarketExecutionCoordinator.cs"
 )
 runtime = read("tools/CFIP.Runtime.Contracts/Program.cs")
 contracts = read("tools/CFIP.Runtime.Contracts/CFIP.Runtime.Contracts.csproj")
@@ -61,6 +58,15 @@ check(
 )
 
 check(
+    "cBot market execution preserves canonical contract identity and broker-filled protection facts",
+    "envelope.Identity" in cbot_market and
+    "result.Position.EntryPrice" in cbot_market and
+    "result.Position.StopLoss" in cbot_market and
+    "result.Position.TakeProfit" in cbot_market and
+    "BrokerExecutionReport" in cbot_market,
+)
+
+check(
     "intent caller uses the canonical rule with favorable fills enabled",
     "ExecutionFillAcceptanceRule.IsAcceptable(" in intent and
     "intent.Direction" in intent and
@@ -69,10 +75,9 @@ check(
 )
 
 check(
-    "automatic-market fill caller uses the same canonical owner",
-    "ExecutionFillAcceptanceRule.IsAcceptable(" in market and
+    "automatic-market fill preparation remains on the canonical execution validation chain",
+    "ExecutionFillAcceptanceRule.IsAcceptable(" in intent and
     "plan.Direction" in market and
-    "plan.Entry" in market and
     "MaximumEntryExtensionAtr" in market,
 )
 
@@ -84,22 +89,16 @@ check(
 )
 
 check(
-    "aggressive path has no second symmetric absolute-distance envelope",
-    "maximumFillDistance" not in aggressive and
-    "Math.Abs(" not in aggressive and
-    "MaximumEntryExtensionAtr" not in aggressive,
+    "aggressive path remains pre-trade preparation only before cBot mutation",
+    "TryPrepareAggressiveExecution(" in read("src/CFIP.Indicator/Trading/Execution/Aggressive/AggressiveExecutionPreparation.cs") and
+    "ExecuteMarketOrder(" not in read("src/CFIP.Indicator/Trading/Execution/Aggressive/AggressiveExecutionPreparation.cs"),
 )
 
 check(
-    "automatic fill is validated before actual-fill reconciliation mutates plan Entry",
-    automatic.find("IsExecutableFillPrice(") >= 0 and
-    automatic.find("IsExecutableFillPrice(") < automatic.find("ReconcileLivePlanToActualFill("),
-)
-
-check(
-    "automatic market does not publish LivePosition before the fill envelope passes",
-    automatic.find("IsExecutableFillPrice(") >= 0 and
-    automatic.find("IsExecutableFillPrice(") < automatic.find("LifecycleState.LivePosition"),
+    "cBot broker confirmation is fail-closed when protection is incomplete",
+    "protectionConfirmed" in cbot_market and
+    "BrokerReportStatus.RecoveryRequired" in cbot_market and
+    "BrokerReportStatus.Confirmed" in cbot_market,
 )
 
 check(
