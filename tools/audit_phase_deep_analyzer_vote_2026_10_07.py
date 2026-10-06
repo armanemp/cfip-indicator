@@ -26,6 +26,57 @@ def check(name: str, ok: bool) -> None:
         errors.append(name)
 
 
+# Inventory coverage: every production analyzer family remains represented.
+expected_analyzers = [
+    "src/CFIP.Indicator/Analysis/Indicators/AverageTrueRange.cs",
+    "src/CFIP.Indicator/Analysis/Indicators/AverageDirectionalIndex.cs",
+    "src/CFIP.Indicator/Analysis/Indicators/DirectionalMovementIndex.cs",
+    "src/CFIP.Indicator/Analysis/Indicators/ExponentialMovingAverage.cs",
+    "src/CFIP.Indicator/Analysis/Indicators/RelativeStrengthIndex.cs",
+    "src/CFIP.Indicator/Analysis/Indicators/MacdIndicator.cs",
+    "src/CFIP.Indicator/Analysis/Indicators/External/OssIndicatorConfluenceAnalyzer.cs",
+    "src/CFIP.Indicator/Analysis/Indicators/External/SkenderRsi.cs",
+    "src/CFIP.Indicator/Analysis/Indicators/External/SkenderMacd.cs",
+    "src/CFIP.Indicator/Analysis/Indicators/External/SkenderMfi.cs",
+    "src/CFIP.Indicator/Analysis/Indicators/External/SkenderStoch.cs",
+    "src/CFIP.Indicator/Analysis/Indicators/External/SkenderSuperTrend.cs",
+    "src/CFIP.Indicator/Analysis/Indicators/External/SkenderAroon.cs",
+    "src/CFIP.Indicator/Analysis/Indicators/External/SkenderCci.cs",
+    "src/CFIP.Indicator/Analysis/Indicators/External/SkenderObv.cs",
+    "src/CFIP.Indicator/Analysis/Indicators/External/SkenderBollingerBands.cs",
+    "src/CFIP.Indicator/Analysis/Indicators/External/SkenderParabolicSar.cs",
+    "src/CFIP.Indicator/Analysis/Market/ChoppinessIndexAnalyzer.cs",
+    "src/CFIP.Indicator/Analysis/Market/DivergenceAnalyzer.cs",
+    "src/CFIP.Indicator/Analysis/Market/HealthyVolatilityAnalyzer.cs",
+    "src/CFIP.Indicator/Analysis/Market/LiveBiasAnalyzer.cs",
+    "src/CFIP.Indicator/Analysis/Market/MacdBiasAnalyzer.cs",
+    "src/CFIP.Indicator/Analysis/Market/PremiumDiscountAnalyzer.cs",
+    "src/CFIP.Indicator/Analysis/Market/RangeEfficiencyAnalyzer.cs",
+    "src/CFIP.Indicator/Analysis/Market/VolumeExpansionAnalyzer.cs",
+    "src/CFIP.Indicator/Analysis/Market/VolumeProfileAnalyzer.cs",
+    "src/CFIP.Indicator/Analysis/Market/VwapBiasAnalyzer.cs",
+    "src/CFIP.Indicator/Analysis/Market/WaveTrendEngine.cs",
+    "src/CFIP.Indicator/Analysis/Market/WaveTrendEvidenceAnalyzer.cs",
+    "src/CFIP.Indicator/Analysis/Structure/StructureAnalyzer.cs",
+    "src/CFIP.Indicator/Analysis/Structure/SwingPointAnalyzer.cs",
+    "src/CFIP.Indicator/Analysis/Structure/LiquiditySweepAnalyzer.cs",
+    "src/CFIP.Indicator/Analysis/Structure/EqualLevelAnalyzer.cs",
+    "src/CFIP.Indicator/Analysis/Structure/Zones/FvgDetectionAnalyzer.cs",
+    "src/CFIP.Indicator/Analysis/Structure/Zones/FvgLifecycleAnalyzer.cs",
+    "src/CFIP.Indicator/Analysis/Structure/Zones/FvgMitigationEvaluator.cs",
+    "src/CFIP.Indicator/Analysis/Structure/Zones/FvgZoneQualityCalculator.cs",
+    "src/CFIP.Indicator/Analysis/Structure/Zones/OrderBlockAnalyzer.cs",
+    "src/CFIP.Indicator/Analysis/Structure/Zones/OrderBlockMitigationGuard.cs",
+    "src/CFIP.Indicator/Analysis/Structure/Zones/OrderBlockEvidenceBuilder.cs",
+    "src/CFIP.Indicator/Analysis/Structure/Zones/OrderBlockCandidateBuilder.cs",
+    "src/CFIP.Indicator/Analysis/Structure/Zones/OrderBlockQualityCalculator.cs",
+]
+check(
+    "full analyzer inventory remains present",
+    all((ROOT / rel).exists() for rel in expected_analyzers),
+)
+
+
 # Canonical primitive indicator owners.
 native = read("src/CFIP.Indicator/Analysis/Indicators/Native/Native.cs")
 native_registry = read("src/CFIP.Indicator/Analysis/Indicators/NativeIndicatorRegistry.cs")
