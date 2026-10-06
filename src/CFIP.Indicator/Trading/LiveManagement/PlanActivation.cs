@@ -40,8 +40,6 @@ namespace cAlgo
                                 {
                                     _plan = plan;
                                     _lastSignalM5 = plan.CreatedM5;
-                                    _lastConfirmedM5 = plan.CreatedM5;
-                                    _lastConfirmedDirection = plan.Direction;
                                     _peakPrice = plan.Entry;
                         
                                     _lastMarket =
