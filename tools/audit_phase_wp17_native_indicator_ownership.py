@@ -54,6 +54,9 @@ wrapper_sources = [
 ]
 check(all("!set.IsInitialized" in source for source in wrapper_sources),
       "native wrappers fail closed after initialization failure")
+macd_bias = (ROOT / "src/CFIP.Indicator/Analysis/Market/MacdBiasAnalyzer.cs").read_text(encoding="utf-8")
+check("!set.IsInitialized" in macd_bias,
+      "direct native MACD consumer fails closed after initialization failure")
 check(re.search(r"\b(?:internal\s+static\s+)?bool\s+IsIndexedSeriesReady\s*\(", q) is not None,
       "indexed native series readiness is explicitly defined")
 
