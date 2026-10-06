@@ -465,6 +465,9 @@ namespace CFIP.cBot.Shadow.Tests
                     true,
                     false,
                     false,
+                    true,
+                    false,
+                    "BROKER PROTECTION",
                     out _),
                 "broker protection must be allowed when smart protection is enabled");
 
