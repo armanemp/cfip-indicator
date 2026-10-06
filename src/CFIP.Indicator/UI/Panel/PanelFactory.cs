@@ -14,6 +14,9 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
+        private StackPanel _panelFooterActions;
+        private TextBlock _panelDataStatusText;
+
         private void CreatePanel()
                                 {
                                     if (_panel != null)
