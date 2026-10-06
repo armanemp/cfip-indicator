@@ -101,10 +101,11 @@ require(
     "panel key must invalidate when primary MTF frames change",
 )
 require(
-    "PRIMARY_M15_SIGNAL" in parallel_renderer and
-    "PRIMARY_H1_SIGNAL" in parallel_renderer and
-    '"WATCH"' in parallel_renderer,
-    "primary M15/H1 visual markers must remain distinct from canonical execution state",
+    "PRIMARY_M15_SIGNAL" not in parallel_renderer and
+    "PRIMARY_H1_SIGNAL" not in parallel_renderer and
+    "ChartIconType.UpTriangle" not in parallel_renderer and
+    "ChartIconType.DownTriangle" not in parallel_renderer,
+    "primary M15/H1 direction must not create competing chart markers; canonical panel/box presentation remains the visual owner",
 )
 require(
     "VerifyPanelFrameDirectionPresentation();" in runtime and
