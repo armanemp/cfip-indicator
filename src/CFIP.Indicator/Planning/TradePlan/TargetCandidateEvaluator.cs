@@ -152,7 +152,7 @@ namespace cAlgo
                         distance /
                         atr,
                         -1,
-                        MaximumTargetExtensionAtr);
+                        effectiveMaximumTargetExtensionAtr);
 
                     rejectionReason =
                         TargetCandidateRejectionReasons.OpposingZoneObstacle;
@@ -174,7 +174,7 @@ namespace cAlgo
                         distance /
                         atr,
                         -1,
-                        MaximumTargetExtensionAtr);
+                        effectiveMaximumTargetExtensionAtr);
 
                     rejectionReason =
                         TargetCandidateRejectionReasons.HtfZoneObstacle;
