@@ -138,7 +138,6 @@ namespace cAlgo
             track =
                 new Border
                 {
-                    Width = 1,
                     Height = PanelFlowPressureBarHeight,
                     CornerRadius = 4,
                     BorderThickness = 0,
