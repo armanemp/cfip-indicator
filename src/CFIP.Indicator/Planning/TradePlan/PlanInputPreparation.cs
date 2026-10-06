@@ -63,8 +63,7 @@ namespace cAlgo
 
             if (RequirePrecisionEntry &&
                 execution.Quality <
-                Math.Max(
-                    40,
+                ActionabilityThresholdPolicy.EffectivePrecisionEntryQualityFloor(
                     MinimumEntryQuality))
                 return false;
 

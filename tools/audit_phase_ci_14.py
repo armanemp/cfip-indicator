@@ -303,3 +303,25 @@ print(
     "math owner, candidate/plan/action/execution consumers, live lifecycle, "
     "panel display and accumulated gate wiring are consistent"
 )
+
+# Claude M-62/M-63 regression locks: effective thresholds must have one owner.
+threshold_policy = read("src/CFIP.Indicator/Core/Math/ActionabilityThresholdPolicy.cs")
+rr_calculator = read("src/CFIP.Indicator/Planning/TradePlan/MinimumRequiredRiskRewardCalculator.cs")
+plan_input = read("src/CFIP.Indicator/Planning/TradePlan/PlanInputPreparation.cs")
+plan_protection = read("src/CFIP.Indicator/Planning/TradePlan/PlanProtectionIntegrityValidator.cs")
+
+check(
+    "adaptive RR floors are centrally owned and exposed as effective policy values",
+    "ExpansionMinimumTp1RRFloor = 2.10" in threshold_policy and
+    "RangeMinimumTp1RRFloor = 2.25" in threshold_policy and
+    "ActionabilityThresholdPolicy.ExpansionMinimumTp1RRFloor" in rr_calculator and
+    "ActionabilityThresholdPolicy.RangeMinimumTp1RRFloor" in rr_calculator,
+)
+check(
+    "precision entry threshold has one canonical effective-value owner",
+    "EffectivePrecisionEntryQualityFloor(" in threshold_policy and
+    "EffectivePrecisionEntryQualityFloor(" in plan_input and
+    "EffectivePrecisionEntryQualityFloor(" in plan_protection and
+    "Math.Max(\n                    40,\n                    MinimumEntryQuality)" not in plan_input and
+    "System.Math.Max(\n                    40,\n                    MinimumEntryQuality)" not in plan_protection,
+)
