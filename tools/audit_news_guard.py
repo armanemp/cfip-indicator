@@ -163,7 +163,7 @@ for path in (ROOT / "src").rglob("*.cs"):
 bot = read("src/CFIP.cBot/CFIPExecutionBot.cs")
 indicator_news = read("src/CFIP.Indicator/Indicator/Parameters/28_news_guard.cs")
 news_protection = read("src/CFIP.Indicator/Trading/Intelligence/EconomicNewsProtection.cs")
-if "CancelCfipPendingBeforeHighImpactNews" not in bot or "ProtectCfipPositionBeforeHighImpactNews" not in bot:
+if "CancelPendingBeforeHighImpactNews" not in bot or "CloseActiveBeforeHighImpactNews" not in bot:
     errors.append("cBot news execution policy is not declared on the execution owner")
 if "CancelPendingBeforeHighImpactNews" in indicator_news or "CloseActiveBeforeHighImpactNews" in indicator_news:
     errors.append("legacy Indicator-owned news execution policy remains")
