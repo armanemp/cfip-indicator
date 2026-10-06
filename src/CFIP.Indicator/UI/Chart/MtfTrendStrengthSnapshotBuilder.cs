@@ -37,10 +37,7 @@ namespace cAlgo
                             ? Math.Max(0, W1Weight)
                             : 0
                     },
-                    Symbol.Ask > 0 &&
-                    Symbol.Bid > 0
-                        ? (Symbol.Ask + Symbol.Bid) * 0.5
-                        : Symbol.Ask);
+                    0.0);
 
             snapshot.MtfTrendDirection =
                 trendStrength.Direction;
