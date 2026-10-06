@@ -64,8 +64,13 @@ namespace cAlgo
             _smoothLength = Math.Max(1, smoothLength);
             _signalType = signalType;
             _signalLength = Math.Max(1, signalLength);
-            _os1 = Math.Min(os1, os2);
-            _os2 = Math.Max(os1, os2);
+            // OS1/OS2 are ordered as near/extreme oversold thresholds
+            // (-30/-40). The active oversold boundary must mirror the active
+            // overbought boundary (+30), otherwise the old Min(OS1,OS2)
+            // produced a deeper BUY threshold while OB used the shallower
+            // Min(OB1,OB2), creating a directional bias.
+            _os1 = Math.Max(os1, os2);
+            _os2 = Math.Min(os1, os2);
             _ob1 = Math.Min(ob1, ob2);
             _ob2 = Math.Max(ob1, ob2);
 
