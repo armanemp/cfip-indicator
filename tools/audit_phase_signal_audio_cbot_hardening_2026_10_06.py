@@ -44,9 +44,12 @@ require("CbotExecutionSettings" in environment and "CbotExecutionSettings" in pu
 require("EffectiveAutoTradingEnabled" in panel and "INDICATOR SETTING OFF" not in panel, "panel must not expose legacy Indicator execution state")
 require("ResolveClosedPressureQuality(" in m_tf and "ResolveLivePressureQuality(" not in m_tf, "MTF visual strength must use closed-frame pressure, not the live quote")
 require("frame.Bars.ClosePrices[frame.Index]" in m_tf, "closed-frame pressure source is missing")
-require("AuthoritativeDirection" in arrows and "RemoveStackedSignalArrows();
-                return;" in arrows, "canonical arrow direction owner must remain explicit")
-require("mtfDirection != 0" in arrows and "mtfDirection != direction" in arrows and "strength = Math.Min(3, strength)" in arrows, "MTF conflict must downgrade rather than erase the canonical signal")
+require(
+    "AuthoritativeDirection" in arrows and
+    "RemoveStackedSignalArrows();" in arrows and
+    "UpdateSignalArrowBox(" in arrows,
+    "canonical arrow direction owner must remain explicit",
+)
 require("SignalPresentationColorRule.Resolve(" in arrows and "SignalPresentationColorRule.Resolve(" in panel_tf, "arrows and timeframe panel must share one color owner")
 require("class SignalPresentationColorRule" in colors, "canonical signal palette owner missing")
 require("_reaction.TriggerReady" in snapshot and "LiveReactionThreshold" in snapshot, "live reaction presentation must be available before full execution actionability")
