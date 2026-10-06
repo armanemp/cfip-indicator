@@ -6530,7 +6530,8 @@ namespace cAlgo
             Assert(
                 previewBuilder.Contains("TryBuildParallelScenarioGeometry(") &&
                 previewBuilder.Contains("BuildTargetLevels(") &&
-                previewBuilder.Contains("SelectTargets("),
+                previewBuilder.Contains("SelectTargets(") &&
+                !previewBuilder.Contains("private bool TryBuildScenarioGeometry("),
                 "visual preview reuses canonical planning geometry authorities");
 
             Assert(
