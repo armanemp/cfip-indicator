@@ -9,21 +9,6 @@ namespace cAlgo
             ref int slot,
             int contentWidth)
         {
-            bool tradingPermission =
-                HasTradingPermission();
-
-            AddPanelRow(
-                ref slot,
-                "PERMISSION  •  " +
-                (tradingPermission
-                    ? "TRADING ALLOWED"
-                    : "TRADING NOT GRANTED"),
-                tradingPermission
-                    ? TpLineColor
-                    : PanelWarningColor,
-                true,
-                contentWidth);
-
             if (ShowSpreadDiagnostics)
             {
                 double spreadPips =
