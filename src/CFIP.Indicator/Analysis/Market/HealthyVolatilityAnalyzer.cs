@@ -23,6 +23,10 @@ namespace cAlgo
                         5,
                         index - 10));
 
+            if (!NumericGuards.IsFinitePositive(atr) ||
+                !NumericGuards.IsFinitePositive(oldAtr))
+                return false;
+
             return HealthyVolatilityRule.IsHealthy(
                 atr,
                 oldAtr,
