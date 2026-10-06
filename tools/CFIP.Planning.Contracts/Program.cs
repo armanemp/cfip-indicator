@@ -22,6 +22,7 @@ namespace cAlgo
             VerifyTradePlanRegistryOrdering();
             VerifyPlanRewardRiskQuality();
             VerifyCanonicalRiskRewardMath();
+            VerifyAdaptiveStopAndHtfRewardEnvelope();
             VerifyExecutionIntentGeometry();
             VerifyTargetPipelineD7();
             VerifyTargetObstacleCachePolicyF9();
@@ -358,6 +359,108 @@ namespace cAlgo
 
             Console.WriteLine(
                 "D8 TP1 directional defence: BUY/SELL valid and wrong-side fixtures passed");
+        }
+
+        private static void VerifyAdaptiveStopAndHtfRewardEnvelope()
+        {
+            double microMinimum =
+                StructuralStopRiskRule.ResolveEffectiveMinimumStopRiskAtr(
+                    0.55,
+                    1.00,
+                    0.25,
+                    0.01,
+                    0.0001,
+                    0.18,
+                    true);
+
+            Assert(
+                microMinimum >= StructuralStopRiskRule.MicroStopRiskAtrFloor &&
+                microMinimum < 0.55,
+                "micro stop can tighten below the broad M5 floor only within safety envelope");
+
+            double wideMicroMinimum =
+                StructuralStopRiskRule.ResolveEffectiveMinimumStopRiskAtr(
+                    0.55,
+                    1.00,
+                    0.90,
+                    0.01,
+                    0.0001,
+                    0.18,
+                    true);
+
+            Assert(
+                wideMicroMinimum >= 0.90 * StructuralStopRiskRule.MicroStopM1AtrMultiplier,
+                "micro stop floor expands with M1 volatility");
+
+            double spreadDominatedMinimum =
+                StructuralStopRiskRule.ResolveEffectiveMinimumStopRiskAtr(
+                    0.55,
+                    1.00,
+                    0.20,
+                    0.20,
+                    0.0001,
+                    0.18,
+                    true);
+
+            Assert(
+                spreadDominatedMinimum >= 0.20 / 1.00 / 0.18,
+                "micro stop cannot be tighter than spread-derived safety floor");
+
+            double baseExtension =
+                TargetRewardEnvelopeRule.ResolveMaximumExtensionAtr(
+                    0.75,
+                    1.00,
+                    4.0,
+                    12.0,
+                    false);
+
+            double htfExtension =
+                TargetRewardEnvelopeRule.ResolveMaximumExtensionAtr(
+                    0.75,
+                    1.00,
+                    4.0,
+                    12.0,
+                    true);
+
+            Assert(
+                Math.Abs(baseExtension - 4.0) < 1e-12,
+                "non-HTF target extension retains base ceiling");
+
+            Assert(
+                htfExtension > baseExtension &&
+                htfExtension <= TargetRewardEnvelopeRule.HtfMaximumExtensionAtrCap,
+                "HTF target extension can expand only toward the configured maximum RR envelope");
+
+            Assert(
+                TargetRewardEnvelopeRule.CanReachStage(
+                    6.50,
+                    0.75,
+                    1.00,
+                    4.0,
+                    12.0,
+                    true),
+                "HTF TP4 can remain reachable when 4 ATR would otherwise make it impossible");
+
+            Assert(
+                !TargetRewardEnvelopeRule.CanReachStage(
+                    6.50,
+                    0.75,
+                    1.00,
+                    4.0,
+                    12.0,
+                    false),
+                "non-HTF TP4 remains bounded by the original extension ceiling");
+
+            Assert(
+                TargetRewardEnvelopeRule.IsSafeExtensionForMaximumReward(
+                    24.0,
+                    0.75,
+                    1.00,
+                    12.0),
+                "HTF extension safety cap stays explicit");
+
+            Console.WriteLine(
+                "Adaptive micro-SL / HTF reward envelope contracts: safety floors, spread protection and TP4 reachability passed");
         }
 
         private static void VerifyTargetSelectionConsistency()
