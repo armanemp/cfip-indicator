@@ -185,8 +185,6 @@ namespace cAlgo
                         InvalidatePanelExecutionProtectionStateCache();
                     }
                 }
-                private bool _lastConfiguredAutoTrading;
-                private bool _lastConfiguredAutomaticOrders;
                 private bool _outcomeTelemetryTimedOut;
                 private string _lastExecutionTelemetryPath = "";
                 private string _lastExecutionTelemetryState = "IDLE";
