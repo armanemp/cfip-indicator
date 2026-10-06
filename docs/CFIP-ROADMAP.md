@@ -339,7 +339,7 @@ Exit: one decision/actionability authority; consumers do not rebuild.
 
 
 - **Micro-SL:** M1 and M5 structural candidates may use M1 volatility to tighten the stop below the broad M5 minimum only when the canonical M5 and M15 directions agree and the existing Smart Stop Quality threshold is met; the M5 case retains its M5 structural source.
-- **Micro-SL safety:** the relaxed floor is never below the canonical micro floor, never below the M1-volatility-derived floor, and never below the spread-derived stop-risk floor. Non-M1 structural stops retain the configured broad minimum.
+- **Micro-SL safety:** the relaxed floor is never below the canonical micro floor, never below the M1-volatility-derived floor, and never below the spread-derived stop-risk floor. M15+ structural stops retain the configured broad minimum.
 - **M1/M5 buffer semantics:** M1 and M5 structural sources use `StopBufferAtr`; only M15+ sources use `HtfStopBufferAtr`.
 - **HTF reward expansion:** TP1 remains conservative; TP2+ keeps the existing HTF-source requirement and may use an adaptive target-extension envelope derived from the maximum permitted RR and actual stop risk.
 - **No synthetic profit:** adaptive HTF extension never overrides target-side, obstacle, freshness, HTF-quality, progression or maximum-RR safety checks.
