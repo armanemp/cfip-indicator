@@ -197,9 +197,12 @@ check(
     "SINGLE-PLAN CAPACITY BLOCKED" not in pending
 )
 check(
-    "single-plan safety remains intact before 6M adoption",
+    "single-position broker safety remains explicit before 6M adoption",
     '"Max Concurrent Scenarios"' in bot and
-    "MaximumOpenPositions" not in bot
+    "MaximumOpenPositions" in bot and
+    'DefaultValue = 1' in bot and
+    'MinValue = 1' in bot and
+    'MaxValue = 1' in bot
 )
 check(
     "6M audit is wired into Source/Architecture CI",
