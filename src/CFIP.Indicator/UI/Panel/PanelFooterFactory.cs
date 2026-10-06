@@ -210,13 +210,13 @@ namespace cAlgo
             _panelSellPressureTrack.Width =
                 contentWidth;
 
-            double buyPressure;
-            double sellPressure;
+            double buyLiquidity;
+            double sellLiquidity;
 
             bool ready =
-                TryResolveCanonicalBuySellPressure(
-                    out buyPressure,
-                    out sellPressure);
+                TryResolveCanonicalBuySellLiquidity(
+                    out buyLiquidity,
+                    out sellLiquidity);
 
             Color buyColor =
                 BuyArrowColor;
@@ -224,13 +224,26 @@ namespace cAlgo
             Color sellColor =
                 SellArrowColor;
 
+            double totalLiquidity =
+                buyLiquidity +
+                sellLiquidity;
+
+            double buyShare =
+                ready &&
+                totalLiquidity > 0
+                    ? buyLiquidity / totalLiquidity
+                    : 0;
+
+            double sellShare =
+                ready &&
+                totalLiquidity > 0
+                    ? sellLiquidity / totalLiquidity
+                    : 0;
+
             if (!ready)
             {
-                buyPressure = 0.5;
-                sellPressure = 0.5;
-
-                _panelBuyPressureLabel.Text = "BUY --";
-                _panelSellPressureLabel.Text = "SELL --";
+                _panelBuyPressureLabel.Text = "BUY LIQ --";
+                _panelSellPressureLabel.Text = "SELL LIQ --";
 
                 buyColor =
                     Color.FromArgb(
@@ -245,23 +258,33 @@ namespace cAlgo
             else
             {
                 int buyPercent =
-                    (int)Math.Round(
-                        buyPressure * 100.0);
+                    totalLiquidity > 0
+                        ? (int)Math.Round(
+                            buyLiquidity /
+                            totalLiquidity *
+                            100.0)
+                        : 50;
 
                 int sellPercent =
                     100 - buyPercent;
 
                 _panelBuyPressureLabel.Text =
-                    "BUY " +
+                    "BUY LIQ " +
+                    FormatRealtimeVolume(
+                        buyLiquidity) +
+                    " u (" +
                     buyPercent.ToString(
                         System.Globalization.CultureInfo.InvariantCulture) +
-                    "%";
+                    "%)";
 
                 _panelSellPressureLabel.Text =
-                    "SELL " +
+                    "SELL LIQ " +
+                    FormatRealtimeVolume(
+                        sellLiquidity) +
+                    " u (" +
                     sellPercent.ToString(
                         System.Globalization.CultureInfo.InvariantCulture) +
-                    "%";
+                    "%)";
             }
 
             _panelBuyPressureLabel.ForegroundColor = buyColor;
@@ -283,7 +306,7 @@ namespace cAlgo
                     (int)Math.Round(
                         contentWidth *
                         NumericGuards.ClampDouble(
-                            buyPressure,
+                            buyShare,
                             0,
                             1)));
 
@@ -293,104 +316,112 @@ namespace cAlgo
                     (int)Math.Round(
                         contentWidth *
                         NumericGuards.ClampDouble(
-                            sellPressure,
+                            sellShare,
                             0,
                             1)));
         }
 
-        private bool TryResolveCanonicalBuySellPressure(
-            out double buyPressure,
-            out double sellPressure)
+        private bool TryResolveCanonicalBuySellLiquidity(
+            out double buyLiquidity,
+            out double sellLiquidity)
         {
-            buyPressure = 0.5;
-            sellPressure = 0.5;
+            buyLiquidity = 0;
+            sellLiquidity = 0;
 
-            Bars bars = _m15Bars;
-
-            if (bars == null ||
-                bars.Count < 1)
-                return false;
-
-            // Use the latest three M15 bars, including the active bar. This is
-            // intentionally realtime: cTrader updates TickVolumes/High/Low/Close
-            // on the current bar while the panel refresh remains bounded.
-            int latestBar =
-                bars.Count - 1;
-
-            int first =
-                Math.Max(
-                    0,
-                    latestBar - 2);
-
-            double buyVolume = 0;
-            double sellVolume = 0;
-
-            for (int i = first;
-                 i <= latestBar;
-                 i++)
+            try
             {
-                double high =
-                    bars.HighPrices[i];
+                if (_marketDepth == null)
+                {
+                    _marketDepth =
+                        MarketData.GetMarketDepth(
+                            Symbol.Name);
+                }
 
-                double low =
-                    bars.LowPrices[i];
+                if (_marketDepth == null)
+                    return false;
 
-                double close =
-                    bars.ClosePrices[i];
+                foreach (MarketDepthEntry entry in
+                         _marketDepth.BidEntries)
+                {
+                    double volume =
+                        entry.VolumeInUnits;
 
-                double volume =
-                    bars.TickVolumes[i];
+                    if (!double.IsNaN(volume) &&
+                        !double.IsInfinity(volume) &&
+                        volume > 0)
+                    {
+                        buyLiquidity += volume;
+                    }
+                }
 
-                if (double.IsNaN(high) ||
-                    double.IsInfinity(high) ||
-                    double.IsNaN(low) ||
-                    double.IsInfinity(low) ||
-                    double.IsNaN(close) ||
-                    double.IsInfinity(close) ||
-                    double.IsNaN(volume) ||
-                    double.IsInfinity(volume) ||
-                    volume <= 0 ||
-                    high <= low)
-                    continue;
+                foreach (MarketDepthEntry entry in
+                         _marketDepth.AskEntries)
+                {
+                    double volume =
+                        entry.VolumeInUnits;
 
-                double buyShare =
-                    NumericGuards.ClampDouble(
-                        (close - low) /
-                        Math.Max(
-                            Symbol.TickSize,
-                            high - low),
-                        0,
-                        1);
+                    if (!double.IsNaN(volume) &&
+                        !double.IsInfinity(volume) &&
+                        volume > 0)
+                    {
+                        sellLiquidity += volume;
+                    }
+                }
 
-                buyVolume +=
-                    volume *
-                    buyShare;
+                double total =
+                    buyLiquidity +
+                    sellLiquidity;
 
-                sellVolume +=
-                    volume *
-                    (1.0 - buyShare);
+                return
+                    NumericGuards.IsFinitePositive(total);
+            }
+            catch (Exception ex)
+            {
+                Print(
+                    "CFIP realtime market-depth snapshot failed: {0}",
+                    ex.Message);
+
+                buyLiquidity = 0;
+                sellLiquidity = 0;
+                return false;
+            }
+        }
+
+        private string FormatRealtimeVolume(
+            double volume)
+        {
+            if (double.IsNaN(volume) ||
+                double.IsInfinity(volume) ||
+                volume < 0)
+                return "--";
+
+            if (volume >= 1000000000.0)
+            {
+                return (volume / 1000000000.0).ToString(
+                    "0.00",
+                    System.Globalization.CultureInfo.InvariantCulture) +
+                    "B";
             }
 
-            double total =
-                buyVolume +
-                sellVolume;
+            if (volume >= 1000000.0)
+            {
+                return (volume / 1000000.0).ToString(
+                    "0.00",
+                    System.Globalization.CultureInfo.InvariantCulture) +
+                    "M";
+            }
 
-            if (!NumericGuards.IsFinitePositive(total))
-                return false;
+            if (volume >= 1000.0)
+            {
+                return (volume / 1000.0).ToString(
+                    "0.00",
+                    System.Globalization.CultureInfo.InvariantCulture) +
+                    "K";
+            }
 
-            buyPressure =
-                NumericGuards.ClampDouble(
-                    buyVolume / total,
-                    0,
-                    1);
-
-            sellPressure =
-                NumericGuards.ClampDouble(
-                    1.0 - buyPressure,
-                    0,
-                    1);
-
-            return true;
+            return volume.ToString(
+                "0.##",
+                System.Globalization.CultureInfo.InvariantCulture);
         }
     }
 }
