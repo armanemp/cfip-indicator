@@ -877,3 +877,23 @@ Footer اکنون چهار ردیف canonical دارد:
 - [ ] flow normalization against symbol/session regime
 - [ ] arrow strength consumer alignment
 - [ ] full compile/runtime/architecture CI verification
+
+## 17. به‌روزرسانی پیشرفت — Batch 04
+با تکمیل owner اولیه Flow/DOM و حذف timeout lifecycle:
+- Flow / DOM / Aggressive Flow: **حدود 70%**
+- UI flow presentation: **حدود 85%**
+- Runtime initialization lifecycle: **حدود 90%**
+- پیشرفت کلی معماری/ممیزی production: **حدود 74%**
+- باقی‌مانده کل: **حدود 26%**
+
+این درصد همچنان درصد «آمادگی معماری و correctness» است، نه درصد تعداد خطوط کد.
+
+### نزدیک‌ترین گلوگاه‌های تکمیل
+1. Reconnect/history reseed برای aggressive flow.
+2. اتصال flow به canonical decision evidence بدون vote inflation.
+3. Arrow strength و trend alignment از همان flow/decision snapshot.
+4. Pending candidate scoring migration به canonical evidence lineage.
+5. Anti-flip/hysteresis و episode identity.
+6. cBot live/pending execution + reconciliation + protection lifecycle.
+7. End-to-end compile/runtime/architecture gates و terminal verification.
+8. Outcome/calibration/leakage audit.
