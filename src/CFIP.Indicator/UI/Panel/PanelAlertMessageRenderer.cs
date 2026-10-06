@@ -463,13 +463,13 @@ namespace cAlgo
                 return PanelWarningColor;
             }
 
-            if (delivery.Direction > 0)
-                return BuyArrowColor;
-
-            if (delivery.Direction < 0)
-                return SellArrowColor;
-
-            return PanelSecondaryTextColor;
+            return delivery.Direction == 0
+                ? PanelSecondaryTextColor
+                : SignalPresentationColorPolicy.Resolve(
+                    this,
+                    delivery.Direction,
+                    2,
+                    "CONFIRMED");
         }
     }
 }
