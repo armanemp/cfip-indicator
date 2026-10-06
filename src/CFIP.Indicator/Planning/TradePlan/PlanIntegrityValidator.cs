@@ -24,7 +24,10 @@ namespace cAlgo
 
             if (!ValidatePlanProtectionAndEntry(
                     plan,
-                    direction))
+                    direction,
+                    checkSpread
+                        ? Math.Max(0, Symbol.Ask - Symbol.Bid)
+                        : 0))
                 return false;
 
             if (!ValidatePlanRewardStructure(
