@@ -37,7 +37,21 @@ namespace cAlgo
         
             if (_decision != null &&
                 _decision.Direction != 0)
-                return _decision.Direction;
+            {
+                // The visible direction follows the lifecycle-accepted
+                // decision, not a freshly computed opposite that has been
+                // rejected by the anti-flip gate.
+                if (_decision.EntryAllowed)
+                    return _decision.Direction;
+
+                if (_lastConfirmedDirection == _decision.Direction)
+                    return _lastConfirmedDirection;
+
+                if (_lastConfirmedDirection != 0)
+                    return _lastConfirmedDirection;
+
+                return 0;
+            }
         
             if (reactionReady &&
                 _reaction != null)
