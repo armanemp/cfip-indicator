@@ -27,6 +27,10 @@ e = evidence.read_text(encoding="utf-8")
 for field in ("Bars", "Fast", "Slow", "Atr", "Rsi", "Dms", "MacdFast", "MacdSlow"):
     check(re.search(r"\bpublic\s+\w+\s+" + re.escape(field) + r"\s*;", n) is not None,
           f"Native owns {field}")
+check(re.search(r"\bpublic\s+bool\s+IsInitialized\s*;", n) is not None,
+      "Native exposes explicit initialization state")
+check("set.IsInitialized = true;" in r and "set.IsInitialized = false;" in r,
+      "native registry records both successful and failed initialization")
 
 for tf in ("_m1Bars", "_m5Bars", "_m15Bars", "_m30Bars", "_h1Bars", "_h4Bars", "_d1Bars", "_w1Bars"):
     check(f"RegisterNative({tf});" in r, f"native registry registers {tf}")
@@ -41,6 +45,8 @@ for initializer in (
 
 check("InitializeMacd" in r, "native registry owns MACD initialization path")
 check("NativeIndicatorReadinessRule.IsFrameReady" in e, "frame evidence uses canonical native readiness")
+check("!set.IsInitialized" in r or "!set.IsInitialized" in n,
+      "native readiness is fail-closed after initialization failure")
 check(re.search(r"\b(?:internal\s+static\s+)?bool\s+IsIndexedSeriesReady\s*\(", q) is not None,
       "indexed native series readiness is explicitly defined")
 
