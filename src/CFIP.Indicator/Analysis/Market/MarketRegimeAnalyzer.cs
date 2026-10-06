@@ -84,6 +84,20 @@ namespace cAlgo
                     snapshot.PreviousRegime,
                     snapshot.Regime);
 
+            if (index >= 42 &&
+                previous != null &&
+                previous.Regime == snapshot.Regime)
+            {
+                MarketRegimeSnapshot beforePrevious =
+                    AnalyzeMarketRegimeCore(
+                        bars,
+                        index - 2);
+
+                if (beforePrevious != null &&
+                    beforePrevious.Regime == snapshot.Regime)
+                    stability++;
+            }
+
             snapshot.Stability =
                 Math.Max(
                     1,
