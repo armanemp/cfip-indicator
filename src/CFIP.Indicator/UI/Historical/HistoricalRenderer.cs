@@ -191,9 +191,7 @@ namespace cAlgo
                                 ? ChartIconType.UpTriangle : ChartIconType.DownTriangle,
                             i,
                             presentation.Price,
-                            presentation.Direction == 1
-                                ? BuyArrowColor
-                                : SellArrowColor);
+                            SignalPresentationColorPolicy.Resolve(this, presentation.Direction, 3, "CONFIRMED"));
 
                         _historicalDrawn.Add(name);
                     }

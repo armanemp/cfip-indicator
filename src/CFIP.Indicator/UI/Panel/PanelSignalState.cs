@@ -15,16 +15,39 @@ namespace cAlgo
     public partial class CFIPIndicator : Indicator
     {
         private Color PanelDirectionColor(
-                                    int direction)
-                                {
-                                    if (direction == 1)
-                                        return BuyArrowColor;
-                        
-                                    if (direction == -1)
-                                        return SellArrowColor;
-                        
-                                    return PanelTextColor;
-                                }
+            int direction)
+        {
+            if (direction == 0)
+                return PanelTextColor;
+
+            SignalVisualSnapshot snapshot =
+                _renderSignalVisualSnapshot;
+
+            int strength =
+                snapshot != null &&
+                snapshot.AuthoritativeDirection == direction
+                    ? snapshot.MtfTrendStrengthLevel
+                    : 0;
+
+            int level =
+                strength >= 7
+                    ? 3
+                    : strength >= 4
+                        ? 2
+                        : 1;
+
+            string state =
+                snapshot != null &&
+                snapshot.AuthoritativeDirection == direction
+                    ? snapshot.MtfTrendStrengthTier
+                    : "WATCH";
+
+            return SignalPresentationColorPolicy.Resolve(
+                this,
+                direction,
+                level,
+                state);
+        }
         
         private int GetMarketBiasDirection()
                                 {

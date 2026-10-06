@@ -77,8 +77,9 @@ check(
 check(
     "panel rail uses semantic direction/priority colors",
     "if (delivery.Critical)" in rail and
-    "return BuyArrowColor;" in rail and
-    "return SellArrowColor;" in rail,
+    "SignalPresentationColorPolicy.Resolve(" in rail and
+    "return BuyArrowColor;" not in rail and
+    "return SellArrowColor;" not in rail,
 )
 check(
     "new alert revisions invalidate panel presentation without a timer flood",
@@ -188,8 +189,8 @@ check(
     "PopupPosition" not in parameter_source,
 )
 check(
-    "current Indicator parameter count is 545",
-    len(re.findall(r"\[Parameter\s*\(", parameter_source)) == 545,
+    "current Indicator parameter count is 543",
+    len(re.findall(r"\[Parameter\s*\(", parameter_source)) == 543,
 )
 check(
     "P9 audit itself is in source CI",

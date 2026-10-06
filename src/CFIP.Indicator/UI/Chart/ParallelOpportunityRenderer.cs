@@ -99,9 +99,7 @@ namespace cAlgo
                             ? ChartIconType.UpTriangle : ChartIconType.DownTriangle,
                         markerBar,
                         markerPrice,
-                        SignalArrowColorFor(
-                            candidate.Direction,
-                            "WATCH"));
+                        SignalPresentationColorPolicy.Resolve(this, candidate.Direction, 1, "WATCH"));
 
                     if (string.Equals(candidate.SourceTimeframe, "M15", StringComparison.OrdinalIgnoreCase))
                         primaryM15Rendered = true;

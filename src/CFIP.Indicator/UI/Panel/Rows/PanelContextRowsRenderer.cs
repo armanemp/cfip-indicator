@@ -40,6 +40,12 @@ namespace cAlgo
                                                     PanelSectionColor,
                                                     true,
                                                     contentWidth);
+                                    AddPanelRow(
+                                        ref slot,
+                                        GetMarketTickVolumeBarsText(),
+                                        GetMarketTickVolumeBarsColor(),
+                                        true,
+                                        contentWidth);
                                     
                                                 PanelTimeframePresentationState m1FrameState =
                                                     ResolvePanelTimeframeState(_m1Frame);
