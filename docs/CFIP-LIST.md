@@ -1380,7 +1380,7 @@ Old M0–M45, CR/CI numbering, former cBot sequencing, hotfix sequencing and sup
 - [ ] `src/CFIP.cBot/Execution/CbotExecutionIdempotencyStore.cs`
 - [ ] `src/CFIP.cBot/Execution/CbotExecutionLifecycleRule.cs`
 - [ ] `src/CFIP.cBot/Execution/CbotExecutionStatePublisher.cs`
-- [ ] `src/CFIP.cBot/Execution/CbotIndicatorExecutionSettings.cs`
+- [x] `src/CFIP.cBot/Execution/CbotExecutionSettings.cs`
 - [ ] `src/CFIP.cBot/Execution/CbotLifecycleAudioService.cs`
 - [ ] `src/CFIP.cBot/Execution/CbotManagedObjectIdentityRule.cs`
 - [ ] `src/CFIP.cBot/Execution/CbotManagementPolicyRule.cs`
@@ -1654,7 +1654,7 @@ For non-production files, classify whether they are active build/test/audit infr
 
 # 20. Current continuation lock
 
-WP-00 through WP-04 are PASS. WP-05 is PASS + TERMINAL PENDING; WP-06 Contracts is BLOCKED pending target-terminal evidence.
+WP-00 through WP-04 are PASS. WP-05 is PASS + TERMINAL PENDING; WP-06 Contracts is BLOCKED pending target-terminal evidence. WP-08 cBot execution-policy ownership hardening is in progress on branch `fix/runtime-signal-alert-cbot-hardening-2026-10-06`.
 
 
 ### WP-03 closeout — Canonical control plane
