@@ -121,43 +121,42 @@ namespace cAlgo
                 PendingOrder pending =
                     GetManagedPendingOrder();
 
+                // Indicator owns news intelligence only. It publishes safety
+                // intents; the cBot owns the execution policy and decides whether
+                // CFIP-managed pending orders/positions may be mutated. This keeps
+                // native cTrader Quick Trade and unrelated trading untouched.
+                PendingOrder pending =
+                    GetManagedPendingOrder();
+
                 if (pending != null &&
-                    CancelPendingBeforeHighImpactNews)
+                    TryCancelPendingOrder(
+                        pending,
+                        "HIGH IMPACT NEWS"))
                 {
-                    if (TryCancelPendingOrder(
-                            pending,
-                            "HIGH IMPACT NEWS"))
-                    {
-                        ArchiveEconomicNewsRisk(
-                            closedM5,
-                            TimeInUtc,
-                            "PENDING CANCELLED",
-                            FormatNewsRiskReason(
-                                item,
-                                TimeInUtc));
-                    }
+                    ArchiveEconomicNewsRisk(
+                        closedM5,
+                        TimeInUtc,
+                        "PENDING CANCEL REQUESTED",
+                        FormatNewsRiskReason(
+                            item,
+                            TimeInUtc));
                 }
 
                 Position position =
                     GetManagedPosition();
 
                 if (position != null &&
-                    CloseActiveBeforeHighImpactNews)
+                    TryClosePosition(
+                        position,
+                        "HIGH IMPACT NEWS PRE-PROTECTION"))
                 {
-                    if (TryClosePosition(
-                            position,
-                            "HIGH IMPACT NEWS PRE-PROTECTION"))
-                    {
-                        SynchronizeLiveBrokerState();
-
-                        ArchiveEconomicNewsRisk(
-                            closedM5,
-                            TimeInUtc,
-                            "POSITION CLOSED",
-                            FormatNewsRiskReason(
-                                item,
-                                TimeInUtc));
-                    }
+                    ArchiveEconomicNewsRisk(
+                        closedM5,
+                        TimeInUtc,
+                        "POSITION CLOSE REQUESTED",
+                        FormatNewsRiskReason(
+                            item,
+                            TimeInUtc));
                 }
             }
             else
