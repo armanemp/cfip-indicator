@@ -20,10 +20,22 @@ namespace cAlgo
                     weight,
                     frame.Evidence);
 
+            double effectiveWeight =
+                Math.Max(
+                    0,
+                    weight);
+
+            bool eligible =
+                frame.Quality > 0 &&
+                effectiveWeight > 0;
+
             return new DecisionFrameContribution(
                 result.Bull,
                 result.Bear,
-                frame.Direction == 0 ? 0 : 1);
+                frame.Direction == 0 ? 0 : 1,
+                effectiveWeight,
+                frame.Direction,
+                eligible);
         }
     }
 }
