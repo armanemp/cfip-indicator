@@ -33,7 +33,7 @@ namespace cAlgo
                                     index,
                                     set.Atr.Result.Count,
                                     Math.Max(2, AtrPeriod)))
-                                return 0;
+                                return double.NaN;
                 
                             double value = set.Atr.Result[index];
 
