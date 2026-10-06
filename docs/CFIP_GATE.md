@@ -1355,3 +1355,15 @@ Correlation policy was deliberately preserved: RSI, MACD, Stochastic, MFI, Aroon
 Modern design review also considered VWAP/session anchoring and footprint/order-flow concepts. VWAP is volume-weighted and may be reset by session/period; footprint systems can use lower-timeframe buy/sell classification, delta and imbalance. CFIP does not claim broker Bid/Ask footprint data where the source is only cTrader TickVolume, so these concepts remain bounded to their actual available data.
 
 No second decision engine, second execution engine, M2 path or competing arrow owner was introduced.
+
+## 2026-10-07 — Remaining Claude findings closed
+
+- M-84 closed: restriction alerts now recognize both canonical `NEWS` and legacy `NEWS BLACKOUT` reason names.
+- M-88 closed: required decision frames must be native-indicator-ready in addition to closed-index alignment; invalid required frames fail closed before scoring.
+- M-78 closed: non-M5 regime stability now compares recent closed regime cores instead of remaining permanently at 1.
+- M-85 closed: PlanPreviewBuilder no longer rebuilds parallel scenario geometry; it consumes the canonical `TryBuildParallelScenarioGeometry` owner.
+- M-99 revalidated as already fixed: ReactionAnalyzer clamps reaction quality to finite 0..100 after calculation.
+- L-60 clarified: VWAP is explicitly a rolling lookback VWAP; no second session-anchored VWAP engine is introduced.
+- M-79 and M-89 revalidated against the current cache owners: M5 regime cache uses recent entries and ZoneLookupHotCache keys its closed-bar candidate set by Bars/index plus direction/retest mode; ATR/selection price are derived from the same closed Bars/index or evaluated live and therefore do not constitute a second cache identity.
+
+No public strategy threshold was added to compensate for missing evidence. The fixes are fail-closed, provenance-preserving, symmetric or owner-unifying changes.
