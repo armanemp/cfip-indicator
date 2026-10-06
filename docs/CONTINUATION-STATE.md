@@ -2888,3 +2888,11 @@ Repository-side CI is the next verification boundary for these synchronized cont
 - cBot realtime timer deduplication is now scenario-scoped and bounded instead of using one global last-scenario tuple, so concurrent scenarios do not reprocess each other at the same revision.
 - Provider execution-intent capture is reset before each live pending evaluation, preventing an older M5 intent from being reused after current actionability changes.
 - Automated gates must remain green before merge; target-terminal validation remains required for final visual/broker confirmation.
+
+## 2026-10-07 — Current continuation state
+- Mainline continuation now includes the arrow/footer/cBot hardening work.
+- Canonical arrows: MTF trend direction first, canonical nine-level strength, thicker 28px ExtraBold symbol glyph, explicit z-order refresh above the panel.
+- Footer liquidity: BUY/SELL totals come from live MarketDepth BidEntries/AskEntries VolumeInUnits. Labels are BUY LIQ / SELL LIQ; percentage is derived from the two visible liquidity totals.
+- Indicator broker execution boundary: no direct market/pending broker mutation or trading-permission request remains in Indicator. cBot is the broker-mutation owner.
+- Obsolete Indicator execution UI/reminder parameters were removed. Indicator execution state is internal intent-readiness only.
+- Demo cBot: market/pending/management execution defaults are armed and legacy all-disabled demo instances auto-migrate on start; LIVE remains explicitly armed.
