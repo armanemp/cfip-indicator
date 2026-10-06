@@ -210,13 +210,13 @@ namespace cAlgo
             _panelSellPressureTrack.Width =
                 contentWidth;
 
-            double buyPressure;
-            double sellPressure;
+            double buyLiquidity;
+            double sellLiquidity;
 
             bool ready =
-                TryResolveCanonicalBuySellPressure(
-                    out buyPressure,
-                    out sellPressure);
+                TryResolveCanonicalBuySellLiquidity(
+                    out buyLiquidity,
+                    out sellLiquidity);
 
             Color buyColor =
                 BuyArrowColor;
@@ -245,13 +245,13 @@ namespace cAlgo
             else
             {
                 double totalLiquidity =
-                    buyPressure +
-                    sellPressure;
+                    buyLiquidity +
+                    sellLiquidity;
 
                 int buyPercent =
                     totalLiquidity > 0
                         ? (int)Math.Round(
-                            buyPressure /
+                            buyLiquidity /
                             totalLiquidity *
                             100.0)
                         : 50;
@@ -262,7 +262,7 @@ namespace cAlgo
                 _panelBuyPressureLabel.Text =
                     "BUY LIQ " +
                     FormatRealtimeVolume(
-                        buyPressure) +
+                        buyLiquidity) +
                     " u (" +
                     buyPercent.ToString(
                         System.Globalization.CultureInfo.InvariantCulture) +
@@ -271,7 +271,7 @@ namespace cAlgo
                 _panelSellPressureLabel.Text =
                     "SELL LIQ " +
                     FormatRealtimeVolume(
-                        sellPressure) +
+                        sellLiquidity) +
                     " u (" +
                     sellPercent.ToString(
                         System.Globalization.CultureInfo.InvariantCulture) +
@@ -297,7 +297,10 @@ namespace cAlgo
                     (int)Math.Round(
                         contentWidth *
                         NumericGuards.ClampDouble(
-                            buyPressure,
+                            buyLiquidity /
+                            Math.Max(
+                                1,
+                                totalLiquidity),
                             0,
                             1)));
 
@@ -307,17 +310,20 @@ namespace cAlgo
                     (int)Math.Round(
                         contentWidth *
                         NumericGuards.ClampDouble(
-                            sellPressure,
+                            sellLiquidity /
+                            Math.Max(
+                                1,
+                                totalLiquidity),
                             0,
                             1)));
         }
 
-        private bool TryResolveCanonicalBuySellPressure(
-            out double buyPressure,
-            out double sellPressure)
+        private bool TryResolveCanonicalBuySellLiquidity(
+            out double buyLiquidity,
+            out double sellLiquidity)
         {
-            buyPressure = 0;
-            sellPressure = 0;
+            buyLiquidity = 0;
+            sellLiquidity = 0;
 
             try
             {
@@ -341,7 +347,7 @@ namespace cAlgo
                         !double.IsInfinity(volume) &&
                         volume > 0)
                     {
-                        buyPressure += volume;
+                        buyLiquidity += volume;
                     }
                 }
 
@@ -355,13 +361,13 @@ namespace cAlgo
                         !double.IsInfinity(volume) &&
                         volume > 0)
                     {
-                        sellPressure += volume;
+                        sellLiquidity += volume;
                     }
                 }
 
                 double total =
-                    buyPressure +
-                    sellPressure;
+                    buyLiquidity +
+                    sellLiquidity;
 
                 return
                     NumericGuards.IsFinitePositive(total);
