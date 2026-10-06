@@ -29,13 +29,13 @@ namespace CFIP.cBot
         [Parameter(
             "Enable Demo Pending Stop Execution",
             Group = "Execution",
-            DefaultValue = false)]
+            DefaultValue = true)]
         public bool EnableDemoPendingStopExecution { get; set; }
 
         [Parameter(
             "Enable Demo Pending Limit Execution",
             Group = "Execution",
-            DefaultValue = false)]
+            DefaultValue = true)]
         public bool EnableDemoPendingLimitExecution { get; set; }
 
         [Parameter(
@@ -80,10 +80,10 @@ namespace CFIP.cBot
             DefaultValue = false)]
         public bool EnableLiveManagementExecution { get; set; }
 
-        [Parameter("Enable Automatic Trading", Group = "Execution Policy", DefaultValue = false)]
+        [Parameter("Enable Automatic Trading", Group = "Execution Policy", DefaultValue = true)]
         public bool EnableAutoTrading { get; set; }
 
-        [Parameter("Enable Automatic Orders", Group = "Execution Policy", DefaultValue = false)]
+        [Parameter("Enable Automatic Orders", Group = "Execution Policy", DefaultValue = true)]
         public bool EnableAutomaticOrders { get; set; }
 
         [Parameter("Pending Order Expiry Minutes", Group = "Execution Policy", DefaultValue = 120, MinValue = 15, MaxValue = 1440)]
