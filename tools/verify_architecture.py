@@ -2873,19 +2873,12 @@ if (
         "Reversal pending intent must retain predictive candidate diagnostics"
     )
 
-preview_start = setup_preview_code.find("double entry")
-preview_end = setup_preview_code.find(
-    "if (!IsFinitePositive(entry)",
-    preview_start,
-)
 if (
-    preview_start < 0 or
-    preview_end < 0 or
-    "execution.IdealEntry" not in
-    setup_preview_code[preview_start:preview_end]
+    "TryBuildParallelScenarioGeometry(" not in setup_preview_code or
+    "BuildTradeSetupPreviewFromGeometry(" not in setup_preview_code
 ):
     raise SystemExit(
-        "Setup preview entry must prefer structural IdealEntry over live ActualEntry"
+        "Setup preview must consume the canonical parallel scenario geometry owner"
     )
 
 CALC_LIVE = ROOT / "Runtime" / "Calculation" / "CalculationLiveCycle.cs"
