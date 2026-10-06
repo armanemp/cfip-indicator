@@ -869,3 +869,13 @@ No trading threshold, MTF role, broker mutation authority or strategy quality ga
 - A true Tape/Trade Volume implementation remains a data-capability item: it requires a feed exposing executed trade size. It must be integrated through the same flow owner rather than creating a second flow engine.
 
 **Required target-terminal evidence:** Release build on EURUSD and XAUUSD; confirm four distinct footer bars, live updates without M15 close, no initialization timeout, and correct broker-normalized/risk-capped volume for both symbols.
+
+
+## 2026-10-07 — News execution boundary + trading isolation
+
+- Economic-news intelligence remains Indicator-owned: calendar/feed, relevance, impact windows, stale state and decision blocking.
+- News-driven broker mutation policy is cBot-owned: CancelCfipPendingBeforeHighImpactNews and ProtectCfipPositionBeforeHighImpactNews live only on CFIPExecutionBot.
+- Indicator publishes only CFIP management intents tagged HIGH IMPACT NEWS; the cBot is the sole broker mutation owner and applies the cBot policy before mutation.
+- Native cTrader Quick Trade/global trading permission is never changed by News Guard. Symbol.IsTradingEnabled remains a broker-state observation only.
+- No Indicator/cBot startup or lifetime timeout is introduced. Command-age and provider-staleness limits remain freshness/safety gates, not process shutdown timers.
+- Spot XAUUSD tick flow is explicitly not executed trade volume. cTrader exposes tick data and DOM volumes, while true executed trade volume requires a feed that exposes trades/size. CME Gold futures provide exchange-traded volume as an institutional reference, but that is not the broker's spot XAUUSD volume.
