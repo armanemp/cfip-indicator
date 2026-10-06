@@ -47,7 +47,7 @@ namespace CFIP.cBot
         [Parameter(
             "Enable Demo Management Execution",
             Group = "Execution",
-            DefaultValue = false)]
+            DefaultValue = true)]
         public bool EnableDemoManagementExecution { get; set; }
 
         [Parameter(
