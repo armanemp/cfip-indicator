@@ -89,6 +89,13 @@ check(
 )
 
 check(
+    "reaction quality remains bounded after regime adjustments",
+    "buyQuality =\n                ClampInt(" in reaction
+    and "sellQuality =\n                ClampInt(" in reaction
+    and "d.Confidence" in reaction
+)
+
+check(
     "reaction has explicit live-vs-closed temporal ownership",
     "ReactionTimingRule.IsSeparatedObservationAndConfirmation(" in reaction and
     "closedIndex = live - 1" in reaction and
