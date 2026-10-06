@@ -35,9 +35,8 @@ private List<Level> BuildTargetLevels(
                                                     Symbol.TickSize,
                                                     atr * 0.0001))
                                             {
-                                                return
-                                                    new List<Level>(
-                                                        _targetLevelCache);
+                                                return CloneLevels(
+                                                    _targetLevelCache);
                                             }
 
                                             List<Level> levels =
@@ -176,7 +175,11 @@ private List<Level> BuildTargetLevels(
                                                         x =>
                                                             IsFinitePositive(
                                                                 x.Price) &&
-                                                            x.Price != entry)
+                                                            x.Price != entry &&
+                                                            IsValidTarget(
+                                                                direction,
+                                                                entry,
+                                                                x.Price))
                                                     .OrderByDescending(
                                                         x => x.Score)
                                                     .ToList();
@@ -201,12 +204,34 @@ private List<Level> BuildTargetLevels(
                                             _targetLevelCacheEntry = entry;
                                             _targetLevelCacheAtr = atr;
                                             _targetLevelCache =
-                                                mergedLevels == null
-                                                    ? null
-                                                    : new List<Level>(
-                                                        mergedLevels);
+                                                CloneLevels(
+                                                    mergedLevels);
 
-                                            return mergedLevels;
+                                            return CloneLevels(
+                                                mergedLevels);
+                                        }
+
+private static List<Level> CloneLevels(
+                                            IEnumerable<Level> source)
+                                        {
+                                            if (source == null)
+                                                return new List<Level>();
+
+                                            return source
+                                                .Where(x => x != null)
+                                                .Select(
+                                                    x =>
+                                                        new Level
+                                                        {
+                                                            Price = x.Price,
+                                                            Score = x.Score,
+                                                            Kind = x.Kind,
+                                                            Timeframe = x.Timeframe,
+                                                            Age = x.Age,
+                                                            SourceAgeMinutes = x.SourceAgeMinutes,
+                                                            Hits = x.Hits
+                                                        })
+                                                .ToList();
                                         }
     }
 }

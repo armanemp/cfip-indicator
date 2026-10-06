@@ -71,7 +71,7 @@ namespace cAlgo
                 private bool _suppressProviderIntentCapture;
                 // Target-level construction is shared by all same-M5 scenario
                 // evaluations for a direction. Cache the deterministic closed-bar
-                // result and return a shallow copy to protect callers from mutation.
+                // result and return deep copies so callers can never mutate cached levels.
                 private int _targetLevelCacheM5 = -1;
                 private int _targetLevelCacheDirection = 0;
                 private double _targetLevelCacheEntry = 0;

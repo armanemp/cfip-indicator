@@ -34,7 +34,7 @@ required = {
         'case "W1":' in resolver and
         "return null;" in resolver
     ),
-    "Canonical timeframe owner": "StructuralTimeframeRule.IsSupported(" in classifier,
+    "Canonical timeframe owner": "StructuralTimeframeRule.IsHigherThanM5(" in classifier,
     "Divergence conflict factory": "DivergenceResult.CreateConflict(" in divergence,
     "Divergence conflict is non-directional": (
         "CreateConflict(" in divergence_model and

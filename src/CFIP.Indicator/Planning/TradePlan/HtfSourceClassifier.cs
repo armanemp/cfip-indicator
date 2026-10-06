@@ -16,29 +16,8 @@ namespace cAlgo
 private bool IsHtfSource(
                                     string source)
                                 {
-                                    if (string.IsNullOrWhiteSpace(
-                                            source))
-                                        return false;
-                        
-                                    return
-                                        source.IndexOf(
-                                            "@M15",
-                                            StringComparison.OrdinalIgnoreCase) >= 0 ||
-                                        source.IndexOf(
-                                            "@M30",
-                                            StringComparison.OrdinalIgnoreCase) >= 0 ||
-                                        source.IndexOf(
-                                            "@H1",
-                                            StringComparison.OrdinalIgnoreCase) >= 0 ||
-                                        source.IndexOf(
-                                            "@H4",
-                                            StringComparison.OrdinalIgnoreCase) >= 0 ||
-                                        source.IndexOf(
-                                            "@D1",
-                                            StringComparison.OrdinalIgnoreCase) >= 0 ||
-                                        source.IndexOf(
-                                            "@W1",
-                                            StringComparison.OrdinalIgnoreCase) >= 0;
+                                    return StructuralTimeframeRule.ContainsHigherTimeframeMarker(
+                                        source);
                                 }
     }
 }
