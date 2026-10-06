@@ -63,11 +63,13 @@ namespace cAlgo
 
             bool nearBullValueEdge =
                 direction == 1 &&
+                price >= profile.VAL &&
                 price <=
                     profile.VAL + valueMargin;
 
             bool nearBearValueEdge =
                 direction == -1 &&
+                price <= profile.VAH &&
                 price >=
                     profile.VAH - valueMargin;
 
