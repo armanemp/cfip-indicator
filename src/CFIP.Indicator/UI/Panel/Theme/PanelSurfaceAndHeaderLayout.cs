@@ -206,7 +206,7 @@ namespace cAlgo
                                                         _panelDataStatusText.Width =
                                                             Math.Max(1, contentWidth);
                                                         _panelDataStatusText.Height =
-                                                            PanelDataStatusRowHeight;
+                                                            PanelFlowPressureRailHeight;
                                                     }
 
                                                     if (_panelFooterActions != null)
@@ -217,7 +217,7 @@ namespace cAlgo
                                                             Math.Max(
                                                                 24,
                                                                 buttonAreaHeight -
-                                                                PanelDataStatusRowHeight -
+                                                                PanelFlowPressureRailHeight -
                                                                 PanelFooterActionGap);
                                                     }
                                         
