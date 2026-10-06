@@ -51,12 +51,12 @@ checks = [
      'CreateFlowPressureRow(\n                    "SELL"' in footer_factory and
      "Orientation = Orientation.Vertical" in footer_factory),
     ("pressure bars use canonical signal colors", "BuyArrowColor" in footer_factory and "SellArrowColor" in footer_factory),
-    ("pressure calculation is closed-M15 and tick-volume based", "_m15Bars" in footer_factory and
-     "int lastClosed =\n                bars.Count - 2" in footer_factory and
+    ("pressure calculation is realtime-M15 and tick-volume based", "_m15Bars" in footer_factory and
+     "int latestBar =\n                bars.Count - 1" in footer_factory and
      "bars.TickVolumes[i]" in footer_factory and
      "(close - low)" in footer_factory and
      "(1.0 - buyShare)" in footer_factory),
-    ("pressure uses the latest three closed M15 candles as one stable window", "lastClosed - 2" in footer_factory and
+    ("pressure uses the latest three M15 candles including the active bar", "latestBar - 2" in footer_factory and
      "first" in footer_factory and
      "buyVolume +=" in footer_factory and
      "sellVolume +=" in footer_factory),
@@ -70,7 +70,8 @@ checks = [
      "_panelSellPressureFill.Width" in footer_factory),
     ("footer has no legacy M1/M5/H1 status strip", "_panelDataStatus" not in footer_factory and "M2" not in footer_factory),
     ("pressure rail is placed directly below the timeframe lamps", "_buttonStack.AddChild" in footer_factory and "_panelFlowPressureRail" in footer_factory),
-    ("footer geometry reserves the pressure rail", "PanelFlowPressureRailHeight" in layout and "PanelFlowPressureRailHeight" in constants),
+    ("footer geometry reserves the pressure rail", "PanelFlowPressureRailHeight" in layout and "PanelFlowPressureRailHeight" in constants and "PanelFooterActionGap" in constants),
+    ("pressure rail refreshes on the bounded live panel cadence", "UpdatePanelFlowPressureRail();" in read("UI/Panel/PanelContentRefresh.cs") and "PanelContentRefreshMilliseconds = 500" in read("UI/Panel/PanelContentRefresh.cs")),
     ("footer remains outside the ScrollViewer", "_panelStack.AddChild" in factory and "_buttonStack" in factory),
 ]
 
