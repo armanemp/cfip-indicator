@@ -74,8 +74,6 @@ CONSUMERS = {
     "ShowLevelPriceLabels": ["UI/Chart/PlanLabelRenderCoordinator.cs"],
     "ShowContextEventMarker": ["UI/Chart/OutcomeMarkerRenderer.cs"],
     "ShowPredictionObjects": ["UI/Chart/PredictionRenderer.cs"],
-    "ArrowOffsetAtr": ["UI/Chart/SignalStackedArrowRenderer.cs"],
-    "MinimumArrowOffsetPips": ["UI/Chart/SignalStackedArrowRenderer.cs"],
     "ShowPanelToggleButton": ["UI/Panel/PanelToggleButtonFactory.cs", "UI/Panel/Theme/PanelActionButtonsLayout.cs"],
     "PanelToggleWidth": ["UI/Panel/PanelToggleButtonFactory.cs"],
     "PanelToggleHeight": ["UI/Panel/PanelToggleButtonFactory.cs"],
