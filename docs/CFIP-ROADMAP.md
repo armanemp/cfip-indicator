@@ -861,3 +861,11 @@ No trading threshold, MTF role, broker mutation authority or strategy quality ga
 - Fixed directional evidence inflation in `MarketFrameScoringService`: opposing evidence is no longer counted toward the selected direction's Evidence/quality.
 - Remaining architecture task: unify structural/liquidity/zone provenance and migrate predictive pending candidate scoring to canonical evidence owners.
 - Acceptance gate: `tools/audit_phase_structure_zones_reaction_2026_10_07.py`.
+
+
+## 2026-10-07 — Batch 04 Flow / DOM / Aggressive Flow
+- Added canonical bounded aggressive-flow tick proxy and runtime lifecycle.
+- Footer now separates DOM BUY/SELL volume from FLOW BUY/SELL tick proxy.
+- Removed the remaining 30-second Indicator startup data-load lifetime timeout.
+- Added flow architecture acceptance gate and aligned legacy footer gate.
+- Remaining: reconnect/history reseed, session/regime normalization, arrow-strength integration, full compile/runtime/architecture CI.
