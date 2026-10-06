@@ -103,6 +103,19 @@ check(
 )
 
 check(
+    "later target stages prefer deeper HTF source timeframes through the canonical scorer",
+    "string timeframe = null" in
+    read("src/CFIP.Indicator/Core/Math/TargetCandidateRewardScoreRule.cs")
+    and "ResolveHtfDepthRank(" in
+    read("src/CFIP.Indicator/Core/Math/TargetCandidateRewardScoreRule.cs")
+    and "candidate.Timeframe" in evaluator
+    and "level.Timeframe" in
+    read("src/CFIP.Indicator/Trading/LiveManagement/LiveTargetCandidateEvaluator.cs")
+    and "level.Timeframe" in
+    read("src/CFIP.Indicator/Trading/Lifecycle/LivePlanFurtherTargetSelector.cs")
+)
+
+check(
     "HTF target candidates can use the adaptive reward extension envelope",
     "ResolveMaximumExtensionAtr(" in evaluator and
     "allowHtfExtension" in
