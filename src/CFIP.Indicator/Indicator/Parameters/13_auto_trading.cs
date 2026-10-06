@@ -31,9 +31,6 @@ namespace cAlgo
         [Parameter("Pending Auto Cleanup", Group = "13 · AUTO TRADING", DefaultValue = true)]
         public bool PendingAutoCleanup { get; set; }
 
-        [Parameter("Auto Trading Reminder", Group = "13 · AUTO TRADING", DefaultValue = true)]
-        public bool AutoTradingReminder { get; set; }
-
         [Parameter("Reversal Close Minimum Evidence", Group = "13 · AUTO TRADING", DefaultValue = 5, MinValue = 2, MaxValue = 10)]
         public int ReversalCloseMinimumEvidence { get; set; }
 
@@ -121,26 +118,8 @@ namespace cAlgo
         [Parameter("One Order Per Signal", Group = "13 · AUTO TRADING", DefaultValue = true)]
         public bool OneOrderPerSignal { get; set; }
 
-        [Parameter("Show Trade Action Buttons", Group = "13 · AUTO TRADING", DefaultValue = true)]
-        public bool ShowTradeActionButtons { get; set; }
-
-        [Parameter("Always Show Safety Buttons", Group = "13 · AUTO TRADING", DefaultValue = true)]
-        public bool AlwaysShowSafetyButtons { get; set; }
-
-        [Parameter("Action Button Margin", Group = "13 · AUTO TRADING", DefaultValue = 2, MinValue = 0, MaxValue = 20)]
-        public int ActionButtonMargin { get; set; }
-
         [Parameter("Include Spread In Risk Sizing", Group = "13 · AUTO TRADING", DefaultValue = true)]
         public bool IncludeSpreadInRiskSizing { get; set; }
-
-        [Parameter("Managed Actions Only", Group = "13 · AUTO TRADING", DefaultValue = true)]
-        public bool ManagedActionsOnly { get; set; }
-
-        [Parameter("Action Button Width", Group = "13 · AUTO TRADING", DefaultValue = 150, MinValue = 100, MaxValue = 240)]
-        public int ActionButtonWidth { get; set; }
-
-        [Parameter("Action Button Height", Group = "13 · AUTO TRADING", DefaultValue = 25, MinValue = 20, MaxValue = 50)]
-        public int ActionButtonHeight { get; set; }
 
         [Parameter("Auto Protect Broker Positions", Group = "13 · AUTO TRADING", DefaultValue = false)]
         public bool AutoProtectBrokerPositions { get; set; }
