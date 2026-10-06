@@ -19,6 +19,7 @@ def read(rel):
 arrows = read("UI/Chart/SignalStackedArrowRenderer.cs")
 state = read("Indicator/State.cs")
 factory = read("UI/Panel/PanelFactory.cs")
+footer_factory = read("UI/Panel/PanelFooterFactory.cs")
 footer = read("UI/Panel/PanelAlertMessageRenderer.cs")
 signal_renderer = read("UI/Chart/SignalRenderer.cs")
 layout = read("UI/Panel/Theme/PanelSurfaceAndHeaderLayout.cs")
@@ -34,12 +35,12 @@ checks = [
     ("box is bottom-right aligned", "HorizontalAlignment.Right" in arrows and "VerticalAlignment.Bottom" in arrows),
     ("box is compact square", "Width = 66" in arrows and "Height = 66" in arrows),
     ("box is non-interactive", "IsHitTestVisible = false" in arrows),
-    ("footer state is owned by PanelFactory", all(x in factory for x in ("_panelDataStatusText", "_panelFooterActions")) and "_panelDataStatusText" not in state),
-    ("footer has a dedicated data status control", "_panelDataStatusBars" in factory and "_panelDataStatusBarControls" in factory),
-    ("footer separates action controls from data status", "_panelFooterActions" in factory),
+    ("footer state is owned by PanelFooterFactory", all(x in footer_factory for x in ("_panelDataStatusText", "_panelFooterActions")) and "_panelDataStatusText" not in state),
+    ("footer has a dedicated data status control", "_panelDataStatusBars" in footer_factory and "_panelDataStatusBarControls" in footer_factory),
+    ("footer separates action controls from data status", "_panelFooterActions" in footer_factory),
     ("data status is based on native tick volume", "TickVolumes" in footer and "ResolveDataBarLevel" in footer),
     ("data status uses M1/M5/M15/H1/H4 only", all(x in footer for x in ("M1", "M5", "M15", "H1", "H4")) and "M2" not in footer),
-    ("data status is placed in the fixed footer", "_buttonStack.AddChild" in factory and "_panelDataStatusText" in factory),
+    ("data status is placed in the fixed footer", "_buttonStack.AddChild" in footer_factory and "_panelDataStatusText" in footer_factory),
     ("footer geometry reserves the data-status row", "PanelDataStatusRowHeight" in layout and "PanelDataStatusRowHeight" in constants),
     ("footer remains outside the ScrollViewer", "_panelStack.AddChild" in factory and "_buttonStack" in factory),
 ]
