@@ -11,8 +11,7 @@ namespace cAlgo
             new System.Collections.Generic.List<TextBlock>(3);
 
         private void RenderCanonicalMtfTrendArrows(
-            SignalVisualSnapshot snapshot,
-            int bar)
+            SignalVisualSnapshot snapshot)
         {
             if (!ShowSignalArrow ||
                 snapshot == null ||
@@ -39,9 +38,6 @@ namespace cAlgo
                 snapshot.MtfTrendDirection != 0
                     ? snapshot.MtfTrendDirection
                     : snapshot.AuthoritativeDirection;
-
-            int mtfDirection =
-                snapshot.MtfTrendDirection;
 
             if (direction == 0)
             {
