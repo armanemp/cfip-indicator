@@ -284,7 +284,7 @@ M-118 (AccessRights.None و file/HTTP روی cTrader نصب‌شده)، M-45 (In
 | M-95 | متوسط | ثبت‌شده | StructureAnalyzer.cs:173-245 | BullChoch فقط برگشت یک‌کندلی را می‌گیرد | بازنگری |
 | M-96 | متوسط | **حل‌شده** | NativeIndicatorRegistry.cs; native wrappers | وضعیت initialization صریح شد؛ wrapperهای Native در شکست initialization و warm-up fail-closed می‌شوند و fallback عددی خنثی ندارند | ✅ IsInitialized + NaN/readiness guard |
 | M-97 | متوسط | قطعی | SkenderStoch.cs:38-43 | null در warm-up با ?? 0 صفر می‌شود ⇒ رأی کاذب | رد |
-| M-98 | متوسط | **جزئی/باز** | OssQuoteSeriesCache.cs | unsubscribe رویدادها در OnDestroy و گارد OHLC/decimal cast اصلاح شد؛ exposure مستقیم List هنوز نیازمند تصمیم encapsulation است | ✅ lifecycle + numeric guard; ⏳ list encapsulation |
+| M-98 | متوسط | **حل‌شده** | OssQuoteSeriesCache.cs / OssQuoteCacheEntry.cs | unsubscribe رویدادها در OnDestroy، گارد OHLC/decimal cast و محدودسازی state/cache collections به internal scope انجام شد | ✅ lifecycle + numeric guard + scope hardening |
 | M-99 | متوسط | **حل‌شده** | ReactionAnalyzer.cs | کیفیت بعد از تعدیل regime ممکن بود از 100/<0 خارج شود؛ اکنون قبل از مصرف نهایی دوباره clamp می‌شود | ✅ final ClampInt(0..100) |
 | L-64 | پایین | ثبت‌شده | ReactionAnalyzer.cs:19-80 | TriggerReady/Confidence روی کندل زنده نوسان دارد (عمدی) | مستندسازی |
 | L-65 | پایین | ثبت‌شده | FvgDetectionAnalyzer.cs:54-61; OrderBlockAnalyzer.cs:58-65 | Lookback بی‌صدا به MaximumZoneAgeBars محدود می‌شود | مستندسازی |
