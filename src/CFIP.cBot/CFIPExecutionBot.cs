@@ -293,6 +293,8 @@ namespace CFIP.cBot
 
         protected override void OnStart()
         {
+            NormalizeLegacyDemoExecutionArming();
+
             _startedUtc = Server.TimeInUtc;
             PublishPresence("STARTING");
             _tickCount = 0;
