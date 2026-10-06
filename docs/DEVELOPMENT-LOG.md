@@ -4144,3 +4144,23 @@ Operator action: pull canonical `main` before target-terminal validation.
 - cBot realtime timer deduplication is now scenario-scoped and bounded instead of using one global last-scenario tuple, so concurrent scenarios do not reprocess each other at the same revision.
 - Provider execution-intent capture is reset before each live pending evaluation, preventing an older M5 intent from being reused after current actionability changes.
 - Automated gates must remain green before merge; target-terminal validation remains required for final visual/broker confirmation.
+
+## 2026-10-07 — Deep analyzer / vote revalidation
+
+A repository-wide review was performed against the current production tree and the historical Claude findings in docs/CFIP-CALUDE.md, with current web references checked before changing analytical behavior.
+
+Resolved/revalidated in this work package:
+
+- M-97: Skender Stochastic no longer converts missing K/D to zero; warm-up/missing numerical state now fails closed and cannot create a fabricated directional vote.
+- H-26: WaveTrend OS/OB threshold ordering is now symmetric for the existing -30/-40 and +30/+40 configuration; the old asymmetric Min(OS1,OS2) behavior is removed.
+- H-27: hidden bullish/bearish divergence now receives oscillator-agreement credit using the mathematically correct inverse delta signs; regular divergence behavior remains unchanged.
+- M-82: ready neutral timeframes remain in the MTF agreement denominator, so incomplete directional coverage cannot be reported as 100% agreement.
+- Deep review finding: Volume Profile value-edge evidence is bounded to the actual VAL/VAH edge; prices far beyond the value area can no longer qualify as merely near an edge.
+- Deep review finding: OSS quote projection rejects NaN/Infinity/invalid range inputs before double-to-decimal conversion.
+- Vote aggregation contract: frame votes now carry eligibility, direction and configured weight; score aggregation derives eligible/directional/neutral vote coverage; DecisionConsensusCalculator remains the single final aggregation owner and now exposes raw scores, net score, total score, directional coverage, neutral coverage and bounded vote confidence.
+
+Correlation policy was deliberately preserved: RSI, MACD, Stochastic, MFI, Aroon, CCI, Supertrend, PSAR and Bollinger-derived measurements are not turned into nine independent decision votes merely because more indicators exist. Current evidence fusion groups correlated measurements, while research confirms that averaging overlapping judgments can double-count shared information.
+
+Modern design review also considered VWAP/session anchoring and footprint/order-flow concepts. VWAP is volume-weighted and may be reset by session/period; footprint systems can use lower-timeframe buy/sell classification, delta and imbalance. CFIP does not claim broker Bid/Ask footprint data where the source is only cTrader TickVolume, so these concepts remain bounded to their actual available data.
+
+No second decision engine, second execution engine, M2 path or competing arrow owner was introduced.
