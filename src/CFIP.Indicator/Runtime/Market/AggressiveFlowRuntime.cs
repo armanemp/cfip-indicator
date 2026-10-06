@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using cAlgo.API;
 using cAlgo.API.Internals;
 
@@ -6,6 +7,9 @@ namespace cAlgo
 {
     public partial class CFIPIndicator
     {
+        private static readonly TimeSpan AggressiveFlowFreshness =
+            TimeSpan.FromSeconds(5);
+
         private Ticks _aggressiveFlowTicks;
         private readonly AggressiveFlowAnalyzer _aggressiveFlowAnalyzer =
             new AggressiveFlowAnalyzer();
@@ -24,21 +28,37 @@ namespace cAlgo
                 return;
 
             _aggressiveFlowTicks.Tick += OnAggressiveFlowTick;
-            RefreshAggressiveFlowSnapshot(TimeInUtc);
+            _aggressiveFlowTicks.HistoryLoaded +=
+                OnAggressiveFlowHistoryLoaded;
+            _aggressiveFlowTicks.Reloaded +=
+                OnAggressiveFlowReloaded;
+
+            SeedAggressiveFlowHistory();
+
+            try
+            {
+                _aggressiveFlowTicks.LoadMoreHistoryAsync();
+            }
+            catch (Exception ex)
+            {
+                Print(
+                    "CFIP aggressive-flow history request failed: {0}",
+                    ex.Message);
+            }
         }
 
         private void OnAggressiveFlowTick(TicksTickEventArgs args)
         {
             try
             {
-                if (args == null)
+                if (args == null ||
+                    args.Ticks == null)
                     return;
 
-                _aggressiveFlowAnalyzer.ProcessTick(
-                    args.Ticks.LastTick);
-
+                Tick tick = args.Ticks.LastTick;
+                _aggressiveFlowAnalyzer.ProcessTick(tick);
                 RefreshAggressiveFlowSnapshot(
-                    args.Ticks.LastTick.Time.ToUniversalTime());
+                    tick.Time.ToUniversalTime());
             }
             catch (Exception ex)
             {
@@ -46,6 +66,91 @@ namespace cAlgo
                     "CFIP aggressive-flow tick processing failed: {0}",
                     ex.Message);
             }
+        }
+
+        private void OnAggressiveFlowHistoryLoaded(
+            TicksHistoryLoadedEventArgs args)
+        {
+            try
+            {
+                SeedAggressiveFlowHistory();
+            }
+            catch (Exception ex)
+            {
+                Print(
+                    "CFIP aggressive-flow history reseed failed: {0}",
+                    ex.Message);
+            }
+        }
+
+        private void OnAggressiveFlowReloaded(
+            TicksHistoryLoadedEventArgs args)
+        {
+            try
+            {
+                // A reconnect can replace the Ticks collection. Rebuild the
+                // bounded window from the refreshed collection so the flow
+                // snapshot never bridges two provider generations.
+                SeedAggressiveFlowHistory();
+            }
+            catch (Exception ex)
+            {
+                Print(
+                    "CFIP aggressive-flow reconnect reseed failed: {0}",
+                    ex.Message);
+            }
+        }
+
+        private void SeedAggressiveFlowHistory()
+        {
+            if (_aggressiveFlowTicks == null ||
+                _aggressiveFlowTicks.Count <= 0)
+            {
+                _aggressiveFlowAnalyzer.Reset();
+                RefreshAggressiveFlowSnapshot(TimeInUtc);
+                return;
+            }
+
+            DateTime nowUtc = TimeInUtc.ToUniversalTime();
+            DateTime cutoff =
+                nowUtc - TimeSpan.FromSeconds(30);
+
+            List<Tick> recent =
+                new List<Tick>(
+                    AggressiveFlowAnalyzer.MaxSamples);
+
+            int inspected = 0;
+
+            // Ticks.Last(0) is the newest item. Walk backward until the
+            // canonical 30-second window is covered, then replay chronologically.
+            for (int offset = 0;
+                 offset < _aggressiveFlowTicks.Count &&
+                 inspected < AggressiveFlowAnalyzer.MaxSamples;
+                 offset++)
+            {
+                Tick tick = _aggressiveFlowTicks.Last(offset);
+                inspected++;
+
+                DateTime tickUtc =
+                    tick.Time.ToUniversalTime();
+
+                if (tickUtc < cutoff)
+                    break;
+
+                recent.Add(tick);
+            }
+
+            _aggressiveFlowAnalyzer.Reset();
+
+            for (int i = recent.Count - 1;
+                 i >= 0;
+                 i--)
+            {
+                _aggressiveFlowAnalyzer.ProcessTick(
+                    recent[i]);
+            }
+
+            RefreshAggressiveFlowSnapshot(nowUtc);
         }
 
         private void RefreshAggressiveFlowSnapshot(DateTime utc)
@@ -65,6 +170,16 @@ namespace cAlgo
             return _aggressiveFlowSnapshot;
         }
 
+        private bool TryGetFreshAggressiveFlowSnapshot(
+            out AggressiveFlowSnapshot snapshot)
+        {
+            snapshot = GetAggressiveFlowSnapshot();
+
+            return snapshot.IsFresh(
+                TimeInUtc,
+                AggressiveFlowFreshness);
+        }
+
         private void StopAggressiveFlowRuntime()
         {
             if (_aggressiveFlowTicks == null)
@@ -73,6 +188,10 @@ namespace cAlgo
             try
             {
                 _aggressiveFlowTicks.Tick -= OnAggressiveFlowTick;
+                _aggressiveFlowTicks.HistoryLoaded -=
+                    OnAggressiveFlowHistoryLoaded;
+                _aggressiveFlowTicks.Reloaded -=
+                    OnAggressiveFlowReloaded;
             }
             catch (Exception ex)
             {
@@ -83,6 +202,7 @@ namespace cAlgo
             finally
             {
                 _aggressiveFlowTicks = null;
+                _aggressiveFlowAnalyzer.Reset();
                 _aggressiveFlowSnapshot =
                     new AggressiveFlowSnapshot(
                         0,
