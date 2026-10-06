@@ -463,8 +463,6 @@ namespace cAlgo
             }
 
             _opportunityVisualIds.Clear();
-            Chart.RemoveObject(P + "PRIMARY_M15_SIGNAL");
-            Chart.RemoveObject(P + "PRIMARY_H1_SIGNAL");
         }
     }
 }
