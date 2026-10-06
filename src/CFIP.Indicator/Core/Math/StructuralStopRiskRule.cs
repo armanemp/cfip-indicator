@@ -51,10 +51,17 @@ namespace cAlgo
                     ? riskReferenceAtr
                     : 0;
 
-            double spreadMinimum =
+            double spreadReference =
                 safeReferenceAtr > 0
+                    ? Math.Max(
+                        Math.Max(0, pipSize),
+                        safeReferenceAtr)
+                    : 0;
+
+            double spreadMinimum =
+                spreadReference > 0
                     ? Math.Max(0, spread) /
-                      safeReferenceAtr /
+                      spreadReference /
                       Math.Max(0.02, maximumSpreadToStopRiskRatio)
                     : double.PositiveInfinity;
 
