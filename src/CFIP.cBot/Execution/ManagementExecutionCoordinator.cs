@@ -110,6 +110,11 @@ namespace CFIP.cBot.Execution
                         settings.AutoProtectBrokerPositions,
                         settings != null &&
                         settings.SyncBrokerTakeProfit,
+                        settings != null &&
+                        settings.CancelCfipPendingBeforeHighImpactNews,
+                        settings != null &&
+                        settings.ProtectCfipPositionBeforeHighImpactNews,
+                        command.Reason,
                         out string policyReason))
                 {
                     StoreReport(
