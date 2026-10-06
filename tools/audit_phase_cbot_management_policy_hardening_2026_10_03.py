@@ -17,7 +17,7 @@ def require(condition, message):
     if not condition:
         errors.append(message)
 
-settings = read("src/CFIP.cBot/Execution/CbotIndicatorExecutionSettings.cs")
+settings = read("src/CFIP.cBot/Execution/CbotExecutionSettings.cs")
 policy = read("src/CFIP.cBot/Execution/CbotManagementPolicyRule.cs")
 manager = read("src/CFIP.cBot/Execution/ManagementExecutionCoordinator.cs")
 bot = read("src/CFIP.cBot/CFIPExecutionBot.cs")
