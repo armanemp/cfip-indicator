@@ -69,6 +69,17 @@ namespace cAlgo
                         minimumCandidateRR,
                         MinimumHtfTargetRR);
 
+            double effectiveMaximumTargetExtensionAtr =
+                TargetRewardEnvelopeRule.ResolveMaximumExtensionAtr(
+                    risk,
+                    atr,
+                    MaximumTargetExtensionAtr,
+                    maximumRR,
+                    requireHtf);
+
+            if (effectiveMaximumTargetExtensionAtr <= 0)
+                return false;
+
             TargetCandidateConstraintResult constraint =
                 TargetCandidateConstraintRule.Evaluate(
                     stage,
@@ -80,7 +91,7 @@ namespace cAlgo
                     Symbol.PipSize,
                     minimumCandidateRR,
                     maximumRR,
-                    MaximumTargetExtensionAtr,
+                    effectiveMaximumTargetExtensionAtr,
                     MinimumTpSpacingAtr,
                     previous,
                     false,
