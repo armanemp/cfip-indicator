@@ -215,6 +215,7 @@ namespace cAlgo
             }
 
             InitializeExecutionRuntimeState();
+            StartAggressiveFlowRuntime();
             HookHistoricalBarsEvents();
 
             if (!ValidateTradeIdentityConfiguration())
@@ -451,6 +452,7 @@ namespace cAlgo
         protected override void OnDestroy()
                                 {
                                     DisposeEconomicNewsClient();
+                                    StopAggressiveFlowRuntime();
                                     FlushBufferedPersistenceOnShutdown();
 
                                     try
