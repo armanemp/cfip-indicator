@@ -50,6 +50,19 @@ check("!set.IsInitialized" in r or "!set.IsInitialized" in n,
 check(re.search(r"\b(?:internal\s+static\s+)?bool\s+IsIndexedSeriesReady\s*\(", q) is not None,
       "indexed native series readiness is explicitly defined")
 
+# Missing native values must fail closed; neutral 0/50 fallbacks can become
+# directional evidence or hide provenance at downstream consumers.
+for filename in (
+    "AverageTrueRange.cs",
+    "AverageDirectionalIndex.cs",
+    "RelativeStrengthIndex.cs",
+    "DirectionalMovementIndex.cs",
+    "ExponentialMovingAverage.cs",
+):
+    source = (ROOT / "src/CFIP.Indicator/Analysis/Indicators" / filename).read_text(encoding="utf-8")
+    check("return 0;" not in source and "return 50;" not in source,
+          f"{filename} has no neutral numeric fallback")
+
 # Match the exact Native type, not other names beginning with "Native".
 sources = list((ROOT / "src/CFIP.Indicator").rglob("*.cs"))
 holders = []
