@@ -347,6 +347,10 @@ namespace cAlgo
                 newWave.Valid &&
                 waveDelta <= -DivergenceThresholdRule.HiddenWaveDelta;
 
+            bool chosenHidden =
+                hidden &&
+                !regular;
+
             int oscillatorAgreement = 0;
 
             // Regular bullish divergence needs oscillator improvement; hidden
@@ -369,10 +373,6 @@ namespace cAlgo
 
             if (!regular && !hidden)
                 return default(DivergenceCandidate);
-
-            bool chosenHidden =
-                hidden &&
-                !regular;
 
             double recentBoost =
                 newerIndex >= index - DivergenceThresholdRule.RecentBoostBarsStrong
