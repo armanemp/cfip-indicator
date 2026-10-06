@@ -192,6 +192,20 @@ namespace CFIP.cBot.Execution
                     scenarioId,
                     signalRevision);
 
+            bool demoAccount =
+                robot.Account != null &&
+                !robot.Account.IsLive;
+
+            bool policyAllowsAutomaticTrading =
+                demoAccount ||
+                (executionSettings != null &&
+                 executionSettings.EnableAutoTrading);
+
+            bool policyAllowsAutomaticOrders =
+                demoAccount ||
+                (executionSettings != null &&
+                 executionSettings.EnableAutomaticOrders);
+
             bool cbotMarketArmed =
                 marketExecutionEnabled ||
                 aggressiveExecutionEnabled;
@@ -217,8 +231,7 @@ namespace CFIP.cBot.Execution
                     executionSettings != null &&
                     executionSettings.EnableAutomaticOrders,
                 EffectiveAutoTradingEnabled =
-                    executionSettings != null &&
-                    executionSettings.EnableAutoTrading &&
+                    policyAllowsAutomaticTrading &&
                     cbotMarketArmed &&
                     lifecycleAllowsExecution &&
                     !string.Equals(
@@ -232,9 +245,8 @@ namespace CFIP.cBot.Execution
                     !(reconciliation != null &&
                       reconciliation.RecoveryRequired),
                 EffectiveAutomaticOrdersEnabled =
-                    executionSettings != null &&
-                    executionSettings.EnableAutoTrading &&
-                    executionSettings.EnableAutomaticOrders &&
+                    policyAllowsAutomaticTrading &&
+                    policyAllowsAutomaticOrders &&
                     cbotOrdersArmed &&
                     lifecycleAllowsExecution &&
                     !string.Equals(
