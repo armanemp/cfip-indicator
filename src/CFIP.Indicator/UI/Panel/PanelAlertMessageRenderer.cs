@@ -345,7 +345,7 @@ namespace cAlgo
                 Math.Max(
                     24,
                     PanelFooterMinHeight -
-                    PanelDataStatusRowHeight -
+                    PanelFlowPressureRailHeight -
                     PanelFooterActionGap);
 
             _panelAlertMessageStack.Width =
