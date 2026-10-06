@@ -37,13 +37,6 @@ namespace cAlgo
 
         [Parameter("Maximum News Feed Age Minutes", Group = "28 · NEWS GUARD", DefaultValue = 90, MinValue = 15, MaxValue = 720)]
         public int MaximumNewsFeedAgeMinutes { get; set; }
-
-        [Parameter("Cancel Pending Before High Impact", Group = "28 · NEWS GUARD", DefaultValue = true)]
-        public bool CancelPendingBeforeHighImpactNews { get; set; }
-
-        [Parameter("Close Active Before High Impact", Group = "28 · NEWS GUARD", DefaultValue = false)]
-        public bool CloseActiveBeforeHighImpactNews { get; set; }
-
         [Parameter("Show News Risk Status", Group = "28 · NEWS GUARD", DefaultValue = true)]
         public bool ShowNewsRiskStatus { get; set; }
     }
