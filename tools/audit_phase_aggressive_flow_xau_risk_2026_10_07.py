@@ -36,7 +36,7 @@ checks = [
                     30" not in runtime),
     ("indicator detaches flow on shutdown", "StopAggressiveFlowRuntime();" in runtime),
     ("UI keeps depth and flow separate", "TryResolveCanonicalBuySellLiquidity(" in footer and "GetAggressiveFlowSnapshot()" in footer),
-    ("UI labels flow as ticks, not units", '"ticks"' in footer and "FLOW BUY" in footer and "FLOW SELL" in footer),
+    ("UI labels flow as ticks, not units", '"ticks"' in footer and "AGG BUY TICKS" in footer and "AGG SELL TICKS" in footer),
     ("footer geometry reserves the four-row rail", "PanelFlowPressureRailHeight = 84" in constants and "PanelFooterMinHeight = 112" in constants),
     ("normal risk sizing uses broker symbol risk primitive", "VolumeForFixedRisk(" in volume and "NormalizeVolumeInUnits(" in volume),
     ("aggressive risk sizing uses broker symbol risk primitive", "VolumeForFixedRisk(" in aggressive_volume and "NormalizeVolumeInUnits(" in aggressive_volume),
