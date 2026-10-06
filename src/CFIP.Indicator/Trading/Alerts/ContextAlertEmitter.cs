@@ -89,9 +89,7 @@ namespace cAlgo
                                             structuralDirection == 1
                                                 ? Bars.LowPrices[bar]
                                                 : Bars.HighPrices[bar],
-                                            structuralDirection == 1
-                                                ? BuyArrowColor
-                                                : SellArrowColor);
+                                            SignalPresentationColorPolicy.Resolve(this, structuralDirection, 2, "CONFIRMED"));
                                     }
 
                                     string alertType =
