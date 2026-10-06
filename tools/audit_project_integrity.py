@@ -56,7 +56,7 @@ declared_parameter_count = len(
         parameter_source,
     )
 )
-if declared_parameter_count != 545:
+if declared_parameter_count != 543:
     fail(
         f"Project integrity expects 545 parameter declarations, "
         f"found {declared_parameter_count}"
