@@ -13,17 +13,28 @@ namespace cAlgo
     /// </summary>
     internal sealed class AggressiveFlowAnalyzer
     {
-        private const int MaxSamples = 4096;
+        internal const int MaxSamples = 4096;
         private static readonly TimeSpan Window = TimeSpan.FromSeconds(30);
 
-        private readonly Queue<Sample> _samples = new Queue<Sample>(MaxSamples);
+        private readonly Queue<Sample> _samples =
+            new Queue<Sample>(MaxSamples);
         private double _previousMid;
         private bool _hasPreviousMid;
         private long _sequence;
 
+        internal void Reset()
+        {
+            _samples.Clear();
+            _previousMid = 0;
+            _hasPreviousMid = false;
+            _sequence = 0;
+        }
+
         internal AggressiveFlowSnapshot Snapshot(DateTime nowUtc)
         {
+            nowUtc = nowUtc.ToUniversalTime();
             Trim(nowUtc);
+
             int buy = 0, sell = 0, neutral = 0;
             foreach (var sample in _samples)
             {
@@ -41,7 +52,9 @@ namespace cAlgo
         {
             double bid = tick.Bid;
             double ask = tick.Ask;
-            if (!IsFinitePositive(bid) || !IsFinitePositive(ask) || ask < bid)
+            if (!IsFinitePositive(bid) ||
+                !IsFinitePositive(ask) ||
+                ask < bid)
                 return;
 
             double mid = (bid + ask) * 0.5;
@@ -71,7 +84,9 @@ namespace cAlgo
 
         private void Trim(DateTime nowUtc)
         {
-            DateTime cutoff = nowUtc.ToUniversalTime() - Window;
+            DateTime cutoff =
+                nowUtc.ToUniversalTime() - Window;
+
             while (_samples.Count > 0 &&
                    _samples.Peek().Utc < cutoff)
                 _samples.Dequeue();
@@ -124,9 +139,29 @@ namespace cAlgo
         internal DateTime ObservedUtc { get; }
 
         internal double BuyShare =>
-            TotalTicks > 0 ? (double)BuyTicks / TotalTicks : 0;
+            TotalTicks > 0
+                ? (double)BuyTicks / TotalTicks
+                : 0;
 
         internal double SellShare =>
-            TotalTicks > 0 ? (double)SellTicks / TotalTicks : 0;
+            TotalTicks > 0
+                ? (double)SellTicks / TotalTicks
+                : 0;
+
+        internal bool IsFresh(
+            DateTime nowUtc,
+            TimeSpan maxAge)
+        {
+            if (ObservedUtc == DateTime.MinValue ||
+                maxAge < TimeSpan.Zero)
+                return false;
+
+            TimeSpan age =
+                nowUtc.ToUniversalTime() -
+                ObservedUtc.ToUniversalTime();
+
+            return age >= TimeSpan.Zero &&
+                   age <= maxAge;
+        }
     }
 }
