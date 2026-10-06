@@ -430,8 +430,7 @@ namespace cAlgo
                     _renderSignalVisualSnapshot);
 
                 RenderCanonicalMtfTrendArrows(
-                    _renderSignalVisualSnapshot,
-                    index);
+                    _renderSignalVisualSnapshot);
 
                 RenderParallelOpportunityCandidates(
                     closedM5);
