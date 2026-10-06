@@ -16,6 +16,9 @@ namespace cAlgo
     {
         private StackPanel _panelFooterActions;
         private TextBlock _panelDataStatusText;
+        private StackPanel _panelDataStatusBars;
+        private readonly List<Border> _panelDataStatusBarControls =
+            new List<Border>(5);
 
         private void CreatePanel()
                                 {
@@ -153,31 +156,59 @@ namespace cAlgo
                                                         Color.Black)
                                             };
 
+                                        _panelDataStatusBars =
+                                            new StackPanel
+                                            {
+                                                Orientation = Orientation.Horizontal,
+                                                HorizontalAlignment = HorizontalAlignment.Center,
+                                                VerticalAlignment = VerticalAlignment.Center,
+                                                Height = PanelDataStatusRowHeight,
+                                                BackgroundColor = Color.FromArgb(0, Color.Black)
+                                            };
+
                                         _panelDataStatusText =
                                             new TextBlock
                                             {
-                                                Text = "DATA  M1 —  M5 —  M15 —  H1 —  H4 —",
+                                                Text = "DATA",
+                                                Width = 34,
                                                 Height = PanelDataStatusRowHeight,
-                                                HorizontalAlignment =
-                                                    HorizontalAlignment.Stretch,
-                                                VerticalAlignment =
-                                                    VerticalAlignment.Center,
-                                                TextAlignment =
-                                                    TextAlignment.Center,
-                                                TextWrapping =
-                                                    TextWrapping.NoWrap,
-                                                TextTrimming =
-                                                    TextTrimming.None,
-                                                FontFamily =
-                                                    string.IsNullOrWhiteSpace(PanelFontFamily)
-                                                        ? "Arial"
-                                                        : PanelFontFamily,
+                                                FontFamily = string.IsNullOrWhiteSpace(PanelFontFamily) ? "Arial" : PanelFontFamily,
                                                 FontSize = Math.Max(9, PanelFontSize - 2),
-                                                FontWeight = FontWeight.Normal,
+                                                FontWeight = FontWeight.Bold,
                                                 ForegroundColor = PanelMutedTextColor,
-                                                BackgroundColor =
-                                                    Color.FromArgb(0, Color.Black)
+                                                TextAlignment = TextAlignment.Left,
+                                                VerticalAlignment = VerticalAlignment.Center,
+                                                TextWrapping = TextWrapping.NoWrap
                                             };
+                                        _panelDataStatusBars.AddChild(_panelDataStatusText);
+
+                                        string[] dataLabels = { "M1", "M5", "M15", "H1", "H4" };
+                                        for (int i = 0; i < dataLabels.Length; i++)
+                                        {
+                                            Border bar = new Border
+                                            {
+                                                Width = 38,
+                                                Height = 12,
+                                                Margin = new Thickness(2, 0, 2, 0),
+                                                CornerRadius = 2,
+                                                BorderThickness = 1,
+                                                BorderColor = PanelBorder,
+                                                BackgroundColor = Color.FromArgb(70, PanelMutedTextColor),
+                                                Child = new TextBlock
+                                                {
+                                                    Text = dataLabels[i],
+                                                    FontFamily = string.IsNullOrWhiteSpace(PanelFontFamily) ? "Arial" : PanelFontFamily,
+                                                    FontSize = Math.Max(7, PanelFontSize - 4),
+                                                    FontWeight = FontWeight.Bold,
+                                                    ForegroundColor = PanelTextColor,
+                                                    TextAlignment = TextAlignment.Center,
+                                                    VerticalAlignment = VerticalAlignment.Center,
+                                                    TextWrapping = TextWrapping.NoWrap
+                                                }
+                                            };
+                                            _panelDataStatusBarControls.Add(bar);
+                                            _panelDataStatusBars.AddChild(bar);
+                                        }
 
                                         _panelFooterActions =
                                             new StackPanel
@@ -212,7 +243,7 @@ namespace cAlgo
                                                 _panelAlertMessageStack);
 
                                         _buttonStack.AddChild(
-                                            _panelDataStatusText);
+                                            _panelDataStatusBars);
 
                                         _buttonStack.AddChild(
                                             _panelFooterActions);
@@ -315,6 +346,8 @@ namespace cAlgo
                                         _buttonStack = null;
                                         _panelFooterActions = null;
                                         _panelDataStatusText = null;
+                                        _panelDataStatusBars = null;
+                                        _panelDataStatusBarControls.Clear();
                                         _panelToggleButton = null;
                                         _panelRestoreButton = null;
                                     }
