@@ -34,8 +34,12 @@ check("decision-only fingerprint is owned by Core rule",
 check("presentation groups are excluded",
       'AlertsCoreGroupPrefix = "12 · ALERTS"' in identity and
       'DisplayGroupPrefix = "14 · DISPLAY"' in identity)
-check("non-decision parameters are explicitly excluded",
-      '"EnableAutoTrading"' in identity and '"AutoTradingReminder"' in identity and
+check("removed Indicator execution controls are absent from learning identity",
+      '"EnableAutoTrading"' not in identity and
+      '"EnableAutomaticOrders"' not in identity and
+      '"AutoTradingReminder"' not in identity and
+      '"ShowTradeActionButtons"' not in identity and
+      '"ManagedActionsOnly"' not in identity and
       '"PanelWidth"' not in identity and '"EnableSoundAlerts"' not in identity)
 check("decision parameters remain included",
       '"Tp1MinimumRR"' not in identity and '"MinimumConfidence"' not in identity)
