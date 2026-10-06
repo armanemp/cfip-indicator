@@ -260,10 +260,13 @@ namespace cAlgo
                  i <= closedIndex;
                  i++)
             {
-                cache.StableQuotes.Add(
+                StockQuote quote =
                     CreateQuote(
                         bars,
-                        i));
+                        i);
+
+                if (quote != null)
+                    cache.StableQuotes.Add(quote);
 
                 cache.StableClosedIndex = i;
 
@@ -333,10 +336,13 @@ namespace cAlgo
                  i <= closedIndex;
                  i++)
             {
-                cache.RollingQuotes.Add(
+                StockQuote quote =
                     CreateQuote(
                         bars,
-                        i));
+                        i);
+
+                if (quote != null)
+                    cache.RollingQuotes.Add(quote);
 
                 cache.RollingClosedIndex = i;
             }
@@ -355,16 +361,43 @@ namespace cAlgo
             Bars bars,
             int index)
         {
-            return new StockQuote
+            if (bars == null ||
+                index < 0 ||
+                index >= bars.Count)
+                return null;
+
+            double open = bars.OpenPrices[index];
+            double high = bars.HighPrices[index];
+            double low = bars.LowPrices[index];
+            double close = bars.ClosePrices[index];
+            double volume = bars.TickVolumes[index];
+
+            if (double.IsNaN(open) || double.IsInfinity(open) ||
+                double.IsNaN(high) || double.IsInfinity(high) ||
+                double.IsNaN(low) || double.IsInfinity(low) ||
+                double.IsNaN(close) || double.IsInfinity(close) ||
+                double.IsNaN(volume) || double.IsInfinity(volume))
+                return null;
+
+            if (high < low)
+                return null;
+
+            try
             {
-                Date = bars.OpenTimes[index],
-                Open = (decimal)bars.OpenPrices[index],
-                High = (decimal)bars.HighPrices[index],
-                Low = (decimal)bars.LowPrices[index],
-                Close = (decimal)bars.ClosePrices[index],
-                Volume = OssQuoteProjectionRule.NormalizeVolume(
-                    bars.TickVolumes[index])
-            };
+                return new StockQuote
+                {
+                    Date = bars.OpenTimes[index],
+                    Open = (decimal)open,
+                    High = (decimal)high,
+                    Low = (decimal)low,
+                    Close = (decimal)close,
+                    Volume = OssQuoteProjectionRule.NormalizeVolume(volume)
+                };
+            }
+            catch (OverflowException)
+            {
+                return null;
+            }
         }
 
         private static void CaptureStableFirstBar(
