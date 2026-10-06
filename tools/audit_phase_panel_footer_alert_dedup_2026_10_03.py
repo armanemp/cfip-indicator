@@ -101,7 +101,7 @@ constants = read("UI/Panel/PanelConstants.cs")
 canonical_arrows = read("UI/Chart/SignalStackedArrowRenderer.cs")
 
 check(
-    "PanelFooterMinHeight = 66" in constants and
+    "PanelFooterMinHeight = 70" in constants and
     "PanelFlowPressureRailHeight = 42" in constants and
     "ResolvePanelFooterAreaHeight(" in layout and
     "ResolvePanelFooterAreaHeight(" in panel and
@@ -199,11 +199,12 @@ check(
 )
 
 check(
-    "PanelFooterMinHeight = 66" in constants and
+    "PanelFooterMinHeight = 70" in constants and
     "return contentHeight;" in layout and
     "PanelFlowPressureRailHeight = 42" in constants and
     "PanelFlowPressureRowHeight = 20" in constants and
     "PanelFlowPressureBarHeight = 8" in constants and
+    "PanelFooterActionGap = 4" in constants and
     "PanelAlertMessageRowHeight = 18" in read("UI/Panel/PanelAlertMessageRenderer.cs"),
     "footer geometry must reserve the two-row pressure rail at the actual content boundary",
 )
