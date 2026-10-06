@@ -13,6 +13,81 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
+        private double ResolveStructuralStopMinimumRiskAtr(
+            string timeframe,
+            int closedM5,
+            int direction,
+            double atr)
+        {
+            if (!IsFinitePositive(atr))
+                return 0;
+
+            bool allowMicroRelaxation =
+                string.Equals(
+                    timeframe,
+                    "M1",
+                    StringComparison.OrdinalIgnoreCase) &&
+                _m5Frame != null &&
+                _m15Frame != null &&
+                _m5Frame.Direction == direction &&
+                _m15Frame.Direction == direction &&
+                _m5Frame.Quality >= SmartStopQuality;
+
+            double microAtr = 0;
+
+            if (allowMicroRelaxation &&
+                _m1Bars != null &&
+                closedM5 >= 0)
+            {
+                DateTime reference =
+                    ClosedBarBoundaryReference(
+                        _m5Bars,
+                        closedM5,
+                        Server.TimeInUtc);
+
+                int m1Index =
+                    ClosedIndex(
+                        _m1Bars,
+                        reference);
+
+                if (m1Index >= 10)
+                    microAtr =
+                        Atr(
+                            _m1Bars,
+                            m1Index);
+            }
+
+            return StructuralStopRiskRule.ResolveEffectiveMinimumStopRiskAtr(
+                MinimumSlAtr,
+                atr,
+                microAtr,
+                Math.Max(
+                    0,
+                    Symbol.Ask - Symbol.Bid),
+                Symbol.PipSize,
+                MaximumSpreadToStopRiskRatio,
+                allowMicroRelaxation);
+        }
+
+        private double ResolveSelectedStructuralStopMinimumRiskAtr(
+            string source,
+            int closedM5,
+            int direction,
+            double atr)
+        {
+            bool micro =
+                !string.IsNullOrWhiteSpace(source) &&
+                source.EndsWith(
+                    "@M1",
+                    StringComparison.OrdinalIgnoreCase);
+
+            return ResolveStructuralStopMinimumRiskAtr(
+                micro ? "M1" : "M5",
+                closedM5,
+                direction,
+                atr);
+        }
+
         private double BuildStructuralStop(
                             int closedM5,
                             int direction,
