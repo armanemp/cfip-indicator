@@ -33,7 +33,7 @@ namespace cAlgo
                                     index,
                                     set.Dms.ADX.Count,
                                     Math.Max(2, AdxPeriod)))
-                                return 0;
+                                return double.NaN;
                 
                             double value = set.Dms.ADX[index];
                 
