@@ -92,12 +92,6 @@ namespace CFIP.cBot
         [Parameter("Use Market Hours Guard", Group = "Execution Safety", DefaultValue = true)]
         public bool UseMarketHoursGuard { get; set; }
 
-        [Parameter("Session Start UTC", Group = "Execution Safety", DefaultValue = 6, MinValue = 0, MaxValue = 23)]
-        public int SessionStartUtc { get; set; }
-
-        [Parameter("Session End UTC", Group = "Execution Safety", DefaultValue = 20, MinValue = 0, MaxValue = 23)]
-        public int SessionEndUtc { get; set; }
-
         [Parameter("Use Spread Filter", Group = "Execution Safety", DefaultValue = true)]
         public bool UseSpreadFilter { get; set; }
 
