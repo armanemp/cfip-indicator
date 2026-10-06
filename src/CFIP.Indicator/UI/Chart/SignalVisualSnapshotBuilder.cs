@@ -102,10 +102,10 @@ namespace cAlgo
                 EnableLiveReaction &&
                 ShowReactionArrow &&
                 _reaction != null &&
-                _reaction.EntryAllowed &&
+                _reaction.TriggerReady &&
                 _reaction.Direction != 0 &&
                 _reaction.Confidence >=
-                    LiveReactionStrongThreshold &&
+                    LiveReactionThreshold &&
                 _reaction.IndependentEvidence >=
                     Math.Max(
                         2,
