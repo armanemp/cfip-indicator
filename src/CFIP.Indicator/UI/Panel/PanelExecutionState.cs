@@ -148,8 +148,13 @@ namespace cAlgo
                     "CBOT AUTO TRADE ON • " +
                     CbotMarketModeText();
 
-            if (!_cBotExecutionState.IndicatorAutoTradingEnabled)
-                return "CBOT CONNECTED • AUTO TRADE OFF • INDICATOR SETTING OFF";
+            if (!_cBotExecutionState.EffectiveAutoTradingEnabled)
+                return
+                    "CBOT CONNECTED • AUTO TRADE OFF • " +
+                    (_cBotExecutionState.MarketExecutionEnabled ||
+                     _cBotExecutionState.AggressiveExecutionEnabled
+                        ? "MASTER DISARMED"
+                        : "EXECUTION DISARMED");
 
             if (!_cBotExecutionState.MarketExecutionEnabled &&
                 !_cBotExecutionState.AggressiveExecutionEnabled)
@@ -193,8 +198,13 @@ namespace cAlgo
                     "CBOT AUTO ORDERS ON • " +
                     CbotPendingModeText();
 
-            if (!_cBotExecutionState.IndicatorAutomaticOrdersEnabled)
-                return "CBOT CONNECTED • AUTO ORDERS OFF • INDICATOR SETTING OFF";
+            if (!_cBotExecutionState.EffectiveAutomaticOrdersEnabled)
+                return
+                    "CBOT CONNECTED • AUTO ORDERS OFF • " +
+                    (_cBotExecutionState.PendingStopExecutionEnabled ||
+                     _cBotExecutionState.PendingLimitExecutionEnabled
+                        ? "MASTER OR ORDERS DISARMED"
+                        : "PENDING DISARMED");
 
             if (!_cBotExecutionState.IndicatorAutoTradingEnabled)
                 return "CBOT CONNECTED • AUTO ORDERS BLOCKED • AUTO TRADE OFF";
