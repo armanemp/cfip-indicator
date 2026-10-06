@@ -874,7 +874,7 @@ No trading threshold, MTF role, broker mutation authority or strategy quality ga
 ## 2026-10-07 — News execution boundary + trading isolation
 
 - Economic-news intelligence remains Indicator-owned: calendar/feed, relevance, impact windows, stale state and decision blocking.
-- News-driven broker mutation policy is cBot-owned: CancelCfipPendingBeforeHighImpactNews and ProtectCfipPositionBeforeHighImpactNews live only on CFIPExecutionBot.
+- News-driven broker mutation policy is cBot-owned: CancelPendingBeforeHighImpactNews and CloseActiveBeforeHighImpactNews live only on CFIPExecutionBot.
 - Indicator publishes only CFIP management intents tagged HIGH IMPACT NEWS; the cBot is the sole broker mutation owner and applies the cBot policy before mutation.
 - Native cTrader Quick Trade/global trading permission is never changed by News Guard. Symbol.IsTradingEnabled remains a broker-state observation only.
 - No Indicator/cBot startup or lifetime timeout is introduced. Command-age and provider-staleness limits remain freshness/safety gates, not process shutdown timers.
