@@ -4,11 +4,29 @@ namespace cAlgo
 {
     internal static class TargetRewardEnvelopeRule
     {
+        internal const double HtfMaximumExtensionAtrCap = 24.0;
+
         public static double MaximumReachableRR(
+
             double risk,
             double atr,
             double maximumTargetExtensionAtr,
             double maximumRewardRR)
+        {
+            return MaximumReachableRR(
+                risk,
+                atr,
+                maximumTargetExtensionAtr,
+                maximumRewardRR,
+                false);
+        }
+
+        public static double MaximumReachableRR(
+            double risk,
+            double atr,
+            double maximumTargetExtensionAtr,
+            double maximumRewardRR,
+            bool allowHtfExtension)
         {
             if (risk <= 0 ||
                 atr <= 0 ||
@@ -18,11 +36,20 @@ namespace cAlgo
                 double.IsInfinity(atr))
                 return 0;
 
+            double effectiveExtensionAtr =
+                ResolveMaximumExtensionAtr(
+                    risk,
+                    atr,
+                    maximumTargetExtensionAtr,
+                    maximumRewardRR,
+                    allowHtfExtension);
+
+            if (effectiveExtensionAtr <= 0)
+                return 0;
+
             double extension =
                 atr *
-                Math.Max(
-                    1.0,
-                    maximumTargetExtensionAtr);
+                effectiveExtensionAtr;
 
             double extensionRR =
                 RiskRewardMathRule.NominalRRFromDistance(
@@ -47,6 +74,23 @@ namespace cAlgo
             double maximumTargetExtensionAtr,
             double maximumRewardRR)
         {
+            return CanReachStage(
+                requiredRR,
+                risk,
+                atr,
+                maximumTargetExtensionAtr,
+                maximumRewardRR,
+                false);
+        }
+
+        public static bool CanReachStage(
+            double requiredRR,
+            double risk,
+            double atr,
+            double maximumTargetExtensionAtr,
+            double maximumRewardRR,
+            bool allowHtfExtension)
+        {
             if (requiredRR <= 0 ||
                 double.IsNaN(requiredRR) ||
                 double.IsInfinity(requiredRR))
@@ -58,8 +102,49 @@ namespace cAlgo
                     risk,
                     atr,
                     maximumTargetExtensionAtr,
-                    maximumRewardRR) +
+                    maximumRewardRR,
+                    allowHtfExtension) +
                 1e-12;
+        }
+
+        public static double ResolveMaximumExtensionAtr(
+            double risk,
+            double atr,
+            double baseMaximumExtensionAtr,
+            double maximumRewardRR,
+            bool allowHtfExtension)
+        {
+            if (risk <= 0 ||
+                atr <= 0 ||
+                double.IsNaN(risk) ||
+                double.IsInfinity(risk) ||
+                double.IsNaN(atr) ||
+                double.IsInfinity(atr))
+                return 0;
+
+            double baseExtension =
+                Math.Max(
+                    1.0,
+                    double.IsNaN(baseMaximumExtensionAtr) ||
+                    double.IsInfinity(baseMaximumExtensionAtr)
+                        ? 0
+                        : baseMaximumExtensionAtr);
+
+            if (!allowHtfExtension)
+                return baseExtension;
+
+            double rrBoundExtension =
+                Math.Max(
+                    0,
+                    maximumRewardRR) *
+                risk /
+                atr;
+
+            return Math.Min(
+                HtfMaximumExtensionAtrCap,
+                Math.Max(
+                    baseExtension,
+                    rrBoundExtension));
         }
     }
 }
