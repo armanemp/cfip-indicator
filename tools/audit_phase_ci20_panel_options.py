@@ -203,15 +203,10 @@ require(
 )
 
 compat = read(SRC / "UI/Panel/PanelRenderOptimization.cs")
-for token in (
-    "ActionButtonHeight",
-    "ActionButtonMargin",
-    "ActionButtonWidth",
-    "AlwaysShowSafetyButtons",
-    "ShowTradeActionButtons",
-):
-    if token not in compat:
-        errors.append("retained compatibility option missing from explicit compatibility owner: " + token)
+
+# Obsolete Indicator-side execution UI controls were removed; their broker
+# execution surface is now cBot-owned. Keep the audit focused on live Panel 14
+# options rather than retaining dead compatibility parameters.
 
 if errors:
     print("CI-20 PANEL OPTION INTEGRITY AUDIT: FAIL")
