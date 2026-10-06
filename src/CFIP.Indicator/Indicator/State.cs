@@ -291,6 +291,8 @@ namespace cAlgo
                 private readonly List<TextBlock> _panelRows =
                     new List<TextBlock>();
                 private StackPanel _buttonStack;
+                private StackPanel _panelFooterActions;
+                private TextBlock _panelDataStatusText;
                 private Button _panelRestoreButton;
                 private StackPanel _quickExecutionStack;
                 private ToggleButton _autoTradingQuickToggle;
@@ -371,6 +373,10 @@ namespace cAlgo
                 private readonly AggressiveEntryPolicy _aggressiveEntryPolicy =
                     new AggressiveEntryPolicy();
                 private DateTime _lastPanelHeartbeatUtc = DateTime.MinValue;
+                private Border _signalArrowBox;
+                private StackPanel _signalArrowBoxStack;
+                private readonly List<TextBlock> _signalArrowBoxArrows =
+                    new List<TextBlock>(3);
 
                 // CI-11 timing state: one measurement per causal decision/M1
                 // confirmation identity. This is observability only and does not
