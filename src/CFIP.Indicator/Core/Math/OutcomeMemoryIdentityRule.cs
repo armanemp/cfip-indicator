@@ -37,14 +37,6 @@ namespace cAlgo
                 "EnableEndOfDayAlert",
                 "EndOfDayAlertMinutesBefore",
 
-                "EnableAutoTrading",
-                "EnableAutomaticOrders",
-                "AutoTradingReminder",
-                "ShowTradeActionButtons",
-                "AlwaysShowSafetyButtons",
-                "ActionButtonMargin",
-                "ActionButtonWidth",
-                "ActionButtonHeight",
 
                 "ShowReactionArrow",
                 "ShowHistoricalArrows",
