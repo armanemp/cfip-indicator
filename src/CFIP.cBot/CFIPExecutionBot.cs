@@ -611,13 +611,6 @@ namespace CFIP.cBot
 
             TrackScenarioEnvelope(envelope);
 
-            _lastObservedEnvelopeRevision =
-                envelope.Identity.Revision;
-            _lastObservedEnvelopeScenarioId =
-                envelope.Identity.ScenarioId ?? "";
-            _lastObservedEnvelopeInstanceId =
-                _boundIndicatorInstanceId ?? "";
-
             _lastSignalEnvelope = envelope;
             _activeManagedExecutionLabel =
                 envelope.Intent == null
