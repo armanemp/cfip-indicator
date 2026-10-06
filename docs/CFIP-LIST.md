@@ -21,6 +21,10 @@
 
 **Scope:** preflight probe/host/compile/safety boundary is repository-verified; target-terminal acceptance remains pending. WP-06 Contracts remains blocked until the target-terminal boundary is satisfied.
 
+## 2026-10-07 — PR #361 repository closeout
+
+PR #361 is merged to `main` as `d083869cbf615b3eaaeded5048f8c55dfa2b0f76`. The final implementation head passed Source/Architecture, Runtime Acceptance and cTrader Compile. The remaining blocker is target-terminal validation of the fixed signal box, footer data-status persistence, audio audibility, cBot attachment/execution state and restart/reconnect behavior.
+
 # 1. Mission
 
 No critical behavior may escape review because the roadmap was too broad. Every relevant file is audited file-by-file; every logic-bearing file is inspected declaration-by-declaration, method-by-method, branch-by-branch and line-by-line where source-level proof is required.
