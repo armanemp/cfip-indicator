@@ -33,8 +33,8 @@ namespace cAlgo
             int toggleHeight,
             int alertRailHeight)
         {
-            if (!ShowPanelToggleButton &&
-                alertRailHeight <= 0)
+            if (!ShowUnifiedPanel ||
+                _panelHidden)
                 return 0;
 
             int actionHeight =
