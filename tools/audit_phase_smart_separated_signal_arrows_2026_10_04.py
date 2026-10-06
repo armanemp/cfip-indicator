@@ -85,10 +85,12 @@ check(
     "Orientation.Horizontal" in stack and
     "_signalArrowBoxArrows" in stack and
     "new System.Collections.Generic.List<TextBlock>(3)" in stack and
-    "Width = 18" in stack and
-    "Height = 30" in stack and
-    "FontSize = 24" in stack and
-    "FontWeight = FontWeight.Bold" in stack and
+    "Width = 20" in stack and
+    "Height = 36" in stack and
+    "FontFamily = \"Segoe UI Symbol\"" in stack and
+    "FontSize = 28" in stack and
+    "FontWeight = FontWeight.ExtraBold" in stack and
+    "LineHeight = 32" in stack and
     "Margin = new Thickness(1, 0, 1, 0)" in stack and
     "Width = 66" in stack and
     "Height = 66" in stack,
@@ -138,6 +140,7 @@ check(
     "all production arrow call-sites use one calculation-lifecycle owner",
     "RenderCanonicalMtfTrendArrows(" in read("src/CFIP.Indicator/Runtime/Calculation/CalculationLiveCycle.cs") and
     "RenderStackedSignalArrows(" in stack and
+    "EnsureSignalArrowBox();" in read("src/CFIP.Indicator/UI/Panel/PanelFactory.cs") and
     "ResolveSignalArrowState(" not in signal and
     "fallbackState" not in stack,
 )
