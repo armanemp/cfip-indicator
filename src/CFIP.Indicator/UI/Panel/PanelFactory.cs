@@ -238,6 +238,7 @@ namespace cAlgo
                                         // above the panel z-order. Arrow state/content remains owned
                                         // exclusively by SignalStackedArrowRenderer.
                                         EnsureSignalArrowBox();
+                                        BringSignalArrowBoxToFront();
                                     }
                                     catch (Exception ex)
                                     {
