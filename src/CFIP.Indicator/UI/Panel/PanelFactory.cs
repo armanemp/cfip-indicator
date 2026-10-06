@@ -139,7 +139,7 @@ namespace cAlgo
                                             new StackPanel
                                             {
                                                 Orientation =
-                                                    Orientation.Horizontal,
+                                                    Orientation.Vertical,
                                                 HorizontalAlignment =
                                                     HorizontalAlignment.Stretch,
                                                 VerticalAlignment =
@@ -149,6 +149,48 @@ namespace cAlgo
                                                         0,
                                                         Color.Black)
                                             };
+
+                                        _panelDataStatusText =
+                                            new TextBlock
+                                            {
+                                                Text = "DATA  M1 —  M5 —  M15 —  H1 —  H4 —",
+                                                Height = PanelDataStatusRowHeight,
+                                                HorizontalAlignment =
+                                                    HorizontalAlignment.Stretch,
+                                                VerticalAlignment =
+                                                    VerticalAlignment.Center,
+                                                TextAlignment =
+                                                    TextAlignment.Center,
+                                                TextWrapping =
+                                                    TextWrapping.NoWrap,
+                                                TextTrimming =
+                                                    TextTrimming.None,
+                                                FontFamily =
+                                                    string.IsNullOrWhiteSpace(PanelFontFamily)
+                                                        ? "Arial"
+                                                        : PanelFontFamily,
+                                                FontSize = Math.Max(9, PanelFontSize - 2),
+                                                FontWeight = FontWeight.Normal,
+                                                ForegroundColor = PanelMutedTextColor,
+                                                BackgroundColor =
+                                                    Color.FromArgb(0, Color.Black)
+                                            };
+
+                                        _panelFooterActions =
+                                            new StackPanel
+                                            {
+                                                Orientation =
+                                                    Orientation.Horizontal,
+                                                HorizontalAlignment =
+                                                    HorizontalAlignment.Stretch,
+                                                VerticalAlignment =
+                                                    VerticalAlignment.Top,
+                                                Height = PanelFooterMinHeight -
+                                                    PanelDataStatusRowHeight -
+                                                    PanelFooterActionGap,
+                                                BackgroundColor =
+                                                    Color.FromArgb(0, Color.Black)
+                                            };
                         
                                         // The Indicator panel is analysis/presentation only.
                                         // Broker Close/Cancel actions belong to the cBot surface.
@@ -157,14 +199,20 @@ namespace cAlgo
                                         CreatePanelToggleButton();
                         
                                         if (_panelToggleButton != null)
-                                            _buttonStack.AddChild(
+                                            _panelFooterActions.AddChild(
                                                 _panelToggleButton);
 
                                         CreatePanelAlertMessageRail();
 
                                         if (_panelAlertMessageStack != null)
-                                            _buttonStack.AddChild(
+                                            _panelFooterActions.AddChild(
                                                 _panelAlertMessageStack);
+
+                                        _buttonStack.AddChild(
+                                            _panelDataStatusText);
+
+                                        _buttonStack.AddChild(
+                                            _panelFooterActions);
 
                         
                                         _panelHeaderStack.AddChild(
@@ -262,6 +310,8 @@ namespace cAlgo
                                         RemovePanelTrendTimeframeLampRow();
                                         _panelRows.Clear();
                                         _buttonStack = null;
+                                        _panelFooterActions = null;
+                                        _panelDataStatusText = null;
                                         _panelToggleButton = null;
                                         _panelRestoreButton = null;
                                     }
