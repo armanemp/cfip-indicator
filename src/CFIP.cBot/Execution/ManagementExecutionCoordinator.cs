@@ -111,9 +111,9 @@ namespace CFIP.cBot.Execution
                         settings != null &&
                         settings.SyncBrokerTakeProfit,
                         settings != null &&
-                        settings.CancelCfipPendingBeforeHighImpactNews,
+                        settings.CancelPendingBeforeHighImpactNews,
                         settings != null &&
-                        settings.ProtectCfipPositionBeforeHighImpactNews,
+                        settings.CloseActiveBeforeHighImpactNews,
                         command.Reason,
                         out string policyReason))
                 {
