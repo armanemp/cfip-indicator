@@ -28,6 +28,7 @@ queue = read(IND, "Core/Runtime/AlertDeliveryQueue.cs")
 processor = read(IND, "UI/Panel/AlertDeliveryProcessor.cs")
 rail = read(IND, "UI/Panel/PanelAlertMessageRenderer.cs")
 factory = read(IND, "UI/Panel/PanelFactory.cs")
+footer_factory = read(IND, "UI/Panel/PanelFooterFactory.cs")
 visual_settings = read(IND, "UI/Panel/Theme/PanelVisualSettings.cs")
 visual_opt = read(IND, "UI/Panel/PanelRenderOptimization.cs")
 line = read(IND, "UI/Chart/PlanLineRenderer.cs")
@@ -88,9 +89,9 @@ check(
 )
 check(
     "alert rail is hosted by the footer action row beside the panel hide control",
-    "CreatePanelAlertMessageRail();" in factory and
-    "_panelFooterActions.AddChild(" in factory and
-    "_buttonStack.AddChild(" in factory,
+    "CreatePanelAlertMessageRail();" in footer_factory and
+    "_panelFooterActions.AddChild(" in footer_factory and
+    "_buttonStack.AddChild(" in footer_factory,
 )
 check(
     "alert rail contributes to bottom-panel geometry",
