@@ -123,10 +123,10 @@ namespace cAlgo
                     {
                         Text = string.Empty,
                         Width = 18,
-                        Height = 28,
+                        Height = 30,
                         FontFamily = "Arial",
-                        FontSize = 22,
-                        FontWeight = FontWeight.Normal,
+                        FontSize = 24,
+                        FontWeight = FontWeight.Bold,
                         TextAlignment = TextAlignment.Center,
                         HorizontalAlignment = HorizontalAlignment.Center,
                         VerticalAlignment = VerticalAlignment.Center,

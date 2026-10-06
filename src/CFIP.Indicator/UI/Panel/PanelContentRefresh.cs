@@ -48,6 +48,11 @@ namespace cAlgo
                 RenderPanelRows(
                     EffectivePanelContentWidth());
 
+                // Pressure is display-only and is refreshed on the bounded live
+                // panel cadence from the current M15 bar/tick-volume snapshot.
+                // No second timer or renderer is introduced.
+                UpdatePanelFlowPressureRail();
+
                 _panelContentRefreshSequence++;
 
                 _lastPanelContentRefreshUtc =

@@ -308,22 +308,25 @@ namespace cAlgo
             Bars bars = _m15Bars;
 
             if (bars == null ||
-                bars.Count < 2)
+                bars.Count < 1)
                 return false;
 
-            int lastClosed =
-                bars.Count - 2;
+            // Use the latest three M15 bars, including the active bar. This is
+            // intentionally realtime: cTrader updates TickVolumes/High/Low/Close
+            // on the current bar while the panel refresh remains bounded.
+            int latestBar =
+                bars.Count - 1;
 
             int first =
                 Math.Max(
                     0,
-                    lastClosed - 2);
+                    latestBar - 2);
 
             double buyVolume = 0;
             double sellVolume = 0;
 
             for (int i = first;
-                 i <= lastClosed;
+                 i <= latestBar;
                  i++)
             {
                 double high =

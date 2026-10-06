@@ -1324,3 +1324,14 @@ The panel footer's M1/M5/M15/H1/H4 data-status row is fixed outside the scrollab
 
 Repository-side Source/Architecture, Runtime Acceptance and cTrader Compile gates are still required on the latest head. Target-terminal acceptance remains manual for actual box visibility, arrow count/color, footer persistence, audio audibility, cBot attachment/execution state and restart/reconnect behavior.
 
+
+
+## 2026-10-07 — Realtime pressure / cBot handoff hardening
+
+- BUY/SELL footer pressure now refreshes on the existing bounded 500 ms live panel cadence and evaluates the latest three M15 bars including the active bar, so the display no longer waits for an M15 close to move.
+- The pressure remains an estimate derived from cTrader TickVolume weighted by candle close location; it is not bid/ask footprint volume.
+- Footer clearance below the pressure rail increased from 2 px to 4 px; the shared footer minimum is 70 px so the geometry remains internally consistent.
+- Canonical signal arrows are visually thicker via the existing single owner: 24 px bold glyphs in the fixed 66x66 box.
+- cBot realtime timer deduplication is now scenario-scoped and bounded instead of using one global last-scenario tuple, so concurrent scenarios do not reprocess each other at the same revision.
+- Provider execution-intent capture is reset before each live pending evaluation, preventing an older M5 intent from being reused after current actionability changes.
+- Automated gates must remain green before merge; target-terminal validation remains required for final visual/broker confirmation.

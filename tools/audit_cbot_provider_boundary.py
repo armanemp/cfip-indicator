@@ -32,6 +32,8 @@ stages = read(STAGES)
 seed = read(SEED)
 binding = read(CBOT / "Binding" / "CfipIndicatorChartBinding.cs")
 transport = read(CBOT / "Binding" / "CfipDeviceSignalTransport.cs")
+pending = read(INDICATOR / "Trading" / "Pending" / "Placement" / "SmartPendingOrderOrchestrator.cs")
+provider_plan = read(INDICATOR / "Runtime" / "Provider" / "CFIPReadOnlyProviderPlan.cs")
 
 def check(name, condition):
     print(f"{'PASS' if condition else 'FAIL'} | {name}")
@@ -99,6 +101,33 @@ check(
 check(
     "normal calculation updates provider heartbeat",
     "PublishProviderHeartbeatValue(index);" in calc,
+)
+
+check(
+    "provider execution-intent capture is reset before every live pending evaluation",
+    "ClearProviderExecutionIntentCapture();" in pending and
+    "RefreshPendingExecutionIntent(" in stages,
+)
+
+check(
+    "provider canonical intent never relies on an older M5 capture after the pending refresh",
+    "_cfipProviderExecutionIntentM5" in provider_plan and
+    "_plan.CreatedM5 != closedM5" in provider_plan and
+    "!_decision.EntryAllowed" in provider_plan and
+    "!_decision.ActionableNow" in provider_plan,
+)
+
+check(
+    "cBot timer dedupe is scenario-scoped and bounded",
+    "MaxRealtimeTimerScenarioRevisions = 128" in cbot and
+    "_lastRealtimeTimerRevisionByScenario" in cbot and
+    "_lastRealtimeTimerScenarioOrder" in cbot and
+    "scenarioId" in cbot and
+    "envelope.Identity.Revision <= observedRevision" in cbot and
+    "ClearRealtimeTimerObservationState();" in cbot and
+    "_lastObservedEnvelopeRevision" not in cbot and
+    "_lastObservedEnvelopeScenarioId" not in cbot and
+    "_lastObservedEnvelopeInstanceId" not in cbot,
 )
 
 check(

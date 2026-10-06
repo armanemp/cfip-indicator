@@ -179,6 +179,13 @@ check(
     "compositeBonus" in quality_selection
 )
 check(
+    "timer dedupe tracks each scenario revision independently",
+    "MaxRealtimeTimerScenarioRevisions = 128" in bot and
+    "_lastRealtimeTimerRevisionByScenario" in bot and
+    "_lastRealtimeTimerScenarioOrder" in bot and
+    "envelope.Identity.Revision <= observedRevision" in bot
+)
+check(
     "cBot scenario PlanSnapshot carries the composite plan quality",
     "compositePlanQuality" in quality_batch and
     "TradeOpportunityQualityRule.CalculateRankBonus(" in quality_batch
