@@ -338,6 +338,8 @@ M-118 (AccessRights.None و file/HTTP روی cTrader نصب‌شده)، M-45 (In
 | M-110 | متوسط | قطعی | Core/Math (۷۵ جا) | ۷۵ کف Math.Max/Min که پارامتر کاربر را بی‌صدا تغییر می‌دهند | لایهٔ «مقدار مؤثر» |
 | M-111 | متوسط | قطعی | SmartBreakEvenRule.cs:48-81 | Smart BE وقتی TP1<1.33×trigger کاملاً غیرفعال می‌شود | هشدار/fallback |
 | M-112 | متوسط | محتمل | TargetCandidateConstraintRule.cs:75; RiskRewardMathRule.cs; PlanRewardRiskQualityRule.cs | سه تعریف RR (اسمی/اسپرد/مؤثر) ⇒ رد دیرهنگام | یکسان‌سازی |
+| M-113 | متوسط | **قطعی / اصلاح‌شده در PR #359** | StructuralStopGeometryRule.cs; StructuralStopPlanner.cs | M1 به‌اشتباه در گروه HTF با `HtfStopBufferAtr` محاسبه می‌شد و مسیر M1/M5 را بیش از حد گشاد می‌کرد | ✅ M1/M5 از `StopBufferAtr`، M15+ از HTF buffer |
+| M-114 | متوسط | **قطعی / اصلاح‌شده در PR #359** | TargetRewardEnvelopeRule.cs; TargetStageFeasibilityGate.cs; TargetCandidateRewardScoreRule.cs | سقف 4 ATR می‌توانست TP2–TP4 را پیش از رسیدن به RR مجاز قطع کند و عمق HTF در scoring به‌اندازه کافی ترجیح نداشت | ✅ extension ریاضی محدود به MaxRR + اولویت bounded برای HTF عمیق‌تر |
 | L-85 | پایین | ثبت‌شده | SessionWindowRule.cs:10-277 | NormalizeHour 24→23؛ DST نادیده؛ IsInside بدون EnsureUtc | اصلاح |
 | L-86 | پایین | ثبت‌شده | PendingFillExitResolutionRule.cs:68-132 | target دورتر انتخاب می‌شود؛ risk=1.0 ثابت | مستندسازی |
 | L-87 | پایین | ثبت‌شده | ScenarioExecutionPolicyRule.cs:168 | expectedLane=candidate.Lane (چک همیشه true) | اصلاح |
