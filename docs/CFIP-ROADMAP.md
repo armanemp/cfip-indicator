@@ -869,3 +869,14 @@ No trading threshold, MTF role, broker mutation authority or strategy quality ga
 - Removed the remaining 30-second Indicator startup data-load lifetime timeout.
 - Added flow architecture acceptance gate and aligned legacy footer gate.
 - Remaining: reconnect/history reseed, session/regime normalization, arrow-strength integration, full compile/runtime/architecture CI.
+
+
+## 2026-10-07 — Flow reconnect/history reseed hardening
+- [x] Aggressive-flow owner remains a bounded 30-second directional tick proxy; it is not executed trade volume.
+- [x] Flow runtime now subscribes to Tick, HistoryLoaded and Reloaded through the same owner.
+- [x] Existing recent tick history is replayed chronologically into the bounded analyzer window after startup/history reload/reconnect.
+- [x] Reconnect reseed resets the previous-mid state so two provider generations cannot be bridged into one synthetic direction.
+- [x] Flow snapshots expose an explicit freshness contract; stale snapshots are fail-closed in the footer.
+- [x] Footer liquidity rows use explicit DOM BUY / DOM SELL labels and remain separate from FLOW BUY / FLOW SELL TICKS.
+- [ ] Canonical decision/actionability consumption of flow remains a separate package; flow must be used as confirmation/modulation, never as an extra vote.
+- [ ] Session/regime normalization and symbol-specific activity baselines remain open.
