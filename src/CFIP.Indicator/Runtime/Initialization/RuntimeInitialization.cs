@@ -382,22 +382,11 @@ namespace cAlgo
 
             if (!_initializationDataReady)
             {
-                TimeSpan elapsed =
-                    TimeInUtc -
-                    _initializationStartedUtc;
-
-                if (elapsed.TotalSeconds >=
-                    30)
-                {
-                    Timer.Stop();
-
-                    SetInitializationFault(
-                        new TimeoutException(
-                            "ASYNC MARKET DATA INITIALIZATION TIMEOUT"),
-                        "DATA LOAD");
-                    return;
-                }
-
+                // Market-data loading has no process/startup lifetime timeout.
+                // A slow broker/provider must remain in a recoverable loading
+                // state rather than forcing an Indicator fault or disabling
+                // analysis. Freshness/staleness gates belong to the data
+                // consumers and execution safety contracts, not to lifecycle.
                 _status =
                     _initializationPendingDataLoads > 0
                         ? "LOADING DATA"
