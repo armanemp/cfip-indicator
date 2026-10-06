@@ -109,7 +109,7 @@ check(
     "minimumRenderableHeight" in layout and
     "PanelTrendTimeframeLampRowHeight" in panel and
     "PanelTrendTimeframeLampTopSpacing" in panel and
-    "PanelFlowPressureRailHeight" in panel,
+    "buttonAreaHeight" in panel,
     "footer height must have one shared minimum and a reserved full-width pressure rail",
 )
 
