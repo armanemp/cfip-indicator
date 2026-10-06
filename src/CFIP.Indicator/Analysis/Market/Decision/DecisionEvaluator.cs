@@ -30,7 +30,9 @@ namespace cAlgo
                     score.Buy,
                     score.Sell,
                     input.SmartScoreTemperature,
-                    input.MinimumSmartDirectionShare);
+                    input.MinimumSmartDirectionShare,
+                    score.EligibleFrameWeight,
+                    score.DirectionalFrameWeight);
 
             DecisionEvidenceSnapshot evidence = input.Evidence;
 
