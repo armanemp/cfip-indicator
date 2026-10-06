@@ -5,6 +5,18 @@ using cAlgo.API.Internals;
 
 namespace cAlgo
 {
+    internal readonly struct AggressiveFlowSample
+    {
+        internal AggressiveFlowSample(DateTime utc, int direction)
+        {
+            Utc = utc;
+            Direction = direction;
+        }
+
+        internal DateTime Utc { get; }
+        internal int Direction { get; }
+    }
+
     /// <summary>
     /// Single owner for the realtime aggressive-flow proxy.
     /// cTrader Tick exposes quote prices, not executed trade size; therefore
@@ -16,8 +28,8 @@ namespace cAlgo
         internal const int MaxSamples = 4096;
         private static readonly TimeSpan Window = TimeSpan.FromSeconds(30);
 
-        private readonly Queue<Sample> _samples =
-            new Queue<Sample>(MaxSamples);
+        private readonly Queue<AggressiveFlowSample> _samples =
+            new Queue<AggressiveFlowSample>(MaxSamples);
         private double _previousMid;
         private bool _hasPreviousMid;
         private long _sequence;
@@ -72,7 +84,7 @@ namespace cAlgo
             _hasPreviousMid = true;
 
             _samples.Enqueue(
-                new Sample(
+                new AggressiveFlowSample(
                     tick.Time.ToUniversalTime(),
                     direction));
 
@@ -100,17 +112,6 @@ namespace cAlgo
                 value > 0;
         }
 
-        private readonly struct Sample
-        {
-            internal Sample(DateTime utc, int direction)
-            {
-                Utc = utc;
-                Direction = direction;
-            }
-
-            internal DateTime Utc { get; }
-            internal int Direction { get; }
-        }
     }
 
     internal readonly struct AggressiveFlowSnapshot
