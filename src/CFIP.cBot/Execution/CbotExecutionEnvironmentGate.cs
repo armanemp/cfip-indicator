@@ -33,13 +33,23 @@ namespace CFIP.cBot.Execution
                 return false;
             }
 
-            if (!settings.EnableAutoTrading)
+            bool liveAccount =
+                robot.Account != null &&
+                robot.Account.IsLive;
+
+            // Demo execution is armed by the explicit per-action demo switches.
+            // The master Auto Trading / Automatic Orders flags remain live-account
+            // policy gates so an old saved demo instance cannot silently remain
+            // inert after the dedicated demo execution controls are enabled.
+            if (liveAccount &&
+                !settings.EnableAutoTrading)
             {
                 reason = "CBOT AUTO TRADING DISABLED";
                 return false;
             }
 
-            if (pendingAction &&
+            if (liveAccount &&
+                pendingAction &&
                 !settings.EnableAutomaticOrders)
             {
                 reason = "CBOT AUTOMATIC ORDERS DISABLED";
