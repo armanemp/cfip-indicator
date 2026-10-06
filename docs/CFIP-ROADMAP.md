@@ -800,3 +800,19 @@ PR #284 was merged to `main` as `2e98a4b4cd27dd8b083ee8aac1437cf1a3c6271e` after
 The completion protocol is now permanent: required CI must be green, the verified work must be merged to `main`, and merged `main` must be re-verified before the package is declared complete.
 
 **Next:** WP-05 — Preflight.
+
+
+## 18.1 2026-10-06 — Runtime signal / cBot / alert hardening continuation
+**Status:** IN PROGRESS (implementation branch; not counted in formal PASS percentage until merged and gated)
+
+This continuation closes concrete defects affecting operator-visible signal timing, arrow stability/color parity, cBot execution readiness and intermittent signal-audio loss. It does not weaken closed-bar decision semantics or execution safety.
+
+Current fixes under validation:
+- cBot execution policy is constructed only from cBot-owned parameters.
+- MTF visual pressure is closed-frame based.
+- authoritative direction survives MTF conflict with a caution-strength downgrade.
+- signal-arrow and timeframe-panel palette share one owner.
+- reaction presentation/alert uses `TriggerReady` as an informational state before broker actionability.
+- sound delivery retries a failed canonical delivery and retains bounded burst capacity.
+
+The remaining analytical signal-quality work is still WP-20 family-level Evidence Fusion; this continuation is not a substitute for that rebuild.
