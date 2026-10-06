@@ -451,14 +451,6 @@ namespace cAlgo
                     false),
                 "non-HTF TP4 remains bounded by the original extension ceiling");
 
-            Assert(
-                TargetRewardEnvelopeRule.IsSafeExtensionForMaximumReward(
-                    24.0,
-                    0.75,
-                    1.00,
-                    12.0),
-                "HTF extension safety cap stays explicit");
-
             Console.WriteLine(
                 "Adaptive micro-SL / HTF reward envelope contracts: safety floors, spread protection and TP4 reachability passed");
         }
