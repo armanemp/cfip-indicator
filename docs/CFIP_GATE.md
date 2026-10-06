@@ -1335,3 +1335,19 @@ Repository-side Source/Architecture, Runtime Acceptance and cTrader Compile gate
 - cBot realtime timer deduplication is now scenario-scoped and bounded instead of using one global last-scenario tuple, so concurrent scenarios do not reprocess each other at the same revision.
 - Provider execution-intent capture is reset before each live pending evaluation, preventing an older M5 intent from being reused after current actionability changes.
 - Automated gates must remain green before merge; target-terminal validation remains required for final visual/broker confirmation.
+
+
+### 2026-10-07 — Aggressive flow / runtime timeout / XAU risk gate
+
+**Status:** IMPLEMENTED — BRANCH VERIFICATION PENDING
+
+Repository acceptance for this package requires:
+
+- tools/audit_phase_aggressive_flow_xau_risk_2026_10_07.py PASS.
+- Existing UI footer audit updated and PASS.
+- Source/Architecture and cTrader Compile PASS on the exact implementation head.
+- Local Release build and target-terminal verification remain mandatory.
+
+**Semantic constraint:** cTrader Algo's current Tick API exposes Time/Bid/Ask only. Therefore CFIP must never label tick classification as real executed trade volume. The implemented realtime flow is a separate tick-flow proxy. True aggressive trade volume can only be enabled when an execution-size feed is available.
+
+**Risk constraint:** XAUUSD uses the same symbol-native risk calculation and broker normalization/margin guard as every instrument; no gold-specific arbitrary multiplier is permitted.
