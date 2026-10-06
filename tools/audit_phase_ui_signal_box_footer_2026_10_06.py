@@ -39,7 +39,7 @@ checks = [
     ("footer has a dedicated data status control", "_panelDataStatusBars" in footer_factory and "_panelDataStatusBarControls" in footer_factory),
     ("footer separates action controls from data status", "_panelFooterActions" in footer_factory),
     ("data status is based on native tick volume", "TickVolumes" in footer and "ResolveDataBarLevel" in footer),
-    ("data status uses M1/M5/M15/H1/H4 only", all(x in footer for x in ("M1", "M5", "M15", "H1", "H4")) and "M2" not in footer),
+    ("data status uses M1/M5/M15/H1/H4 only", all(x in footer_factory for x in ("M1", "M5", "M15", "H1", "H4")) and "M2" not in footer_factory),
     ("data status is placed in the fixed footer", "_buttonStack.AddChild" in footer_factory and "_panelDataStatusText" in footer_factory),
     ("footer geometry reserves the data-status row", "PanelDataStatusRowHeight" in layout and "PanelDataStatusRowHeight" in constants),
     ("footer remains outside the ScrollViewer", "_panelStack.AddChild" in factory and "_buttonStack" in factory),
