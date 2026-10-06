@@ -41,6 +41,8 @@ namespace cAlgo
                     0,
                     0,
                     0,
+                    0,
+                    0,
                     eligibleFrameWeight,
                     directionalFrameWeight);
             }
