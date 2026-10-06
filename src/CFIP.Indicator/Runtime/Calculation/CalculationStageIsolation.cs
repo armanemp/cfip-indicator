@@ -306,21 +306,6 @@ namespace cAlgo
             RunCalculationStage(
                 () =>
                 {
-                    if (!AutoTradingEnabled &&
-                        AutoTradingReminder)
-                    {
-                        CheckAutoTradingDisabledReminder(
-                            closedM5);
-                    }
-
-                    return true;
-                },
-                index,
-                "EXECUTION REMINDER");
-
-            RunCalculationStage(
-                () =>
-                {
                     SyncQuickExecutionControls();
                     return true;
                 },
