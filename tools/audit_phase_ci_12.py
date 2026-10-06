@@ -105,6 +105,18 @@ check(
 )
 
 check(
+    "selected M1 stop floor has one shared planning-layer resolver",
+    "ResolveStructuralStopMinimumRiskAtr(" in
+    read("src/CFIP.Indicator/Planning/TradePlan/StructuralStopPlanner.cs")
+    and "ResolveSelectedStructuralStopMinimumRiskAtr(" in
+    read("src/CFIP.Indicator/Planning/TradePlan/StructuralStopPlanner.cs")
+    and "ResolveStructuralStopMinimumRiskAtr(" in evaluator
+    and "ResolveSelectedStructuralStopMinimumRiskAtr(" in plan_input
+    and "ResolveSelectedStructuralStopMinimumRiskAtr(" in preview
+    and "ResolveSelectedStructuralStopMinimumRiskAtr(" in parallel
+)
+
+check(
     "plan fallback uses the same canonical fallback geometry",
     "StructuralStopGeometryRule.EvaluateFallback(" in plan_input and
     "StructuralStopGeometryRule.EvaluateFallback(" in preview and
