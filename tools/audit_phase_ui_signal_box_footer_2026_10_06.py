@@ -54,8 +54,9 @@ checks = [
      "bars.TickVolumes[i]" in footer_factory and
      "(close - low)" in footer_factory and
      "(1.0 - buyShare)" in footer_factory),
-    ("pressure uses one smoothed closed-bar window", "lastClosed - 2" in footer_factory and
-     "buyVolume += volume" in footer_factory and
+    ("pressure uses the latest three closed M15 candles as one stable window", "lastClosed - 2" in footer_factory and
+     "first" in footer_factory and
+     "buyVolume +=" in footer_factory and
      "sellVolume +=" in footer_factory),
     ("each pressure track spans the full panel content width", "contentWidth" in footer_factory and
      "_panelBuyPressureTrack.Width =\n                contentWidth" in footer_factory and
@@ -76,7 +77,7 @@ if len(re.findall(r'Parameter\("Show Signal Arrow"', display)) != 1:
     errors.append("Show Signal Arrow must have exactly one public declaration")
 
 if errors:
-    print("CFIP UI SIGNAL BOX / FOOTER DATA STATUS AUDIT: FAIL")
+    print("CFIP UI SIGNAL BOX / BUY-SELL PRESSURE AUDIT: FAIL")
     for error in errors:
         print(" - " + error)
     sys.exit(1)
