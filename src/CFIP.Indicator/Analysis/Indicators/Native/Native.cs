@@ -10,6 +10,7 @@ namespace cAlgo
     internal sealed class Native
                     {
                         public Bars Bars;
+                        public bool IsInitialized;
                         public ExponentialMovingAverage Fast;
                         public ExponentialMovingAverage Slow;
                         public AverageTrueRange Atr;
