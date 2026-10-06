@@ -46,20 +46,18 @@ checks = [
         "_panelBuyPressureLabel",
         "_panelSellPressureLabel"
     )) and "_panelDataStatus" not in footer_factory),
-    ("footer contains exactly two stacked pressure rows", "CreateFlowPressureRow(" in footer_factory and
-     'CreateFlowPressureRow(\n                    "BUY"' in footer_factory and
-     'CreateFlowPressureRow(\n                    "SELL"' in footer_factory and
+    ("footer contains separate depth and aggressive-flow rows", "CreateFlowPressureRow(" in footer_factory and
+     'CreateFlowPressureRow(\n                    "DEPTH BUY"' in footer_factory and
+     'CreateFlowPressureRow(\n                    "DEPTH SELL"' in footer_factory and
+     'CreateFlowPressureRow(\n                    "FLOW BUY"' in footer_factory and
+     'CreateFlowPressureRow(\n                    "FLOW SELL"' in footer_factory and
      "Orientation = Orientation.Vertical" in footer_factory),
     ("pressure bars use canonical signal colors", "BuyArrowColor" in footer_factory and "SellArrowColor" in footer_factory),
-    ("pressure calculation is realtime-M15 and tick-volume based", "_m15Bars" in footer_factory and
-     "int latestBar =\n                bars.Count - 1" in footer_factory and
-     "bars.TickVolumes[i]" in footer_factory and
-     "(close - low)" in footer_factory and
-     "(1.0 - buyShare)" in footer_factory),
-    ("pressure uses the latest three M15 candles including the active bar", "latestBar - 2" in footer_factory and
-     "first" in footer_factory and
-     "buyVolume +=" in footer_factory and
-     "sellVolume +=" in footer_factory),
+    ("depth remains MarketDepth-owned and flow is a separate owner", "TryResolveCanonicalBuySellLiquidity(" in footer_factory and
+     "GetAggressiveFlowSnapshot()" in footer_factory and
+     "MarketData.GetMarketDepth(" in footer_factory),
+    ("aggressive-flow display never claims executed trade volume", '"ticks"' in footer_factory and
+     "GetAggressiveFlowSnapshot()" in footer_factory),
     ("each pressure row and track spans the full panel content width", "contentWidth" in footer_factory and
      "_panelBuyPressureRow.Width" in footer_factory and
      "_panelSellPressureRow.Width" in footer_factory and
