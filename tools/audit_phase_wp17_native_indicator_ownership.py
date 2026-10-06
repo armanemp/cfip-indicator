@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
 """WP-17 analytical-stack ownership audit.
 
-This audit proves the native indicator registry remains the single numerical
-owner for the platform-native core set. It deliberately does not approve
-additional indicators merely because they exist; promotion belongs to WP-18+
-independence/calibration gates.
+Proves the platform-native core has one holder/registry/readiness path.
+This gate guards ownership and registration only; it does not claim signal
+quality has improved or approve adding redundant indicators.
 """
 from pathlib import Path
+import re
 
 ROOT = Path(__file__).resolve().parents[1]
-native = ROOT / "src/CFIP.Indicator/Analysis/Indicators/Native.cs"
+native = ROOT / "src/CFIP.Indicator/Analysis/Indicators/Native/Native.cs"
 registry = ROOT / "src/CFIP.Indicator/Analysis/Indicators/NativeIndicatorRegistry.cs"
-readiness = ROOT / "src/CFIP.Indicator/Analysis/Indicators/NativeIndicatorReadinessRule.cs"
+readiness = ROOT / "src/CFIP.Indicator/Core/Math/NativeIndicatorReadinessRule.cs"
 evidence = ROOT / "src/CFIP.Indicator/Analysis/Market/MarketFrameEvidence.cs"
 
 def check(ok, message):
@@ -25,7 +25,8 @@ q = readiness.read_text(encoding="utf-8")
 e = evidence.read_text(encoding="utf-8")
 
 for field in ("Bars", "Fast", "Slow", "Atr", "Rsi", "Dms", "MacdFast", "MacdSlow"):
-    check(f"public" in n and f" {field};" in n, f"Native owns {field}")
+    check(re.search(r"\bpublic\s+\w+\s+" + re.escape(field) + r"\s*;", n) is not None,
+          f"Native owns {field}")
 
 for tf in ("_m1Bars", "_m5Bars", "_m15Bars", "_m30Bars", "_h1Bars", "_h4Bars", "_d1Bars", "_w1Bars"):
     check(f"RegisterNative({tf});" in r, f"native registry registers {tf}")
@@ -42,14 +43,14 @@ check("InitializeMacd" in r, "native registry owns MACD initialization path")
 check("NativeIndicatorReadinessRule.IsFrameReady" in e, "frame evidence uses canonical native readiness")
 check("NativeIndicatorReadinessRule.IsIndexedSeriesReady" in q, "indexed native series readiness is explicit")
 
-# Guard against creating a second native-holder implementation.
+# Match the exact Native type, not other names beginning with "Native".
 sources = list((ROOT / "src/CFIP.Indicator").rglob("*.cs"))
 holders = []
-for p in sources:
-    text = p.read_text(encoding="utf-8", errors="ignore")
-    if "class Native" in text:
-        holders.append(str(p.relative_to(ROOT)))
-check(len(holders) == 1 and holders[0].endswith("Analysis/Indicators/Native.cs"),
-      f"exactly one Native holder exists: {holders}")
+for path in sources:
+    source = path.read_text(encoding="utf-8", errors="ignore")
+    if re.search(r"\bclass\s+Native\b", source):
+        holders.append(str(path.relative_to(ROOT)))
+expected = "src/CFIP.Indicator/Analysis/Indicators/Native/Native.cs"
+check(holders == [expected], f"exactly one Native holder exists: {holders}")
 
 print("WP-17 native ownership audit PASS")
