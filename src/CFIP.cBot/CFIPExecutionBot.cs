@@ -87,10 +87,10 @@ namespace CFIP.cBot
         public bool EnableAutomaticOrders { get; set; }
 
         [Parameter("Cancel CFIP Pending Before High Impact News", Group = "News Execution Policy", DefaultValue = true)]
-        public bool CancelCfipPendingBeforeHighImpactNews { get; set; }
+        public bool CancelPendingBeforeHighImpactNews { get; set; }
 
         [Parameter("Protect CFIP Position Before High Impact News", Group = "News Execution Policy", DefaultValue = false)]
-        public bool ProtectCfipPositionBeforeHighImpactNews { get; set; }
+        public bool CloseActiveBeforeHighImpactNews { get; set; }
 
         [Parameter("Pending Order Expiry Minutes", Group = "Execution Policy", DefaultValue = 120, MinValue = 15, MaxValue = 1440)]
         public int PendingOrderExpiryMinutes { get; set; }
