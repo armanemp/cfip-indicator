@@ -57,6 +57,24 @@ check(
 )
 
 check(
+    "M1 and M5 use the micro/base stop buffer while M15+ use HTF buffer",
+    '"M1"' in geometry and
+    '"M5"' in geometry and
+    "return baseBuffer;" in geometry and
+    "htfStopBufferAtr" in geometry
+)
+
+check(
+    "adaptive micro stop floor is canonical and safety bounded",
+    "ResolveEffectiveMinimumStopRiskAtr(" in risk and
+    "MicroStopRiskAtrFloor = 0.30" in risk and
+    "MicroStopM1AtrMultiplier = 1.10" in risk and
+    "spreadMinimum" in risk and
+    "allowMicroRelaxation" in evaluator and
+    "candidate.Timeframe" in evaluator
+)
+
+check(
     "candidate evaluation uses the evaluated stop instead of rematerializing it",
     "out double bestStop" in evaluator and
     "selectedStop = stop;" in evaluator and
