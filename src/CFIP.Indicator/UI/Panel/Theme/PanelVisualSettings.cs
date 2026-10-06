@@ -126,8 +126,8 @@ namespace cAlgo
                                                         contentWidth);
 
                                                     _buttonStack.IsVisible =
-                                                        ShowPanelToggleButton ||
-                                                        GetPanelAlertMessageRailHeight() > 0;
+                                                        ShowUnifiedPanel &&
+                                                        !_panelHidden;
 
                                                     ApplyPanelActionButtonsLayout(
                                                         buttonMargin,

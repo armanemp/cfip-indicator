@@ -33,19 +33,24 @@ namespace cAlgo
             int toggleHeight,
             int alertRailHeight)
         {
-            if (!ShowPanelToggleButton &&
-                alertRailHeight <= 0)
+            if (!ShowUnifiedPanel ||
+                _panelHidden)
                 return 0;
 
-            return Math.Max(
-                PanelFooterMinHeight,
+            int actionHeight =
                 Math.Max(
                     buttonHeight,
                     Math.Max(
                         ShowPanelToggleButton
                             ? toggleHeight
                             : 0,
-                        alertRailHeight)));
+                        alertRailHeight));
+
+            return Math.Max(
+                PanelFooterMinHeight,
+                PanelFlowPressureRailHeight +
+                PanelFooterActionGap +
+                actionHeight);
         }
 
         private int ResolvePanelFooterAreaHeight(

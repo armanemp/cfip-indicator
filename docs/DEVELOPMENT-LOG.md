@@ -4125,3 +4125,11 @@ Next package boundary: **WP-05 — Preflight remains PASS + TERMINAL PENDING; 13
 
 Operator action: pull canonical `main` before target-terminal validation.
 
+## 2026-10-07 — Modern BUY/SELL pressure footer
+
+- Replaced the five ambiguous timeframe mini-bars under the MTF lamps with two stacked full-width pressure bars: BUY and SELL.
+- The bars are rendered by the existing PanelFooterFactory owner; no new UI file or competing footer state owner was introduced.
+- Each row uses a rounded track with a colored fill whose width represents the estimated pressure share, plus a compact percentage label.
+- Pressure is calculated from the latest three closed M15 candles using cTrader TickVolumes weighted by close location within each candle range. This is a pressure estimate, not true bid/ask execution volume.
+- Footer geometry was recalculated from the real pressure-rail height so the bars remain fully inside the panel and the alert/action area cannot overlap them.
+

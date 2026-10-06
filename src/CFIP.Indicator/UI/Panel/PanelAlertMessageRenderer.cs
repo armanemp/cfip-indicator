@@ -187,12 +187,12 @@ namespace cAlgo
                     Math.Max(
                         24,
                         footerAreaHeight -
-                        PanelDataStatusRowHeight -
+                        PanelFlowPressureRailHeight -
                         PanelFooterActionGap);
 
                 _buttonStack.IsVisible =
-                    ShowPanelToggleButton ||
-                    alertRailHeight > 0;
+                    ShowUnifiedPanel &&
+                    !_panelHidden;
 
                 ApplyPanelAlertMessageRailLayout(
                     contentWidth,
@@ -345,7 +345,7 @@ namespace cAlgo
                 Math.Max(
                     24,
                     PanelFooterMinHeight -
-                    PanelDataStatusRowHeight -
+                    PanelFlowPressureRailHeight -
                     PanelFooterActionGap);
 
             _panelAlertMessageStack.Width =
@@ -384,143 +384,7 @@ namespace cAlgo
             }
 
             UpdatePanelAlertMessageRail();
-            UpdatePanelDataStatusRail();
-        }
-
-        private void UpdatePanelDataStatusRail()
-        {
-            if (_panelDataStatusBars == null ||
-                _panelDataStatusBarControls == null)
-                return;
-
-            _panelDataStatusBars.IsVisible =
-                ShowUnifiedPanel && !_panelHidden;
-
-            Bars[] frames =
-            {
-                _m1Bars,
-                _m5Bars,
-                _m15Bars,
-                _h1Bars,
-                _h4Bars
-            };
-
-            for (int i = 0;
-                 i < frames.Length &&
-                 i < _panelDataStatusBarControls.Count;
-                 i++)
-            {
-                Border bar = _panelDataStatusBarControls[i];
-                Bars bars = frames[i];
-
-                int level = ResolveDataBarLevel(bars);
-                bool ready = bars != null && bars.Count >= 2;
-
-                bar.Width =
-                    ready
-                        ? 12 + (level * 3)
-                        : 12;
-
-                bar.BackgroundColor =
-                    ready
-                        ? ResolveDataBarLevelColor(level)
-                        : Color.FromArgb(45, PanelWarningColor);
-
-                bar.BorderColor =
-                    ready
-                        ? ResolveDataStatusColor(frames)
-                        : PanelWarningColor;
-
-                bar.IsVisible = true;
-            }
-
-            _panelDataStatusText.ForegroundColor =
-                ResolveDataStatusColor(frames);
-        }
-
-        private int ResolveDataBarLevel(Bars bars)
-        {
-            if (bars == null || bars.Count < 2)
-                return 0;
-
-            int index = bars.Count - 1;
-            double current = bars.TickVolumes[index];
-
-            if (double.IsNaN(current) ||
-                double.IsInfinity(current) ||
-                current <= 0)
-                return 1;
-
-            int start = Math.Max(0, index - 20);
-            double sum = 0;
-            int count = 0;
-
-            for (int i = start; i < index; i++)
-            {
-                double volume = bars.TickVolumes[i];
-
-                if (double.IsNaN(volume) ||
-                    double.IsInfinity(volume) ||
-                    volume <= 0)
-                    continue;
-
-                sum += volume;
-                count++;
-            }
-
-            if (count == 0 || sum <= 0)
-                return 1;
-
-            double ratio =
-                current / Math.Max(1e-9, sum / count);
-
-            return
-                ratio >= 2.50 ? 8 :
-                ratio >= 2.00 ? 7 :
-                ratio >= 1.70 ? 6 :
-                ratio >= 1.40 ? 5 :
-                ratio >= 1.15 ? 4 :
-                ratio >= 0.90 ? 3 :
-                ratio >= 0.65 ? 2 :
-                1;
-        }
-
-        private Color ResolveDataBarLevelColor(int level)
-        {
-            if (level <= 0)
-                return PanelWarningColor;
-
-            int direction = GetMarketBiasDirection();
-
-            if (direction > 0)
-                return PanelDirectionColor(1);
-
-            if (direction < 0)
-                return PanelDirectionColor(-1);
-
-            return PanelSecondaryTextColor;
-        }
-
-        private Color ResolveDataStatusColor(Bars[] frames)
-        {
-            int available = 0;
-
-            for (int i = 0; i < frames.Length; i++)
-            {
-                if (frames[i] != null &&
-                    frames[i].Count >= 2)
-                    available++;
-            }
-
-            if (available == frames.Length)
-            {
-                int direction = GetMarketBiasDirection();
-                return direction == 0
-                    ? PanelSecondaryTextColor
-                    : PanelDirectionColor(direction);
-            }
-
-            return PanelWarningColor;
+            UpdatePanelFlowPressureRail();
         }
 
         private int ResolvePanelAlertMessageCharacterLimit()

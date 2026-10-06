@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""CFIP UI signal-box and footer data-status single-owner audit."""
+"""CFIP UI signal-box and buy/sell pressure footer single-owner audit."""
 
 from pathlib import Path
 import re
@@ -35,13 +35,37 @@ checks = [
     ("box is bottom-right aligned", "HorizontalAlignment.Right" in arrows and "VerticalAlignment.Bottom" in arrows),
     ("box is compact square", "Width = 66" in arrows and "Height = 66" in arrows),
     ("box is non-interactive", "IsHitTestVisible = false" in arrows),
-    ("footer state is owned by PanelFooterFactory", all(x in footer_factory for x in ("_panelDataStatusText", "_panelFooterActions")) and "_panelDataStatusText" not in state),
-    ("footer has a dedicated data status control", "_panelDataStatusBars" in footer_factory and "_panelDataStatusBarControls" in footer_factory),
-    ("footer separates action controls from data status", "_panelFooterActions" in footer_factory),
-    ("data status is based on native tick volume", "TickVolumes" in footer and "ResolveDataBarLevel" in footer),
-    ("data status uses M1/M5/M15/H1/H4 only", all(x in footer_factory for x in ("M1", "M5", "M15", "H1", "H4")) and "M2" not in footer_factory),
-    ("data status is placed in the fixed footer", "_buttonStack.AddChild" in footer_factory and "_panelDataStatusText" in footer_factory),
-    ("footer geometry reserves the data-status row", "PanelDataStatusRowHeight" in layout and "PanelDataStatusRowHeight" in constants),
+    ("footer state is owned by PanelFooterFactory", all(x in footer_factory for x in (
+        "_panelFlowPressureRail",
+        "_panelBuyPressureTrack",
+        "_panelSellPressureTrack",
+        "_panelBuyPressureFill",
+        "_panelSellPressureFill",
+        "_panelBuyPressureLabel",
+        "_panelSellPressureLabel"
+    )) and "_panelDataStatus" not in footer_factory),
+    ("footer contains exactly two stacked pressure rows", "CreateFlowPressureRow(" in footer_factory and
+     'CreateFlowPressureRow(\n                    "BUY"' in footer_factory and
+     'CreateFlowPressureRow(\n                    "SELL"' in footer_factory and
+     "Orientation = Orientation.Vertical" in footer_factory),
+    ("pressure bars use canonical signal colors", "BuyArrowColor" in footer_factory and "SellArrowColor" in footer_factory),
+    ("pressure calculation is closed-M15 and tick-volume based", "_m15Bars" in footer_factory and
+     "int lastClosed =\n                bars.Count - 2" in footer_factory and
+     "bars.TickVolumes[i]" in footer_factory and
+     "(close - low)" in footer_factory and
+     "(1.0 - buyShare)" in footer_factory),
+    ("pressure uses the latest three closed M15 candles as one stable window", "lastClosed - 2" in footer_factory and
+     "first" in footer_factory and
+     "buyVolume +=" in footer_factory and
+     "sellVolume +=" in footer_factory),
+    ("each pressure track spans the full panel content width", "contentWidth" in footer_factory and
+     "_panelBuyPressureTrack.Width =\n                contentWidth" in footer_factory and
+     "_panelSellPressureTrack.Width =\n                contentWidth" in footer_factory and
+     "_panelBuyPressureFill.Width" in footer_factory and
+     "_panelSellPressureFill.Width" in footer_factory),
+    ("footer has no legacy M1/M5/H1 status strip", "_panelDataStatus" not in footer_factory and "M2" not in footer_factory),
+    ("pressure rail is placed directly below the timeframe lamps", "_buttonStack.AddChild" in footer_factory and "_panelFlowPressureRail" in footer_factory),
+    ("footer geometry reserves the pressure rail", "PanelFlowPressureRailHeight" in layout and "PanelFlowPressureRailHeight" in constants),
     ("footer remains outside the ScrollViewer", "_panelStack.AddChild" in factory and "_buttonStack" in factory),
 ]
 
@@ -53,9 +77,9 @@ if len(re.findall(r'Parameter\("Show Signal Arrow"', display)) != 1:
     errors.append("Show Signal Arrow must have exactly one public declaration")
 
 if errors:
-    print("CFIP UI SIGNAL BOX / FOOTER DATA STATUS AUDIT: FAIL")
+    print("CFIP UI SIGNAL BOX / BUY-SELL PRESSURE AUDIT: FAIL")
     for error in errors:
         print(" - " + error)
     sys.exit(1)
 
-print("CFIP UI SIGNAL BOX / FOOTER DATA STATUS AUDIT: PASS")
+print("CFIP UI SIGNAL BOX / BUY-SELL PRESSURE AUDIT: PASS")
