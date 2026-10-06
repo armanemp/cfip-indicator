@@ -66,3 +66,17 @@ Final repository verification on merge head `2e670514e90deeb46a3f140d1383446f029
 Source/Architecture PASS; Runtime Acceptance PASS; cTrader Compile PASS.
 
 Manual cTrader terminal acceptance remains required for the actual audible startup cue and exact visual line/label rendering.
+
+## Supersession correction — 2026-10-06
+
+The original drawing phase record remains historical evidence, but its M1/arrow glyph wording is superseded by the current canonical presentation contract.
+
+Current contract:
+- directional arrows are not drawn under candles;
+- SignalStackedArrowRenderer owns one fixed 66×66 bottom-right chart-control box;
+- one, two or three Unicode directional glyphs are shown from the canonical 1–9 strength level;
+- BUY/SELL color comes from SignalPresentationColorRule;
+- no separate M1 Circle marker or M1_TRIGGER chart marker is rendered;
+- legacy candle-arrow object names are cleanup-only and never new draw targets.
+
+The line/label contract is unchanged: plan lines remain solid/1px/finite and compact labels remain owned by the canonical label/anchor path.
