@@ -521,6 +521,9 @@ namespace CFIP.cBot.Shadow.Tests
                     true,
                     false,
                     false,
+                    true,
+                    false,
+                    "TARGET ADVANCE",
                     out _),
                 "target advance must fail when broker TP sync is disabled");
 
