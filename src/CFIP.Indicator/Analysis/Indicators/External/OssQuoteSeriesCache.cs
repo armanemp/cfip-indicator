@@ -208,6 +208,23 @@ namespace cAlgo
                     : args.Bars);
         }
 
+        private void DisposeOssQuoteSeriesCache()
+        {
+            foreach (OssQuoteCacheEntry cache in _ossQuoteCaches)
+            {
+                if (cache == null ||
+                    cache.Bars == null)
+                    continue;
+
+                cache.Bars.HistoryLoaded -=
+                    Bars_HistoryLoaded;
+                cache.Bars.Reloaded -=
+                    Bars_Reloaded;
+            }
+
+            _ossQuoteCaches.Clear();
+        }
+
         private void InvalidateBars(
             Bars bars)
         {
