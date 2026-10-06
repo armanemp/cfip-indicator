@@ -66,7 +66,8 @@ check(
     "ResolveLocationQuality(" in trend and
     "frame.IndicatorIndependentEvidenceGroupCount" in trend and
     "frame.IndicatorConflict" in trend and
-    "ResolveLivePressureQuality(" in trend,
+    "ResolveClosedPressureQuality(" in trend and
+    "ResolveLivePressureQuality(" not in trend,
 )
 
 check(
@@ -105,10 +106,11 @@ check(
 )
 
 check(
-    "trade-direction conflict cannot produce a contradictory trend arrow",
+    "trade-direction conflict downgrades rather than erases the authoritative signal",
+    "AuthoritativeDirection" in stack and
     "decisionOwnsDirection" in stack and
-    "decisionDirection != direction" in stack and
-    "RemoveStackedSignalArrows();" in stack,
+    "MTF disagreement is a quality/conflict state" in stack and
+    "strength = Math.Min(3, strength)" in stack,
 )
 
 check(
