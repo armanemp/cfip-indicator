@@ -21,12 +21,5 @@ namespace cAlgo
 
         [Parameter("Show Prediction Objects", Group = "14 · DISPLAY — ADVANCED", DefaultValue = true)]
         public bool ShowPredictionObjects { get; set; }
-
-        [Parameter("Arrow Offset ATR", Group = "14 · DISPLAY — ADVANCED", DefaultValue = 0.18, MinValue = 0.02, MaxValue = 1)]
-        public double ArrowOffsetAtr { get; set; }
-
-        [Parameter("Minimum Arrow Offset Pips", Group = "14 · DISPLAY — ADVANCED", DefaultValue = 2.0, MinValue = 0.5, MaxValue = 20)]
-        public double MinimumArrowOffsetPips { get; set; }
-
     }
 }
