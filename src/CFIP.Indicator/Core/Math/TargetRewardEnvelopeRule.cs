@@ -7,26 +7,11 @@ namespace cAlgo
         internal const double HtfMaximumExtensionAtrCap = 24.0;
 
         public static double MaximumReachableRR(
-
-            double risk,
-            double atr,
-            double maximumTargetExtensionAtr,
-            double maximumRewardRR)
-        {
-            return MaximumReachableRR(
-                risk,
-                atr,
-                maximumTargetExtensionAtr,
-                maximumRewardRR,
-                false);
-        }
-
-        public static double MaximumReachableRR(
             double risk,
             double atr,
             double maximumTargetExtensionAtr,
             double maximumRewardRR,
-            bool allowHtfExtension)
+            bool allowHtfExtension = false)
         {
             if (risk <= 0 ||
                 atr <= 0 ||
@@ -80,24 +65,8 @@ namespace cAlgo
             double risk,
             double atr,
             double maximumTargetExtensionAtr,
-            double maximumRewardRR)
-        {
-            return CanReachStage(
-                requiredRR,
-                risk,
-                atr,
-                maximumTargetExtensionAtr,
-                maximumRewardRR,
-                false);
-        }
-
-        public static bool CanReachStage(
-            double requiredRR,
-            double risk,
-            double atr,
-            double maximumTargetExtensionAtr,
             double maximumRewardRR,
-            bool allowHtfExtension)
+            bool allowHtfExtension = false)
         {
             if (requiredRR <= 0 ||
                 double.IsNaN(requiredRR) ||
