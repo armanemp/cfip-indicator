@@ -38,7 +38,7 @@ namespace cAlgo
                     index,
                     set.Dms.DIMinus.Count,
                     period))
-                return 0;
+                return double.NaN;
 
             double value = DmiBiasRule.Calculate(
                 set.Dms.DIPlus[index],
