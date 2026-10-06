@@ -14,6 +14,18 @@ def check(condition: bool, message: str) -> None:
         raise SystemExit(message)
 
 lamp = read("UI/Panel/PanelTrendTimeframeLampRow.cs")
+check(
+    "_marketDepth" in read("Indicator/State.cs") and
+    "MarketData.GetMarketDepth(" in read("UI/Panel/PanelFooterFactory.cs") and
+    "BidEntries" in read("UI/Panel/PanelFooterFactory.cs") and
+    "AskEntries" in read("UI/Panel/PanelFooterFactory.cs") and
+    "VolumeInUnits" in read("UI/Panel/PanelFooterFactory.cs") and
+    "BUY LIQ" in read("UI/Panel/PanelFooterFactory.cs") and
+    "SELL LIQ" in read("UI/Panel/PanelFooterFactory.cs") and
+    "TickVolumes" not in read("UI/Panel/PanelFooterFactory.cs"),
+    "footer buy/sell liquidity must come from realtime Market Depth, not candle tick-volume or close-location inference",
+)
+
 panel = read("UI/Panel/PanelMainRenderer.cs")
 surface = read("UI/Panel/Theme/PanelSurfaceAndHeaderLayout.cs")
 queue = read("Core/Runtime/AlertDeliveryQueue.cs")
