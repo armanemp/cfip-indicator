@@ -130,7 +130,7 @@ namespace cAlgo
                         distance /
                         atr,
                         m5Obstacle.ObstacleDistanceAtr,
-                        MaximumTargetExtensionAtr);
+                        effectiveMaximumTargetExtensionAtr);
 
                     rejectionReason =
                         m5Obstacle.Reason;
