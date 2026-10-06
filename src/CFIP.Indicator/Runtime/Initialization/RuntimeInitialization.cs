@@ -530,6 +530,7 @@ namespace cAlgo
                                     {
                                         UnsubscribeCbotChartLifecycleEvents();
                                         UnhookHistoricalBarsEvents();
+                                        DisposeOssQuoteSeriesCache();
                                         Positions.Opened -= OnPositionOpened;
                                         Positions.Closed -= OnPositionClosed;
                                         Positions.Modified -= OnPositionModified;
