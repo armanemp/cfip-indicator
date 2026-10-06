@@ -59,8 +59,6 @@ namespace cAlgo
                 NormalizePrice(entry);
 
             string stopSource;
-            int stopQuality;
-
             double stop =
                 BuildStructuralStop(
                     closedM5,
@@ -68,7 +66,7 @@ namespace cAlgo
                     entry,
                     atr,
                     out stopSource,
-                    out stopQuality);
+                    out _);
 
             if (!IsValidStop(
                     direction,
