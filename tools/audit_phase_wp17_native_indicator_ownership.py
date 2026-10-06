@@ -41,7 +41,8 @@ for initializer in (
 
 check("InitializeMacd" in r, "native registry owns MACD initialization path")
 check("NativeIndicatorReadinessRule.IsFrameReady" in e, "frame evidence uses canonical native readiness")
-check("NativeIndicatorReadinessRule.IsIndexedSeriesReady" in q, "indexed native series readiness is explicit")
+check(re.search(r"\b(?:internal\s+static\s+)?bool\s+IsIndexedSeriesReady\s*\(", q) is not None,
+      "indexed native series readiness is explicitly defined")
 
 # Match the exact Native type, not other names beginning with "Native".
 sources = list((ROOT / "src/CFIP.Indicator").rglob("*.cs"))
