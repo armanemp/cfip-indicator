@@ -160,6 +160,23 @@ for path in (ROOT / "src").rglob("*.cs"):
             f"{path.relative_to(ROOT)}: synchronous Http.Get/Http.Send is forbidden"
         )
 
+# Execution policy is cBot-owned; Indicator exposes only analysis/feed controls.
+bot = read("src/CFIP.cBot/CFIPExecutionBot.cs")
+indicator_news = read("src/CFIP.Indicator/Indicator/Parameters/28_news_guard.cs")
+news_protection = read("src/CFIP.Indicator/Trading/Intelligence/EconomicNewsProtection.cs")
+if "CancelCfipPendingBeforeHighImpactNews" not in bot or "ProtectCfipPositionBeforeHighImpactNews" not in bot:
+    errors.append("cBot news execution policy is not declared on the execution owner")
+if "CancelPendingBeforeHighImpactNews" in indicator_news or "CloseActiveBeforeHighImpactNews" in indicator_news:
+    errors.append("legacy Indicator-owned news execution policy remains")
+if "TryCancelPendingOrder(" not in news_protection or "TryClosePosition(" not in news_protection:
+    errors.append("news safety intents are no longer published to the cBot management bus")
+if "HIGH IMPACT NEWS" not in news_protection:
+    errors.append("news safety intent context is missing")
+if "Symbol.IsTradingEnabled" in news_protection:
+    errors.append("news protection must not alter symbol/global trading permission")
+if "Quick Trade" in news_protection:
+    errors.append("news protection must not reference native Quick Trade state")
+
 if errors:
     print("NEWS GUARD AUDIT: FAIL")
     for error in errors:
