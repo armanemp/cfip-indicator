@@ -120,7 +120,8 @@ check(
     "RSI warm-up/invalid data cannot fabricate frame evidence",
     "NativeIndicatorReadinessRule.IsIndexedSeriesReady(" in rsi and
     "Math.Max(2, RsiPeriod)" in rsi and
-    "return 50;" in rsi,
+    "return double.NaN;" in rsi and
+    "return 50;" not in rsi,
 )
 check(
     "ADX/DMI non-finite data remains fail-closed",

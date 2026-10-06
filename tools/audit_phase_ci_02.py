@@ -73,11 +73,22 @@ check(
 )
 
 check(
-    "OSS quote-volume normalization has one pure owner",
+    "OSS quote projection has one pure numeric owner",
     "class OssQuoteProjectionRule" in projection_rule
+    and "TryNormalizePrice(" in projection_rule
     and "NormalizeVolume(" in projection_rule
     and "double.IsNaN(volume)" in projection_rule
     and "double.IsInfinity(volume)" in projection_rule
+    and "double.IsNaN(price)" in projection_rule
+    and "double.IsInfinity(price)" in projection_rule
+)
+
+check(
+    "OSS cache rejects invalid source OHLC before decimal projection",
+    "TryCreateQuote(" in cache
+    and "OssQuoteProjectionRule.TryNormalizePrice(" in cache
+    and "normalizedOpen < normalizedLow" in cache
+    and "normalizedClose > normalizedHigh" in cache
 )
 
 check(
@@ -92,16 +103,20 @@ check(
     and "cache.RollingQuotes.Count >" in cache
 )
 check(
-    "stable cache keeps first and last fingerprints",
+    "stable cache keeps fingerprints with internal-only mutable buffers",
     "StableFirstOpenTime" in entry
     and "StableLastOpenTime" in entry
     and "MatchesStableWindowBoundaries" in cache
+    and "public List<StockQuote>" not in entry
 )
 check(
-    "history replacement/reload invalidates cached state",
+    "history replacement/reload invalidates cached state and lifecycle disposes handlers",
     "bars.HistoryLoaded +=" in cache
     and "bars.Reloaded +=" in cache
     and "InvalidationPending" in cache
+    and "DisposeOssQuoteSeriesCache()" in cache
+    and "cache.Bars.HistoryLoaded -=" in cache
+    and "cache.Bars.Reloaded -=" in cache
 )
 
 for filename, expected in stable_adapters.items():
@@ -116,6 +131,16 @@ for filename, expected in rolling_adapters.items():
     check(
         f"{filename} uses rolling bounded quotes",
         expected in source,
+    )
+
+all_adapters = list(stable_adapters) + list(rolling_adapters)
+for filename in all_adapters:
+    source = read("src/CFIP.Indicator/Analysis/Indicators/External/" + filename)
+    check(
+        f"{filename} preserves unavailable values as NaN",
+        "return double.NaN" in source
+        and "?? 0" not in source
+        and "?? 50" not in source,
     )
 
 check(
@@ -172,6 +197,9 @@ check(
 )
 
 check(
+    "indicator lifecycle disposes OSS cache subscriptions",
+    "DisposeOssQuoteSeriesCache();" in read("src/CFIP.Indicator/Runtime/Initialization/RuntimeInitialization.cs")
+)\n\ncheck(
     "runtime contracts execute canonical OSS window semantics",
     "VerifyOssQuoteProjectionSemantics();" in runtime
     and "VerifyOssQuoteWindowSemantics();" in runtime

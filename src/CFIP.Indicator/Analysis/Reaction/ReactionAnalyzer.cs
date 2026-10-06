@@ -134,6 +134,17 @@ namespace cAlgo
                 }
             }
 
+            buyQuality =
+                ClampInt(
+                    buyQuality,
+                    0,
+                    100);
+            sellQuality =
+                ClampInt(
+                    sellQuality,
+                    0,
+                    100);
+
             int strongThreshold =
                 Math.Max(
                     entryThreshold,

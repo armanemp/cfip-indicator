@@ -28,11 +28,17 @@ namespace cAlgo
                     new Dictionary<string, int>(
                         StringComparer.Ordinal);
 
+                bool requireHtf =
+                    RequiresHtfRewardForTargetStage(
+                        stage,
+                        lane);
+
                 if (!TryValidateTargetStageFeasibility(
                         requiredRR[stage],
                         maximumRR,
                         risk,
                         atr,
+                        requireHtf,
                         out string stageReason))
                 {
                     AddTargetRejectionCount(
@@ -49,11 +55,6 @@ namespace cAlgo
 
                 List<TargetLadderOption> options =
                     new List<TargetLadderOption>();
-
-                bool requireHtf =
-                    RequiresHtfRewardForTargetStage(
-                        stage,
-                        lane);
 
                 for (int i = 0;
                      i < levels.Count;

@@ -21,7 +21,8 @@ namespace cAlgo
             int stage,
             double htfBonus,
             double liquidityBonus,
-            double zoneBonus)
+            double zoneBonus,
+            string timeframe = null)
         {
             if (double.IsNaN(baseScore) ||
                 double.IsInfinity(baseScore) ||
@@ -100,8 +101,47 @@ namespace cAlgo
                     ? Math.Max(0, htfBonus) * 0.35
                     : 2.0);
 
+            if (htf &&
+                stage > 0)
+            {
+                int timeframeRank =
+                    ResolveHtfDepthRank(
+                        timeframe);
+
+                double htfDepthBonus =
+                    Math.Min(
+                        6.0,
+                        Math.Max(0, htfBonus) *
+                        0.05 *
+                        timeframeRank *
+                        stage) *
+                    qualityMultiplier;
+
+                score +=
+                    Math.Max(
+                        0,
+                        htfDepthBonus);
+            }
+
             return score;
         }
 
+        private static int ResolveHtfDepthRank(
+            string timeframe)
+        {
+            if (string.Equals(timeframe, "M15", StringComparison.OrdinalIgnoreCase))
+                return 1;
+            if (string.Equals(timeframe, "M30", StringComparison.OrdinalIgnoreCase))
+                return 2;
+            if (string.Equals(timeframe, "H1", StringComparison.OrdinalIgnoreCase))
+                return 3;
+            if (string.Equals(timeframe, "H4", StringComparison.OrdinalIgnoreCase))
+                return 4;
+            if (string.Equals(timeframe, "D1", StringComparison.OrdinalIgnoreCase))
+                return 5;
+            if (string.Equals(timeframe, "W1", StringComparison.OrdinalIgnoreCase))
+                return 6;
+            return 0;
+        }
     }
 }

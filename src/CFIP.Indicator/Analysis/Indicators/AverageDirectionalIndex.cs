@@ -22,24 +22,25 @@ namespace cAlgo
         private double Adx(Bars bars, int index)
                         {
                             if (bars == null || index < 0 || index >= bars.Count)
-                                return 0;
+                                return double.NaN;
                 
                             Native set = GetNative(bars);
                 
                             if (set == null ||
+                                !set.IsInitialized ||
                                 set.Dms == null ||
                                 !NativeIndicatorReadinessRule.IsIndexedSeriesReady(
                                     index,
                                     set.Dms.ADX.Count,
                                     Math.Max(2, AdxPeriod)))
-                                return 0;
+                                return double.NaN;
                 
                             double value = set.Dms.ADX[index];
                 
                             return
                                 double.IsNaN(value) ||
                                 double.IsInfinity(value)
-                                    ? 0
+                                    ? double.NaN
                                     : Clamp(value, 0, 100);
                         }
     }

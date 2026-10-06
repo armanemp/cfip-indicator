@@ -219,16 +219,21 @@ namespace cAlgo
                     0.02,
                     stopBufferAtr);
 
-            return string.Equals(
-                       timeframe,
-                       "M5",
-                       StringComparison.OrdinalIgnoreCase)
-                ? baseBuffer
-                : Math.Max(
-                    baseBuffer,
-                    Math.Max(
-                        0.02,
-                        htfStopBufferAtr));
+            if (string.Equals(
+                    timeframe,
+                    "M1",
+                    StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(
+                    timeframe,
+                    "M5",
+                    StringComparison.OrdinalIgnoreCase))
+                return baseBuffer;
+
+            return Math.Max(
+                baseBuffer,
+                Math.Max(
+                    0.02,
+                    htfStopBufferAtr));
         }
 
         private static double NormalizePrice(

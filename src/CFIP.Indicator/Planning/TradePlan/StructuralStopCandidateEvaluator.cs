@@ -92,10 +92,17 @@ namespace cAlgo
                 double risk = geometry.Risk;
                 double riskAtr = geometry.RiskAtr;
 
+                double effectiveMinimumStopRiskAtr =
+                    ResolveStructuralStopMinimumRiskAtr(
+                        candidate.Timeframe,
+                        closedM5,
+                        direction,
+                        atr);
+
                 if (!StructuralStopRiskRule.IsWithinPlanningRiskEnvelope(
                         riskAtr,
                         atr,
-                        MinimumSlAtr,
+                        effectiveMinimumStopRiskAtr,
                         MaximumSlAtr,
                         MaximumStructuralStopAtr,
                         spread,

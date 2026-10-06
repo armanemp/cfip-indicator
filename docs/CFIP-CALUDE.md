@@ -282,10 +282,10 @@ M-118 (AccessRights.None و file/HTTP روی cTrader نصب‌شده)، M-45 (In
 | M-93 | متوسط | ثبت‌شده | SwingPointAnalyzer.cs:278-379 | swing شکسته‌شده هنوز target شمرده می‌شود | IsActiveUnbrokenLevel |
 | M-94 | متوسط | محتمل | StructureAnalyzer.cs:95-165 | MSS عملاً همان Structure (شمارش دوگانه) | تأیید در فاز ۱۴ |
 | M-95 | متوسط | ثبت‌شده | StructureAnalyzer.cs:173-245 | BullChoch فقط برگشت یک‌کندلی را می‌گیرد | بازنگری |
-| M-96 | متوسط | ثبت‌شده | NativeIndicatorRegistry.cs:72-91; wrappers | Native نیمه‌ساخته ذخیره می‌شود؛ مقدار خنثی ≈ «آماده نیست» | پرچم Ready |
+| M-96 | متوسط | **حل‌شده** | NativeIndicatorRegistry.cs; native wrappers | وضعیت initialization صریح شد؛ wrapperهای Native در شکست initialization و warm-up fail-closed می‌شوند و fallback عددی خنثی ندارند | ✅ IsInitialized + NaN/readiness guard |
 | M-97 | متوسط | قطعی | SkenderStoch.cs:38-43 | null در warm-up با ?? 0 صفر می‌شود ⇒ رأی کاذب | رد |
-| M-98 | متوسط | ثبت‌شده | OssQuoteSeriesCache.cs:44-362 | رویدادها بدون لغو؛ لیست داخلی بیرون داده می‌شود؛ cast decimal NaN | کپی/گارد |
-| M-99 | متوسط | ثبت‌شده | ReactionAnalyzer.cs:85-223 | Confidence بعد از Clamp تنظیم می‌شود (>100 یا <0) | clamp نهایی |
+| M-98 | متوسط | **حل‌شده** | OssQuoteSeriesCache.cs / OssQuoteCacheEntry.cs | unsubscribe رویدادها در OnDestroy، گارد OHLC/decimal cast و محدودسازی state/cache collections به internal scope انجام شد | ✅ lifecycle + numeric guard + scope hardening |
+| M-99 | متوسط | **حل‌شده** | ReactionAnalyzer.cs | کیفیت بعد از تعدیل regime ممکن بود از 100/<0 خارج شود؛ اکنون قبل از مصرف نهایی دوباره clamp می‌شود | ✅ final ClampInt(0..100) |
 | L-64 | پایین | ثبت‌شده | ReactionAnalyzer.cs:19-80 | TriggerReady/Confidence روی کندل زنده نوسان دارد (عمدی) | مستندسازی |
 | L-65 | پایین | ثبت‌شده | FvgDetectionAnalyzer.cs:54-61; OrderBlockAnalyzer.cs:58-65 | Lookback بی‌صدا به MaximumZoneAgeBars محدود می‌شود | مستندسازی |
 | L-66 | پایین | ثبت‌شده | OrderBlockAnalyzer.cs:83,157-181 | کف Max(50) و ثابت‌ها در امتیاز انتخاب | پارامتر |
@@ -338,6 +338,8 @@ M-118 (AccessRights.None و file/HTTP روی cTrader نصب‌شده)، M-45 (In
 | M-110 | متوسط | قطعی | Core/Math (۷۵ جا) | ۷۵ کف Math.Max/Min که پارامتر کاربر را بی‌صدا تغییر می‌دهند | لایهٔ «مقدار مؤثر» |
 | M-111 | متوسط | قطعی | SmartBreakEvenRule.cs:48-81 | Smart BE وقتی TP1<1.33×trigger کاملاً غیرفعال می‌شود | هشدار/fallback |
 | M-112 | متوسط | محتمل | TargetCandidateConstraintRule.cs:75; RiskRewardMathRule.cs; PlanRewardRiskQualityRule.cs | سه تعریف RR (اسمی/اسپرد/مؤثر) ⇒ رد دیرهنگام | یکسان‌سازی |
+| M-113 | متوسط | **قطعی / اصلاح‌شده در PR #359** | StructuralStopGeometryRule.cs; StructuralStopPlanner.cs | M1 به‌اشتباه در گروه HTF با `HtfStopBufferAtr` محاسبه می‌شد و مسیر M1/M5 را بیش از حد گشاد می‌کرد | ✅ M1/M5 از `StopBufferAtr`، M15+ از HTF buffer |
+| M-114 | متوسط | **قطعی / اصلاح‌شده در PR #359** | TargetRewardEnvelopeRule.cs; TargetStageFeasibilityGate.cs; TargetCandidateRewardScoreRule.cs | سقف 4 ATR می‌توانست TP2–TP4 را پیش از رسیدن به RR مجاز قطع کند و عمق HTF در scoring به‌اندازه کافی ترجیح نداشت | ✅ extension ریاضی محدود به MaxRR + اولویت bounded برای HTF عمیق‌تر |
 | L-85 | پایین | ثبت‌شده | SessionWindowRule.cs:10-277 | NormalizeHour 24→23؛ DST نادیده؛ IsInside بدون EnsureUtc | اصلاح |
 | L-86 | پایین | ثبت‌شده | PendingFillExitResolutionRule.cs:68-132 | target دورتر انتخاب می‌شود؛ risk=1.0 ثابت | مستندسازی |
 | L-87 | پایین | ثبت‌شده | ScenarioExecutionPolicyRule.cs:168 | expectedLane=candidate.Lane (چک همیشه true) | اصلاح |

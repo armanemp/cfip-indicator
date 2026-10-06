@@ -23,11 +23,12 @@ namespace cAlgo
         private double Ema(Bars bars, int index, bool fast)
                         {
                             if (bars == null || index < 0 || index >= bars.Count)
-                                return 0;
+                                return double.NaN;
                 
                             Native set = GetNative(bars);
-                            if (set == null)
-                                return 0;
+                            if (set == null ||
+                                !set.IsInitialized)
+                                return double.NaN;
                 
                             ExponentialMovingAverage ema =
                                 fast ? set.Fast : set.Slow;
@@ -39,9 +40,15 @@ namespace cAlgo
                                     fast
                                         ? Math.Max(2, FastEma)
                                         : Math.Max(3, SlowEma)))
-                                return 0;
+                                return double.NaN;
                 
-                            return SafePositive(ema.Result[index]);
+                            double value = ema.Result[index];
+                            return
+                                double.IsNaN(value) ||
+                                double.IsInfinity(value) ||
+                                value <= 0
+                                    ? double.NaN
+                                    : value;
                         }
     }
 }

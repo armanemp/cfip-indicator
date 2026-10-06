@@ -13,6 +13,106 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
+        private double ResolveStructuralStopMinimumRiskAtr(
+            string timeframe,
+            int closedM5,
+            int direction,
+            double atr)
+        {
+            if (!IsFinitePositive(atr))
+                return 0;
+
+            bool microTimeframe =
+                string.Equals(
+                    timeframe,
+                    "M1",
+                    StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(
+                    timeframe,
+                    "M5",
+                    StringComparison.OrdinalIgnoreCase);
+
+            bool allowMicroRelaxation =
+                microTimeframe &&
+                _m5Frame != null &&
+                _m15Frame != null &&
+                _m5Frame.Direction == direction &&
+                _m15Frame.Direction == direction &&
+                _m5Frame.Quality >= SmartStopQuality;
+
+            double microAtr = 0;
+
+            if (allowMicroRelaxation &&
+                _m1Bars != null &&
+                closedM5 >= 0)
+            {
+                DateTime reference =
+                    ClosedBarBoundaryReference(
+                        _m5Bars,
+                        closedM5,
+                        Server.TimeInUtc);
+
+                int m1Index =
+                    ClosedIndex(
+                        _m1Bars,
+                        reference);
+
+                if (m1Index >= 10)
+                    microAtr =
+                        Atr(
+                            _m1Bars,
+                            m1Index);
+            }
+
+            return StructuralStopRiskRule.ResolveEffectiveMinimumStopRiskAtr(
+                MinimumSlAtr,
+                atr,
+                microAtr,
+                Math.Max(
+                    0,
+                    Symbol.Ask - Symbol.Bid),
+                Symbol.PipSize,
+                MaximumSpreadToStopRiskRatio,
+                allowMicroRelaxation);
+        }
+
+        private double ResolveSelectedStructuralStopMinimumRiskAtr(
+            string source,
+            int closedM5,
+            int direction,
+            double atr)
+        {
+            string timeframe = "NONE";
+
+            if (!string.IsNullOrWhiteSpace(source))
+            {
+                int separator =
+                    source.LastIndexOf(
+                        '@');
+
+                if (separator >= 0 &&
+                    separator < source.Length - 1)
+                {
+                    string candidateTimeframe =
+                        source.Substring(
+                            separator + 1);
+
+                    if (StructuralTimeframeRule.IsSupported(
+                            candidateTimeframe))
+                    {
+                        timeframe =
+                            candidateTimeframe;
+                    }
+                }
+            }
+
+            return ResolveStructuralStopMinimumRiskAtr(
+                timeframe,
+                closedM5,
+                direction,
+                atr);
+        }
+
         private double BuildStructuralStop(
                             int closedM5,
                             int direction,

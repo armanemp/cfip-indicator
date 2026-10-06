@@ -9,6 +9,7 @@ namespace cAlgo
             double maximumRR,
             double risk,
             double atr,
+            bool allowHtfExtension,
             out string rejectionReason)
         {
             rejectionReason = "";
@@ -25,7 +26,8 @@ namespace cAlgo
                     risk,
                     atr,
                     MaximumTargetExtensionAtr,
-                    maximumRR))
+                    maximumRR,
+                    allowHtfExtension))
             {
                 rejectionReason =
                     TargetCandidateRejectionReasons.StageUnreachableByExtension;

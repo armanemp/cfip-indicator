@@ -57,6 +57,24 @@ check(
 )
 
 check(
+    "M1 and M5 use the micro/base stop buffer while M15+ use HTF buffer",
+    '"M1"' in geometry and
+    '"M5"' in geometry and
+    "return baseBuffer;" in geometry and
+    "htfStopBufferAtr" in geometry
+)
+
+check(
+    "adaptive micro stop floor is canonical and safety bounded",
+    "ResolveEffectiveMinimumStopRiskAtr(" in risk and
+    "MicroStopRiskAtrFloor = 0.30" in risk and
+    "MicroStopM1AtrMultiplier = 1.10" in risk and
+    "spreadMinimum" in risk and
+    "allowMicroRelaxation" in evaluator and
+    "candidate.Timeframe" in evaluator
+)
+
+check(
     "candidate evaluation uses the evaluated stop instead of rematerializing it",
     "out double bestStop" in evaluator and
     "selectedStop = stop;" in evaluator and
@@ -84,6 +102,30 @@ check(
     "StructuralStopRiskRule.IsWithinPlanningRiskEnvelope(" in evaluator and
     "EffectiveMaximumStopRiskAtr(" in risk and
     "maximumRiskAtr =" in evaluator
+)
+
+check(
+    "selected M1 stop floor has one shared planning-layer resolver",
+    "ResolveStructuralStopMinimumRiskAtr(" in
+    read("src/CFIP.Indicator/Planning/TradePlan/StructuralStopPlanner.cs")
+    and "ResolveSelectedStructuralStopMinimumRiskAtr(" in
+    read("src/CFIP.Indicator/Planning/TradePlan/StructuralStopPlanner.cs")
+    and "ResolveStructuralStopMinimumRiskAtr(" in evaluator
+    and "ResolveSelectedStructuralStopMinimumRiskAtr(" in plan_input
+    and "ResolveSelectedStructuralStopMinimumRiskAtr(" in preview
+    and "ResolveSelectedStructuralStopMinimumRiskAtr(" in parallel
+)
+
+check(
+    "selected structural stop preserves its exact source timeframe and rejects non-structural defaults",
+    "LastIndexOf(" in
+    read("src/CFIP.Indicator/Planning/TradePlan/StructuralStopPlanner.cs")
+    and "StructuralTimeframeRule.IsSupported(" in
+    read("src/CFIP.Indicator/Planning/TradePlan/StructuralStopPlanner.cs")
+    and 'string timeframe = "NONE";' in
+    read("src/CFIP.Indicator/Planning/TradePlan/StructuralStopPlanner.cs")
+    and "candidateTimeframe" in
+    read("src/CFIP.Indicator/Planning/TradePlan/StructuralStopPlanner.cs")
 )
 
 check(

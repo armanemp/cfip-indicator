@@ -22,6 +22,7 @@ namespace cAlgo
             VerifyTradePlanRegistryOrdering();
             VerifyPlanRewardRiskQuality();
             VerifyCanonicalRiskRewardMath();
+            VerifyAdaptiveStopAndHtfRewardEnvelope();
             VerifyExecutionIntentGeometry();
             VerifyTargetPipelineD7();
             VerifyTargetObstacleCachePolicyF9();
@@ -358,6 +359,155 @@ namespace cAlgo
 
             Console.WriteLine(
                 "D8 TP1 directional defence: BUY/SELL valid and wrong-side fixtures passed");
+        }
+
+        private static void VerifyAdaptiveStopAndHtfRewardEnvelope()
+        {
+            double microMinimum =
+                StructuralStopRiskRule.ResolveEffectiveMinimumStopRiskAtr(
+                    0.55,
+                    1.00,
+                    0.25,
+                    0.01,
+                    0.0001,
+                    0.18,
+                    true);
+
+            Assert(
+                microMinimum >= StructuralStopRiskRule.MicroStopRiskAtrFloor &&
+                microMinimum < 0.55,
+                "micro stop can tighten below the broad M5 floor only within safety envelope");
+
+            double wideMicroMinimum =
+                StructuralStopRiskRule.ResolveEffectiveMinimumStopRiskAtr(
+                    0.55,
+                    1.00,
+                    0.90,
+                    0.01,
+                    0.0001,
+                    0.18,
+                    true);
+
+            Assert(
+                wideMicroMinimum >= 0.90 * StructuralStopRiskRule.MicroStopM1AtrMultiplier,
+                "micro stop floor expands with M1 volatility");
+
+            double spreadDominatedMinimum =
+                StructuralStopRiskRule.ResolveEffectiveMinimumStopRiskAtr(
+                    0.55,
+                    1.00,
+                    0.20,
+                    0.20,
+                    0.0001,
+                    0.18,
+                    true);
+
+            Assert(
+                spreadDominatedMinimum >= 0.20 / 1.00 / 0.18,
+                "micro stop cannot be tighter than spread-derived safety floor");
+
+            double baseExtension =
+                TargetRewardEnvelopeRule.ResolveMaximumExtensionAtr(
+                    0.75,
+                    1.00,
+                    4.0,
+                    12.0,
+                    false);
+
+            double htfExtension =
+                TargetRewardEnvelopeRule.ResolveMaximumExtensionAtr(
+                    0.75,
+                    1.00,
+                    4.0,
+                    12.0,
+                    true);
+
+            Assert(
+                Math.Abs(baseExtension - 4.0) < 1e-12,
+                "non-HTF target extension retains base ceiling");
+
+            Assert(
+                htfExtension > baseExtension &&
+                htfExtension <= TargetRewardEnvelopeRule.HtfMaximumExtensionAtrCap &&
+                Math.Abs(htfExtension - 9.0) < 1e-12,
+                "HTF target extension follows actual stop-risk and configured maximum RR");
+
+            Assert(
+                TargetRewardEnvelopeRule.CanReachStage(
+                    6.50,
+                    0.75,
+                    1.00,
+                    4.0,
+                    12.0,
+                    true),
+                "HTF TP4 can remain reachable when 4 ATR would otherwise make it impossible");
+
+            Assert(
+                !TargetRewardEnvelopeRule.CanReachStage(
+                    6.50,
+                    0.75,
+                    1.00,
+                    4.0,
+                    12.0,
+                    false),
+                "non-HTF TP4 remains bounded by the original extension ceiling");
+
+            Assert(
+                !double.IsNaN(
+                    TargetRewardEnvelopeRule.MaximumReachableRR(
+                        0.75,
+                        1.00,
+                        4.0,
+                        double.NaN,
+                        true)) &&
+                TargetRewardEnvelopeRule.MaximumReachableRR(
+                    0.75,
+                    1.00,
+                    4.0,
+                    double.NaN,
+                    true) == 0,
+                "invalid maximum RR fails closed without NaN propagation");
+
+            double m15RewardScore =
+                TargetCandidateRewardScoreRule.Calculate(
+                    75,
+                    6.50,
+                    4.80,
+                    1.0,
+                    6.5,
+                    true,
+                    false,
+                    true,
+                    3,
+                    1,
+                    22,
+                    14,
+                    10,
+                    "M15");
+
+            double w1RewardScore =
+                TargetCandidateRewardScoreRule.Calculate(
+                    75,
+                    6.50,
+                    4.80,
+                    1.0,
+                    6.5,
+                    true,
+                    false,
+                    true,
+                    3,
+                    1,
+                    22,
+                    14,
+                    10,
+                    "W1");
+
+            Assert(
+                w1RewardScore > m15RewardScore,
+                "later target stages prefer deeper HTF sources when quality is otherwise equal");
+
+            Console.WriteLine(
+                "Adaptive micro-SL / HTF reward envelope contracts: safety floors, spread protection, TP4 reachability and HTF depth preference passed");
         }
 
         private static void VerifyTargetSelectionConsistency()

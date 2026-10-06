@@ -69,6 +69,17 @@ namespace cAlgo
                         minimumCandidateRR,
                         MinimumHtfTargetRR);
 
+            double effectiveMaximumTargetExtensionAtr =
+                TargetRewardEnvelopeRule.ResolveMaximumExtensionAtr(
+                    risk,
+                    atr,
+                    MaximumTargetExtensionAtr,
+                    maximumRR,
+                    requireHtf);
+
+            if (effectiveMaximumTargetExtensionAtr <= 0)
+                return false;
+
             TargetCandidateConstraintResult constraint =
                 TargetCandidateConstraintRule.Evaluate(
                     stage,
@@ -80,7 +91,7 @@ namespace cAlgo
                     Symbol.PipSize,
                     minimumCandidateRR,
                     maximumRR,
-                    MaximumTargetExtensionAtr,
+                    effectiveMaximumTargetExtensionAtr,
                     MinimumTpSpacingAtr,
                     previous,
                     false,
@@ -119,7 +130,7 @@ namespace cAlgo
                         distance /
                         atr,
                         m5Obstacle.ObstacleDistanceAtr,
-                        MaximumTargetExtensionAtr);
+                        effectiveMaximumTargetExtensionAtr);
 
                     rejectionReason =
                         m5Obstacle.Reason;
@@ -141,7 +152,7 @@ namespace cAlgo
                         distance /
                         atr,
                         -1,
-                        MaximumTargetExtensionAtr);
+                        effectiveMaximumTargetExtensionAtr);
 
                     rejectionReason =
                         TargetCandidateRejectionReasons.OpposingZoneObstacle;
@@ -163,7 +174,7 @@ namespace cAlgo
                         distance /
                         atr,
                         -1,
-                        MaximumTargetExtensionAtr);
+                        effectiveMaximumTargetExtensionAtr);
 
                     rejectionReason =
                         TargetCandidateRejectionReasons.HtfZoneObstacle;
@@ -204,7 +215,8 @@ namespace cAlgo
                     stage,
                     HtfRewardBonus,
                     LiquidityRewardBonus,
-                    ZoneRewardBonus);
+                    ZoneRewardBonus,
+                    candidate.Timeframe);
 
             return true;
         }

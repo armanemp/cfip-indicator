@@ -30,7 +30,7 @@ private double AverageAtr(Bars bars, int index, int lookback)
                                     {
                                         double value = Atr(bars, i);
                         
-                                        if (value <= 0)
+                                        if (!NumericGuards.IsFinitePositive(value))
                                             continue;
                         
                                         sum += value;

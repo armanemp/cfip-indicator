@@ -29,6 +29,7 @@ namespace cAlgo
                                 GetNative(bars);
                 
                             if (set == null ||
+                                !set.IsInitialized ||
                                 set.MacdFast == null ||
                                 set.MacdSlow == null ||
                                 !NativeIndicatorReadinessRule.IsIndexedWindowReady(

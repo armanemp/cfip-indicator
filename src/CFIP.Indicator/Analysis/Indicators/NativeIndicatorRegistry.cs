@@ -80,9 +80,12 @@ namespace cAlgo
                                     InitializeMacd(
                                         set,
                                         bars);
+
+                                set.IsInitialized = true;
                             }
                             catch (Exception ex)
                             {
+                                set.IsInitialized = false;
                                 Print(
                                     "CFIP indicator initialization failed: {0}",
                                     ex.Message);

@@ -208,6 +208,23 @@ namespace cAlgo
                     : args.Bars);
         }
 
+        private void DisposeOssQuoteSeriesCache()
+        {
+            foreach (OssQuoteCacheEntry cache in _ossQuoteCaches)
+            {
+                if (cache == null ||
+                    cache.Bars == null)
+                    continue;
+
+                cache.Bars.HistoryLoaded -=
+                    Bars_HistoryLoaded;
+                cache.Bars.Reloaded -=
+                    Bars_Reloaded;
+            }
+
+            _ossQuoteCaches.Clear();
+        }
+
         private void InvalidateBars(
             Bars bars)
         {
@@ -260,11 +277,19 @@ namespace cAlgo
                  i <= closedIndex;
                  i++)
             {
-                cache.StableQuotes.Add(
-                    CreateQuote(
+                StockQuote quote;
+                if (!TryCreateQuote(
                         bars,
-                        i));
+                        i,
+                        out quote))
+                {
+                    cache.StableQuotes.Clear();
+                    cache.StableFirstIndex = -1;
+                    cache.StableClosedIndex = -1;
+                    return;
+                }
 
+                cache.StableQuotes.Add(quote);
                 cache.StableClosedIndex = i;
 
                 while (cache.StableQuotes.Count >
@@ -333,11 +358,19 @@ namespace cAlgo
                  i <= closedIndex;
                  i++)
             {
-                cache.RollingQuotes.Add(
-                    CreateQuote(
+                StockQuote quote;
+                if (!TryCreateQuote(
                         bars,
-                        i));
+                        i,
+                        out quote))
+                {
+                    cache.RollingQuotes.Clear();
+                    cache.RollingFirstIndex = -1;
+                    cache.RollingClosedIndex = -1;
+                    return;
+                }
 
+                cache.RollingQuotes.Add(quote);
                 cache.RollingClosedIndex = i;
             }
 
@@ -351,20 +384,57 @@ namespace cAlgo
             cache.BarCount = bars.Count;
         }
 
-        private static StockQuote CreateQuote(
+        private static bool TryCreateQuote(
             Bars bars,
-            int index)
+            int index,
+            out StockQuote quote)
         {
-            return new StockQuote
+            quote = null;
+
+            if (bars == null ||
+                index < 0 ||
+                index >= bars.Count)
+                return false;
+
+            double open = bars.OpenPrices[index];
+            double high = bars.HighPrices[index];
+            double low = bars.LowPrices[index];
+            double close = bars.ClosePrices[index];
+
+            if (double.IsNaN(high) ||
+                double.IsInfinity(high) ||
+                double.IsNaN(low) ||
+                double.IsInfinity(low) ||
+                high < low)
+                return false;
+
+            decimal normalizedOpen;
+            decimal normalizedHigh;
+            decimal normalizedLow;
+            decimal normalizedClose;
+
+            if (!OssQuoteProjectionRule.TryNormalizePrice(open, out normalizedOpen) ||
+                !OssQuoteProjectionRule.TryNormalizePrice(high, out normalizedHigh) ||
+                !OssQuoteProjectionRule.TryNormalizePrice(low, out normalizedLow) ||
+                !OssQuoteProjectionRule.TryNormalizePrice(close, out normalizedClose) ||
+                normalizedOpen < normalizedLow ||
+                normalizedOpen > normalizedHigh ||
+                normalizedClose < normalizedLow ||
+                normalizedClose > normalizedHigh)
+                return false;
+
+            quote = new StockQuote
             {
                 Date = bars.OpenTimes[index],
-                Open = (decimal)bars.OpenPrices[index],
-                High = (decimal)bars.HighPrices[index],
-                Low = (decimal)bars.LowPrices[index],
-                Close = (decimal)bars.ClosePrices[index],
+                Open = normalizedOpen,
+                High = normalizedHigh,
+                Low = normalizedLow,
+                Close = normalizedClose,
                 Volume = OssQuoteProjectionRule.NormalizeVolume(
                     bars.TickVolumes[index])
             };
+
+            return true;
         }
 
         private static void CaptureStableFirstBar(

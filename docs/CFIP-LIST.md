@@ -170,10 +170,10 @@ If a proposed package cannot close in one response, split it into smaller packag
 | WP-14 | Core enums/execution | enums/submission gate/execution primitives |
 | WP-15 | Core math/time/runtime | pure formulas/time rules/runtime primitives |
 | WP-16 | Core models | models/contracts between domains |
-| WP-17 | Native indicators | native indicator ownership/registry |
-| WP-18 | OSS indicators | adapters/cache/warmup/parity |
-| WP-19 | Market context | frame/state/regime/cache/timeframe |
-| WP-20 | Decision | direction/score/quality/confidence/actionability |
+| WP-17 | Native indicators | native indicator ownership/registry; complete trend/momentum/volatility/price-action inventory; formula parity; closed-bar semantics; bounded feature extraction |
+| WP-18 | OSS indicators | adapters/cache/warmup/parity; complete Skender inventory; native-vs-OSS duplicate detection; candidate expansion only after independence review |
+| WP-19 | Market context | frame/state/regime/cache/timeframe; volatility/volume/regime/location context; MTF provenance; evidence completeness |
+| WP-20 | Decision | direction/score/quality/confidence/actionability; family-level evidence fusion; correlation control; regime-conditioned weighting; data-completeness/conflict provenance; nine-level strength source |
 | WP-21 | Reaction | intrabar/reaction semantics |
 | WP-22 | Structure | swing/structure/liquidity |
 | WP-23 | FVG | detection/lifecycle/mitigation/quality |
@@ -1688,3 +1688,16 @@ Verification on the exact final implementation head:
 No production trading logic, public strategy threshold, broker authority or MTF contract was changed.
 
 **Next:** WP-05 — Preflight.
+
+## 16. Analytical-stack rebuild inspection contract — P4/P5/P6/P7
+
+The analytical quality rebuild is distributed across the existing ordered packages rather than creating a second roadmap:
+
+- **WP-17:** prove the complete native indicator inventory and formula ownership.
+- **WP-18:** prove the complete OSS inventory, numerical parity, warm-up, cache behavior and native/OSS duplication boundaries.
+- **WP-19:** rebuild the market-frame/regime/MTF context so every feature has explicit timeframe, closed-bar, freshness and provenance semantics.
+- **WP-20:** rebuild indicator evidence fusion so correlated indicators vote by evidence family, regime changes weighting, missing data cannot create positive evidence, and the decision exposes direction/quality/confidence/conflict/completeness/provenance.
+- **WP-21/22/23/24:** validate reaction, structure, FVG, Order Block and liquidity evidence as causal structure rather than independent vote inflation.
+- **WP-26/28/29:** consume the stronger evidence model for M5 trigger, filters and reward-path planning without rebuilding analysis.
+
+Candidate promotion order is: **inventory → owner/parity audit → feature normalization → independence analysis → regime conditioning → MTF aggregation → decision calibration → replay/OOS/ablation**. Adding a new indicator before the relevant earlier package is audited is not allowed.

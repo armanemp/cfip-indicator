@@ -22,24 +22,25 @@ namespace cAlgo
         private double Rsi(Bars bars, int index)
                         {
                             if (bars == null || index < 0 || index >= bars.Count)
-                                return 50;
+                                return double.NaN;
                 
                             Native set = GetNative(bars);
                 
                             if (set == null ||
+                                !set.IsInitialized ||
                                 set.Rsi == null ||
                                 !NativeIndicatorReadinessRule.IsIndexedSeriesReady(
                                     index,
                                     set.Rsi.Result.Count,
                                     Math.Max(2, RsiPeriod)))
-                                return 50;
+                                return double.NaN;
                 
                             double value = set.Rsi.Result[index];
                 
                             return
                                 double.IsNaN(value) ||
                                 double.IsInfinity(value)
-                                    ? 50
+                                    ? double.NaN
                                     : Clamp(value, 0, 100);
                         }
     }
