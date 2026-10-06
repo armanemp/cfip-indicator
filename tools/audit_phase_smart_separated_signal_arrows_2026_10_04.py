@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""CFIP 2026-10-04 smart separated signal-arrow audit.
+"""CFIP smart separated signal-arrow audit.
 
-The audit enforces a single production owner for directional arrows:
+The audit enforces a single production owner for directional presentation:
 MtfTrendStrengthRule -> SignalVisualSnapshot -> SignalStackedArrowRenderer.
-M1 remains a precision marker (Circle), not a competing directional arrow.
+M1 remains a non-directional precision/confirmation layer; no competing chart
+marker is rendered for it.
 """
 
 from pathlib import Path
@@ -73,16 +74,22 @@ check(
 check(
     "canonical arrow renderer consumes snapshot strength only",
     "snapshot.MtfTrendStrengthLevel" in stack and
-    "snapshot.MtfTrendDirection" in stack and
     "((strength - 1) % 3) + 1" in stack and
-    "snapshot.MtfTrendStrengthTier" in stack,
+    "UpdateSignalArrowBox(" in stack and
+    '"↑"' in stack and
+    '"↓"' in stack,
 )
 
 check(
-    "three arrows are physically separated",
-    "Symbol.PipSize * 3" in stack and
-    "offset * 1.5" in stack and
-    "separation * i" in stack,
+    "three arrows use deterministic fixed-box spacing",
+    "Orientation.Horizontal" in stack and
+    "_signalArrowBoxArrows" in stack and
+    "new System.Collections.Generic.List<TextBlock>(3)" in stack and
+    "Width = 18" in stack and
+    "Height = 28" in stack and
+    "Margin = new Thickness(1, 0, 1, 0)" in stack and
+    "Width = 66" in stack and
+    "Height = 66" in stack,
 )
 
 check(
@@ -148,6 +155,7 @@ check(
     "phase documentation records the single-owner contract",
     "Smart Separated Signal Arrows" in phase and
     ("single-owner" in phase.lower() or "single owner" in phase.lower()) and
+    "fixed signal box" in phase.lower() and
     "git pull --ff-only" in phase,
 )
 
