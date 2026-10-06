@@ -819,3 +819,61 @@
 8. outcome/calibration بدون leakage.
 
 **نکته مهم:** این 72% به معنی «72% کدنویسی» نیست؛ پروژه بخش زیادی از کد را دارد، اما درصد باقی‌مانده بر اساس owner integrity، correctness، runtime execution و acceptance gates محاسبه شده است.
+
+## 16. ممیزی عمیق — Batch 04 (Flow / DOM / Aggressive Flow)
+
+### 16.1 semantics قطعی
+- cTrader `Tick` فقط Time/Bid/Ask دارد؛ executed trade size در Tick API موجود نیست.
+- `MarketDepthEntry.VolumeInUnits` حجم سفارشات موجود در DOM است، نه حجم معاملات اجراشده.
+- بنابراین CFIP دو مفهوم را جدا نگه می‌دارد:
+  - **DOM BUY/SELL:** حجم قابل مشاهده سفارشات Bid/Ask از broker feed.
+  - **FLOW BUY/SELL TICKS:** proxy جهت‌دار از تغییرات متوالی midpoint؛ این «executed volume» نیست.
+- این تفکیک جلوی یکی از خطرناک‌ترین خطاهای معنایی پروژه یعنی نمایش tick/DOM به‌عنوان real traded volume را می‌گیرد.
+
+### 16.2 مالک Flow
+- `AggressiveFlowAnalyzer` تنها owner طبقه‌بندی realtime flow proxy است.
+- پنجره rolling برابر 30 ثانیه و حداکثر 4096 نمونه دارد؛ بنابراین رشد حافظه نامحدود نیست.
+- tickهای معتبر بر اساس حرکت midpoint به BUY/SELL/NEUTRAL طبقه‌بندی می‌شوند.
+- history/reconnect semantics در مرحله بعد باید با invalidation/reseed صریح تکمیل شود تا snapshot بعد از reconnect stale نشود.
+
+### 16.3 Runtime
+- `AggressiveFlowRuntime.cs` تنها owner lifecycle اتصال به `MarketData.GetTicks(Symbol.Name)` است.
+- subscription در initialization و unsubscribe در OnDestroy انجام می‌شود.
+- مسیر دوم برای tick listener ایجاد نشده است.
+
+### 16.4 Panel
+Footer اکنون چهار ردیف canonical دارد:
+1. DOM BUY — VolumeInUnits
+2. DOM SELL — VolumeInUnits
+3. FLOW BUY TICKS — directional tick proxy
+4. FLOW SELL TICKS — directional tick proxy
+
+ارتفاع rail از 42 به 84 و minimum footer از 86 به 146 افزایش یافت تا چهار ردیف واقعاً فضای مستقل داشته باشند و روی alert/actionها overlap نکنند.
+
+### 16.5 اصلاح مهم runtime
+در همین batch مشخص شد timeout 30 ثانیه‌ای data initialization هنوز در `RuntimeInitialization.cs` باقی مانده بود. حذف شد.
+- indicator دیگر به‌خاطر کندی provider/broker بعد از 30 ثانیه shutdown/fault نمی‌شود.
+- freshness/staleness باید در data-consumer و execution-safety gateها اعمال شود، نه به‌عنوان lifetime timeout خود Indicator.
+- commit: `9c3e0bb4b3a86845c3adaffdbacc4b63ebdbf9c8`
+
+### 16.6 commits این batch
+- `463c0246d707d4a438d0029852ec379510997fc1` — AggressiveFlowAnalyzer
+- `b741b1ba07e1ce96a7431f02ff5c28a64b21be68` — AggressiveFlowRuntime
+- `7d8203740895ef187d9a98ac2506bef2902e294d` — lifecycle integration
+- `ad71cbff7d92d38cb508211baa63856b471e32fa` — four-row DOM/flow panel
+- `5b19dbb6745694d2c6fe453a58368647da63cef0` — footer geometry
+- `d954f0703aaca73451f1fca0bb07519a396a5b16` — acceptance gate
+
+### 16.7 وضعیت Batch 04
+- [x] DOM semantics
+- [x] Aggressive-flow owner
+- [x] bounded rolling proxy
+- [x] runtime subscription lifecycle
+- [x] four-row UI
+- [x] explicit volume semantics
+- [x] startup lifetime timeout removed
+- [x] static acceptance gate
+- [ ] reconnect/history reseed contract
+- [ ] flow normalization against symbol/session regime
+- [ ] arrow strength consumer alignment
+- [ ] full compile/runtime/architecture CI verification
