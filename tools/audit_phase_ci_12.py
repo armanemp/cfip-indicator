@@ -117,6 +117,16 @@ check(
 )
 
 check(
+    "selected structural stop preserves its exact source timeframe",
+    "LastIndexOf(" in
+    read("src/CFIP.Indicator/Planning/TradePlan/StructuralStopPlanner.cs")
+    and "StructuralTimeframeRule.IsSupported(" in
+    read("src/CFIP.Indicator/Planning/TradePlan/StructuralStopPlanner.cs")
+    and "candidateTimeframe" in
+    read("src/CFIP.Indicator/Planning/TradePlan/StructuralStopPlanner.cs")
+)
+
+check(
     "plan fallback uses the same canonical fallback geometry",
     "StructuralStopGeometryRule.EvaluateFallback(" in plan_input and
     "StructuralStopGeometryRule.EvaluateFallback(" in preview and
