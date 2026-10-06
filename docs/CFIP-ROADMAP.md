@@ -803,11 +803,14 @@ The completion protocol is now permanent: required CI must be green, the verifie
 
 
 ## 18.1 2026-10-06 — Runtime signal / cBot / alert hardening continuation
-**Status:** IN PROGRESS (implementation branch; not counted in formal PASS percentage until merged and gated)
+**Status:** MERGED TO MAIN — REPOSITORY VERIFIED; TARGET-TERMINAL PENDING
+
+PR #361 merged to `main` as `d083869cbf615b3eaaeded5048f8c55dfa2b0f76`. Pre-merge exact-head Source/Architecture, Runtime Acceptance and cTrader Compile gates all passed. Post-merge `main` re-verification is recorded separately below; target-terminal acceptance remains manual.
 
 This continuation closes concrete defects affecting operator-visible signal timing, arrow stability/color parity, cBot execution readiness and intermittent signal-audio loss. It does not weaken closed-bar decision semantics or execution safety.
 
-Current fixes under validation:
+Repository implementation completed on PR #361:
+
 - cBot execution policy is constructed only from cBot-owned parameters.
 - MTF visual pressure is closed-frame based.
 - authoritative direction survives MTF conflict with a caution-strength downgrade.
@@ -816,6 +819,20 @@ Current fixes under validation:
 - sound delivery retries a failed canonical delivery and retains bounded burst capacity.
 
 The remaining analytical signal-quality work is still WP-20 family-level Evidence Fusion; this continuation is not a substitute for that rebuild.
+
+## 2026-10-07 — PR #361 repository closeout
+
+- [x] cBot execution-settings ownership is canonical and no longer reads Indicator parameters.
+- [x] Directional signal presentation is owned by one fixed 66×66 bottom-right signal box.
+- [x] The canonical 1–9 strength level deterministically produces 1–3 visible directional glyphs.
+- [x] No candle-anchored directional icon or `M1_TRIGGER` Circle is rendered.
+- [x] Footer data-status ownership remains in `PanelFooterFactory`, outside the scrollable panel body, for M1/M5/M15/H1/H4.
+- [x] Signal audio remains a single queued delivery path with bounded retry and centralized playback.
+- [x] Source/Architecture, Runtime Acceptance and cTrader Compile all passed on the exact pre-merge implementation head.
+- [ ] Post-merge `main` re-verification is pending on the merge commit `d083869cbf615b3eaaeded5048f8c55dfa2b0f76`.
+- [ ] Target-terminal visual/audio/cBot acceptance remains mandatory and is not inferred from repository CI.
+
+No trading threshold, MTF role, broker mutation authority or strategy quality gate was weakened by this synchronization work.
 
 
 ## 2026-10-06 — UI signal presentation / footer hardening
