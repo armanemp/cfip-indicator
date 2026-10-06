@@ -82,14 +82,32 @@ namespace cAlgo
             int direction,
             double atr)
         {
-            bool micro =
-                !string.IsNullOrWhiteSpace(source) &&
-                source.EndsWith(
-                    "@M1",
-                    StringComparison.OrdinalIgnoreCase);
+            string timeframe = "M5";
+
+            if (!string.IsNullOrWhiteSpace(source))
+            {
+                int separator =
+                    source.LastIndexOf(
+                        '@');
+
+                if (separator >= 0 &&
+                    separator < source.Length - 1)
+                {
+                    string candidateTimeframe =
+                        source.Substring(
+                            separator + 1);
+
+                    if (StructuralTimeframeRule.IsSupported(
+                            candidateTimeframe))
+                    {
+                        timeframe =
+                            candidateTimeframe;
+                    }
+                }
+            }
 
             return ResolveStructuralStopMinimumRiskAtr(
-                micro ? "M1" : "M5",
+                timeframe,
                 closedM5,
                 direction,
                 atr);
