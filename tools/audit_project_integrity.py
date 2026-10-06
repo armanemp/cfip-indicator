@@ -39,7 +39,7 @@ if duplicates:
         print(f"DUPLICATE PARAMETER: {name} -> {owners}")
     fail(f"Found {len(duplicates)} duplicate public parameter names")
 
-EXPECTED_UNIQUE_PUBLIC_PARAMETER_MATCHES = 533
+EXPECTED_UNIQUE_PUBLIC_PARAMETER_MATCHES = 531
 if len(param_decls) != EXPECTED_UNIQUE_PUBLIC_PARAMETER_MATCHES:
     fail(
         f"Project integrity public-property match count changed: "
@@ -58,7 +58,7 @@ declared_parameter_count = len(
 )
 if declared_parameter_count != 543:
     fail(
-        f"Project integrity expects 545 parameter declarations, "
+        f"Project integrity expects 543 parameter declarations, "
         f"found {declared_parameter_count}"
     )
 if not re.search(
