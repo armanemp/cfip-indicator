@@ -46,7 +46,7 @@ require("ResolveClosedPressureQuality(" in m_tf and "ResolveLivePressureQuality(
 require("frame.Bars.ClosePrices[frame.Index]" in m_tf, "closed-frame pressure source is missing")
 require("AuthoritativeDirection" in arrows and "RemoveStackedSignalArrows();
                 return;" in arrows, "canonical arrow direction owner must remain explicit")
-require("MTF disagreement is a quality/conflict state" in arrows and "strength = Math.Min(3, strength)" in arrows, "MTF conflict must downgrade rather than erase the canonical signal")
+require("mtfDirection != 0" in arrows and "mtfDirection != direction" in arrows and "strength = Math.Min(3, strength)" in arrows, "MTF conflict must downgrade rather than erase the canonical signal")
 require("SignalPresentationColorRule.Resolve(" in arrows and "SignalPresentationColorRule.Resolve(" in panel_tf, "arrows and timeframe panel must share one color owner")
 require("class SignalPresentationColorRule" in colors, "canonical signal palette owner missing")
 require("_reaction.TriggerReady" in snapshot and "LiveReactionThreshold" in snapshot, "live reaction presentation must be available before full execution actionability")
