@@ -133,9 +133,16 @@ namespace cAlgo
                                 ChartIconType.Circle,
                                 triggerBar,
                                 price,
-                                SignalArrowColorFor(
+                                SignalPresentationColorRule.Resolve(
                                     snapshot.DecisionDirection,
-                                    "STRONG"));
+                                    3,
+                                    StrongBuyArrowColor,
+                                    StrongSellArrowColor,
+                                    ConfirmedBuyArrowColor,
+                                    ConfirmedSellArrowColor,
+                                    CautionBuyArrowColor,
+                                    CautionSellArrowColor,
+                                    BlockedReactionArrowColor));
                         }
 
         private int MapM1ToChart(
