@@ -152,11 +152,14 @@ namespace cAlgo
             int closedIndex)
         {
             if (frame == null ||
-                frame.Index != closedIndex)
+                frame.Index != closedIndex ||
+                !frame.NativeIndicatorsReady)
                 throw new InvalidOperationException(
                     "Decision input " +
                     name +
-                    " is not aligned to its closed-bar index.");
+                    (frame == null || frame.Index != closedIndex
+                        ? " is not aligned to its closed-bar index."
+                        : " is not ready for decision scoring."));
         }
 
         private static void ValidateOptionalFrame(
