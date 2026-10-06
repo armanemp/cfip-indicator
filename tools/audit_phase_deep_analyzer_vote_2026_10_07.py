@@ -99,10 +99,11 @@ check(
     "Indicators.RelativeStrengthIndex" in rsi and
     "GetNative(" in (atr + adx + dmi + rsi),
 )
+macd_bias = read("src/CFIP.Indicator/Analysis/Market/MacdBiasAnalyzer.cs")
 check(
     "MACD bias is explicitly a fast/slow MACD-line bias and not a second signal engine",
-    "two-EMA MACD-line bias" in macd and
-    "MacdFast.Result[index] -\n                                set.MacdSlow.Result[index]" in macd,
+    "two-EMA MACD-line bias" in macd_bias and
+    "set.MacdFast.Result[index] -\n                                set.MacdSlow.Result[index]" in macd_bias,
 )
 
 # OSS numerical adapters: missing values must fail closed, not become numeric zero.
@@ -166,6 +167,28 @@ consensus = read("src/CFIP.Indicator/Analysis/Market/Decision/DecisionConsensusC
 consensus_snapshot = read("src/CFIP.Indicator/Analysis/Market/Decision/DecisionConsensusSnapshot.cs")
 evaluator = read("src/CFIP.Indicator/Analysis/Market/Decision/DecisionEvaluator.cs")
 decision = read("src/CFIP.Indicator/Core/Models/Decision.cs")
+
+check(
+    "required decision frames cannot enter scoring without native readiness",
+    "frame.NativeIndicatorsReady" in read("src/CFIP.Indicator/Analysis/Market/Decision/DecisionInputSnapshotFactory.cs") and
+    "is not ready for decision scoring" in read("src/CFIP.Indicator/Analysis/Market/Decision/DecisionInputSnapshotFactory.cs"),
+)
+check(
+    "restriction alerts accept the canonical NEWS reason",
+    'case "NEWS":' in read("src/CFIP.Indicator/Analysis/Market/Decision/DecisionRestrictionAlertPolicy.cs"),
+)
+
+check(
+    "non-M5 regime stability is derived from recent regime cores",
+    "int stability = 1;" in read("src/CFIP.Indicator/Analysis/Market/MarketRegimeAnalyzer.cs") and
+    "beforePrevious" in read("src/CFIP.Indicator/Analysis/Market/MarketRegimeAnalyzer.cs"),
+)
+
+check(
+    "parallel preview reuses the canonical scenario geometry owner",
+    "TryBuildParallelScenarioGeometry(" in read("src/CFIP.Indicator/Planning/TradePlan/PlanPreviewBuilder.cs") and
+    "private bool TryBuildScenarioGeometry(" not in read("src/CFIP.Indicator/Planning/TradePlan/PlanPreviewBuilder.cs"),
+)
 
 check(
     "frame vote contract carries eligibility, direction and configured weight",
