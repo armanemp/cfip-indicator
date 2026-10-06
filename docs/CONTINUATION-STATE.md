@@ -2872,7 +2872,7 @@ Current continuation for the active UI/runtime hardening branch:
 - The canonical directional presentation is now a fixed 66×66 bottom-right signal box, not candle-anchored chart icons.
 - The box displays 1–3 directional glyphs derived directly from the canonical 1–9 MtfTrendStrengthLevel; no second strength calculation exists in the renderer.
 - The M1 precision/confirmation layer no longer owns a Circle or other chart marker.
-- The panel footer owns a fixed data-status row for M1/M5/M15/H1/H4 tick-volume readiness, outside the scrollable panel body.
+- The panel footer owns two fixed full-width BUY/SELL pressure bars outside the scrollable panel body; the pressure is derived from closed M15 tick-volume/candle-range evidence.
 - Indicator cBot execution-policy ownership remains moved to the cBot-owned CbotExecutionSettings; the legacy Indicator-owned execution-settings type is removed.
 - Signal audio remains one canonical queued event path with separate bounded sound delivery and retry on playback failure.
 
