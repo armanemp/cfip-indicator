@@ -44,10 +44,11 @@ require(
 )
 
 require(
-    "CbotExecutionSettings.TryRead" in bot and
+    "CbotExecutionSettings.Create(" in bot and
     "CbotExecutionSettings" in settings and
-    "ChartIndicator.Parameters" not in settings or "indicator.Parameters" in settings,
-    "cBot must consume the actual attached Indicator settings without duplicate parameters",
+    "ChartIndicator.Parameters" not in settings and
+    "indicator.Parameters" not in settings,
+    "cBot must construct execution policy only from cBot-owned parameters",
 )
 
 for token in (
