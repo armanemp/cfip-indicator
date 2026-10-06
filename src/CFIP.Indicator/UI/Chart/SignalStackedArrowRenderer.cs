@@ -104,7 +104,7 @@ namespace cAlgo
                     new TextBlock
                     {
                         Text = string.Empty,
-                        Width = 20,
+                        Width = 18,
                         Height = 36,
                         FontFamily = "Segoe UI Symbol",
                         FontSize = 28,
@@ -115,7 +115,7 @@ namespace cAlgo
                         VerticalAlignment = VerticalAlignment.Center,
                         ForegroundColor = PanelTextColor,
                         TextWrapping = TextWrapping.NoWrap,
-                        Margin = new Thickness(1, 0, 1, 0)
+                        Margin = new Thickness(0, 0, 0, 0)
                     };
 
                 _signalArrowBoxArrows.Add(arrow);
