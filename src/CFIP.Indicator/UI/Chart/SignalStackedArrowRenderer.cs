@@ -9,7 +9,8 @@ namespace cAlgo
             SignalVisualSnapshot snapshot,
             int bar)
         {
-            if (snapshot == null ||
+            if (!ShowSignalArrow ||
+                snapshot == null ||
                 Bars == null ||
                 Bars.Count < 2)
             {
@@ -17,47 +18,13 @@ namespace cAlgo
                 return;
             }
 
-            int safeBar =
-                Math.Max(
-                    0,
-                    Math.Min(
-                        Bars.Count - 1,
-                        bar));
-
-            double atr =
-                Atr(
-                    Bars,
-                    Math.Max(
-                        1,
-                        Math.Min(
-                            Bars.Count - 1,
-                            safeBar)));
-
-            double offset =
-                Math.Max(
-                    Symbol.PipSize * Math.Max(0.5, MinimumArrowOffsetPips),
-                    atr * Math.Max(0.02, ArrowOffsetAtr));
-
-            if (!ShowSignalArrow)
-            {
-                RemoveStackedSignalArrows();
-                return;
-            }
-
-            RenderStackedSignalArrows(
-                snapshot,
-                safeBar,
-                offset);
+            RenderStackedSignalArrows(snapshot);
         }
 
         private void RenderStackedSignalArrows(
-            SignalVisualSnapshot snapshot,
-            int bar,
-            double offset)
+            SignalVisualSnapshot snapshot)
         {
-            if (snapshot == null ||
-                Bars == null ||
-                Bars.Count == 0)
+            if (snapshot == null)
             {
                 RemoveStackedSignalArrows();
                 return;
@@ -84,8 +51,6 @@ namespace cAlgo
                 return;
             }
 
-            // One canonical strength owner: the snapshot already contains the
-            // 9-level MTF trend result calculated for the authoritative direction.
             int strength =
                 NumericGuards.ClampInt(
                     snapshot.MtfTrendStrengthLevel,
@@ -98,10 +63,6 @@ namespace cAlgo
                 return;
             }
 
-            // MTF disagreement is a quality/conflict state, not a reason to
-            // make a valid canonical decision disappear or change direction.
-            // Keep the authoritative direction and downgrade the displayed
-            // strength to the caution band.
             if (decisionOwnsDirection &&
                 mtfDirection != 0 &&
                 mtfDirection != direction)
@@ -111,11 +72,6 @@ namespace cAlgo
 
             int arrowCount =
                 ((strength - 1) % 3) + 1;
-
-            string state =
-                string.IsNullOrWhiteSpace(snapshot.MtfTrendStrengthTier)
-                    ? "WEAK"
-                    : snapshot.MtfTrendStrengthTier;
 
             Color arrowColor =
                 SignalPresentationColorRule.Resolve(
@@ -129,49 +85,13 @@ namespace cAlgo
                     CautionSellArrowColor,
                     BlockedReactionArrowColor);
 
-            // Keep every glyph outside the candle body and ensure the visible
-            // arrow glyphs have a real vertical clearance from each other.
-            double separation =
-                Math.Max(
-                    Symbol.PipSize * 3,
-                    Math.Max(
-                        offset * 1.5,
-                        Symbol.TickSize * 8));
-
-            for (int i = 0;
-                 i < 3;
-                 i++)
-            {
-                string name =
-                    i == 0
-                        ? P + "WATCH_ARROW"
-                        : P + "WATCH_ARROW_" +
-                          (i + 1);
-
-                if (i >= arrowCount)
-                {
-                    Chart.RemoveObject(name);
-                    continue;
-                }
-
-                double price =
-                    direction == 1
-                        ? Bars.LowPrices[bar] -
-                          offset -
-                          separation * i
-                        : Bars.HighPrices[bar] +
-                          offset +
-                          separation * i;
-
-                DrawIcon(
-                    name,
-                    direction == 1
-                        ? ChartIconType.UpArrow
-                        : ChartIconType.DownArrow,
-                    bar,
-                    price,
-                    arrowColor);
-            }
+            // Directional arrows are presentation-only and now live in one
+            // fixed chart-control box. No directional glyph is drawn under
+            // candles, so there is exactly one visible arrow owner.
+            UpdateSignalArrowBox(
+                direction,
+                arrowCount,
+                arrowColor);
         }
 
         private Color SignalArrowColorFor(
@@ -197,6 +117,109 @@ namespace cAlgo
                         }
         
 
+        private void EnsureSignalArrowBox()
+        {
+            if (_signalArrowBox != null)
+                return;
+
+            _signalArrowBoxStack =
+                new StackPanel
+                {
+                    Orientation = Orientation.Horizontal,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    BackgroundColor = Color.FromArgb(0, Color.Black)
+                };
+
+            _signalArrowBoxArrows.Clear();
+
+            for (int i = 0; i < 3; i++)
+            {
+                TextBlock arrow =
+                    new TextBlock
+                    {
+                        Text = string.Empty,
+                        Width = 18,
+                        Height = 28,
+                        FontFamily = "Arial",
+                        FontSize = 22,
+                        FontWeight = FontWeight.Normal,
+                        TextAlignment = TextAlignment.Center,
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        ForegroundColor = PanelTextColor,
+                        TextWrapping = TextWrapping.NoWrap,
+                        Margin = new Thickness(1, 0, 1, 0)
+                    };
+
+                _signalArrowBoxArrows.Add(arrow);
+                _signalArrowBoxStack.AddChild(arrow);
+            }
+
+            _signalArrowBox =
+                new Border
+                {
+                    Width = 66,
+                    Height = 66,
+                    Padding = 2,
+                    BackgroundColor =
+                        Color.FromArgb(
+                            165,
+                            PanelBackground),
+                    BorderColor = PanelBorder,
+                    BorderThickness = 1,
+                    CornerRadius = Math.Max(3, PanelCornerRadius),
+                    HorizontalAlignment = HorizontalAlignment.Right,
+                    VerticalAlignment = VerticalAlignment.Bottom,
+                    Margin = new Thickness(
+                        Math.Max(8, PanelMargin),
+                        Math.Max(8, PanelMargin),
+                        Math.Max(8, PanelMargin),
+                        Math.Max(8, PanelMargin)),
+                    IsHitTestVisible = false,
+                    Child = _signalArrowBoxStack
+                };
+
+            Chart.AddControl(_signalArrowBox);
+        }
+
+        private void UpdateSignalArrowBox(
+            int direction,
+            int arrowCount,
+            Color arrowColor)
+        {
+            EnsureSignalArrowBox();
+
+            string glyph =
+                direction > 0
+                    ? "↑"
+                    : "↓";
+
+            for (int i = 0; i < _signalArrowBoxArrows.Count; i++)
+            {
+                TextBlock arrow =
+                    _signalArrowBoxArrows[i];
+
+                bool visible = i < arrowCount;
+
+                arrow.Text =
+                    visible
+                        ? glyph
+                        : string.Empty;
+
+                arrow.ForegroundColor =
+                    arrowColor;
+
+                arrow.IsVisible =
+                    visible;
+            }
+
+            _signalArrowBox.IsVisible =
+                ShowSignalArrow &&
+                direction != 0 &&
+                arrowCount > 0;
+        }
+
         private void RemoveStackedSignalArrows()
         {
             Chart.RemoveObject(
@@ -205,11 +228,17 @@ namespace cAlgo
                 P + "WATCH_ARROW_2");
             Chart.RemoveObject(
                 P + "WATCH_ARROW_3");
-
-            // Remove the pre-canonical active-plan marker as well. All
-            // directional signal states now share one arrow renderer/lifecycle.
             Chart.RemoveObject(
                 P + "ARROW");
+
+            if (_signalArrowBox != null)
+                _signalArrowBox.IsVisible = false;
+
+            for (int i = 0; i < _signalArrowBoxArrows.Count; i++)
+            {
+                _signalArrowBoxArrows[i].Text = string.Empty;
+                _signalArrowBoxArrows[i].IsVisible = false;
+            }
         }
     }
 }
