@@ -74,6 +74,7 @@ check(
 check(
     "canonical arrow renderer consumes snapshot strength only",
     "snapshot.MtfTrendStrengthLevel" in stack and
+    "snapshot.MtfTrendDirection != 0" in stack and
     "((strength - 1) % 3) + 1" in stack and
     "UpdateSignalArrowBox(" in stack and
     '"↑"' in stack and
@@ -141,6 +142,10 @@ check(
     "RenderCanonicalMtfTrendArrows(" in read("src/CFIP.Indicator/Runtime/Calculation/CalculationLiveCycle.cs") and
     "RenderStackedSignalArrows(" in stack and
     "EnsureSignalArrowBox();" in read("src/CFIP.Indicator/UI/Panel/PanelFactory.cs") and
+    "BringSignalArrowBoxToFront();" in read("src/CFIP.Indicator/UI/Panel/PanelFactory.cs") and
+    "Chart.RemoveControl(_signalArrowBox);" in stack and
+    "Chart.AddControl(_signalArrowBox);" in stack and
+    "snapshot.MtfTrendDirection != 0" in stack and
     "ResolveSignalArrowState(" not in signal and
     "fallbackState" not in stack,
 )
