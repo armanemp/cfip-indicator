@@ -215,7 +215,8 @@ namespace cAlgo
                     stage,
                     HtfRewardBonus,
                     LiquidityRewardBonus,
-                    ZoneRewardBonus);
+                    ZoneRewardBonus,
+                    candidate.Timeframe);
 
             return true;
         }
