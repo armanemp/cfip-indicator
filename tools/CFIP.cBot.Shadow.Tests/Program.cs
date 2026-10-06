@@ -409,6 +409,9 @@ namespace CFIP.cBot.Shadow.Tests
                     false,
                     false,
                     false,
+                    true,
+                    false,
+                    "PENDING CANCELLATION",
                     out _),
                 "pending cancellation remains available for safety lifecycle");
 
@@ -420,6 +423,9 @@ namespace CFIP.cBot.Shadow.Tests
                     false,
                     false,
                     false,
+                    true,
+                    true,
+                    "MANUAL SAFETY CLOSE",
                     out _),
                 "full close remains available for safety lifecycle");
 
@@ -431,6 +437,9 @@ namespace CFIP.cBot.Shadow.Tests
                     false,
                     false,
                     false,
+                    true,
+                    false,
+                    "PARTIAL TAKE PROFIT",
                     out _),
                 "partial close must be allowed only when partial TP is enabled");
 
@@ -442,6 +451,9 @@ namespace CFIP.cBot.Shadow.Tests
                     false,
                     false,
                     false,
+                    true,
+                    false,
+                    "PARTIAL TAKE PROFIT",
                     out _),
                 "partial close must fail closed when partial TP is disabled");
 
@@ -464,6 +476,9 @@ namespace CFIP.cBot.Shadow.Tests
                     false,
                     false,
                     false,
+                    true,
+                    false,
+                    "BROKER PROTECTION",
                     out _),
                 "protection mutation must fail closed when all protection controls are disabled");
 
@@ -475,6 +490,9 @@ namespace CFIP.cBot.Shadow.Tests
                     false,
                     false,
                     true,
+                    true,
+                    false,
+                    "TARGET ADVANCE",
                     out _),
                 "target advance requires live-exit management plus TP sync");
 
@@ -486,6 +504,9 @@ namespace CFIP.cBot.Shadow.Tests
                     true,
                     false,
                     true,
+                    true,
+                    false,
+                    "TARGET ADVANCE",
                     out _),
                 "target advance must fail when live-exit management is disabled");
 
@@ -508,6 +529,9 @@ namespace CFIP.cBot.Shadow.Tests
                     true,
                     true,
                     true,
+                    true,
+                    true,
+                    "UNKNOWN",
                     out _),
                 "unknown management commands must fail closed");
         }
