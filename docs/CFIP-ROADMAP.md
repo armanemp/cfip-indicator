@@ -854,3 +854,10 @@ No trading threshold, MTF role, broker mutation authority or strategy quality ga
 - cBot realtime timer deduplication is now scenario-scoped and bounded instead of using one global last-scenario tuple, so concurrent scenarios do not reprocess each other at the same revision.
 - Provider execution-intent capture is reset before each live pending evaluation, preventing an older M5 intent from being reused after current actionability changes.
 - Automated gates must remain green before merge; target-terminal validation remains required for final visual/broker confirmation.
+
+
+## 2026-10-07 — Batch 03 structure/zone evidence defect
+- Structure/OB/FVG/Liquidity/Reaction audit completed.
+- Fixed directional evidence inflation in `MarketFrameScoringService`: opposing evidence is no longer counted toward the selected direction's Evidence/quality.
+- Remaining architecture task: unify structural/liquidity/zone provenance and migrate predictive pending candidate scoring to canonical evidence owners.
+- Acceptance gate: `tools/audit_phase_structure_zones_reaction_2026_10_07.py`.
