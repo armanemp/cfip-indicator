@@ -35,25 +35,31 @@ namespace CFIP.cBot.Execution
 
             if (!settings.EnableAutoTrading)
             {
-                reason = "AUTO TRADING DISABLED IN INDICATOR";
+                reason = "CBOT AUTO TRADING DISABLED";
                 return false;
             }
 
             if (pendingAction &&
                 !settings.EnableAutomaticOrders)
             {
-                reason = "AUTOMATIC ORDERS DISABLED IN INDICATOR";
+                reason = "CBOT AUTOMATIC ORDERS DISABLED";
                 return false;
             }
 
-            if (settings.UseMarketHoursGuard &&
-                !IsInsideSession(
-                    nowUtc,
-                    settings.SessionStartUtc,
-                    settings.SessionEndUtc))
+            if (settings.UseMarketHoursGuard)
             {
-                reason = "OUTSIDE CONFIGURED MARKET HOURS";
-                return false;
+                if (robot.Symbol == null ||
+                    robot.Symbol.MarketHours == null)
+                {
+                    reason = "SYMBOL MARKET HOURS UNAVAILABLE";
+                    return false;
+                }
+
+                if (!robot.Symbol.MarketHours.IsOpened(nowUtc))
+                {
+                    reason = "SYMBOL MARKET CLOSED";
+                    return false;
+                }
             }
 
             if (dailyLossGuard.IsBlocked(
@@ -240,34 +246,6 @@ namespace CFIP.cBot.Execution
             return marker > 0
                 ? executionLabel.Substring(0, marker)
                 : executionLabel;
-        }
-
-        private static bool IsInsideSession(
-            DateTime utc,
-            int startHour,
-            int endHour)
-        {
-            DateTime reference =
-                utc.Kind == DateTimeKind.Utc
-                    ? utc
-                    : utc.ToUniversalTime();
-
-            int start =
-                Math.Max(0, Math.Min(23, startHour)) * 60;
-
-            int end =
-                Math.Max(0, Math.Min(23, endHour)) * 60;
-
-            int now =
-                reference.Hour * 60 +
-                reference.Minute;
-
-            if (start == end)
-                return true;
-
-            return start < end
-                ? now >= start && now < end
-                : now >= start || now < end;
         }
 
         private static bool FinitePositive(double value)
