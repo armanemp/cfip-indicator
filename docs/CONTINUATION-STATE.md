@@ -1056,7 +1056,7 @@ Manual boundary remains target-terminal WaveTrend numerical parity, intrabar tim
 
 **Next phase after CI-08 verification: CI-09 — Decision engine mathematical audit.**
 
-Repository verification for CI-08: Source/Architecture #2545 PASS; Runtime #2354 PASS; cTrader Compile #2538 PASS; PR #163 merged with `8b82074ad5bff8a2a9e3ccdd626f4ca5afb61874`.
+Repository verification for CI-08: Source/Architecture #2543 PASS; Runtime #2354 PASS; cTrader Compile #2538 PASS; PR #163 merged with `8b82074ad5bff8a2a9e3ccdd626f4ca5afb61874`.
 
 ### Historical remediation closeouts
 
@@ -1782,8 +1782,8 @@ CR5.8 / E8 is verified complete. Final implementation head was
 `51e1f2bc9ecdd12bc8a366630fb225a4fa2c5593`.
 
 Verification:
-- Source / Architecture: PASS — run `36844545898` / workflow #2160.
-- Runtime Acceptance Contracts: PASS — run `36844545976` / workflow #1969.
+- Source / Architecture: PASS — run `36844543898` / workflow #2160.
+- Runtime Acceptance Contracts: PASS — run `36844543976` / workflow #1969.
 - cTrader Compile: PASS — run `36844546002` / workflow #2153.
 
 Completed hardening included canonical required-RR ownership, monotonic TP-stage
@@ -2666,7 +2666,7 @@ No strategy, signal threshold, MTF role, M2 path, broker mutation, cBot authorit
 Final closure requires the F1 branch's Source/Architecture, Runtime Acceptance and cTrader Compile workflows to pass. Target-terminal verification is not a required boundary for F1.
 
 
-- F1 also removed three dead public display parameters with no production consumer; current public parameter inventory is 545. No replacement UI path was introduced.
+- F1 also removed three dead public display parameters with no production consumer; current public parameter inventory is 543. No replacement UI path was introduced.
 
 ## F2 — Single-Owner / No-Duality / Dead-Code Closure — 2026-10-04
 
