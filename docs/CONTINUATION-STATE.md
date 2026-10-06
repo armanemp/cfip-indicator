@@ -2847,9 +2847,11 @@ Required terminal evidence before closeout:
 ## 2026-10-06 — UI footer ownership and signal-quality continuation lock
 
 - [x] Footer construction extracted from PanelFactory into PanelFooterFactory to satisfy production-module size limits without creating a second footer behavior owner.
-- [x] Footer data controls remain native Border controls for M1/M5/M15/H1/H4 and continue to use the existing PanelAlertMessageRenderer data-level/color owner.
+- [x] Replaced the ambiguous five mini data bars with two stacked full-width BUY/SELL pressure tracks owned and rendered by PanelFooterFactory.
+- [x] BUY/SELL pressure uses the closed M15 bar window and cTrader TickVolumes with close-location weighting; it is a pressure estimate, not true bid/ask volume.
+- [x] Footer geometry reserves the pressure rail independently from the alert/action area so it cannot disappear when the toggle or alert rail is absent.
 - [x] Architecture parameter contract reconciled: total parameter groups remain 543 declarations, with 540 non-OSS baseline declarations after removal of obsolete arrow offset parameters.
-- [ ] PR #361 repository gates must all pass on the final head before merge.
+- [x] PR #361 repository gates passed on the final pre-merge head and the merged main was re-verified.
 - [ ] Target-terminal visual acceptance remains mandatory; repository CI never counts as visual proof.
 
 Next analytical work unit is the full signal-quality chain audit: MTF evidence fusion → direction acceptance → decision lifecycle → M5 trigger → optional M1 precision → actionability → canonical visual snapshot → AlertEngine → cBot signal transport. The objective is earlier causal recognition, stronger qualified signals, and anti-flapping revision semantics without weakening broker safety.
