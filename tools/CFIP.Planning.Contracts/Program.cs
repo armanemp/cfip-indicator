@@ -451,8 +451,46 @@ namespace cAlgo
                     false),
                 "non-HTF TP4 remains bounded by the original extension ceiling");
 
+            double m15RewardScore =
+                TargetCandidateRewardScoreRule.Calculate(
+                    75,
+                    6.50,
+                    4.80,
+                    1.0,
+                    6.5,
+                    true,
+                    false,
+                    true,
+                    3,
+                    1,
+                    22,
+                    14,
+                    10,
+                    "M15");
+
+            double w1RewardScore =
+                TargetCandidateRewardScoreRule.Calculate(
+                    75,
+                    6.50,
+                    4.80,
+                    1.0,
+                    6.5,
+                    true,
+                    false,
+                    true,
+                    3,
+                    1,
+                    22,
+                    14,
+                    10,
+                    "W1");
+
+            Assert(
+                w1RewardScore > m15RewardScore,
+                "later target stages prefer deeper HTF sources when quality is otherwise equal");
+
             Console.WriteLine(
-                "Adaptive micro-SL / HTF reward envelope contracts: safety floors, spread protection and TP4 reachability passed");
+                "Adaptive micro-SL / HTF reward envelope contracts: safety floors, spread protection, TP4 reachability and HTF depth preference passed");
         }
 
         private static void VerifyTargetSelectionConsistency()
