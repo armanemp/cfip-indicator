@@ -114,7 +114,10 @@ namespace cAlgo
                         Math.Max(
                             15,
                             PendingOrderExpiryMinutes))
-                    : (DateTime?)null;
+                    : action == ExecutionAction.Market ||
+                      action == ExecutionAction.Aggressive
+                        ? observedUtc.AddSeconds(15)
+                        : (DateTime?)null;
 
             ContractIdentity identity =
                 new ContractIdentity(
