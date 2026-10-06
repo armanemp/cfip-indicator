@@ -233,9 +233,6 @@ namespace cAlgo
                 
                             Chart.RemoveObject(
                                 P + "SWEEP_MARKER");
-                            Chart.RemoveObject(
-                                P + "M1_TRIGGER");
-
                         }
         
         private bool SamePrice(
