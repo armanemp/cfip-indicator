@@ -31,6 +31,7 @@ live_exit = read("src/CFIP.Indicator/Core/Math/LiveExitGeometryRule.cs")
 target_envelope = read("src/CFIP.Indicator/Core/Math/TargetRewardEnvelopeRule.cs")
 target_preparation = read("src/CFIP.Indicator/Planning/TradePlan/PlanTargetPreparation.cs")
 plan_reward = read("src/CFIP.Indicator/Planning/TradePlan/PlanRewardIntegrityValidator.cs")
+plan_market = read("src/CFIP.Indicator/Planning/TradePlan/PlanMarketConstraintValidator.cs")
 actionability = read("src/CFIP.Indicator/Trading/Validation/TradeActionabilityEvaluator.cs")
 auto_pretrade = read("src/CFIP.Indicator/Trading/Execution/AutomaticMarket/AutomaticMarketPreTradeEligibility.cs")
 auto_submission = read("src/CFIP.Indicator/Trading/Execution/AutomaticMarket/AutomaticMarketSubmissionValidator.cs")
@@ -234,6 +235,15 @@ check(
     "Symbol.PipSize" in structural_stop,
 )
 
+check(
+    "TP2+ HTF reward gate does not reject TP1-only plans",
+    "bool hasTp2Plus" in plan_reward and
+    "plan.Tp2 > 0" in plan_reward and
+    "plan.Tp3 > 0" in plan_reward and
+    "plan.Tp4 > 0" in plan_reward and
+    "hasTp2Plus &&" in plan_reward
+)
+
 workflow = WORKFLOW.read_text(encoding="utf-8")
 check(
     "CI-14 audit is wired into accumulated Source/Architecture gate",
@@ -292,6 +302,12 @@ for relative, source, forbidden in (
             f"{relative} still contains duplicated RR formula: {pattern}",
             pattern not in source,
         )
+
+check(
+    "plan market constraints fail closed on unknown TP1 smart-target quality",
+    "MinimumSmartTargetQualityForTp1 > 0" in plan_market and
+    "plan.Tp1Quality <= 0" in plan_market
+)
 
 if errors:
     for error in errors:

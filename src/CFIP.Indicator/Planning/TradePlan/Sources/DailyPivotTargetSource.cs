@@ -31,11 +31,11 @@ namespace cAlgo
                                             if (index <= 0)
                                                 return;
                                 
-                                            int previous = index - 1;
+                                            int closedIndex = index;
                                 
-                                            double high = _d1Bars.HighPrices[previous];
-                                            double low = _d1Bars.LowPrices[previous];
-                                            double close = _d1Bars.ClosePrices[previous];
+                                            double high = _d1Bars.HighPrices[closedIndex];
+                                            double low = _d1Bars.LowPrices[closedIndex];
+                                            double close = _d1Bars.ClosePrices[closedIndex];
                                 
                                             if (high <= low ||
                                                 !IsFinitePositive(close))
@@ -58,7 +58,7 @@ namespace cAlgo
 
                                             double sourceAgeMinutes =
                                                 TargetAgeSemanticsRule.ElapsedMinutes(
-                                                    _d1Bars.OpenTimes[previous],
+                                                    _d1Bars.OpenTimes[closedIndex],
                                                     reference);
                                 
                                             AddLevel(levels, pivot, "PIVOT", "D1", 1, weight, sourceAgeMinutes);

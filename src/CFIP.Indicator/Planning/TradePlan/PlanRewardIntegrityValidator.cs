@@ -239,7 +239,13 @@ namespace cAlgo
                     plan.Tp1Source))
                 return RejectPlanRewardStructure("TP1 HTF SOURCE REQUIRED");
 
+            bool hasTp2Plus =
+                plan.Tp2 > 0 ||
+                plan.Tp3 > 0 ||
+                plan.Tp4 > 0;
+
             if (RequireHtfRewardForTp2Plus &&
+                hasTp2Plus &&
                 plan.HtfTargetCount <= 0)
                 return RejectPlanRewardStructure("HTF TARGET REQUIRED");
 

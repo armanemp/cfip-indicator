@@ -70,9 +70,10 @@ namespace cAlgo
             }
 
             if (MinimumSmartTargetQualityForTp1 > 0 &&
-                plan.Tp1Quality > 0 &&
-                plan.Tp1Quality <
-                MinimumSmartTargetQualityForTp1)
+                (!double.IsFinite(plan.Tp1Quality) ||
+                 plan.Tp1Quality <= 0 ||
+                 plan.Tp1Quality <
+                 MinimumSmartTargetQualityForTp1))
                 return false;
 
             return true;
