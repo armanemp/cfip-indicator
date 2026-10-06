@@ -11,8 +11,8 @@ namespace CFIP.cBot.Execution
             bool autoBrokerProtection,
             bool autoProtectBrokerPositions,
             bool syncBrokerTakeProfit,
-            bool cancelCfipPendingBeforeHighImpactNews,
-            bool protectCfipPositionBeforeHighImpactNews,
+            bool cancelPendingBeforeHighImpactNews,
+            bool closeActiveBeforeHighImpactNews,
             string commandReason,
             out string reason)
         {
@@ -22,7 +22,7 @@ namespace CFIP.cBot.Execution
             {
                 case ManagementCommandType.CancelPending:
                     if (IsHighImpactNews(commandReason) &&
-                        !cancelCfipPendingBeforeHighImpactNews)
+                        !cancelPendingBeforeHighImpactNews)
                     {
                         reason = "NEWS PENDING CANCELLATION DISABLED";
                         return false;
@@ -31,7 +31,7 @@ namespace CFIP.cBot.Execution
 
                 case ManagementCommandType.FullClose:
                     if (IsHighImpactNews(commandReason) &&
-                        !protectCfipPositionBeforeHighImpactNews)
+                        !closeActiveBeforeHighImpactNews)
                     {
                         reason = "NEWS POSITION PROTECTION DISABLED";
                         return false;
