@@ -250,6 +250,8 @@ namespace cAlgo
                                         _buttonStack = null;
                                         _panelFooterActions = null;
                                         _panelFlowPressureRail = null;
+                                        _panelBuyPressureRow = null;
+                                        _panelSellPressureRow = null;
                                         _panelBuyPressureTrack = null;
                                         _panelSellPressureTrack = null;
                                         _panelBuyPressureFill = null;
