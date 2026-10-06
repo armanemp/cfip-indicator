@@ -684,3 +684,44 @@
 - [ ] consensus hysteresis / anti-flip contract
 - [ ] family-level vote matrix test for all OSS + native indicators
 - [ ] numerical benchmark for score/consensus across regimes
+
+## 13. ممیزی عمیق — Batch 02 (M15 Anchor / HTF / Agreement)
+
+### 13.1 یافته قطعی
+ممیزی مسیر تصمیم نشان داد مشکل فقط «تعداد رأی» نیست؛ دو مشکل واقعی در لایه تجمیع وجود داشت:
+
+1. `TimeframeAgreement` فریم neutral را از مخرج حذف می‌کرد. در نتیجه اگر فقط یک فریم جهت‌دار باقی می‌ماند، agreement می‌توانست 100% گزارش شود بدون اینکه واقعاً تمام فریم‌های معتبر هم‌جهت باشند.
+2. `HigherTimeframeConfidencePenalty` برای هر مخالفت تقریباً ثابت بود و کیفیت/وزن H1/H4/D1 را لحاظ نمی‌کرد؛ بنابراین یک HTF ضعیف و چند HTF قوی می‌توانست اثر مشابهی داشته باشند.
+
+### 13.2 اصلاحات اعمال‌شده
+- `TimeframeAgreementAnalyzer` اکنون هر فریم معتبر و هم‌تراز را در denominator نگه می‌دارد؛ neutral رأی مخالف نیست ولی alignment مثبت هم نیست.
+- `HigherTimeframePenaltyCalculator` اکنون opposition را بر اساس `frame.Quality × timeframeWeight` محاسبه می‌کند و penalty متناسب با نسبت مخالفت اعمال می‌شود.
+- W1 در صورت فعال بودن `SmartWeeklyContext` نیز در همین مدل لحاظ می‌شود.
+- این penalty همچنان **direction owner نیست**؛ فقط confidence را کاهش می‌دهد. مالک direction همان consensus است و top-down/confirmation gates مالک permission نهایی هستند.
+- CI-09 نیز برای این قراردادها به‌روزرسانی شد.
+
+### 13.3 M15 Anchor
+بررسی کل مسیر نشان داد M15 از قبل در چند owner نهایی حضور دارد:
+- `RequireCoreAgreement`، M5 را با M15 هم‌راستا می‌کند.
+- `TriggerGate` و `PendingOrderPolicy` نیز M15 compatibility/alignment را الزام می‌کنند.
+- `DirectionAcceptanceGate` برای reversal مخالف، M15 direction + structural/force confirmation را بررسی می‌کند.
+
+بنابراین در این batch یک رأی یا score دوم برای M15 اضافه نشد؛ چنین کاری با اصل single-owner تضاد ایجاد می‌کرد. اصلاح بعدی باید **M15 را به‌عنوان anchor permission** در همان top-down/confirmation owner تقویت کند، نه اینکه M15 را دوباره به score اضافه کند.
+
+### 13.4 نتیجه معماری رأی
+مدل canonical فعلی باید حفظ شود:
+`Indicator Evidence → Family Normalization → Frame Contribution → Direction Consensus → Top-Down Permission → Confirmation → Actionability`
+
+و نه:
+`Indicator → Indicator → Indicator → raw vote count`.
+
+### 13.5 Batch 02 وضعیت
+- [x] Neutral timeframe denominator bug fixed
+- [x] HTF penalty quality/weight-aware شد
+- [x] W1 opposition در penalty لحاظ شد
+- [x] M15 duplicate vote ایجاد نشد
+- [x] CI-09 contract update
+- [ ] Anti-flip hysteresis contract در decision lifecycle
+- [ ] Family-level vote matrix برای تمام native/OSS indicators
+- [ ] Structure/OB/FVG evidence audit
+- [ ] Flow/DOM/aggressive-flow evidence audit
