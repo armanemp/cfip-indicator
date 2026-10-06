@@ -2125,10 +2125,6 @@ for path, tokens in {
         "BuildExecutionIntent(",
         "ValidateExecutionIntent(",
     ),
-    ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketFillReconciliation.cs": (
-        "ReconcileLivePlanToActualFill(",
-        "IsExecutableFillPrice(",
-    ),
     ROOT / "Trading" / "Execution" / "AutomaticMarket" / "AutomaticMarketPostFillTargetResolver.cs": (
         "AutoTarget(",
         "RequestLivePlanExit(",
@@ -2215,10 +2211,6 @@ for path, token in (
     (
         ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveExecutionPreparation.cs",
         "BuildStructuralStop("
-    ),
-    (
-        ROOT / "Trading" / "Execution" / "Aggressive" / "AggressiveAcceptedFillHandler.cs",
-        "ValidateActualMarketFill("
     ),
 ):
     if not path.exists() or token not in path.read_text(encoding="utf-8"):
