@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using cAlgo.API;
+using cAlgo.API.Internals;
 
 namespace cAlgo
 {
