@@ -10,6 +10,23 @@ namespace cAlgo
             double temperature,
             int minimumDirectionShare)
         {
+            return Calculate(
+                buy,
+                sell,
+                temperature,
+                minimumDirectionShare,
+                0,
+                0);
+        }
+
+        public DecisionConsensusSnapshot Calculate(
+            double buy,
+            double sell,
+            double temperature,
+            int minimumDirectionShare,
+            double eligibleFrameWeight,
+            double directionalFrameWeight)
+        {
             // Consensus is a bounded mathematical boundary. Invalid inputs
             // fail closed to a neutral state instead of allowing NaN/Infinity
             // to leak into direction selection.
@@ -18,15 +35,29 @@ namespace cAlgo
                 !NumericGuards.IsFiniteValue(temperature) ||
                 temperature <= 0)
             {
-                return new DecisionConsensusSnapshot(
-                    50,
-                    50,
+                return CreateSnapshot(
                     0,
-                    0);
+                    0,
+                    0,
+                    0,
+                    0,
+                    eligibleFrameWeight,
+                    directionalFrameWeight);
             }
 
-            double t = Math.Max(1.0, temperature);
-            double centered = (buy - sell) / t;
+            double safeBuy =
+                Math.Max(0, buy);
+            double safeSell =
+                Math.Max(0, sell);
+
+            double t =
+                Math.Max(
+                    1.0,
+                    temperature);
+
+            double centered =
+                (safeBuy - safeSell) /
+                t;
 
             double expBuy =
                 Math.Exp(
@@ -43,7 +74,9 @@ namespace cAlgo
                         12));
 
             double total =
-                Math.Max(1e-9, expBuy + expSell);
+                Math.Max(
+                    1e-9,
+                    expBuy + expSell);
 
             int buyShare =
                 NumericGuards.ClampInt(
@@ -52,8 +85,15 @@ namespace cAlgo
                     0,
                     100);
 
-            int sellShare = 100 - buyShare;
-            int strongest = Math.Max(buyShare, sellShare);
+            int sellShare =
+                100 -
+                buyShare;
+
+            int strongest =
+                Math.Max(
+                    buyShare,
+                    sellShare);
+
             int directionThreshold =
                 Math.Max(
                     50,
@@ -70,11 +110,71 @@ namespace cAlgo
                         ? -1
                         : 0;
 
+            int edge =
+                Math.Abs(
+                    buyShare -
+                    sellShare);
+
+            return CreateSnapshot(
+                buyShare,
+                sellShare,
+                direction,
+                edge,
+                safeBuy,
+                safeSell,
+                safeBuy + safeSell,
+                eligibleFrameWeight,
+                directionalFrameWeight);
+        }
+
+        private static DecisionConsensusSnapshot CreateSnapshot(
+            int buyShare,
+            int sellShare,
+            int direction,
+            int edge,
+            double buyScore,
+            double sellScore,
+            double totalScore,
+            double eligibleFrameWeight,
+            double directionalFrameWeight)
+        {
+            double coverage =
+                eligibleFrameWeight > 0
+                    ? NumericGuards.ClampDouble(
+                        100.0 *
+                        Math.Max(
+                            0,
+                            directionalFrameWeight) /
+                        eligibleFrameWeight,
+                        0,
+                        100)
+                    : 0;
+
+            int coveragePercent =
+                NumericGuards.ClampInt(
+                    (int)Math.Round(coverage),
+                    0,
+                    100);
+
+            int confidence =
+                NumericGuards.ClampInt(
+                    (int)Math.Round(
+                        edge *
+                        coveragePercent /
+                        100.0),
+                    0,
+                    100);
+
             return new DecisionConsensusSnapshot(
                 buyShare,
                 sellShare,
                 direction,
-                Math.Abs(buyShare - sellShare));
+                edge,
+                buyScore,
+                sellScore,
+                totalScore,
+                coveragePercent,
+                confidence);
         }
     }
 }
