@@ -46,7 +46,7 @@ namespace cAlgo
                                                         CreatePanelAlertMessageRail();
 
                                                     UpdatePanelAlertMessageRail();
-                                                    UpdatePanelDataStatusRail();
+                                                    UpdatePanelFlowPressureRail();
 
                 
                                                     DateTime now =
