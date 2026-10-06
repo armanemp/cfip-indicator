@@ -73,11 +73,22 @@ check(
 )
 
 check(
-    "OSS quote-volume normalization has one pure owner",
+    "OSS quote projection has one pure numeric owner",
     "class OssQuoteProjectionRule" in projection_rule
+    and "TryNormalizePrice(" in projection_rule
     and "NormalizeVolume(" in projection_rule
     and "double.IsNaN(volume)" in projection_rule
     and "double.IsInfinity(volume)" in projection_rule
+    and "double.IsNaN(price)" in projection_rule
+    and "double.IsInfinity(price)" in projection_rule
+)
+
+check(
+    "OSS cache rejects invalid source OHLC before decimal projection",
+    "TryCreateQuote(" in cache
+    and "OssQuoteProjectionRule.TryNormalizePrice(" in cache
+    and "normalizedOpen < normalizedLow" in cache
+    and "normalizedClose > normalizedHigh" in cache
 )
 
 check(
