@@ -62,8 +62,16 @@ namespace cAlgo
                 double.IsInfinity(extensionRR))
                 return 0;
 
+            double safeMaximumRewardRR =
+                double.IsNaN(maximumRewardRR) ||
+                double.IsInfinity(maximumRewardRR)
+                    ? 0
+                    : Math.Max(
+                        0,
+                        maximumRewardRR);
+
             return Math.Min(
-                Math.Max(0, maximumRewardRR),
+                safeMaximumRewardRR,
                 extensionRR);
         }
 
