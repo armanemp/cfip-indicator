@@ -274,8 +274,7 @@ namespace cAlgo
 
                 private DateTime _lastRestrictionAlertUtc = DateTime.MinValue;
                 private int _lastPendingCleanupM5 = -1;
-                private int _lastAutoTradingReminderM5 = -1;
-                private int _lastVisualDirection = 0;
+                        private int _lastVisualDirection = 0;
                 private string _lastAlertMessage = "";
                 private int _lastAlertDirection;
                 private bool _lastAlertCritical;
