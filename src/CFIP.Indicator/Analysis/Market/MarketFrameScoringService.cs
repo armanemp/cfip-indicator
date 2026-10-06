@@ -32,7 +32,8 @@ namespace cAlgo
 
             int bull = 0;
             int bear = 0;
-            int evidence = 0;
+            int bullEvidence = 0;
+            int bearEvidence = 0;
 
             // Structure, MSS and CHOCH can describe the same causal break.
             // Count one structural event only, preserving the strongest applicable
@@ -43,11 +44,11 @@ namespace cAlgo
                     f.ChochBull))
             {
                 if (f.StructureBull)
-                    AddScore(true, FrameScoringConstants.StructureContribution, ref bull, ref evidence);
+                    AddScore(true, FrameScoringConstants.StructureContribution, ref bull, ref bullEvidence);
                 else if (f.MssBull)
-                    AddScore(true, FrameScoringConstants.MssContribution, ref bull, ref evidence);
+                    AddScore(true, FrameScoringConstants.MssContribution, ref bull, ref bullEvidence);
                 else
-                    AddScore(true, FrameScoringConstants.ChochContribution, ref bull, ref evidence);
+                    AddScore(true, FrameScoringConstants.ChochContribution, ref bull, ref bullEvidence);
             }
 
             if (StructuralEvidenceRule.HasCanonicalStructuralEvent(
@@ -56,16 +57,16 @@ namespace cAlgo
                     f.ChochBear))
             {
                 if (f.StructureBear)
-                    AddScore(true, FrameScoringConstants.StructureContribution, ref bear, ref evidence);
+                    AddScore(true, FrameScoringConstants.StructureContribution, ref bear, ref bearEvidence);
                 else if (f.MssBear)
-                    AddScore(true, FrameScoringConstants.MssContribution, ref bear, ref evidence);
+                    AddScore(true, FrameScoringConstants.MssContribution, ref bear, ref bearEvidence);
                 else
-                    AddScore(true, FrameScoringConstants.ChochContribution, ref bear, ref evidence);
+                    AddScore(true, FrameScoringConstants.ChochContribution, ref bear, ref bearEvidence);
             }
-            AddScore(f.DisplacementBull, FrameScoringConstants.DisplacementContribution, ref bull, ref evidence);
-            AddScore(f.DisplacementBear, FrameScoringConstants.DisplacementContribution, ref bear, ref evidence);
-            AddScore(f.LiquidityBull, FrameScoringConstants.LiquidityContribution, ref bull, ref evidence);
-            AddScore(f.LiquidityBear, FrameScoringConstants.LiquidityContribution, ref bear, ref evidence);
+            AddScore(f.DisplacementBull, FrameScoringConstants.DisplacementContribution, ref bull, ref bullEvidence);
+            AddScore(f.DisplacementBear, FrameScoringConstants.DisplacementContribution, ref bear, ref bearEvidence);
+            AddScore(f.LiquidityBull, FrameScoringConstants.LiquidityContribution, ref bull, ref bullEvidence);
+            AddScore(f.LiquidityBear, FrameScoringConstants.LiquidityContribution, ref bear, ref bearEvidence);
             LocationEvidenceScore bullLocation =
                 LocationEvidenceRule.Evaluate(
                     f.FvgBull,
@@ -97,9 +98,8 @@ namespace cAlgo
             bear +=
                 bearLocation.Score;
 
-            evidence +=
-                bullLocation.Evidence +
-                bearLocation.Evidence;
+            bullEvidence += bullLocation.Evidence;
+            bearEvidence += bearLocation.Evidence;
 
             AddScore(
                 f.EqualLow,
@@ -176,6 +176,17 @@ namespace cAlgo
 
             f.BullScore = bull;
             f.BearScore = bear;
+
+            // Evidence is directional support for the winning side, not the
+            // sum of mutually opposing observations. Counting both sides
+            // inflated quality/confidence during structural/location conflict.
+            int evidence =
+                bull > bear
+                    ? bullEvidence
+                    : bear > bull
+                        ? bearEvidence
+                        : 0;
+
             f.Evidence = evidence;
 
             if (bull >= FrameScoringConstants.DirectionMinimumScore &&
