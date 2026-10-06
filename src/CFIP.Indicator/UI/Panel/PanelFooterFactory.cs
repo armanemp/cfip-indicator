@@ -20,6 +20,14 @@ namespace cAlgo
         private Border _panelSellPressureFill;
         private TextBlock _panelBuyPressureLabel;
         private TextBlock _panelSellPressureLabel;
+        private StackPanel _panelBuyFlowRow;
+        private StackPanel _panelSellFlowRow;
+        private Border _panelBuyFlowTrack;
+        private Border _panelSellFlowTrack;
+        private Border _panelBuyFlowFill;
+        private Border _panelSellFlowFill;
+        private TextBlock _panelBuyFlowLabel;
+        private TextBlock _panelSellFlowLabel;
 
         private void CreatePanelFooter()
         {
@@ -50,8 +58,26 @@ namespace cAlgo
                     out _panelSellPressureFill,
                     out _panelSellPressureLabel);
 
+            _panelBuyFlowRow =
+                CreateFlowPressureRow(
+                    "AGG BUY TICKS",
+                    BuyArrowColor,
+                    out _panelBuyFlowTrack,
+                    out _panelBuyFlowFill,
+                    out _panelBuyFlowLabel);
+
+            _panelSellFlowRow =
+                CreateFlowPressureRow(
+                    "AGG SELL TICKS",
+                    SellArrowColor,
+                    out _panelSellFlowTrack,
+                    out _panelSellFlowFill,
+                    out _panelSellFlowLabel);
+
             _panelFlowPressureRail.AddChild(_panelBuyPressureRow);
             _panelFlowPressureRail.AddChild(_panelSellPressureRow);
+            _panelFlowPressureRail.AddChild(_panelBuyFlowRow);
+            _panelFlowPressureRail.AddChild(_panelSellFlowRow);
 
             _panelFooterActions =
                 new StackPanel
@@ -178,6 +204,8 @@ namespace cAlgo
                 _panelSellPressureFill == null ||
                 _panelBuyPressureLabel == null ||
                 _panelSellPressureLabel == null ||
+                _panelBuyFlowRow == null ||
+                _panelSellFlowRow == null ||
                 _panelBuyFlowTrack == null ||
                 _panelSellFlowTrack == null ||
                 _panelBuyFlowFill == null ||
@@ -199,6 +227,8 @@ namespace cAlgo
 
             _panelBuyPressureRow.Width = contentWidth;
             _panelSellPressureRow.Width = contentWidth;
+            _panelBuyFlowRow.Width = contentWidth;
+            _panelSellFlowRow.Width = contentWidth;
             _panelBuyFlowTrack.Width = contentWidth;
             _panelSellFlowTrack.Width = contentWidth;
             _panelBuyFlowLabel.Width = contentWidth;
