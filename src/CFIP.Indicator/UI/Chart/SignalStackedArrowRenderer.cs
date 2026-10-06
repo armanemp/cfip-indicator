@@ -36,19 +36,12 @@ namespace cAlgo
             }
 
             int direction =
-                snapshot.AuthoritativeDirection != 0
-                    ? snapshot.AuthoritativeDirection
-                    : snapshot.MtfTrendDirection;
+                snapshot.MtfTrendDirection != 0
+                    ? snapshot.MtfTrendDirection
+                    : snapshot.AuthoritativeDirection;
 
             int mtfDirection =
                 snapshot.MtfTrendDirection;
-
-            bool decisionOwnsDirection =
-                snapshot.PlanActive ||
-                snapshot.ActionableNow ||
-                snapshot.DecisionEntryAllowed ||
-                snapshot.DecisionDirection != 0 ||
-                snapshot.PlanDirection != 0;
 
             if (direction == 0)
             {
@@ -68,13 +61,6 @@ namespace cAlgo
                 return;
             }
 
-            if (decisionOwnsDirection &&
-                mtfDirection != 0 &&
-                mtfDirection != direction)
-            {
-                strength = Math.Min(3, strength);
-            }
-
             int arrowCount =
                 ((strength - 1) % 3) + 1;
 
@@ -90,9 +76,9 @@ namespace cAlgo
                     CautionSellArrowColor,
                     BlockedReactionArrowColor);
 
-            // Directional arrows are presentation-only and now live in one
-            // fixed chart-control box. No directional glyph is drawn under
-            // candles, so there is exactly one visible arrow owner.
+            // Directional arrows are presentation-only and use the same
+            // canonical MTF trend direction/strength snapshot as the trend
+            // presentation. Decision/plan state remains separate evidence.
             UpdateSignalArrowBox(
                 direction,
                 arrowCount,
@@ -166,6 +152,24 @@ namespace cAlgo
                 };
 
             Chart.AddControl(_signalArrowBox);
+        }
+
+        private void BringSignalArrowBoxToFront()
+        {
+            if (_signalArrowBox == null)
+                return;
+
+            try
+            {
+                Chart.RemoveControl(_signalArrowBox);
+                Chart.AddControl(_signalArrowBox);
+            }
+            catch (Exception ex)
+            {
+                Print(
+                    "CFIP signal arrow overlay reorder failed: {0}",
+                    ex.Message);
+            }
         }
 
         private void UpdateSignalArrowBox(
