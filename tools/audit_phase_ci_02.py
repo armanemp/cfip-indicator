@@ -133,6 +133,16 @@ for filename, expected in rolling_adapters.items():
         expected in source,
     )
 
+all_adapters = list(stable_adapters) + list(rolling_adapters)
+for filename in all_adapters:
+    source = read("src/CFIP.Indicator/Analysis/Indicators/External/" + filename)
+    check(
+        f"{filename} preserves unavailable values as NaN",
+        "return double.NaN" in source
+        and "?? 0" not in source
+        and "?? 50" not in source,
+    )
+
 check(
     "recursive stable adapters avoid per-call result materialization",
     all(
