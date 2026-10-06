@@ -77,8 +77,9 @@ check(
 check(
     "panel rail uses semantic direction/priority colors",
     "if (delivery.Critical)" in rail and
-    "return BuyArrowColor;" in rail and
-    "return SellArrowColor;" in rail,
+    "SignalPresentationColorPolicy.Resolve(" in rail and
+    "return BuyArrowColor;" not in rail and
+    "return SellArrowColor;" not in rail,
 )
 check(
     "new alert revisions invalidate panel presentation without a timer flood",
