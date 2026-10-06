@@ -119,6 +119,7 @@ namespace cAlgo
                 _panelStack == null ||
                 _panelScroll == null ||
                 _buttonStack == null ||
+                _panelFooterActions == null ||
                 _panelAlertMessageStack == null)
                 return;
 
@@ -182,6 +183,12 @@ namespace cAlgo
                 _panelStack.Height = panelHeight;
                 _panel.Height = panelHeight;
                 _buttonStack.Height = footerAreaHeight;
+                _panelFooterActions.Height =
+                    Math.Max(
+                        24,
+                        footerAreaHeight -
+                        PanelDataStatusRowHeight -
+                        PanelFooterActionGap);
 
                 _buttonStack.IsVisible =
                     ShowPanelToggleButton ||
@@ -331,6 +338,16 @@ namespace cAlgo
                     ? toggleWidth + gap
                     : 0);
 
+            _panelFooterActions.Width =
+                Math.Max(1, contentWidth);
+
+            _panelFooterActions.Height =
+                Math.Max(
+                    24,
+                    PanelFooterMinHeight -
+                    PanelDataStatusRowHeight -
+                    PanelFooterActionGap);
+
             _panelAlertMessageStack.Width =
                 Math.Max(
                     120,
@@ -367,6 +384,144 @@ namespace cAlgo
             }
 
             UpdatePanelAlertMessageRail();
+            UpdatePanelDataStatusRail();
+        }
+
+        private void UpdatePanelDataStatusRail()
+        {
+            if (_panelDataStatusText == null)
+                return;
+
+            _panelDataStatusText.FontFamily =
+                string.IsNullOrWhiteSpace(PanelFontFamily)
+                    ? "Arial"
+                    : PanelFontFamily;
+            _panelDataStatusText.FontSize =
+                Math.Max(9, PanelFontSize - 2);
+            _panelDataStatusText.ForegroundColor =
+                PanelMutedTextColor;
+            _panelDataStatusText.IsVisible =
+                ShowUnifiedPanel && !_panelHidden;
+
+            Bars[] frames =
+            {
+                _m1Bars,
+                _m5Bars,
+                _m15Bars,
+                _h1Bars,
+                _h4Bars
+            };
+
+            string[] labels =
+            {
+                "M1",
+                "M5",
+                "M15",
+                "H1",
+                "H4"
+            };
+
+            string text = "DATA  ";
+
+            for (int i = 0; i < frames.Length; i++)
+            {
+                text += labels[i] + " " +
+                    ResolveDataBarGlyph(frames[i]);
+
+                if (i < frames.Length - 1)
+                    text += "  ";
+            }
+
+            _panelDataStatusText.Text = text;
+            _panelDataStatusText.ForegroundColor =
+                ResolveDataStatusColor(frames);
+        }
+
+        private string ResolveDataBarGlyph(Bars bars)
+        {
+            if (bars == null ||
+                bars.Count < 2)
+                return "—";
+
+            int index =
+                Math.Max(
+                    0,
+                    Math.Min(
+                        bars.Count - 1,
+                        bars.Count - 1));
+
+            double current =
+                bars.TickVolumes[index];
+
+            if (double.IsNaN(current) ||
+                double.IsInfinity(current) ||
+                current <= 0)
+                return "▁";
+
+            int start =
+                Math.Max(
+                    0,
+                    index - 20);
+
+            double sum = 0;
+            int count = 0;
+
+            for (int i = start; i < index; i++)
+            {
+                double volume = bars.TickVolumes[i];
+
+                if (double.IsNaN(volume) ||
+                    double.IsInfinity(volume) ||
+                    volume <= 0)
+                    continue;
+
+                sum += volume;
+                count++;
+            }
+
+            if (count == 0 || sum <= 0)
+                return "▂";
+
+            double ratio =
+                current /
+                Math.Max(
+                    1e-9,
+                    sum / count);
+
+            int level =
+                ratio >= 2.50 ? 8 :
+                ratio >= 2.00 ? 7 :
+                ratio >= 1.70 ? 6 :
+                ratio >= 1.40 ? 5 :
+                ratio >= 1.15 ? 4 :
+                ratio >= 0.90 ? 3 :
+                ratio >= 0.65 ? 2 :
+                1;
+
+            const string glyphs = "▁▂▃▄▅▆▇█";
+            return glyphs[level - 1].ToString();
+        }
+
+        private Color ResolveDataStatusColor(Bars[] frames)
+        {
+            int available = 0;
+
+            for (int i = 0; i < frames.Length; i++)
+            {
+                if (frames[i] != null &&
+                    frames[i].Count >= 2)
+                    available++;
+            }
+
+            if (available == frames.Length)
+            {
+                int direction = GetMarketBiasDirection();
+                return direction == 0
+                    ? PanelSecondaryTextColor
+                    : PanelDirectionColor(direction);
+            }
+
+            return PanelWarningColor;
         }
 
         private int ResolvePanelAlertMessageCharacterLimit()
