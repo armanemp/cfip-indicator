@@ -1,5 +1,5 @@
-#nullable disable
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace CFIP.Contracts
@@ -21,7 +21,7 @@ namespace CFIP.Contracts
 
         public static bool TryDeserialize(
             string payload,
-            out SignalScenarioBatch batch)
+            [NotNullWhen(true)] out SignalScenarioBatch? batch)
         {
             batch = null;
 
@@ -30,13 +30,24 @@ namespace CFIP.Contracts
 
             try
             {
-                SignalScenarioBatch parsed =
+                SignalScenarioBatch? parsed =
                     JsonSerializer.Deserialize<SignalScenarioBatch>(
                         payload,
                         Options);
 
-                if (parsed == null)
+                if (parsed == null ||
+                    !ContractVersionPolicy.IsSupported(parsed.ContractVersion) ||
+                    parsed.Scenarios == null)
                     return false;
+
+                foreach (SignalEnvelope scenario in parsed.Scenarios)
+                {
+                    if (scenario == null ||
+                        scenario.Identity == null ||
+                        !ContractVersionPolicy.IsSupported(
+                            scenario.Identity.ContractVersion))
+                        return false;
+                }
 
                 batch = parsed;
                 return true;
@@ -49,4 +60,3 @@ namespace CFIP.Contracts
         }
     }
 }
-#nullable enable

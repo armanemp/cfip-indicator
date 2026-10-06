@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 
 namespace CFIP.Contracts
@@ -19,32 +18,5 @@ namespace CFIP.Contracts
     {
         public double MaxSpreadToStopRiskRatio { get; init; } =
             double.NaN;
-        public ExecutionIntent(
-            ContractIdentity identity,
-            ExecutionAction action,
-            double requestedEntry,
-            double stop,
-            double initialTarget,
-            double? requestedVolume,
-            string sizingMode,
-            DateTime requestedUtc,
-            DateTime? expiryUtc,
-            string reason)
-            : this(
-                identity,
-                action,
-                requestedEntry,
-                stop,
-                initialTarget,
-                requestedVolume,
-                sizingMode,
-                requestedUtc,
-                expiryUtc,
-                reason,
-                "CFIP-SMART",
-                null)
-        {
-        }
     }
 }
-#nullable enable

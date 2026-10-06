@@ -31,6 +31,7 @@ TRANSPORT_UTILITY_FILES = {
     "ContractBusKeyHash.cs",
     "SignalScenarioBatchCodec.cs",
     "ScenarioExecutionIdentityRule.cs",
+    "ContractVersionPolicy.cs",
 }
 
 errors = []
