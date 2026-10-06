@@ -20,6 +20,7 @@ arrows = read("UI/Chart/SignalStackedArrowRenderer.cs")
 state = read("Indicator/State.cs")
 factory = read("UI/Panel/PanelFactory.cs")
 footer = read("UI/Panel/PanelAlertMessageRenderer.cs")
+signal_renderer = read("UI/Chart/SignalRenderer.cs")
 layout = read("UI/Panel/Theme/PanelSurfaceAndHeaderLayout.cs")
 constants = read("UI/Panel/PanelConstants.cs")
 display = read("Indicator/Parameters/14_display_core.cs")
@@ -28,6 +29,7 @@ checks = [
     ("ShowSignalArrow parameter remains enabled by default", 'Parameter("Show Signal Arrow"' in display and "DefaultValue = true" in display),
     ("chart arrow renderer owns the new box", "UpdateSignalArrowBox(" in arrows),
     ("legacy WATCH_ARROW chart objects are only cleanup, never draw targets", "DrawIcon(" not in arrows),
+    ("no obsolete candle M1 trigger circle remains", "M1_TRIGGER" not in signal_renderer and "ChartIconType.Circle" not in signal_renderer),
     ("box state is owned by the arrow renderer", all(x in arrows for x in ("_signalArrowBox", "_signalArrowBoxArrows", "_signalArrowBoxStack")) and "_signalArrowBox" not in state),
     ("box is bottom-right aligned", "HorizontalAlignment.Right" in arrows and "VerticalAlignment.Bottom" in arrows),
     ("box is compact square", "Width = 66" in arrows and "Height = 66" in arrows),
