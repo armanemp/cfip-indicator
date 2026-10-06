@@ -13,6 +13,9 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
+        // This is intentionally a rolling lookback VWAP, not a session-anchored
+        // VWAP. Its semantics are defined by VwapLookbackBars and must not be
+        // confused with an additional session-VWAP decision engine.
         private bool HasVwapBias(
                             Bars bars,
                             int index,

@@ -32,6 +32,13 @@ namespace cAlgo
         public int RetestQuality = 0;
         public int BuyShare = 0;
         public int SellShare = 0;
+        public double VoteBuyScore = 0d;
+        public double VoteSellScore = 0d;
+        public double VoteNetScore = 0d;
+        public double VoteTotalScore = 0d;
+        public int VoteCoverage = 0;
+        public int VoteNeutralCoverage = 0;
+        public int VoteConfidence = 0;
         public string Regime = null;
         public int RegimeQuality = 0;
         public bool TriggerReady = false;

@@ -146,6 +146,53 @@ namespace cAlgo
                     input.M5Choppy,
                     input.M15Choppy);
 
+            double eligibleFrameWeight = 0;
+            double directionalFrameWeight = 0;
+            double neutralFrameWeight = 0;
+
+            AccumulateVoteCoverage(
+                input.M5Contribution,
+                true,
+                ref eligibleFrameWeight,
+                ref directionalFrameWeight,
+                ref neutralFrameWeight);
+            AccumulateVoteCoverage(
+                input.M15Contribution,
+                true,
+                ref eligibleFrameWeight,
+                ref directionalFrameWeight,
+                ref neutralFrameWeight);
+            AccumulateVoteCoverage(
+                input.M30Contribution,
+                true,
+                ref eligibleFrameWeight,
+                ref directionalFrameWeight,
+                ref neutralFrameWeight);
+            AccumulateVoteCoverage(
+                input.H1Contribution,
+                true,
+                ref eligibleFrameWeight,
+                ref directionalFrameWeight,
+                ref neutralFrameWeight);
+            AccumulateVoteCoverage(
+                input.H4Contribution,
+                true,
+                ref eligibleFrameWeight,
+                ref directionalFrameWeight,
+                ref neutralFrameWeight);
+            AccumulateVoteCoverage(
+                input.D1Contribution,
+                true,
+                ref eligibleFrameWeight,
+                ref directionalFrameWeight,
+                ref neutralFrameWeight);
+            AccumulateVoteCoverage(
+                input.W1Contribution,
+                input.SmartWeeklyContext,
+                ref eligibleFrameWeight,
+                ref directionalFrameWeight,
+                ref neutralFrameWeight);
+
             buy *= choppinessFactor;
             sell *= choppinessFactor;
 
@@ -174,7 +221,31 @@ namespace cAlgo
                 adaptiveSell,
                 conflictPenaltyBuy,
                 conflictPenaltySell,
-                choppinessFactor);
+                choppinessFactor,
+                eligibleFrameWeight,
+                directionalFrameWeight,
+                neutralFrameWeight);
+        }
+
+
+        private static void AccumulateVoteCoverage(
+            DecisionFrameContribution contribution,
+            bool enabled,
+            ref double eligibleFrameWeight,
+            ref double directionalFrameWeight,
+            ref double neutralFrameWeight)
+        {
+            if (!enabled ||
+                !contribution.Eligible ||
+                contribution.Weight <= 0)
+                return;
+
+            eligibleFrameWeight += contribution.Weight;
+
+            if (contribution.Direction == 0)
+                neutralFrameWeight += contribution.Weight;
+            else
+                directionalFrameWeight += contribution.Weight;
         }
 
         internal static double ResolveChoppinessFactor(

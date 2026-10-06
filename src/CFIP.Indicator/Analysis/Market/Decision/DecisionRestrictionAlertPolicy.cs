@@ -13,6 +13,7 @@ namespace cAlgo
                         
                                     switch (reason)
                                     {
+                                        case "NEWS":
                                         case "NEWS BLACKOUT":
                                             return AlertOnNewsEventGuard ||
                                                    AlertOnNewsEvent ||

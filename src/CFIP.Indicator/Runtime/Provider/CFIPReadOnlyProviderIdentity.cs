@@ -136,8 +136,25 @@ namespace cAlgo
                     intent == null
                         ? "NONE"
                         : intent.Action.ToString(),
-                    revision.ToString(
-                        CultureInfo.InvariantCulture));
+                    intent == null
+                        ? "NONE"
+                        : intent.Direction.ToString(
+                            CultureInfo.InvariantCulture),
+                    intent == null
+                        ? "NONE"
+                        : intent.RequestedEntry.ToString(
+                            "R",
+                            CultureInfo.InvariantCulture),
+                    intent == null
+                        ? "NONE"
+                        : intent.Stop.ToString(
+                            "R",
+                            CultureInfo.InvariantCulture),
+                    intent == null
+                        ? "NONE"
+                        : intent.Target.ToString(
+                            "R",
+                            CultureInfo.InvariantCulture));
         }
 
         private string ResolveProviderState(

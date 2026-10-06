@@ -76,6 +76,14 @@ namespace CFIP.cBot.Execution
                 return false;
             }
 
+            if (envelope.Intent != null &&
+                envelope.Intent.ExpiryUtc.HasValue &&
+                nowUtc > envelope.Intent.ExpiryUtc.Value)
+            {
+                reason = "SIGNAL EXECUTION INTENT EXPIRED";
+                return false;
+            }
+
             double ageSeconds =
                 (nowUtc - envelope.ObservedUtc).TotalSeconds;
 

@@ -100,11 +100,12 @@ check(
 )
 
 check(
-    "preview geometry extraction preserves the existing regular planning path",
-    "TryBuildScenarioGeometry(" in preview and
+    "preview geometry extraction consumes the canonical shared planning geometry",
+    "TryBuildParallelScenarioGeometry(" in preview and
     "BuildTradeSetupPreviewFromGeometry(" in preview and
     "BuildTargetLevels(" in preview and
-    "SelectTargets(" in preview,
+    "SelectTargets(" in preview and
+    "private bool TryBuildScenarioGeometry(" not in preview,
 )
 
 check(

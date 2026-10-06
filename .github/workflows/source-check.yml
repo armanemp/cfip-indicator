@@ -181,3 +181,4 @@ jobs:
       - run: python tools/audit_phase_signal_audio_cbot_hardening_2026_10_06.py
       - run: python tools/audit_phase_ui_signal_box_footer_2026_10_06.py
       - run: python tools/audit_phase_signal_stability_2026_10_06.py
+      - run: python tools/audit_phase_deep_analyzer_vote_2026_10_07.py

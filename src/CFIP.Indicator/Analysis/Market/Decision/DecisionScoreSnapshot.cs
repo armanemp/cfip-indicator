@@ -1,3 +1,5 @@
+using System;
+
 namespace cAlgo
 {
     internal readonly struct DecisionScoreSnapshot
@@ -28,6 +30,9 @@ namespace cAlgo
         public double ConflictPenaltyBuy { get; }
         public double ConflictPenaltySell { get; }
         public double ChoppinessFactor { get; }
+        public double EligibleFrameWeight { get; }
+        public double DirectionalFrameWeight { get; }
+        public double NeutralFrameWeight { get; }
 
         public DecisionScoreSnapshot(
             double buy,
@@ -54,7 +59,10 @@ namespace cAlgo
             double adaptiveRegimeSell,
             double conflictPenaltyBuy,
             double conflictPenaltySell,
-            double choppinessFactor)
+            double choppinessFactor,
+            double eligibleFrameWeight = 0,
+            double directionalFrameWeight = 0,
+            double neutralFrameWeight = 0)
         {
             Buy = buy;
             Sell = sell;
@@ -81,6 +89,12 @@ namespace cAlgo
             ConflictPenaltyBuy = conflictPenaltyBuy;
             ConflictPenaltySell = conflictPenaltySell;
             ChoppinessFactor = choppinessFactor;
+            EligibleFrameWeight =
+                Math.Max(0, eligibleFrameWeight);
+            DirectionalFrameWeight =
+                Math.Max(0, directionalFrameWeight);
+            NeutralFrameWeight =
+                Math.Max(0, neutralFrameWeight);
         }
     }
 }

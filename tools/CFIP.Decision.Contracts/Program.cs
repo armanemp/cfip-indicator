@@ -8,6 +8,7 @@ namespace cAlgo
         private static void Main()
         {
             VerifyConsensusSymmetry();
+            VerifyVoteAggregationCoverage();
             VerifyDecisionScoreBoundariesAndTraceability();
             VerifyNeutralQualityIsolation();
             VerifyQualityBoundaries();
@@ -364,16 +365,153 @@ namespace cAlgo
                 new DecisionConsensusCalculator();
 
             DecisionConsensusSnapshot buy =
-                calculator.Calculate(20, 10, 3, 60);
+                calculator.Calculate(
+                    20,
+                    10,
+                    3,
+                    60,
+                    40,
+                    30);
 
             DecisionConsensusSnapshot sell =
-                calculator.Calculate(10, 20, 3, 60);
+                calculator.Calculate(
+                    10,
+                    20,
+                    3,
+                    60,
+                    40,
+                    30);
 
             Assert(buy.Direction == 1, "BUY consensus direction");
             Assert(sell.Direction == -1, "SELL consensus direction");
             Assert(buy.BuyShare == sell.SellShare, "BUY/SELL share symmetry");
             Assert(buy.SellShare == sell.BuyShare, "SELL/BUY share symmetry");
             Assert(buy.Edge == sell.Edge, "BUY/SELL edge symmetry");
+            Assert(
+                buy.DirectionalCoveragePercent ==
+                    sell.DirectionalCoveragePercent,
+                "BUY/SELL vote coverage symmetry");
+            Assert(
+                buy.VoteConfidence ==
+                    sell.VoteConfidence,
+                "BUY/SELL vote confidence symmetry");
+        }
+
+        private static void VerifyVoteAggregationCoverage()
+        {
+            DecisionFrameContribution directional =
+                new DecisionFrameContribution(
+                    70,
+                    30,
+                    1,
+                    10,
+                    1,
+                    true);
+
+            DecisionFrameContribution neutral =
+                new DecisionFrameContribution(
+                    50,
+                    50,
+                    0,
+                    10,
+                    0,
+                    true);
+
+            DecisionScoreSnapshot score =
+                new DecisionScoreCalculator().Calculate(
+                    new DecisionScoreInput(
+                        directional,
+                        neutral,
+                        directional,
+                        neutral,
+                        directional,
+                        neutral,
+                        directional,
+                        true,
+                        false,
+                        0,
+                        0,
+                        false,
+                        0,
+                        false,
+                        false,
+                        1,
+                        0,
+                        0,
+                        false,
+                        false));
+
+            Assert(
+                Math.Abs(score.EligibleFrameWeight - 70) < 1e-12,
+                "eligible frame vote weight");
+            Assert(
+                Math.Abs(score.DirectionalFrameWeight - 40) < 1e-12,
+                "directional frame vote weight");
+            Assert(
+                Math.Abs(score.NeutralFrameWeight - 30) < 1e-12,
+                "neutral frame vote weight");
+
+            DecisionConsensusSnapshot consensus =
+                new DecisionConsensusCalculator().Calculate(
+                    score.Buy,
+                    score.Sell,
+                    3,
+                    60,
+                    score.EligibleFrameWeight,
+                    score.DirectionalFrameWeight);
+
+            Assert(
+                consensus.DirectionalCoveragePercent == 57,
+                "directional vote coverage is derived from eligible frames");
+            Assert(
+                consensus.NeutralCoveragePercent == 43,
+                "neutral vote coverage complements directional coverage");
+            Assert(
+                consensus.TotalScore > 0 &&
+                Math.Abs(
+                    consensus.NetScore -
+                    (consensus.BuyScore - consensus.SellScore)) < 1e-12,
+                "vote totals remain reconstructable");
+            Assert(
+                consensus.VoteConfidence >= 0 &&
+                consensus.VoteConfidence <= consensus.Edge,
+                "vote confidence is bounded by edge and coverage");
+
+            DecisionFrameContribution unavailable =
+                new DecisionFrameContribution(
+                    0,
+                    0,
+                    0);
+
+            DecisionScoreSnapshot unavailableScore =
+                new DecisionScoreCalculator().Calculate(
+                    new DecisionScoreInput(
+                        unavailable,
+                        unavailable,
+                        unavailable,
+                        unavailable,
+                        unavailable,
+                        unavailable,
+                        unavailable,
+                        false,
+                        false,
+                        0,
+                        0,
+                        false,
+                        0,
+                        false,
+                        false,
+                        0,
+                        0,
+                        0,
+                        false,
+                        false));
+
+            Assert(
+                unavailableScore.EligibleFrameWeight == 0 &&
+                unavailableScore.DirectionalFrameWeight == 0 &&
+                unavailableScore.NeutralFrameWeight == 0,
+                "unavailable frames do not fabricate vote coverage");
         }
 
         private static void VerifyDecisionScoreBoundariesAndTraceability()

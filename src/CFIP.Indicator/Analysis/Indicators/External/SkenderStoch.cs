@@ -35,11 +35,22 @@ namespace cAlgo
                     OssIndicatorSettings.Default.StochSmoothPeriod)
                     .LastOrDefault();
 
-            if (last == null)
+            if (last == null ||
+                !last.K.HasValue ||
+                !last.D.HasValue)
                 return;
 
-            k = last.K ?? 0;
-            d = last.D ?? 0;
+            k = last.K.Value;
+            d = last.D.Value;
+
+            if (double.IsNaN(k) ||
+                double.IsInfinity(k) ||
+                double.IsNaN(d) ||
+                double.IsInfinity(d))
+            {
+                k = double.NaN;
+                d = double.NaN;
+            }
         }
     }
 }

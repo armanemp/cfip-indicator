@@ -6528,10 +6528,11 @@ namespace cAlgo
                 "visual preview is non-executable");
 
             Assert(
-                previewBuilder.Contains("BuildStructuralStop(") &&
+                previewBuilder.Contains("TryBuildParallelScenarioGeometry(") &&
                 previewBuilder.Contains("BuildTargetLevels(") &&
-                previewBuilder.Contains("SelectTargets("),
-                "visual preview reuses planning authorities");
+                previewBuilder.Contains("SelectTargets(") &&
+                !previewBuilder.Contains("private bool TryBuildScenarioGeometry("),
+                "visual preview reuses canonical planning geometry authorities");
 
             Assert(
                 calculation.Contains("RenderSetupPreview("),
