@@ -55,6 +55,14 @@ namespace cAlgo
                             : input.M5Frame.IndicatorConflict
                 };
 
+            decision.VoteBuyScore = consensus.BuyScore;
+            decision.VoteSellScore = consensus.SellScore;
+            decision.VoteNetScore = consensus.NetScore;
+            decision.VoteTotalScore = consensus.TotalScore;
+            decision.VoteCoverage = consensus.DirectionalCoveragePercent;
+            decision.VoteNeutralCoverage = consensus.NeutralCoveragePercent;
+            decision.VoteConfidence = consensus.VoteConfidence;
+
             int strongestShare =
                 Math.Max(
                     consensus.BuyShare,
