@@ -66,7 +66,13 @@ namespace cAlgo
                         PanelFlowPressureRailHeight -
                         PanelFooterActionGap,
                     BackgroundColor =
-                        Color.FromArgb(0, Color.Black)
+                        Color.FromArgb(0, Color.Black),
+                    Margin =
+                        new Thickness(
+                            0,
+                            PanelFooterActionGap,
+                            0,
+                            0)
                 };
 
             // The Indicator panel is analysis/presentation only.
