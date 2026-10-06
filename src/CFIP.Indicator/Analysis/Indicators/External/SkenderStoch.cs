@@ -38,8 +38,12 @@ namespace cAlgo
             if (last == null)
                 return;
 
-            k = last.K ?? 0;
-            d = last.D ?? 0;
+            k = last.K.HasValue
+                ? (double)last.K.Value
+                : double.NaN;
+            d = last.D.HasValue
+                ? (double)last.D.Value
+                : double.NaN;
         }
     }
 }
