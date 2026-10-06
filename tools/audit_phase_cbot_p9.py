@@ -87,8 +87,9 @@ check(
     "_panelAlertRevision++" in rail,
 )
 check(
-    "alert rail sits beside the panel hide control",
+    "alert rail is hosted by the footer action row beside the panel hide control",
     "CreatePanelAlertMessageRail();" in factory and
+    "_panelFooterActions.AddChild(" in factory and
     "_buttonStack.AddChild(" in factory,
 )
 check(
@@ -189,7 +190,7 @@ check(
 )
 check(
     "current Indicator parameter count is 543",
-    len(re.findall(r"\[Parameter\s*\(", parameter_source)) == 545,
+    len(re.findall(r"\[Parameter\s*\(", parameter_source)) == 543,
 )
 check(
     "P9 audit itself is in source CI",
