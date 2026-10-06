@@ -843,3 +843,14 @@ No trading threshold, MTF role, broker mutation authority or strategy quality ga
 - [x] Keep BUY/SELL pressure presentation owned by PanelFooterFactory and derived from closed M15 tick-volume/candle-range evidence.
 - [x] Add a CI source gate for arrow-box single ownership and BUY/SELL footer-pressure ownership.
 - [ ] Target-terminal visual acceptance of the Release artifact remains required before declaring this UI work unit complete.
+
+
+## 2026-10-07 — Realtime pressure / cBot handoff hardening
+
+- BUY/SELL footer pressure now refreshes on the existing bounded 500 ms live panel cadence and evaluates the latest three M15 bars including the active bar, so the display no longer waits for an M15 close to move.
+- The pressure remains an estimate derived from cTrader TickVolume weighted by candle close location; it is not bid/ask footprint volume.
+- Footer clearance below the pressure rail increased from 2 px to 4 px; the shared footer minimum is 70 px so the geometry remains internally consistent.
+- Canonical signal arrows are visually thicker via the existing single owner: 24 px bold glyphs in the fixed 66x66 box.
+- cBot realtime timer deduplication is now scenario-scoped and bounded instead of using one global last-scenario tuple, so concurrent scenarios do not reprocess each other at the same revision.
+- Provider execution-intent capture is reset before each live pending evaluation, preventing an older M5 intent from being reused after current actionability changes.
+- Automated gates must remain green before merge; target-terminal validation remains required for final visual/broker confirmation.
