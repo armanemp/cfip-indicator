@@ -103,11 +103,10 @@ namespace cAlgo
                                             frames[i].Index != closedIndex)
                                             continue;
                         
-                                        // A neutral timeframe is not evidence against the selected
-                                        // direction; it contributes no alignment weight.
-                                        if (frames[i].Direction == 0)
-                                            continue;
-                        
+                                        // Neutral is not bearish/bullish evidence, but it is
+                                        // still an unavailable alignment for this direction.
+                                        // Keep it in the denominator so partial evidence cannot
+                                        // manufacture 100% timeframe agreement.
                                         totalWeight +=
                                             weights[i];
                         
