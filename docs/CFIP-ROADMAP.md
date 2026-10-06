@@ -345,8 +345,6 @@ Exit: one decision/actionability authority; consumers do not rebuild.
 - **No synthetic profit:** adaptive HTF extension never overrides target-side, obstacle, freshness, HTF-quality, progression or maximum-RR safety checks.
 - **One owner:** stop geometry remains owned by `StructuralStopGeometryRule`; stop risk remains owned by `StructuralStopRiskRule`; target candidate constraints remain owned by `TargetCandidateConstraintRule`; reward-envelope reachability remains owned by `TargetRewardEnvelopeRule`.
 
-## P8 — Entry / Trigger / Plan / SL / TP / RR
-
 Audit M5 trigger/retest/breakout, optional M1 confirmation, entry side, requested/executable/fill prices, structural SL, TP1..TP4 where contracted, obstacle/reward path, spread/slippage, RR, minimum distance, trailing and break-even.
 
 Exit: no wrong-side target, SL widening, RR-by-rounding or trailing backtrack.
