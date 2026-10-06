@@ -74,7 +74,8 @@ check(
     "Math.Max(" in bot and
     "Max Concurrent Scenarios" in bot and
     'DefaultValue = 3' in bot and
-    "maximumOpenPositions != 1" in settings
+    "MaximumOpenPositions" in settings and
+    "CbotExecutionSettings.Create(" in bot
 )
 
 check(
@@ -161,7 +162,7 @@ check(
 check(
     "audio transport is fully wired and blocked alerts stay silent",
     "_alertDeliveryQueue.Enqueue(" in alert_engine and
-    "ProcessQueuedAlertDelivery();" in alert_processor or
+    "ProcessQueuedAlertDelivery();" in alert_processor and
     "Notifications.PlaySound(" in alert_processor
 )
 
