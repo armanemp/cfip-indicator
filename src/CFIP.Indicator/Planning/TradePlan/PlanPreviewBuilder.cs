@@ -102,14 +102,17 @@ namespace cAlgo
             entry =
                 NormalizePrice(entry);
 
+            string stopSource;
+            int stopQuality;
+
             double stop =
                 BuildStructuralStop(
                     closedM5,
                     execution.Direction,
                     entry,
                     atr,
-                    out _,
-                    out _);
+                    out stopSource,
+                    out stopQuality);
 
             if (!IsValidStop(
                     execution.Direction,
@@ -167,10 +170,17 @@ namespace cAlgo
                     0,
                     Symbol.Ask - Symbol.Bid);
 
+            double effectiveMinimumStopRiskAtr =
+                ResolveSelectedStructuralStopMinimumRiskAtr(
+                    stopSource,
+                    closedM5,
+                    execution.Direction,
+                    atr);
+
             if (!StructuralStopRiskRule.IsWithinPlanningRiskEnvelope(
                     riskAtr,
                     atr,
-                    MinimumSlAtr,
+                    effectiveMinimumStopRiskAtr,
                     MaximumSlAtr,
                     MaximumStructuralStopAtr,
                     spread,
