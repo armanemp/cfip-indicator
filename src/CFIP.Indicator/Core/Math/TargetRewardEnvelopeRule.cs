@@ -4,7 +4,7 @@ namespace cAlgo
 {
     internal static class TargetRewardEnvelopeRule
     {
-        internal const double HtfMaximumExtensionAtrCap = 24.0;
+        internal const double HtfMaximumExtensionAtrCap = 20.0;
 
         public static double MaximumReachableRR(
             double risk,
