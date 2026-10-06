@@ -1692,3 +1692,10 @@ Verification on the exact final implementation head:
 No production trading logic, public strategy threshold, broker authority or MTF contract was changed.
 
 **Next:** WP-05 — Preflight.
+
+## 2026-10-07 — Deep analyzer / vote integrity package
+
+- Added the repository-level `tools/audit_phase_deep_analyzer_vote_2026_10_07.py` gate.
+- Audited native primitives, OSS indicator adapters, WaveTrend, divergence, Volume Profile, MTF agreement, decision score, consensus and Indicator→cBot boundary.
+- Closed/revalidated the current Claude findings M-97, H-26, H-27 and M-82, plus two additional numerical/Volume Profile issues found by the current review.
+- Extended the canonical vote contract with frame eligibility/weight/direction metadata and final vote coverage diagnostics without creating a second decision owner.
