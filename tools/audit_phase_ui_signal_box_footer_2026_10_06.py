@@ -67,7 +67,9 @@ checks = [
      "_panelSellPressureTrack.Width =\n                contentWidth" in footer_factory and
      "Width = 1" not in footer_factory[footer_factory.index("private StackPanel CreateFlowPressureRow"):footer_factory.index("private void UpdatePanelFlowPressureRail")] and
      "_panelBuyPressureFill.Width" in footer_factory and
-     "_panelSellPressureFill.Width" in footer_factory),
+     "_panelSellPressureFill.Width" in footer_factory and
+     "_panelBuyFlowFill.Width" in footer_factory and "_panelSellFlowFill.Width" in footer_factory and
+     "GetAggressiveFlowSnapshot()" in footer_factory),
     ("footer has no legacy M1/M5/H1 status strip", "_panelDataStatus" not in footer_factory and "M2" not in footer_factory),
     ("pressure rail is placed directly below the timeframe lamps", "_buttonStack.AddChild" in footer_factory and "_panelFlowPressureRail" in footer_factory),
     ("footer geometry reserves the pressure rail", "PanelFlowPressureRailHeight" in layout and "PanelFlowPressureRailHeight" in constants and "PanelFooterActionGap" in constants),
