@@ -138,6 +138,7 @@ check(
     "all production arrow call-sites use one calculation-lifecycle owner",
     "RenderCanonicalMtfTrendArrows(" in read("src/CFIP.Indicator/Runtime/Calculation/CalculationLiveCycle.cs") and
     "RenderStackedSignalArrows(" in stack and
+    "EnsureSignalArrowBox();" in read("src/CFIP.Indicator/UI/Panel/PanelFactory.cs") and
     "ResolveSignalArrowState(" not in signal and
     "fallbackState" not in stack,
 )
