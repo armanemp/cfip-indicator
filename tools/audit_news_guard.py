@@ -16,8 +16,7 @@ required = {
             "US30=USD",
             "HighImpactNewsMinutesBefore",
             "HighImpactNewsMinutesAfter",
-            "CancelPendingBeforeHighImpactNews",
-            "CloseActiveBeforeHighImpactNews",
+            "NewsFailClosedWhenStale",
             "NewsFailClosedWhenStale",
             "MaximumNewsFeedAgeMinutes",
         ],
@@ -174,8 +173,9 @@ if "HIGH IMPACT NEWS" not in news_protection:
     errors.append("news safety intent context is missing")
 if "Symbol.IsTradingEnabled" in news_protection:
     errors.append("news protection must not alter symbol/global trading permission")
-if "Quick Trade" in news_protection:
-    errors.append("news protection must not reference native Quick Trade state")
+for forbidden in ("SetTradingEnabled", "TradingPermission", "DisableTrading", "StopTrading"):
+    if forbidden in news_protection:
+        errors.append("news protection contains a global trading-disable API/token: " + forbidden)
 
 if errors:
     print("NEWS GUARD AUDIT: FAIL")
