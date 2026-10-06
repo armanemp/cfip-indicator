@@ -101,10 +101,11 @@ require(
     "panel key must invalidate when primary MTF frames change",
 )
 require(
-    "PRIMARY_M15_SIGNAL" in parallel_renderer and
-    "PRIMARY_H1_SIGNAL" in parallel_renderer and
-    '"WATCH"' in parallel_renderer,
-    "primary M15/H1 visual markers must remain distinct from canonical execution state",
+    "PRIMARY_M15_SIGNAL" not in parallel_renderer and
+    "PRIMARY_H1_SIGNAL" not in parallel_renderer and
+    "ChartIconType.UpTriangle" not in parallel_renderer and
+    "ChartIconType.DownTriangle" not in parallel_renderer,
+    "primary M15/H1 direction must not create competing chart markers; canonical panel/box presentation remains the visual owner",
 )
 require(
     "VerifyPanelFrameDirectionPresentation();" in runtime and
@@ -120,7 +121,7 @@ parameter_count = sum(
     len(re.findall(r"\[Parameter\s*\(", p.read_text(encoding="utf-8")))
     for p in (ROOT / "src/CFIP.Indicator/Indicator/Parameters").glob("*.cs")
 )
-require(parameter_count == 545, f"public parameter contract changed: found {parameter_count}")
+require(parameter_count == 543, f"public parameter contract changed: found {parameter_count}")
 
 require(
     "No strategy or threshold" in phase and

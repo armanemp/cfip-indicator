@@ -115,13 +115,11 @@ check(
 )
 
 check(
-    "M1 trigger marker is not a competing directional arrow",
-    "ChartIconType.Circle" in signal_renderer and
-    "P + \"M1_TRIGGER\"" in signal_renderer and
-    "ChartIconType.UpArrow" not in signal_renderer[
-        signal_renderer.find('P + "M1_TRIGGER"'):
-    signal_renderer.find('P + "M1_TRIGGER"') + 500
-    ]
+    "M1 trigger marker is removed and canonical direction uses the fixed signal box",
+    "ChartIconType.Circle" not in signal_renderer and
+    "M1_TRIGGER" not in signal_renderer and
+    "UpdateSignalArrowBox(" in arrows and
+    "RenderStackedSignalArrows(" in arrows
 )
 
 # Stagnant-market quality / magnitude.

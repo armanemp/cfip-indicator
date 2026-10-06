@@ -22,7 +22,7 @@ bot = read("src/CFIP.cBot/CFIPExecutionBot.cs")
 gate = read("src/CFIP.cBot/Execution/CbotExecutionEnvironmentGate.cs")
 market = read("src/CFIP.cBot/Execution/DemoMarketExecutionCoordinator.cs")
 pending = read("src/CFIP.cBot/Execution/DemoPendingOrderExecutionCoordinator.cs")
-settings = read("src/CFIP.cBot/Execution/CbotIndicatorExecutionSettings.cs")
+settings = read("src/CFIP.cBot/Execution/CbotExecutionSettings.cs")
 snapshot = read("src/CFIP.Contracts/CbotExecutionStateSnapshot.cs")
 publisher = read("src/CFIP.cBot/Execution/CbotExecutionStatePublisher.cs")
 reader = read("src/CFIP.Indicator/Runtime/Cbot/CbotExecutionStateReader.cs")
@@ -35,6 +35,7 @@ range_rule = read("src/CFIP.Indicator/Core/Math/RangeSignalQualityRule.cs")
 alerts = read("src/CFIP.Indicator/Runtime/Calculation/CalculationDecisionAlerts.cs")
 alert_engine = read("src/CFIP.Indicator/Trading/Alerts/AlertEngine.cs")
 alert_processor = read("src/CFIP.Indicator/UI/Panel/AlertDeliveryProcessor.cs")
+calc_cycle = read("src/CFIP.Indicator/Runtime/Calculation/CalculationCycle.cs")
 workflow = read(".github/workflows/source-check.yml")
 roadmap = read("docs/CFIP-ROADMAP.md")
 historical_roadmap = read("docs/archive/ROADMAP-LEGACY-2026-10-04.md")
@@ -74,7 +75,8 @@ check(
     "Math.Max(" in bot and
     "Max Concurrent Scenarios" in bot and
     'DefaultValue = 3' in bot and
-    "maximumOpenPositions != 1" in settings
+    "MaximumOpenPositions" in settings and
+    "CbotExecutionSettings.Create(" in bot
 )
 
 check(
@@ -161,8 +163,11 @@ check(
 check(
     "audio transport is fully wired and blocked alerts stay silent",
     "_alertDeliveryQueue.Enqueue(" in alert_engine and
-    "ProcessQueuedAlertDelivery();" in alert_processor or
-    "Notifications.PlaySound(" in alert_processor
+    "RecordPanelAlertDelivery(next)" in alert_processor and
+    "_alertSoundDeliveryQueue.Enqueue(next)" in alert_processor and
+    "ProcessQueuedAlertSoundDelivery();" in calc_cycle and
+    "Notifications.PlaySound(" in alert_processor and
+    "if (!next.PlaySound)" in alert_processor
 )
 
 check(
@@ -179,17 +184,28 @@ check(
     "_w1Frame" in read("src/CFIP.Indicator/Trading/Intelligence/Prediction/EarlyPredictionEngine.cs")
 )
 
+stack = read("src/CFIP.Indicator/UI/Chart/SignalStackedArrowRenderer.cs")
+trend = read("src/CFIP.Indicator/Core/Math/MtfTrendStrengthRule.cs")
+snapshot_visual = read("src/CFIP.Indicator/UI/Chart/SignalVisualSnapshot.cs")
+snapshot_builder = read("src/CFIP.Indicator/UI/Chart/SignalVisualSnapshotBuilder.cs")
+
 check(
     "nine-level smart arrow stack has one canonical owner",
-    "class MtfTrendStrengthRule" in read("src/CFIP.Indicator/Core/Math/MtfTrendStrengthRule.cs") and
-    "MtfTrendStrengthResult" in read("src/CFIP.Indicator/Core/Math/MtfTrendStrengthRule.cs") and
-    "ResolveNineLevel(" in read("src/CFIP.Indicator/Core/Math/MtfTrendStrengthRule.cs") and
-    "MtfTrendStrengthLevel" in read("src/CFIP.Indicator/UI/Chart/SignalVisualSnapshot.cs") and
-    "ApplyMtfTrendStrength(" in read("src/CFIP.Indicator/UI/Chart/SignalVisualSnapshotBuilder.cs") and
-    "visualDirection" in read("src/CFIP.Indicator/UI/Chart/SignalVisualSnapshotBuilder.cs") and
-    "((strength - 1) % 3) + 1" in read("src/CFIP.Indicator/UI/Chart/SignalStackedArrowRenderer.cs") and
-    '"WATCH_ARROW_3"' in read("src/CFIP.Indicator/UI/Chart/SignalStackedArrowRenderer.cs") and
-    "Symbol.PipSize * 3" in read("src/CFIP.Indicator/UI/Chart/SignalStackedArrowRenderer.cs")
+    "class MtfTrendStrengthRule" in trend and
+    "MtfTrendStrengthResult" in trend and
+    "ResolveNineLevel(" in trend and
+    "MtfTrendStrengthLevel" in snapshot_visual and
+    "ApplyMtfTrendStrength(" in snapshot_builder and
+    "visualDirection" in snapshot_builder and
+    "((strength - 1) % 3) + 1" in stack and
+    '"WATCH_ARROW_3"' in stack and
+    "UpdateSignalArrowBox(" in stack and
+    "Width = 66" in stack and
+    "Height = 66" in stack and
+    "HorizontalAlignment = HorizontalAlignment.Right" in stack and
+    "VerticalAlignment = VerticalAlignment.Bottom" in stack and
+    "ChartIconType.UpArrow" not in stack and
+    "ChartIconType.DownArrow" not in stack
 )
 
 check(

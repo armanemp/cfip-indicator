@@ -120,6 +120,12 @@ namespace cAlgo
                 return false;
             }
 
+            // DirectionAcceptanceGate is the single owner of the accepted
+            // direction lifecycle. Persist it only after every decision gate
+            // passes so visual state and plan eligibility cannot disagree.
+            _lastConfirmedM5 = closedM5;
+            _lastConfirmedDirection = decision.Direction;
+
             return true;
         }
     }

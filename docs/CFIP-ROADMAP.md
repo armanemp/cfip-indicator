@@ -529,7 +529,7 @@ Evidence:
 - Git tree: 1,131 files, 82 directories, 218 Markdown files; tree not truncated.
 - Canonical inventory drift was found and corrected: four omitted files were `.vscode/extensions.json`, `docs/CFIP-LIST.md`, `docs/CFIP-PROMPT.md`, and `docs/CFIP-PREPROMPT.md`.
 - Production C# baseline: 668 files.
-- Public parameters: 545 unique declarations across 30 parameter source files; machine audits report zero unread candidates.
+- Public parameters: 543 unique declarations across 30 parameter source files; machine audits report zero unread candidates.
 - MTF contract: M1/M5/M15/M30/H1/H4/D1/W1; M2 absent.
 - Indicator direct broker mutation: zero.
 - cBot→Indicator ProjectReference: zero.
@@ -800,3 +800,28 @@ PR #284 was merged to `main` as `2e98a4b4cd27dd8b083ee8aac1437cf1a3c6271e` after
 The completion protocol is now permanent: required CI must be green, the verified work must be merged to `main`, and merged `main` must be re-verified before the package is declared complete.
 
 **Next:** WP-05 — Preflight.
+
+
+## 18.1 2026-10-06 — Runtime signal / cBot / alert hardening continuation
+**Status:** IN PROGRESS (implementation branch; not counted in formal PASS percentage until merged and gated)
+
+This continuation closes concrete defects affecting operator-visible signal timing, arrow stability/color parity, cBot execution readiness and intermittent signal-audio loss. It does not weaken closed-bar decision semantics or execution safety.
+
+Current fixes under validation:
+- cBot execution policy is constructed only from cBot-owned parameters.
+- MTF visual pressure is closed-frame based.
+- authoritative direction survives MTF conflict with a caution-strength downgrade.
+- signal-arrow and timeframe-panel palette share one owner.
+- reaction presentation/alert uses `TriggerReady` as an informational state before broker actionability.
+- sound delivery retries a failed canonical delivery and retains bounded burst capacity.
+
+The remaining analytical signal-quality work is still WP-20 family-level Evidence Fusion; this continuation is not a substitute for that rebuild.
+
+
+## 2026-10-06 — UI signal presentation / footer hardening
+
+- [x] Replace candle-anchored directional arrow presentation with one fixed bottom-right signal box; Show Signal Arrow remains the single default-on visibility control.
+- [x] Preserve canonical 9-level strength and centralized signal color ownership in the box.
+- [x] Move M1/M5/M15/H1/H4 data/tick-volume status bars into the fixed panel footer rather than the scrollable body.
+- [x] Add a CI source gate for arrow-box single ownership and footer data-status placement.
+- [ ] Target-terminal visual acceptance of the Release artifact remains required before declaring this UI work unit complete.

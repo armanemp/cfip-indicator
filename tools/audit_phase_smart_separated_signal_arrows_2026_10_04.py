@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""CFIP 2026-10-04 smart separated signal-arrow audit.
+"""CFIP smart separated signal-arrow audit.
 
-The audit enforces a single production owner for directional arrows:
+The audit enforces a single production owner for directional presentation:
 MtfTrendStrengthRule -> SignalVisualSnapshot -> SignalStackedArrowRenderer.
-M1 remains a precision marker (Circle), not a competing directional arrow.
+M1 remains a non-directional precision/confirmation layer; no competing chart
+marker is rendered for it.
 """
 
 from pathlib import Path
@@ -66,22 +67,29 @@ check(
     "ResolveLocationQuality(" in trend and
     "frame.IndicatorIndependentEvidenceGroupCount" in trend and
     "frame.IndicatorConflict" in trend and
-    "ResolveLivePressureQuality(" in trend,
+    "ResolveClosedPressureQuality(" in trend and
+    "ResolveLivePressureQuality(" not in trend,
 )
 
 check(
     "canonical arrow renderer consumes snapshot strength only",
     "snapshot.MtfTrendStrengthLevel" in stack and
-    "snapshot.MtfTrendDirection" in stack and
     "((strength - 1) % 3) + 1" in stack and
-    "snapshot.MtfTrendStrengthTier" in stack,
+    "UpdateSignalArrowBox(" in stack and
+    '"↑"' in stack and
+    '"↓"' in stack,
 )
 
 check(
-    "three arrows are physically separated",
-    "Symbol.PipSize * 3" in stack and
-    "offset * 1.5" in stack and
-    "separation * i" in stack,
+    "three arrows use deterministic fixed-box spacing",
+    "Orientation.Horizontal" in stack and
+    "_signalArrowBoxArrows" in stack and
+    "new System.Collections.Generic.List<TextBlock>(3)" in stack and
+    "Width = 18" in stack and
+    "Height = 28" in stack and
+    "Margin = new Thickness(1, 0, 1, 0)" in stack and
+    "Width = 66" in stack and
+    "Height = 66" in stack,
 )
 
 check(
@@ -99,23 +107,29 @@ check(
 )
 
 check(
-    "M1 precision marker is not a competing directional arrow",
-    "P + " + chr(34) + "M1_TRIGGER" + chr(34) in signal and
-    "ChartIconType.Circle" in signal,
+    "M1 precision marker no longer owns a competing visual marker",
+    "P + " + chr(34) + "M1_TRIGGER" + chr(34) not in signal and
+    "ChartIconType.Circle" not in signal and
+    "UpdateSignalArrowBox(" in stack,
 )
 
 check(
-    "trade-direction conflict cannot produce a contradictory trend arrow",
+    "trade-direction conflict downgrades rather than erases the authoritative signal",
+    "AuthoritativeDirection" in stack and
     "decisionOwnsDirection" in stack and
-    "decisionDirection != direction" in stack and
-    "RemoveStackedSignalArrows();" in stack,
+    "mtfDirection != 0" in stack and
+    "mtfDirection != direction" in stack and
+    "strength = Math.Min(3, strength)" in stack,
 )
 
 check(
-    "non-canonical event/history/opportunity markers are not directional arrows",
+    "non-canonical event/history/opportunity visuals remain separate from canonical directional arrows",
     "ChartIconType.UpTriangle" in read("src/CFIP.Indicator/Trading/Alerts/ContextAlertEmitter.cs") and
-    "ChartIconType.UpTriangle" in read("src/CFIP.Indicator/UI/Chart/ParallelOpportunityRenderer.cs") and
-    "ChartIconType.UpTriangle" in read("src/CFIP.Indicator/UI/Historical/HistoricalRenderer.cs"),
+    "ChartIconType.DownTriangle" in read("src/CFIP.Indicator/Trading/Alerts/ContextAlertEmitter.cs") and
+    "ChartIconType.UpTriangle" in read("src/CFIP.Indicator/UI/Historical/HistoricalRenderer.cs") and
+    "ChartIconType.DownTriangle" in read("src/CFIP.Indicator/UI/Historical/HistoricalRenderer.cs") and
+    "ChartIconType.UpArrow" not in read("src/CFIP.Indicator/UI/Chart/ParallelOpportunityRenderer.cs") and
+    "ChartIconType.DownArrow" not in read("src/CFIP.Indicator/UI/Chart/ParallelOpportunityRenderer.cs"),
 )
 
 check(
@@ -145,6 +159,7 @@ check(
     "phase documentation records the single-owner contract",
     "Smart Separated Signal Arrows" in phase and
     ("single-owner" in phase.lower() or "single owner" in phase.lower()) and
+    ("fixed 66×66" in phase.lower() or "fixed 66x66" in phase.lower()) and
     "git pull --ff-only" in phase,
 )
 

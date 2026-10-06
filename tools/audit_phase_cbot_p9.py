@@ -28,6 +28,7 @@ queue = read(IND, "Core/Runtime/AlertDeliveryQueue.cs")
 processor = read(IND, "UI/Panel/AlertDeliveryProcessor.cs")
 rail = read(IND, "UI/Panel/PanelAlertMessageRenderer.cs")
 factory = read(IND, "UI/Panel/PanelFactory.cs")
+footer_factory = read(IND, "UI/Panel/PanelFooterFactory.cs")
 visual_settings = read(IND, "UI/Panel/Theme/PanelVisualSettings.cs")
 visual_opt = read(IND, "UI/Panel/PanelRenderOptimization.cs")
 line = read(IND, "UI/Chart/PlanLineRenderer.cs")
@@ -87,9 +88,10 @@ check(
     "_panelAlertRevision++" in rail,
 )
 check(
-    "alert rail sits beside the panel hide control",
-    "CreatePanelAlertMessageRail();" in factory and
-    "_buttonStack.AddChild(" in factory,
+    "alert rail is hosted by the footer action row beside the panel hide control",
+    "CreatePanelAlertMessageRail();" in footer_factory and
+    "_panelFooterActions.AddChild(" in footer_factory and
+    "_buttonStack.AddChild(" in footer_factory,
 )
 check(
     "alert rail contributes to bottom-panel geometry",
@@ -188,8 +190,8 @@ check(
     "PopupPosition" not in parameter_source,
 )
 check(
-    "current Indicator parameter count is 545",
-    len(re.findall(r"\[Parameter\s*\(", parameter_source)) == 545,
+    "current Indicator parameter count is 543",
+    len(re.findall(r"\[Parameter\s*\(", parameter_source)) == 543,
 )
 check(
     "P9 audit itself is in source CI",

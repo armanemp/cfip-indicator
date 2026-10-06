@@ -101,7 +101,7 @@ constants = read("UI/Panel/PanelConstants.cs")
 canonical_arrows = read("UI/Chart/SignalStackedArrowRenderer.cs")
 
 check(
-    "PanelFooterMinHeight = 34" in constants and
+    "PanelFooterMinHeight = 56" in constants and
     "PanelFooterButtonInternalMargin = 2" in constants and
     "ResolvePanelFooterAreaHeight(" in layout and
     "ResolvePanelFooterAreaHeight(" in panel and
@@ -190,14 +190,15 @@ check(
     '"WATCH_ARROW"' in canonical_arrows and
     '"WATCH_ARROW_2"' in canonical_arrows and
     '"WATCH_ARROW_3"' in canonical_arrows and
-    'ChartIconType.UpArrow' in canonical_arrows and
-    'ChartIconType.DownArrow' in canonical_arrows and
-    "snapshot.MtfTrendStrengthLevel" in canonical_arrows,
+    'ChartIconType.UpArrow' not in canonical_arrows and
+    'ChartIconType.DownArrow' not in canonical_arrows and
+    "snapshot.MtfTrendStrengthLevel" in canonical_arrows and
+    "UpdateSignalArrowBox(" in canonical_arrows,
     "canonical signal arrows must use the canonical smart-strength stack",
 )
 
 check(
-    "PanelFooterMinHeight = 34" in constants and
+    "PanelFooterMinHeight = 56" in constants and
     "return contentHeight;" in layout and
     "PanelTrendTimeframeLampRowHeight = 38" in lamp and
     "PanelTrendTimeframeLampIndicatorHeight = 22" in lamp and

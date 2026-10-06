@@ -96,7 +96,7 @@ One row per distinct root cause; do not duplicate rows for symptoms of the same 
 |---|---|---|---|---|---|---|---|---|---|
 | DEF-P0-001 | Repository inventory | P1 | CFIP-LIST.md | Canonical inventory lagged actual tree by four files | Inventory snapshot predates the current canonical prompt/control-plane additions and `.vscode/extensions.json` indexing | VERIFIED | P0/WP-00 | Git tree `207e43b7...`: 1131 files; CFIP-LIST enumerated 1127; reconciled in WP-00 closeout | CFIP-LIST exact-tree comparison |
 | DEF-P0-002 | Documentation governance | P1 | WP-04 | Active tooling depended on superseded `docs/ROADMAP.md` | Historical audit tooling and documentation used the superseded roadmap as an active dependency; active references were migrated to the canonical control plane and the superseded roadmap was isolated under `docs/archive/ROADMAP-LEGACY-2026-10-04.md` | VERIFIED | WP-04 | PR #284 merged as `2e98a4b4cd27dd8b083ee8aac1437cf1a3c6271e`; Source/Architecture #4365, Runtime #4174, cTrader Compile #4358 all PASS | Global legacy-reference scan + canonical control-plane CI |
-| DEF-P0-003 | Architecture boundary | P1 | WP-08 | Indicator still exposes execution/auto-trading parameters and runtime execution state | cBot execution settings are still read from `CFIP.Indicator` parameters, while the canonical architecture requires Indicator = analysis/signal and cBot = broker-mutation/execution authority | OPEN | WP-08 | Source search on `main` confirms `src/CFIP.Indicator/Indicator/Parameters/13_auto_trading.cs`, `Runtime/Initialization/RuntimeInitialization.cs`, `Trading/Execution/State/AutoTradingStateStore.cs` and cBot `CbotIndicatorExecutionSettings.cs` still form an execution-settings dependency | Boundary extraction audit + CI guard requiring execution authority to originate in cBot/Contracts |
+| DEF-P0-003 | Architecture boundary | P1 | WP-08 | Indicator still exposes execution/auto-trading parameters and runtime execution state | This branch moves the active cBot execution-policy reader to cBot-owned settings and removes the cBot dependency on Indicator parameter inspection; legacy Indicator execution declarations remain a separate cleanup item before WP-08 can close | IN PROGRESS | WP-08 | Branch `fix/runtime-signal-alert-cbot-hardening-2026-10-06`: `CbotExecutionSettings.Create(this)` is the cBot source of execution policy; legacy reader removed from production | Boundary extraction audit + CI guard requiring execution authority to originate in cBot/Contracts |
 | DEF-P1-001 | Target ladder runtime | P1 | `TargetLadderSelectionRule` | CLOSED-BAR ANALYSIS raised `NullReferenceException` at `SelectBestPath` on live cTrader M15 instance | A null intermediate ladder stage was accepted during initialization but later dereferenced as `stages[stage].Count` during the second traversal | FIXED — TERMINAL REVALIDATED | WP-05 terminal acceptance | Initial fault: `2026-10-04 15:47:48.244`; fix PR #302 merged as `2f8089e475b98a1cd4c688b9aada418f6067251c`; updated cTrader M15 instance loaded `2026-10-04 16:03:25.758` and completed alert/runtime processing without the previous exception | Null-stage planning-contract fixture in `tools/CFIP.Planning.Contracts/Program.cs`; this evidence closes the defect itself but does not mark unrelated CI-17 scenarios PASS |
 | DEF-P1-002 | Economic news feed | P1 | `EconomicNewsFeedCoordinator` | Target-terminal refresh first showed HTTP/XML failures, then returned an HTML `DOCTYPE` page on M1/M5/M15 after parser hardening | The weekly FairEconomy export is rate-limited per public IP and can return an HTML Request Denied page when multiple clients/instances request it too frequently; the previous 5-minute floor and in-memory coordination did not establish a durable cross-instance attempt/cache boundary | FIXED — TERMINAL REVALIDATED | WP-05 / CI-17 | Target-terminal revalidation 2026-10-04 18:41:07–18:46:50: M1 adopted shared JSON snapshot with 20 relevant events, then recorded one successful HTTP fetch at 18:41:10 from a successful response at 18:41:09.880Z; M5 at 18:42:47 and M15 at 18:46:50 adopted the same shared snapshot with 20 relevant events and identical successUtc 18:41:09.880Z. PR #310 merged to `main` as `b99b62746332bbc9c0348c1a1bbf7538dd109cae`; post-merge repository gates PASS. | Canonical hourly refresh floor, browser-compatible request identity, persistent `LocalStorageScope.Type` shared metadata/payload, cross-instance recent-attempt suppression, one parser/transport owner, and explicit success/shared-adoption diagnostics. Terminal evidence proves one successful JSON fetch was shared by M1/M5/M15; no feed failure was emitted in the revalidation window. |
 | DEF-P1-004 | Signal-line label placement/color | P1 | `PlanLabelRenderer` + `PlanLabelAnchorCalculator` | Live chart labels could visually sit on the signal line and lose the line color | Root cause was an X-axis mismatch: Line and Label were created through different chart-coordinate paths, so native cTrader projection could place the text on/near the line despite the nominal one-bar index gap | FIXED — STATIC VERIFIED / BUILD VERIFIED / RUNTIME VERIFIED / TERMINAL VISUAL REVALIDATION PENDING | P10 — Signal Visual State / CI-18 | PR #338 merged to `main` as `55d2ad4f146f373374e348bd706620f0831c13db`; canonical owners create both signal lines and labels in the same `Bars.OpenTimes` DateTime/OpenTime coordinate system. `PlanLabelAnchorCalculator` remains the sole owner of the one-bar anchor; `PlanLabelRenderer` uses `HorizontalAlignment.Left` native ChartText so the visible start of the label is fixed at that anchor. The canonical materialized line color is reused by the label. Prediction, pending and parallel label/line consumers reuse the same owner instead of maintaining a second geometry path. | Static/CI gates require DateTime/OpenTime-native line and label creation, no post-creation `Time1`/`Time2` or `ChartText.Time` mutation, `CompactPlanLabelGapBars = 1` in the sole anchor owner, left-aligned text at the left-of-line anchor, exact normalized price parity, and no competing label renderer/geometry. Target terminal must visually confirm every applicable Entry/Trigger/SL/TP/pending/parallel/prediction label has its visible text start exactly one full candle left of its line and exactly matches that line’s color. |
@@ -801,7 +801,7 @@ P0 must produce:
 - Canonical inventory before closeout enumerated 1,127 files. The four-file delta was: `.vscode/extensions.json`, `docs/CFIP-LIST.md`, `docs/CFIP-PROMPT.md`, `docs/CFIP-PREPROMPT.md`. All four are now indexed.
 - Production projects: `CFIP.Indicator`, `CFIP.Contracts`, `CFIP.cBot`.
 - Production C# baseline from the machine gate: **668 files**.
-- Public parameter baseline: **545 declarations / 545 unique**, across **30 parameter source files**; zero unread candidates and no duplicate public parameter names.
+- Public parameter baseline: **543 declarations / 543 unique**, across **30 parameter source files**; zero unread candidates and no duplicate public parameter names.
 - Canonical MTF: **M1/M5/M15/M30/H1/H4/D1/W1**; M2 absent.
 
 ### CI / build evidence
@@ -1292,3 +1292,35 @@ If a gate requires user-local execution, the gate record must contain the exact 
 **Verification:** exact merged `main` head passed Source/Architecture, Runtime Acceptance and cTrader Compile/Build. No target-terminal PASS is inferred from those repository gates.
 
 **Required terminal evidence:** load the new Release build with existing CFIP instances on M1, M5 and M15; confirm the old XML error is absent, the M1 HTTP failure is absent, history persistence/audio still pass, and the shared feed behavior is compatible with multiple concurrently attached timeframes. Extend to the higher supported frames when validating cross-instance sharing. CI-17 remains 0/13 until the canonical manual scenarios themselves are evidenced.
+
+
+### 2026-10-06 — Runtime signal / cBot / audio hardening
+**Status:** IN PROGRESS
+
+Root causes addressed in this work unit:
+- cBot execution settings no longer depend on attached Indicator parameter inspection; cBot-owned settings are canonical at runtime.
+- Demo market execution capability is enabled by default, while the explicit cBot automatic-trading master remains fail-closed OFF by default.
+- MTF visual strength uses closed frame price rather than the live quote, preventing intrabar arrow-strength oscillation caused by live price pressure.
+- Authoritative decision/plan direction remains visible when MTF evidence conflicts; conflict reduces displayed strength instead of deleting the signal.
+- Arrow colors and panel timeframe colors consume the same `SignalPresentationColorRule`.
+- Qualified live reaction is surfaced/alerted from `TriggerReady` without granting broker execution authority.
+- Sound playback remains single-owned by `AlertDeliveryProcessor`; failed playback is re-queued and the bounded audio queue has larger burst capacity.
+
+Residual WP-08 item: the Indicator legacy execution/auto-trading parameter surface still needs full caller-by-caller removal and related state cleanup. It is intentionally not hidden behind another compatibility mirror.
+
+### 2026-10-07 — Signal presentation contract synchronization
+
+**Status:** REPOSITORY HARDENING IN PROGRESS
+
+The active signal-presentation implementation is now governed by one chain:
+
+`MtfTrendStrengthRule → SignalVisualSnapshot → SignalStackedArrowRenderer`
+
+The canonical directional display is a fixed 66×66 bottom-right chart-control box. One, two or three directional glyphs are derived from the canonical 1–9 strength level. No candle-anchored directional icon, `M1_TRIGGER` marker or second strength calculation is permitted.
+
+Audio remains one queued event lifecycle with the main alert queue, bounded sound queue, centralized playback in `AlertDeliveryProcessor`, and retry of the same event after playback failure.
+
+The panel footer's M1/M5/M15/H1/H4 data-status row is fixed outside the scrollable body and remains presentation-only.
+
+Repository-side Source/Architecture, Runtime Acceptance and cTrader Compile gates are still required on the latest head. Target-terminal acceptance remains manual for actual box visibility, arrow count/color, footer persistence, audio audibility, cBot attachment/execution state and restart/reconnect behavior.
+

@@ -138,7 +138,7 @@ namespace cAlgo
         internal static bool IsReactionAlertEligible(
             bool alertEnabled,
             bool liveReactionEnabled,
-            bool entryAllowed,
+            bool reactionReady,
             bool hasPlan,
             bool hasPendingOrder,
             bool hasLivePosition,
@@ -151,7 +151,7 @@ namespace cAlgo
         {
             if (!alertEnabled ||
                 !liveReactionEnabled ||
-                !entryAllowed ||
+                !reactionReady ||
                 hasPlan ||
                 hasPendingOrder ||
                 hasLivePosition ||

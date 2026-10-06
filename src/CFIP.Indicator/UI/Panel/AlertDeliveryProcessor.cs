@@ -135,11 +135,22 @@ namespace cAlgo
                 if (!next.PlaySound)
                     continue;
 
-                DeliverAlertSound(next);
+                if (!DeliverAlertSound(next))
+                {
+                    if (_alertSoundDeliveryQueue != null &&
+                        _alertSoundDeliveryQueue.Enqueue(next))
+                    {
+                        Print(
+                            "CFIP ALERT SOUND RETRY QUEUED | id={0}",
+                            next.Envelope == null
+                                ? ""
+                                : next.Envelope.AlertId);
+                    }
+                }
             }
         }
 
-        private void DeliverAlertSound(
+        private bool DeliverAlertSound(
             AlertDelivery delivery)
         {
             bool attemptedCustomFile =
@@ -160,7 +171,7 @@ namespace cAlgo
                             : delivery.Envelope.AlertId,
                         delivery.SoundFilePath);
 
-                    return;
+                    return true;
                 }
                 catch (Exception ex)
                 {
@@ -189,7 +200,7 @@ namespace cAlgo
                             : delivery.Envelope.AlertId,
                         parsedSoundType);
 
-                    return;
+                    return true;
                 }
 
                 Notifications.PlaySound(AlertSoundType);
@@ -200,6 +211,8 @@ namespace cAlgo
                         ? ""
                         : delivery.Envelope.AlertId,
                     AlertSoundType);
+
+                return true;
             }
             catch (Exception ex)
             {
@@ -207,6 +220,7 @@ namespace cAlgo
                     "CFIP sound alert delivery failed [{0}]: {1}",
                     delivery.Key,
                     ex.Message);
+                return false;
             }
         }
     }

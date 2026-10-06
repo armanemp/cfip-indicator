@@ -178,7 +178,7 @@ namespace cAlgo
                 !WatchReactionAlertRule.IsReactionAlertEligible(
                     AlertOnReaction,
                     AlertOnLiveReaction,
-                    _reaction.EntryAllowed,
+                    _reaction.TriggerReady,
                     hasPlan,
                     hasPendingOrder,
                     hasLivePosition,
@@ -186,7 +186,7 @@ namespace cAlgo
                     _reaction.Direction,
                     _reaction.Confidence,
                     _reaction.IndependentEvidence,
-                    LiveReactionStrongThreshold,
+                    LiveReactionThreshold,
                     MinimumLiveReactionEvidence))
                 return;
 

@@ -200,6 +200,26 @@ namespace cAlgo
                                         
                                                     _buttonStack.Height =
                                                         buttonAreaHeight;
+
+                                                    if (_panelDataStatusText != null)
+                                                    {
+                                                        _panelDataStatusText.Width =
+                                                            Math.Max(1, contentWidth);
+                                                        _panelDataStatusText.Height =
+                                                            PanelDataStatusRowHeight;
+                                                    }
+
+                                                    if (_panelFooterActions != null)
+                                                    {
+                                                        _panelFooterActions.Width =
+                                                            Math.Max(1, contentWidth);
+                                                        _panelFooterActions.Height =
+                                                            Math.Max(
+                                                                24,
+                                                                buttonAreaHeight -
+                                                                PanelDataStatusRowHeight -
+                                                                PanelFooterActionGap);
+                                                    }
                                         
                                                 }
     }

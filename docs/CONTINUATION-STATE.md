@@ -2819,3 +2819,59 @@ Target-terminal revalidation remains required before DEF-P1-003 can be closed an
 PR #312 merged to `main` as `ca7d9844b1a312651d4ce073393d666d59b12cda`. Post-merge Source/Architecture, Runtime Acceptance and cTrader Compile are all PASS.
 
 The implementation removes the redundant per-instance causal-event memory and uses the canonical shared `AlertEventDedupCoordinator` + `LocalStorageScope.Type` state. Terminal revalidation is still required to prove that the same M5/M15 causal event produces exactly one queue acceptance and one sound delivery.
+
+
+## 2026-10-06 — Signal Arrow Box + Footer Data Status Hardening
+
+Status: **IN PROGRESS — repository implementation on dependent UI branch; terminal visual verification pending**
+
+Canonical UI corrections:
+- Directional MTF arrows are no longer rendered under/above candles by SignalStackedArrowRenderer.
+- The same canonical direction, 9-level strength and SignalPresentationColorRule now feed one fixed 66x66 bottom-right chart-control box.
+- Show Signal Arrow remains the single enable/disable switch and defaults to **true**.
+- The box is non-interactive and intentionally compact so it does not compete with the trade-plan lines or panel.
+- Legacy chart-arrow objects are still removed during lifecycle cleanup so stale arrows cannot survive the migration.
+- The panel footer now has a dedicated fixed data-status rail for M1/M5/M15/H1/H4. Its glyph bars are derived from the native Bars.TickVolumes series and are outside the panel ScrollViewer.
+- Footer action controls and alert messages remain separate from the data-status rail; the data rail therefore cannot disappear when panel rows scroll.
+- A dedicated source/architecture audit is wired into CI: tools/audit_phase_ui_signal_box_footer_2026_10_06.py.
+
+Required terminal evidence before closeout:
+1. Release build loads without compile/runtime errors.
+2. No directional arrow glyph remains on/under any candle.
+3. Bottom-right box is visible by default, shows 1–3 arrows according to the canonical 9-level strength and uses the same BUY/SELL color source as panel/chart presentation.
+4. Setting Show Signal Arrow=false hides the box completely.
+5. Footer visibly contains M1/M5/M15/H1/H4 data bars and they remain fixed while the panel body scrolls.
+6. No M2 timeframe appears in the data-status rail or any related UI.
+
+
+## 2026-10-06 — UI footer ownership and signal-quality continuation lock
+
+- [x] Footer construction extracted from PanelFactory into PanelFooterFactory to satisfy production-module size limits without creating a second footer behavior owner.
+- [x] Footer data controls remain native Border controls for M1/M5/M15/H1/H4 and continue to use the existing PanelAlertMessageRenderer data-level/color owner.
+- [x] Architecture parameter contract reconciled: total parameter groups remain 543 declarations, with 540 non-OSS baseline declarations after removal of obsolete arrow offset parameters.
+- [ ] PR #361 repository gates must all pass on the final head before merge.
+- [ ] Target-terminal visual acceptance remains mandatory; repository CI never counts as visual proof.
+
+Next analytical work unit is the full signal-quality chain audit: MTF evidence fusion → direction acceptance → decision lifecycle → M5 trigger → optional M1 precision → actionability → canonical visual snapshot → AlertEngine → cBot signal transport. The objective is earlier causal recognition, stronger qualified signals, and anti-flapping revision semantics without weakening broker safety.
+
+
+## 2026-10-06 — Signal direction anti-flap ownership hardening
+
+- [x] `DirectionAcceptanceGate` is now the sole lifecycle owner of `_lastConfirmedDirection` / `_lastConfirmedM5` updates after the complete decision gate chain passes.
+- [x] `PlanActivation` no longer overwrites accepted-direction state.
+- [x] `SignalVisualDirectionResolver` holds the last accepted direction when a newly computed opposite decision is blocked by lifecycle gates.
+- [x] Added `tools/audit_phase_signal_stability_2026_10_06.py` to prevent a second direction-state writer from returning.
+- [ ] Repository CI and target-terminal verification remain required before this hardening is considered closed.
+
+## 2026-10-07 — Signal box / footer / audit synchronization
+
+Current continuation for the active UI/runtime hardening branch:
+
+- The canonical directional presentation is now a fixed 66×66 bottom-right signal box, not candle-anchored chart icons.
+- The box displays 1–3 directional glyphs derived directly from the canonical 1–9 MtfTrendStrengthLevel; no second strength calculation exists in the renderer.
+- The M1 precision/confirmation layer no longer owns a Circle or other chart marker.
+- The panel footer owns a fixed data-status row for M1/M5/M15/H1/H4 tick-volume readiness, outside the scrollable panel body.
+- Indicator cBot execution-policy ownership remains moved to the cBot-owned CbotExecutionSettings; the legacy Indicator-owned execution-settings type is removed.
+- Signal audio remains one canonical queued event path with separate bounded sound delivery and retry on playback failure.
+
+Repository-side CI is the next verification boundary for these synchronized contracts; target-terminal visual/audio/cBot acceptance remains a real manual boundary and is not inferred from static checks.

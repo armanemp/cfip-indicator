@@ -32,8 +32,6 @@ overview = read("src/CFIP.Indicator/UI/Panel/Rows/PanelOverviewExecutionRowsRend
 workflow = read(".github/workflows/source-check.yml")
 
 for token in (
-    "IndicatorAutoTradingEnabled",
-    "IndicatorAutomaticOrdersEnabled",
     "EffectiveAutoTradingEnabled",
     "EffectiveAutomaticOrdersEnabled",
 ):
@@ -41,12 +39,12 @@ for token in (
     require(token in publisher, "publisher missing " + token)
 
 require(
-    "CbotIndicatorExecutionSettings executionSettings" in publisher,
-    "publisher must consume the bound Indicator settings snapshot",
+    "CbotExecutionSettings executionSettings" in publisher,
+    "publisher must consume the canonical cBot execution settings owner",
 )
 require(
-    "executionSettings != null &&" in publisher,
-    "effective execution state must require bound Indicator settings",
+    "executionSettings != null" in publisher,
+    "effective execution state must require canonical cBot settings",
 )
 
 for token in (
@@ -105,8 +103,6 @@ require(
 for token in (
     "EffectiveAutoTradingEnabled",
     "EffectiveAutomaticOrdersEnabled",
-    "IndicatorAutoTradingEnabled",
-    "IndicatorAutomaticOrdersEnabled",
 ):
     require(token in panel, "panel execution state missing cBot snapshot field " + token)
 

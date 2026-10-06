@@ -34,10 +34,11 @@ def require(cond, msg):
         errors.append(msg)
 
 require(
-    "_decision != null &&" in visual_direction and
+    "_decision != null" in visual_direction and
     "_decision.Direction != 0" in visual_direction and
-    "return _decision.Direction;" in visual_direction,
-    "visual direction must retain a directional Decision even before actionability",
+    "_lastConfirmedDirection" in visual_direction and
+    "if (_decision.EntryAllowed)" in visual_direction,
+    "visual direction must retain canonical Decision/accepted-direction state before actionability",
 )
 require(
     "private int GetMarketBiasDirection()" in signal_state and

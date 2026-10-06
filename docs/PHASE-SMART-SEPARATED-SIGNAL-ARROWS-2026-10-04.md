@@ -54,3 +54,13 @@ Final manual boundary:
 - M1 Circle separation.
 
 Operator action after merge: git pull --ff-only.
+
+## Supersession correction — 2026-10-06
+
+The original phase implementation was later hardened by the current UI signal-presentation contract. Directional signal glyphs no longer render as candle-anchored chart icons. The canonical renderer now places the authoritative 1–3 directional arrow glyphs inside one fixed 66×66 bottom-right chart-control box.
+
+The 1–9 strength ladder remains unchanged and still determines whether one, two or three arrows are visible. Direction and strength continue to come from the single SignalVisualSnapshot / MtfTrendStrengthRule chain.
+
+The M1 precision/confirmation layer no longer creates a separate Circle or other chart marker. This removes the competing-marker path entirely; M1 remains analytical/confirmation evidence only.
+
+The fixed-box contract is now the active visual contract. The older pip/price-coordinate separation and M1 Circle wording in this historical phase description are superseded by this correction.

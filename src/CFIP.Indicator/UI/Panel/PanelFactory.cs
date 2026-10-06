@@ -139,7 +139,7 @@ namespace cAlgo
                                             new StackPanel
                                             {
                                                 Orientation =
-                                                    Orientation.Horizontal,
+                                                    Orientation.Vertical,
                                                 HorizontalAlignment =
                                                     HorizontalAlignment.Stretch,
                                                 VerticalAlignment =
@@ -149,23 +149,9 @@ namespace cAlgo
                                                         0,
                                                         Color.Black)
                                             };
+
+                                        CreatePanelFooter();
                         
-                                        // The Indicator panel is analysis/presentation only.
-                                        // Broker Close/Cancel actions belong to the cBot surface.
-                                        // The hide/show toggle is the only interactive control
-                                        // owned by the Indicator panel. Broker actions are cBot-owned.
-                                        CreatePanelToggleButton();
-                        
-                                        if (_panelToggleButton != null)
-                                            _buttonStack.AddChild(
-                                                _panelToggleButton);
-
-                                        CreatePanelAlertMessageRail();
-
-                                        if (_panelAlertMessageStack != null)
-                                            _buttonStack.AddChild(
-                                                _panelAlertMessageStack);
-
                         
                                         _panelHeaderStack.AddChild(
                                             _panelHeaderTitle);
@@ -262,6 +248,10 @@ namespace cAlgo
                                         RemovePanelTrendTimeframeLampRow();
                                         _panelRows.Clear();
                                         _buttonStack = null;
+                                        _panelFooterActions = null;
+                                        _panelDataStatusText = null;
+                                        _panelDataStatusBars = null;
+                                        _panelDataStatusBarControls.Clear();
                                         _panelToggleButton = null;
                                         _panelRestoreButton = null;
                                     }

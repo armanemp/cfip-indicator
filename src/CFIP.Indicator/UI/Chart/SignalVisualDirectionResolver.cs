@@ -35,9 +35,28 @@ namespace cAlgo
                  _plan.Direction == -1))
                 return _plan.Direction;
         
-            if (_decision != null &&
-                _decision.Direction != 0)
-                return _decision.Direction;
+            if (_decision != null)
+            {
+                // The visible direction follows the lifecycle-accepted
+                // decision, not a transient recomputation that is blocked
+                // by the anti-flip gate.
+                if (_decision.Direction != 0)
+                {
+                    if (_decision.EntryAllowed)
+                        return _decision.Direction;
+
+                    if (_lastConfirmedDirection != 0)
+                        return _lastConfirmedDirection;
+
+                    return 0;
+                }
+
+                // Once a direction has been accepted, a temporary neutral
+                // decision cannot let the live reaction layer flip the UI.
+                // A new opposite direction must pass DirectionAcceptanceGate.
+                if (_lastConfirmedDirection != 0)
+                    return _lastConfirmedDirection;
+            }
         
             if (reactionReady &&
                 _reaction != null)
