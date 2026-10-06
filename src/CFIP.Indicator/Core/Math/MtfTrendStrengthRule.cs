@@ -50,11 +50,10 @@ namespace cAlgo
         public static MtfTrendStrengthResult Evaluate(
             Frame[] frames,
             double[] weights,
-            double livePrice)
+            double referencePrice)
         {
             if (frames == null ||
-                frames.Length == 0 ||
-                !NumericGuards.IsFinitePositive(livePrice))
+                frames.Length == 0)
                 return EmptyResult();
 
             double weightedBull = 0;
@@ -87,14 +86,12 @@ namespace cAlgo
                 double bullStrength =
                     ResolveFrameSideStrength(
                         frame,
-                        1,
-                        livePrice);
+                        1);
 
                 double bearStrength =
                     ResolveFrameSideStrength(
                         frame,
-                        -1,
-                        livePrice);
+                        -1);
 
                 weightedBull +=
                     weight *
@@ -300,8 +297,7 @@ namespace cAlgo
 
         private static double ResolveFrameSideStrength(
             Frame frame,
-            int direction,
-            double livePrice)
+            int direction)
         {
             if (frame == null ||
                 (direction != 1 && direction != -1) ||
@@ -375,10 +371,9 @@ namespace cAlgo
                     100);
 
             double livePressureQuality =
-                ResolveLivePressureQuality(
+                ResolveClosedPressureQuality(
                     frame,
-                    direction,
-                    livePrice);
+                    direction);
 
             double raw =
                 normalizedScore * 0.24 +
@@ -548,18 +543,26 @@ namespace cAlgo
             return 20;
         }
 
-        private static double ResolveLivePressureQuality(
+        private static double ResolveClosedPressureQuality(
             Frame frame,
-            int direction,
-            double livePrice)
+            int direction)
         {
-            if (!NumericGuards.IsFinitePositive(frame.EmaFast) ||
-                !NumericGuards.IsFinitePositive(frame.Atr) ||
-                !NumericGuards.IsFinitePositive(livePrice))
+            if (frame == null ||
+                frame.Bars == null ||
+                frame.Index < 0 ||
+                frame.Index >= frame.Bars.Count ||
+                !NumericGuards.IsFinitePositive(frame.EmaFast) ||
+                !NumericGuards.IsFinitePositive(frame.Atr))
+                return 50;
+
+            double closedPrice =
+                frame.Bars.ClosePrices[frame.Index];
+
+            if (!NumericGuards.IsFinitePositive(closedPrice))
                 return 50;
 
             double signedPressure =
-                (livePrice - frame.EmaFast) /
+                (closedPrice - frame.EmaFast) /
                 Math.Max(
                     frame.Atr,
                     1e-9);
