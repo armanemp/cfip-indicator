@@ -116,8 +116,10 @@ namespace cAlgo
                     : snapshot.MtfTrendStrengthTier;
 
             Color arrowColor =
-                SignalArrowColorFor(
+                SignalPresentationColorPolicy.Resolve(
+                    this,
                     direction,
+                    strength >= 7 ? 3 : strength >= 4 ? 2 : 1,
                     state);
 
             // Keep every glyph outside the candle body and ensure the visible
