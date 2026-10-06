@@ -118,9 +118,6 @@ namespace cAlgo
                     0,
                     HighImpactNewsMinutesBefore))
             {
-                PendingOrder pending =
-                    GetManagedPendingOrder();
-
                 // Indicator owns news intelligence only. It publishes safety
                 // intents; the cBot owns the execution policy and decides whether
                 // CFIP-managed pending orders/positions may be mutated. This keeps
