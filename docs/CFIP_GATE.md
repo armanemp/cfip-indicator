@@ -1307,3 +1307,20 @@ Root causes addressed in this work unit:
 - Sound playback remains single-owned by `AlertDeliveryProcessor`; failed playback is re-queued and the bounded audio queue has larger burst capacity.
 
 Residual WP-08 item: the Indicator legacy execution/auto-trading parameter surface still needs full caller-by-caller removal and related state cleanup. It is intentionally not hidden behind another compatibility mirror.
+
+### 2026-10-07 — Signal presentation contract synchronization
+
+**Status:** REPOSITORY HARDENING IN PROGRESS
+
+The active signal-presentation implementation is now governed by one chain:
+
+`MtfTrendStrengthRule → SignalVisualSnapshot → SignalStackedArrowRenderer`
+
+The canonical directional display is a fixed 66×66 bottom-right chart-control box. One, two or three directional glyphs are derived from the canonical 1–9 strength level. No candle-anchored directional icon, `M1_TRIGGER` marker or second strength calculation is permitted.
+
+Audio remains one queued event lifecycle with the main alert queue, bounded sound queue, centralized playback in `AlertDeliveryProcessor`, and retry of the same event after playback failure.
+
+The panel footer's M1/M5/M15/H1/H4 data-status row is fixed outside the scrollable body and remains presentation-only.
+
+Repository-side Source/Architecture, Runtime Acceptance and cTrader Compile gates are still required on the latest head. Target-terminal acceptance remains manual for actual box visibility, arrow count/color, footer persistence, audio audibility, cBot attachment/execution state and restart/reconnect behavior.
+
