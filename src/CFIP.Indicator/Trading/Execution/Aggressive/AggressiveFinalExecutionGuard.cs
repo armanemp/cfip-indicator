@@ -48,13 +48,6 @@ namespace cAlgo
                 return false;
             }
 
-            if (!EnsureTradingPermission())
-            {
-                reason =
-                    "AGGRESSIVE • TRADING PERMISSION NOT GRANTED";
-                return false;
-            }
-
             string suitabilityReason;
 
             if (!PassesMarketSuitability(
