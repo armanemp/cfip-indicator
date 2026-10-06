@@ -56,9 +56,9 @@ namespace cAlgo
 
             ParallelScenarioGeometry geometry;
 
-            if (!TryBuildScenarioGeometry(
+            if (!TryBuildParallelScenarioGeometry(
                     closedM5,
-                    execution,
+                    execution.Direction,
                     out geometry))
                 return null;
 
@@ -67,129 +67,6 @@ namespace cAlgo
                 execution,
                 lane,
                 geometry);
-        }
-
-        private bool TryBuildScenarioGeometry(
-            int closedM5,
-            ExecutionModel execution,
-            out ParallelScenarioGeometry geometry)
-        {
-            geometry = null;
-
-            if (_m5Bars == null ||
-                execution == null ||
-                (execution.Direction != 1 &&
-                 execution.Direction != -1) ||
-                closedM5 < 30)
-                return false;
-
-            double atr =
-                Atr(
-                    _m5Bars,
-                    closedM5);
-
-            if (!IsFinitePositive(atr))
-                return false;
-
-            double entry =
-                IsFinitePositive(execution.IdealEntry)
-                    ? execution.IdealEntry
-                    : execution.ActualEntry;
-
-            if (!IsFinitePositive(entry))
-                return false;
-
-            entry =
-                NormalizePrice(entry);
-
-            double stop =
-                BuildStructuralStop(
-                    closedM5,
-                    execution.Direction,
-                    entry,
-                    atr,
-                    out _,
-                    out _);
-
-            if (!IsValidStop(
-                    execution.Direction,
-                    entry,
-                    stop))
-            {
-                if (IsValidStop(
-                        execution.Direction,
-                        entry,
-                        execution.Invalidation))
-                {
-                    stop = execution.Invalidation;
-                }
-                else
-                {
-                    StructuralStopGeometrySnapshot fallbackGeometry =
-                        StructuralStopGeometryRule.EvaluateFallback(
-                            execution.Direction,
-                            entry,
-                            atr,
-                            FallbackSlAtr,
-                            Symbol.TickSize,
-                            Symbol.Digits);
-
-                    if (!fallbackGeometry.IsValid)
-                        return false;
-
-                    stop = fallbackGeometry.Stop;
-                }
-            }
-
-            if (!IsValidStop(
-                    execution.Direction,
-                    entry,
-                    stop))
-                return false;
-
-            double risk =
-                RiskRewardMathRule.RiskFromLevels(
-                    entry,
-                    stop,
-                    Symbol.PipSize);
-
-            if (!IsFinitePositive(risk))
-                return false;
-
-            double riskAtr =
-                risk /
-                Math.Max(
-                    Symbol.PipSize,
-                    atr);
-
-            double spread =
-                Math.Max(
-                    0,
-                    Symbol.Ask - Symbol.Bid);
-
-            if (!StructuralStopRiskRule.IsWithinPlanningRiskEnvelope(
-                    riskAtr,
-                    atr,
-                    MinimumSlAtr,
-                    MaximumSlAtr,
-                    MaximumStructuralStopAtr,
-                    spread,
-                    Symbol.PipSize,
-                    MaximumSpreadToStopRiskRatio))
-                return false;
-
-            geometry =
-                new ParallelScenarioGeometry
-                {
-                    Direction = execution.Direction,
-                    Atr = atr,
-                    Entry = entry,
-                    Stop = stop,
-                    Risk = risk,
-                    ExecutionQuality = execution.Quality
-                };
-
-            return true;
         }
 
         private TradeSetupPreview BuildTradeSetupPreviewFromGeometry(
