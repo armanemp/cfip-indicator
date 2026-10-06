@@ -428,8 +428,9 @@ namespace cAlgo
 
             Assert(
                 htfExtension > baseExtension &&
-                htfExtension <= TargetRewardEnvelopeRule.HtfMaximumExtensionAtrCap,
-                "HTF target extension can expand only toward the configured maximum RR envelope");
+                htfExtension <= TargetRewardEnvelopeRule.HtfMaximumExtensionAtrCap &&
+                Math.Abs(htfExtension - 9.0) < 1e-12,
+                "HTF target extension follows actual stop-risk and configured maximum RR");
 
             Assert(
                 TargetRewardEnvelopeRule.CanReachStage(
@@ -450,6 +451,22 @@ namespace cAlgo
                     12.0,
                     false),
                 "non-HTF TP4 remains bounded by the original extension ceiling");
+
+            Assert(
+                !double.IsNaN(
+                    TargetRewardEnvelopeRule.MaximumReachableRR(
+                        0.75,
+                        1.00,
+                        4.0,
+                        double.NaN,
+                        true)) &&
+                TargetRewardEnvelopeRule.MaximumReachableRR(
+                    0.75,
+                    1.00,
+                    4.0,
+                    double.NaN,
+                    true) == 0,
+                "invalid maximum RR fails closed without NaN propagation");
 
             double m15RewardScore =
                 TargetCandidateRewardScoreRule.Calculate(
