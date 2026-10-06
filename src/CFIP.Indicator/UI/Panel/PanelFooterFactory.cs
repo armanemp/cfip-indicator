@@ -177,7 +177,13 @@ namespace cAlgo
                 _panelBuyPressureFill == null ||
                 _panelSellPressureFill == null ||
                 _panelBuyPressureLabel == null ||
-                _panelSellPressureLabel == null)
+                _panelSellPressureLabel == null ||
+                _panelBuyFlowTrack == null ||
+                _panelSellFlowTrack == null ||
+                _panelBuyFlowFill == null ||
+                _panelSellFlowFill == null ||
+                _panelBuyFlowLabel == null ||
+                _panelSellFlowLabel == null)
                 return;
 
             _panelFlowPressureRail.IsVisible =
@@ -189,116 +195,127 @@ namespace cAlgo
                     1,
                     EffectivePanelContentWidth());
 
-            _panelFlowPressureRail.Width =
-                contentWidth;
+            _panelFlowPressureRail.Width = contentWidth;
 
-            _panelBuyPressureRow.Width =
-                contentWidth;
-
-            _panelSellPressureRow.Width =
-                contentWidth;
-
-            _panelBuyPressureLabel.Width =
-                contentWidth;
-
-            _panelSellPressureLabel.Width =
-                contentWidth;
-
-            _panelBuyPressureTrack.Width =
-                contentWidth;
-
-            _panelSellPressureTrack.Width =
-                contentWidth;
+            _panelBuyPressureRow.Width = contentWidth;
+            _panelSellPressureRow.Width = contentWidth;
+            _panelBuyFlowTrack.Width = contentWidth;
+            _panelSellFlowTrack.Width = contentWidth;
+            _panelBuyFlowLabel.Width = contentWidth;
+            _panelSellFlowLabel.Width = contentWidth;
 
             double buyLiquidity;
             double sellLiquidity;
 
-            bool ready =
+            bool depthReady =
                 TryResolveCanonicalBuySellLiquidity(
                     out buyLiquidity,
                     out sellLiquidity);
 
-            Color buyColor =
-                BuyArrowColor;
+            double depthTotal =
+                buyLiquidity + sellLiquidity;
 
-            Color sellColor =
-                SellArrowColor;
-
-            double totalLiquidity =
-                buyLiquidity +
-                sellLiquidity;
-
-            double buyShare =
-                ready &&
-                totalLiquidity > 0
-                    ? buyLiquidity / totalLiquidity
+            double buyDepthShare =
+                depthReady && depthTotal > 0
+                    ? buyLiquidity / depthTotal
                     : 0;
 
-            double sellShare =
-                ready &&
-                totalLiquidity > 0
-                    ? sellLiquidity / totalLiquidity
+            double sellDepthShare =
+                depthReady && depthTotal > 0
+                    ? sellLiquidity / depthTotal
                     : 0;
 
-            if (!ready)
+            if (!depthReady)
             {
-                _panelBuyPressureLabel.Text = "BUY LIQ --";
-                _panelSellPressureLabel.Text = "SELL LIQ --";
-
-                buyColor =
-                    Color.FromArgb(
-                        100,
-                        PanelMutedTextColor);
-
-                sellColor =
-                    Color.FromArgb(
-                        100,
-                        PanelMutedTextColor);
+                _panelBuyPressureLabel.Text = "DEPTH BUY --";
+                _panelSellPressureLabel.Text = "DEPTH SELL --";
             }
             else
             {
                 int buyPercent =
-                    totalLiquidity > 0
+                    depthTotal > 0
                         ? (int)Math.Round(
-                            buyLiquidity /
-                            totalLiquidity *
-                            100.0)
+                            buyDepthShare * 100.0)
                         : 50;
 
-                int sellPercent =
-                    100 - buyPercent;
-
                 _panelBuyPressureLabel.Text =
-                    "BUY LIQ " +
-                    FormatRealtimeVolume(
-                        buyLiquidity) +
+                    "DEPTH BUY " +
+                    FormatRealtimeVolume(buyLiquidity) +
                     " u (" +
                     buyPercent.ToString(
                         System.Globalization.CultureInfo.InvariantCulture) +
                     "%)";
 
                 _panelSellPressureLabel.Text =
-                    "SELL LIQ " +
-                    FormatRealtimeVolume(
-                        sellLiquidity) +
+                    "DEPTH SELL " +
+                    FormatRealtimeVolume(sellLiquidity) +
                     " u (" +
-                    sellPercent.ToString(
+                    (100 - buyPercent).ToString(
                         System.Globalization.CultureInfo.InvariantCulture) +
                     "%)";
             }
 
-            _panelBuyPressureLabel.ForegroundColor = buyColor;
-            _panelSellPressureLabel.ForegroundColor = sellColor;
+            AggressiveFlowSnapshot flow =
+                GetAggressiveFlowSnapshot();
 
-            _panelBuyPressureFill.BackgroundColor =
-                Color.FromArgb(
-                    225,
-                    buyColor);
+            long classified =
+                flow == null
+                    ? 0
+                    : flow.ClassifiedTicks;
 
-            _panelSellPressureFill.BackgroundColor =
-                Color.FromArgb(
-                    225,
-                    sellColor);
+            double buyFlowShare =
+                flow != null && classified > 0
+                    ? flow.BuyShare
+                    : 0;
+
+            double sellFlowShare =
+                flow != null && classified > 0
+                    ? flow.SellShare
+                    : 0;
+
+            _panelBuyFlowLabel.Text =
+                classified > 0
+                    ? "FLOW BUY " +
+                      flow.BuyTicks.ToString(
+                          System.Globalization.CultureInfo.InvariantCulture) +
+                      " ticks (" +
+                      Math.Round(
+                          buyFlowShare * 100.0).ToString(
+                              System.Globalization.CultureInfo.InvariantCulture) +
+                      "%)"
+                    : "FLOW BUY --";
+
+            _panelSellFlowLabel.Text =
+                classified > 0
+                    ? "FLOW SELL " +
+                      flow.SellTicks.ToString(
+                          System.Globalization.CultureInfo.InvariantCulture) +
+                      " ticks (" +
+                      Math.Round(
+                          sellFlowShare * 100.0).ToString(
+                              System.Globalization.CultureInfo.InvariantCulture) +
+                      "%)"
+                    : "FLOW SELL --";
+
+            _panelBuyPressureLabel.ForegroundColor =
+                depthReady
+                    ? BuyArrowColor
+                    : Color.FromArgb(100, PanelMutedTextColor);
+
+            _panelSellPressureLabel.ForegroundColor =
+                depthReady
+                    ? SellArrowColor
+                    : Color.FromArgb(100, PanelMutedTextColor);
+
+            _panelBuyFlowLabel.ForegroundColor =
+                classified > 0
+                    ? BuyArrowColor
+                    : Color.FromArgb(100, PanelMutedTextColor);
+
+            _panelSellFlowLabel.ForegroundColor =
+                classified > 0
+                    ? SellArrowColor
+                    : Color.FromArgb(100, PanelMutedTextColor);
 
             _panelBuyPressureFill.Width =
                 Math.Max(
@@ -306,7 +323,7 @@ namespace cAlgo
                     (int)Math.Round(
                         contentWidth *
                         NumericGuards.ClampDouble(
-                            buyShare,
+                            buyDepthShare,
                             0,
                             1)));
 
@@ -316,7 +333,27 @@ namespace cAlgo
                     (int)Math.Round(
                         contentWidth *
                         NumericGuards.ClampDouble(
-                            sellShare,
+                            sellDepthShare,
+                            0,
+                            1)));
+
+            _panelBuyFlowFill.Width =
+                Math.Max(
+                    2,
+                    (int)Math.Round(
+                        contentWidth *
+                        NumericGuards.ClampDouble(
+                            buyFlowShare,
+                            0,
+                            1)));
+
+            _panelSellFlowFill.Width =
+                Math.Max(
+                    2,
+                    (int)Math.Round(
+                        contentWidth *
+                        NumericGuards.ClampDouble(
+                            sellFlowShare,
                             0,
                             1)));
         }
