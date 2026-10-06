@@ -250,9 +250,13 @@ namespace CFIP.cBot
         private string _activeManagedExecutionLabel = "";
         private SignalEnvelope _lastSignalEnvelope;
         private long _stateRevision;
-        private long _lastObservedEnvelopeRevision = -1;
-        private string _lastObservedEnvelopeScenarioId = "";
-        private string _lastObservedEnvelopeInstanceId = "";
+        private const int MaxRealtimeTimerScenarioRevisions = 128;
+
+        private readonly Dictionary<string, long> _lastRealtimeTimerRevisionByScenario =
+            new Dictionary<string, long>(StringComparer.Ordinal);
+
+        private readonly Queue<string> _lastRealtimeTimerScenarioOrder =
+            new Queue<string>();
 
         private bool EffectiveMarketExecutionEnabled =>
             Account.IsLive
@@ -466,28 +470,52 @@ namespace CFIP.cBot
             SignalEnvelope envelope)
         {
             if (envelope == null ||
-                envelope.Identity == null)
+                envelope.Identity == null ||
+                string.IsNullOrWhiteSpace(
+                    _boundIndicatorInstanceId))
                 return false;
 
             string scenarioId =
                 envelope.Identity.ScenarioId ?? "";
 
-            string instanceId =
-                _boundIndicatorInstanceId ?? "";
-
-            if (string.Equals(
-                    instanceId,
-                    _lastObservedEnvelopeInstanceId,
-                    StringComparison.Ordinal) &&
-                string.Equals(
-                    scenarioId,
-                    _lastObservedEnvelopeScenarioId,
-                    StringComparison.Ordinal) &&
-                envelope.Identity.Revision <=
-                    _lastObservedEnvelopeRevision)
+            if (string.IsNullOrWhiteSpace(scenarioId))
                 return false;
 
+            string key =
+                _boundIndicatorInstanceId +
+                "\u001F" +
+                scenarioId;
+
+            if (_lastRealtimeTimerRevisionByScenario.TryGetValue(
+                    key,
+                    out long observedRevision) &&
+                envelope.Identity.Revision <= observedRevision)
+                return false;
+
+            _lastRealtimeTimerRevisionByScenario[key] =
+                envelope.Identity.Revision;
+
+            _lastRealtimeTimerScenarioOrder.Enqueue(key);
+
+            while (_lastRealtimeTimerScenarioOrder.Count >
+                   MaxRealtimeTimerScenarioRevisions)
+            {
+                string oldestKey =
+                    _lastRealtimeTimerScenarioOrder.Dequeue();
+
+                if (_lastRealtimeTimerRevisionByScenario.ContainsKey(
+                        oldestKey))
+                    _lastRealtimeTimerRevisionByScenario.Remove(
+                        oldestKey);
+            }
+
             return true;
+        }
+
+        private void ClearRealtimeTimerObservationState()
+        {
+            _lastRealtimeTimerRevisionByScenario.Clear();
+            _lastRealtimeTimerScenarioOrder.Clear();
         }
 
         protected override void OnTimer()
@@ -1002,6 +1030,7 @@ namespace CFIP.cBot
                 _executionSettings = null;
                 _scenarioEnvelopes.Clear();
                 _scenarioReconciliations.Clear();
+                ClearRealtimeTimerObservationState();
                 _state = ShadowHostState.Blocked;
                 LogBlockedState(reason);
                 return false;
@@ -1014,6 +1043,7 @@ namespace CFIP.cBot
                 _boundIndicatorInstanceId = "";
                 _activeManagedExecutionLabel = "";
                 _executionSettings = null;
+                ClearRealtimeTimerObservationState();
                 LogBlockedState("CFIP INDICATOR INSTANCE ID UNAVAILABLE");
                 return false;
             }
@@ -1033,6 +1063,7 @@ namespace CFIP.cBot
 
             _scenarioEnvelopes.Clear();
             _scenarioReconciliations.Clear();
+            ClearRealtimeTimerObservationState();
 
             _executionSettings = null;
             RefreshExecutionSettings(true);
