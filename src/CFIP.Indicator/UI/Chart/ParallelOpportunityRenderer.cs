@@ -14,8 +14,6 @@ namespace cAlgo
                 Bars.Count < 2)
             {
                 RemoveParallelOpportunityObjects();
-                Chart.RemoveObject(P + "PRIMARY_M15_SIGNAL");
-                Chart.RemoveObject(P + "PRIMARY_H1_SIGNAL");
                 return;
             }
 
@@ -33,8 +31,6 @@ namespace cAlgo
                             Bars.Count - 2,
                             right)));
 
-            bool primaryM15Rendered = false;
-            bool primaryH1Rendered = false;
             int displayNumber = 0;
 
             for (int i = 0;
@@ -57,64 +53,6 @@ namespace cAlgo
 
                 _opportunityVisualIds.Add(
                     baseName);
-
-                if (candidate.IsPrimaryTimeframeSignal &&
-                    (string.Equals(candidate.SourceTimeframe, "M15", StringComparison.OrdinalIgnoreCase) ||
-                     string.Equals(candidate.SourceTimeframe, "H1", StringComparison.OrdinalIgnoreCase)))
-                {
-                    int markerBar =
-                        MapM5ToClosedChart(
-                            candidate.CreatedM5,
-                            Math.Max(0, Bars.Count - 2));
-
-                    double markerAtr =
-                        markerBar >= 1
-                            ? Atr(
-                                Bars,
-                                markerBar)
-                            : 0;
-
-                    double markerOffset =
-                        Math.Max(
-                            Symbol.PipSize * 3,
-                            (markerAtr > 0 ? markerAtr : Symbol.PipSize * 20) *
-                            (string.Equals(candidate.SourceTimeframe, "M15", StringComparison.OrdinalIgnoreCase)
-                                ? 0.22
-                                : 0.38));
-
-                    double markerPrice =
-                        candidate.Direction == 1
-                            ? Bars.LowPrices[markerBar] - markerOffset
-                            : Bars.HighPrices[markerBar] + markerOffset;
-
-                    string markerName =
-                        P +
-                        "PRIMARY_" +
-                        candidate.SourceTimeframe.Trim().ToUpperInvariant() +
-                        "_SIGNAL";
-
-                    DrawIcon(
-                        markerName,
-                        candidate.Direction == 1
-                            ? ChartIconType.UpTriangle : ChartIconType.DownTriangle,
-                        markerBar,
-                        markerPrice,
-                        SignalPresentationColorRule.Resolve(
-                            candidate.Direction,
-                            1,
-                            StrongBuyArrowColor,
-                            StrongSellArrowColor,
-                            ConfirmedBuyArrowColor,
-                            ConfirmedSellArrowColor,
-                            CautionBuyArrowColor,
-                            CautionSellArrowColor,
-                            BlockedReactionArrowColor));
-
-                    if (string.Equals(candidate.SourceTimeframe, "M15", StringComparison.OrdinalIgnoreCase))
-                        primaryM15Rendered = true;
-                    else
-                        primaryH1Rendered = true;
-                }
 
                 if (candidate.PresentationOnly)
                     continue;
@@ -271,12 +209,6 @@ namespace cAlgo
                 }
 
             }
-
-            if (!primaryM15Rendered)
-                Chart.RemoveObject(P + "PRIMARY_M15_SIGNAL");
-
-            if (!primaryH1Rendered)
-                Chart.RemoveObject(P + "PRIMARY_H1_SIGNAL");
 
             RemoveStaleParallelOpportunityObjects();
         }
