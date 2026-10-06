@@ -854,3 +854,18 @@ No trading threshold, MTF role, broker mutation authority or strategy quality ga
 - cBot realtime timer deduplication is now scenario-scoped and bounded instead of using one global last-scenario tuple, so concurrent scenarios do not reprocess each other at the same revision.
 - Provider execution-intent capture is reset before each live pending evaluation, preventing an older M5 intent from being reused after current actionability changes.
 - Automated gates must remain green before merge; target-terminal validation remains required for final visual/broker confirmation.
+
+
+## 2026-10-07 — Aggressive flow separation / no runtime expiry / instrument-aware risk sizing
+
+**Status:** IMPLEMENTED ON BRANCH — CI/TERMINAL VERIFICATION PENDING
+
+- Added one canonical AggressiveFlowAnalyzer consuming cTrader tick events.
+- Kept MarketDepth liquidity and realtime tick-flow as two independent data owners and two independent UI bar pairs.
+- The realtime flow surface reports classified tick counts and explicitly does **not** claim executed trade volume because cTrader Algo's Tick contract exposes Time/Bid/Ask, not trade size.
+- Removed the Indicator's 30-second asynchronous market-data initialization timeout. Required history may now take as long as the broker/data host requires; there is no wall-clock expiry for Indicator initialization.
+- Preserved symbol-native risk sizing through VolumeForFixedRisk, volume normalization and final cBot margin enforcement. No XAUUSD hard-coded multiplier was introduced.
+- Added a permanent Source/Architecture audit for flow semantics, no-runtime-timeout behavior, separate UI ownership and broker-side volume/margin safety.
+- A true Tape/Trade Volume implementation remains a data-capability item: it requires a feed exposing executed trade size. It must be integrated through the same flow owner rather than creating a second flow engine.
+
+**Required target-terminal evidence:** Release build on EURUSD and XAUUSD; confirm four distinct footer bars, live updates without M15 close, no initialization timeout, and correct broker-normalized/risk-capped volume for both symbols.
