@@ -22,11 +22,18 @@ namespace cAlgo
             if (!IsFinitePositive(atr))
                 return 0;
 
-            bool allowMicroRelaxation =
+            bool microTimeframe =
                 string.Equals(
                     timeframe,
                     "M1",
-                    StringComparison.OrdinalIgnoreCase) &&
+                    StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(
+                    timeframe,
+                    "M5",
+                    StringComparison.OrdinalIgnoreCase);
+
+            bool allowMicroRelaxation =
+                microTimeframe &&
                 _m5Frame != null &&
                 _m15Frame != null &&
                 _m5Frame.Direction == direction &&
