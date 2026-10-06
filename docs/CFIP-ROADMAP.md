@@ -269,6 +269,15 @@ Before adding anything, the current native/OSS inventory must be audited against
 
 TA-Lib documents 200+ established indicators across momentum, volatility, volume, statistical and pattern families, while CME's technical-analysis material covers trend, support/resistance, MACD/RSI/Stochastics and chart patterns. These are candidate families for audit, not a mandate to add every indicator.
 
+#### Confirmed current-code weaknesses to remediate
+
+The current implementation already contains a broad OSS indicator set, but its evidence model is not yet the target architecture:
+
+- `OssIndicatorConfluenceAnalyzer` converts RSI, MACD histogram, Bollinger %B, MFI, Aroon, CCI, Stochastic, SuperTrend and Parabolic SAR into largely equal one-point directional votes. This is an evidence-count model, not an independence-aware model.
+- `MarketFrameEvidence` currently invokes the extended OSS confluence only when the frame is M5 and the index is within the last three bars. This must be explicitly audited against the MTF contract; higher-timeframe context cannot be accidentally excluded from the analytical model.
+- OBV is currently diagnostic-only in that OSS vote path; its eventual role must be decided by measured incremental value rather than by simply turning it into another vote.
+- The rebuild must separate **indicator calculation** from **feature interpretation** and **evidence fusion** so that changing an indicator threshold cannot silently change multiple downstream owners.
+
 #### Mandatory redesign of indicator-to-decision flow
 
 **Raw observation → normalized indicator values → feature/state extraction → evidence family → independence/correlation control → regime-conditioned weighting → MTF aggregation → decision → actionability → trigger → plan.**
