@@ -139,3 +139,21 @@ if errors:
     sys.exit(1)
 
 print("CR7.2 STATIC GATE PASS")
+
+
+# Claude M-66/M-67 regression locks.
+preview = read("src/CFIP.Indicator/Planning/TradePlan/PlanPreviewBuilder.cs")
+state = read("src/CFIP.Indicator/Indicator/State.cs")
+predictive = read("src/CFIP.Indicator/Planning/Execution/PredictivePendingLevelSelector.cs")
+check(
+    "parallel preview cache is keyed by closed M5 scenario identity",
+    "Dictionary<long, TradeSetupPreview>" in state and
+    "((long)closedM5 * 10_000L)" in preview and
+    "_parallelPreviewCache.TryGetValue(" in preview,
+)
+check(
+    "predictive confluence uses an immutable source snapshot",
+    "List<string> sourceSnapshot" in predictive and
+    "sourceSnapshot[i]" in predictive and
+    "sourceSnapshot[j]" in predictive,
+)
