@@ -291,6 +291,30 @@ namespace CFIP.cBot
         private string EffectiveAccountMode =>
             Account.IsLive ? "LIVE" : "DEMO";
 
+        private void NormalizeLegacyDemoExecutionArming()
+        {
+            if (Account == null ||
+                Account.IsLive)
+                return;
+
+            bool allCoreDemoExecutionModesDisabled =
+                !EnableDemoMarketExecution &&
+                !EnableDemoPendingStopExecution &&
+                !EnableDemoPendingLimitExecution &&
+                !EnableDemoManagementExecution;
+
+            if (!allCoreDemoExecutionModesDisabled)
+                return;
+
+            EnableDemoMarketExecution = true;
+            EnableDemoPendingStopExecution = true;
+            EnableDemoPendingLimitExecution = true;
+            EnableDemoManagementExecution = true;
+
+            Print(
+                "CFIP CBOT DEMO ARM | migrated legacy disabled execution settings to the current safe DEMO defaults.");
+        }
+
         protected override void OnStart()
         {
             NormalizeLegacyDemoExecutionArming();
