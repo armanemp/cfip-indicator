@@ -26,7 +26,8 @@ namespace cAlgo
                                 return double.NaN;
                 
                             Native set = GetNative(bars);
-                            if (set == null)
+                            if (set == null ||
+                                !set.IsInitialized)
                                 return double.NaN;
                 
                             ExponentialMovingAverage ema =
