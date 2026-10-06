@@ -2853,3 +2853,12 @@ Required terminal evidence before closeout:
 - [ ] Target-terminal visual acceptance remains mandatory; repository CI never counts as visual proof.
 
 Next analytical work unit is the full signal-quality chain audit: MTF evidence fusion → direction acceptance → decision lifecycle → M5 trigger → optional M1 precision → actionability → canonical visual snapshot → AlertEngine → cBot signal transport. The objective is earlier causal recognition, stronger qualified signals, and anti-flapping revision semantics without weakening broker safety.
+
+
+## 2026-10-06 — Signal direction anti-flap ownership hardening
+
+- [x] `DirectionAcceptanceGate` is now the sole lifecycle owner of `_lastConfirmedDirection` / `_lastConfirmedM5` updates after the complete decision gate chain passes.
+- [x] `PlanActivation` no longer overwrites accepted-direction state.
+- [x] `SignalVisualDirectionResolver` holds the last accepted direction when a newly computed opposite decision is blocked by lifecycle gates.
+- [x] Added `tools/audit_phase_signal_stability_2026_10_06.py` to prevent a second direction-state writer from returning.
+- [ ] Repository CI and target-terminal verification remain required before this hardening is considered closed.
