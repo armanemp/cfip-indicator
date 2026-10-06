@@ -2842,3 +2842,14 @@ Required terminal evidence before closeout:
 4. Setting Show Signal Arrow=false hides the box completely.
 5. Footer visibly contains M1/M5/M15/H1/H4 data bars and they remain fixed while the panel body scrolls.
 6. No M2 timeframe appears in the data-status rail or any related UI.
+
+
+## 2026-10-06 — UI footer ownership and signal-quality continuation lock
+
+- [x] Footer construction extracted from PanelFactory into PanelFooterFactory to satisfy production-module size limits without creating a second footer behavior owner.
+- [x] Footer data controls remain native Border controls for M1/M5/M15/H1/H4 and continue to use the existing PanelAlertMessageRenderer data-level/color owner.
+- [x] Architecture parameter contract reconciled: total parameter groups remain 543 declarations, with 540 non-OSS baseline declarations after removal of obsolete arrow offset parameters.
+- [ ] PR #361 repository gates must all pass on the final head before merge.
+- [ ] Target-terminal visual acceptance remains mandatory; repository CI never counts as visual proof.
+
+Next analytical work unit is the full signal-quality chain audit: MTF evidence fusion → direction acceptance → decision lifecycle → M5 trigger → optional M1 precision → actionability → canonical visual snapshot → AlertEngine → cBot signal transport. The objective is earlier causal recognition, stronger qualified signals, and anti-flapping revision semantics without weakening broker safety.
