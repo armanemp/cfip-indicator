@@ -200,11 +200,12 @@ check(
 
 check(
     "PanelFooterMinHeight = 70" in constants and
+    "PanelFooterActionGap = 8" in constants and
     "return contentHeight;" in layout and
     "PanelFlowPressureRailHeight = 42" in constants and
     "PanelFlowPressureRowHeight = 20" in constants and
     "PanelFlowPressureBarHeight = 8" in constants and
-    "PanelFooterActionGap = 4" in constants and
+    "PanelFooterActionGap = 8" in constants and
     "PanelAlertMessageRowHeight = 18" in read("UI/Panel/PanelAlertMessageRenderer.cs"),
     "footer geometry must reserve the two-row pressure rail at the actual content boundary",
 )
