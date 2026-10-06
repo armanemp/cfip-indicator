@@ -335,6 +335,18 @@ Exit: one decision/actionability authority; consumers do not rebuild.
 
 ## P8 — Entry / Trigger / Plan / SL / TP / RR
 
+### P8 analytical optimization constraints — 2026-10-06
+
+
+- **Micro-SL:** M1 structural candidates may use the M1 ATR and M1 structural source to tighten the stop below the broad M5 minimum only when the canonical M5 and M15 directions agree and the existing Smart Stop Quality threshold is met.
+- **Micro-SL safety:** the relaxed floor is never below the canonical micro floor, never below the M1-volatility-derived floor, and never below the spread-derived stop-risk floor. Non-M1 structural stops retain the configured broad minimum.
+- **M1/M5 buffer semantics:** M1 and M5 structural sources use `StopBufferAtr`; only M15+ sources use `HtfStopBufferAtr`.
+- **HTF reward expansion:** TP1 remains conservative; TP2+ keeps the existing HTF-source requirement and may use an adaptive target-extension envelope derived from the maximum permitted RR and actual stop risk.
+- **No synthetic profit:** adaptive HTF extension never overrides target-side, obstacle, freshness, HTF-quality, progression or maximum-RR safety checks.
+- **One owner:** stop geometry remains owned by `StructuralStopGeometryRule`; stop risk remains owned by `StructuralStopRiskRule`; target candidate constraints remain owned by `TargetCandidateConstraintRule`; reward-envelope reachability remains owned by `TargetRewardEnvelopeRule`.
+
+## P8 — Entry / Trigger / Plan / SL / TP / RR
+
 Audit M5 trigger/retest/breakout, optional M1 confirmation, entry side, requested/executable/fill prices, structural SL, TP1..TP4 where contracted, obstacle/reward path, spread/slippage, RR, minimum distance, trailing and break-even.
 
 Exit: no wrong-side target, SL widening, RR-by-rounding or trailing backtrack.
