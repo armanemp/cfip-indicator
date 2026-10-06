@@ -62,12 +62,16 @@ if "Click +=" in production_source:
     if "ApplyAutomaticOrdersQuickToggleClick" in production_source:
         raise SystemExit("G6B interactive AUTO ORDERS handler remains in production source")
 
-for token in ("EnableAutoTrading", "EnableAutomaticOrders", "EnsureExecutionRuntimeState()"):
+for token in (
+    "_autoTradingEnabledRuntime = true;",
+    "_automaticOrdersEnabledRuntime = true;",
+    "EnsureExecutionRuntimeState()",
+):
     if token not in initialization:
-        raise SystemExit(f"G6B settings synchronization boundary missing: {token}")
+        raise SystemExit(f"G6B intent-readiness boundary missing: {token}")
 
-if "_autoTradingEnabledRuntime" not in state or "_automaticOrdersEnabledRuntime" not in state:
-    raise SystemExit("G6B runtime execution-state ownership is missing")
+if "public bool EnableAutoTrading" in initialization or "public bool EnableAutomaticOrders" in initialization:
+    raise SystemExit("G6B Indicator must not expose broker execution master switches")
 
 if "public static bool IsInteractive => false;" not in presentation_rule:
     raise SystemExit("G6B canonical presentation rule must be explicitly read-only")
