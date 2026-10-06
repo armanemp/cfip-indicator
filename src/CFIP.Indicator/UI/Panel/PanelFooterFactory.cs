@@ -275,7 +275,7 @@ namespace cAlgo
 
             _panelBuyFlowLabel.Text =
                 classified > 0
-                    ? "FLOW BUY " +
+                    ? "AGG BUY TICKS " +
                       flow.BuyTicks.ToString(
                           System.Globalization.CultureInfo.InvariantCulture) +
                       " ticks (" +
@@ -283,11 +283,11 @@ namespace cAlgo
                           buyFlowShare * 100.0).ToString(
                               System.Globalization.CultureInfo.InvariantCulture) +
                       "%)"
-                    : "FLOW BUY --";
+                    : "AGG BUY TICKS --";
 
             _panelSellFlowLabel.Text =
                 classified > 0
-                    ? "FLOW SELL " +
+                    ? "AGG SELL TICKS " +
                       flow.SellTicks.ToString(
                           System.Globalization.CultureInfo.InvariantCulture) +
                       " ticks (" +
@@ -295,7 +295,7 @@ namespace cAlgo
                           sellFlowShare * 100.0).ToString(
                               System.Globalization.CultureInfo.InvariantCulture) +
                       "%)"
-                    : "FLOW SELL --";
+                    : "AGG SELL TICKS --";
 
             _panelBuyPressureLabel.ForegroundColor =
                 depthReady
