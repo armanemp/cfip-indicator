@@ -21,6 +21,10 @@ namespace cAlgo
                 decision.SmartQuality +
                 " | MTF " +
                 decision.TimeframeAgreement +
+                " | VOTE " +
+                decision.VoteCoverage +
+                " | VCONF " +
+                decision.VoteConfidence +
                 " | EVID " +
                 decision.IndependentEvidence +
                 " | STRUCT " +
