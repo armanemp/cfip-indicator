@@ -103,10 +103,11 @@ check(
     and "cache.RollingQuotes.Count >" in cache
 )
 check(
-    "stable cache keeps first and last fingerprints",
+    "stable cache keeps fingerprints with internal-only mutable buffers",
     "StableFirstOpenTime" in entry
     and "StableLastOpenTime" in entry
     and "MatchesStableWindowBoundaries" in cache
+    and "public List<StockQuote>" not in entry
 )
 check(
     "history replacement/reload invalidates cached state and lifecycle disposes handlers",
