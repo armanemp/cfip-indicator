@@ -139,10 +139,6 @@ namespace cAlgo
         [Parameter("TP4 Line Color", Group = "14 · DISPLAY — CORE", DefaultValue = "Gold")]
         public Color Tp4LineColor { get; set; }
 
-        [Parameter("BUY Arrow Color", Group = "14 · DISPLAY — CORE", DefaultValue = "Lime")]
-        public Color BuyArrowColor { get; set; }
 
-        [Parameter("SELL Arrow Color", Group = "14 · DISPLAY — CORE", DefaultValue = "Red")]
-        public Color SellArrowColor { get; set; }
     }
 }
