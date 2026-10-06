@@ -16,16 +16,19 @@ namespace cAlgo
                 return false;
 
             double atr = Atr(bars, index);
-            double oldAtr =
-                Atr(
+
+            // Compare the current closed-bar ATR with a stable prior baseline,
+            // not with one arbitrarily selected historical ATR sample. A single
+            // spike/drop must not flip volatility health by itself.
+            double baselineAtr =
+                AverageAtr(
                     bars,
-                    Math.Max(
-                        5,
-                        index - 10));
+                    index - 1,
+                    20);
 
             return HealthyVolatilityRule.IsHealthy(
                 atr,
-                oldAtr,
+                baselineAtr,
                 HealthyAtrMinimumRatio,
                 HealthyAtrMaximumRatio);
         }
