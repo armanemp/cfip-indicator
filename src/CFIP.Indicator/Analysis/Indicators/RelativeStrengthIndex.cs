@@ -33,7 +33,7 @@ namespace cAlgo
                                     index,
                                     set.Rsi.Result.Count,
                                     Math.Max(2, RsiPeriod)))
-                                return 50;
+                                return double.NaN;
                 
                             double value = set.Rsi.Result[index];
                 
