@@ -49,8 +49,8 @@ checks = [
     ("footer contains separate depth and aggressive-flow rows", "CreateFlowPressureRow(" in footer_factory and
      'CreateFlowPressureRow(\n                    "DEPTH BUY"' in footer_factory and
      'CreateFlowPressureRow(\n                    "DEPTH SELL"' in footer_factory and
-     'CreateFlowPressureRow(\n                    "FLOW BUY"' in footer_factory and
-     'CreateFlowPressureRow(\n                    "FLOW SELL"' in footer_factory and
+     'CreateFlowPressureRow(\n                    "AGG BUY TICKS"' in footer_factory and
+     'CreateFlowPressureRow(\n                    "AGG SELL TICKS"' in footer_factory and
      "Orientation = Orientation.Vertical" in footer_factory),
     ("pressure bars use canonical signal colors", "BuyArrowColor" in footer_factory and "SellArrowColor" in footer_factory),
     ("depth remains MarketDepth-owned and flow is a separate owner", "TryResolveCanonicalBuySellLiquidity(" in footer_factory and
