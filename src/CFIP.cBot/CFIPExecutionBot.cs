@@ -23,7 +23,7 @@ namespace CFIP.cBot
         [Parameter(
             "Enable Demo Market Execution",
             Group = "Execution",
-            DefaultValue = false)]
+            DefaultValue = true)]
         public bool EnableDemoMarketExecution { get; set; }
 
         [Parameter(
@@ -79,6 +79,66 @@ namespace CFIP.cBot
             Group = "Live Execution",
             DefaultValue = false)]
         public bool EnableLiveManagementExecution { get; set; }
+
+        [Parameter("Enable Automatic Trading", Group = "Execution Policy", DefaultValue = false)]
+        public bool EnableAutoTrading { get; set; }
+
+        [Parameter("Enable Automatic Orders", Group = "Execution Policy", DefaultValue = false)]
+        public bool EnableAutomaticOrders { get; set; }
+
+        [Parameter("Pending Order Expiry Minutes", Group = "Execution Policy", DefaultValue = 120, MinValue = 15, MaxValue = 1440)]
+        public int PendingOrderExpiryMinutes { get; set; }
+
+        [Parameter("Use Market Hours Guard", Group = "Execution Safety", DefaultValue = true)]
+        public bool UseMarketHoursGuard { get; set; }
+
+        [Parameter("Session Start UTC", Group = "Execution Safety", DefaultValue = 6, MinValue = 0, MaxValue = 23)]
+        public int SessionStartUtc { get; set; }
+
+        [Parameter("Session End UTC", Group = "Execution Safety", DefaultValue = 20, MinValue = 0, MaxValue = 23)]
+        public int SessionEndUtc { get; set; }
+
+        [Parameter("Use Spread Filter", Group = "Execution Safety", DefaultValue = true)]
+        public bool UseSpreadFilter { get; set; }
+
+        [Parameter("Maximum Spread / Stop Risk Ratio", Group = "Execution Safety", DefaultValue = 0.18, MinValue = 0.02, MaxValue = 0.50, Step = 0.01)]
+        public double MaximumSpreadToStopRiskRatio { get; set; }
+
+        [Parameter("Enable Daily Loss Limit", Group = "Execution Safety", DefaultValue = true)]
+        public bool EnableDailyLossLimit { get; set; }
+
+        [Parameter("Maximum Daily Loss Percent", Group = "Execution Safety", DefaultValue = 3.0, MinValue = 0.5, MaxValue = 20, Step = 0.5)]
+        public double MaximumDailyLossPercent { get; set; }
+
+        [Parameter("Maximum Open Positions", Group = "Execution Safety", DefaultValue = 1, MinValue = 1, MaxValue = 1)]
+        public int MaximumOpenPositions { get; set; }
+
+        [Parameter("One Order Per Signal", Group = "Execution Safety", DefaultValue = true)]
+        public bool OneOrderPerSignal { get; set; }
+
+        [Parameter("Managed Actions Only", Group = "Execution Safety", DefaultValue = true)]
+        public bool ManagedActionsOnly { get; set; }
+
+        [Parameter("Auto Trade Label", Group = "Execution Identity", DefaultValue = "CFIP-SMART")]
+        public string AutoTradeLabel { get; set; }
+
+        [Parameter("Enable Live Exit Management", Group = "Management", DefaultValue = false)]
+        public bool EnableLiveExitManagement { get; set; }
+
+        [Parameter("Enable Partial Take Profit", Group = "Management", DefaultValue = false)]
+        public bool EnablePartialTakeProfit { get; set; }
+
+        [Parameter("Smart Broker Protection", Group = "Management", DefaultValue = true)]
+        public bool AutoBrokerProtection { get; set; }
+
+        [Parameter("Auto Protect Broker Positions", Group = "Management", DefaultValue = false)]
+        public bool AutoProtectBrokerPositions { get; set; }
+
+        [Parameter("Sync Smart Broker Take Profit", Group = "Management", DefaultValue = true)]
+        public bool SyncBrokerTakeProfit { get; set; }
+
+        [Parameter("Broker Modify Cooldown ms", Group = "Management", DefaultValue = 750, MinValue = 100, MaxValue = 5000, Step = 50)]
+        public int BrokerModifyCooldownMs { get; set; }
 
         [Parameter(
             "Max Demo Executions Per Session",
@@ -166,7 +226,7 @@ namespace CFIP.cBot
         private readonly CbotLifecycleAudioService _audio =
             new CbotLifecycleAudioService();
 
-        private CbotIndicatorExecutionSettings _executionSettings;
+        private CbotExecutionSettings _executionSettings;
 
         private CbotBrokerReconciliationResult _reconciliation;
         private readonly Dictionary<string, SignalEnvelope> _scenarioEnvelopes =
@@ -998,28 +1058,13 @@ namespace CFIP.cBot
                 _executionSettings != null)
                 return;
 
-            if (!CfipIndicatorChartBinding.TryFind(
-                    this,
-                    _boundIndicatorInstanceId,
-                    out ChartIndicator indicator,
-                    out string reason))
-            {
-                _executionSettings = null;
-                LogBlockedState(reason);
-                return;
-            }
+            _executionSettings =
+                CbotExecutionSettings.Create(
+                    this);
 
-            if (!CbotIndicatorExecutionSettings.TryRead(
-                    indicator,
-                    out CbotIndicatorExecutionSettings settings,
-                    out reason))
-            {
-                _executionSettings = null;
-                LogBlockedState(reason);
-                return;
-            }
-
-            _executionSettings = settings;
+            if (_executionSettings == null)
+                LogBlockedState(
+                    "CBOT EXECUTION SETTINGS UNAVAILABLE");
         }
 
         private void ReloadSignalStore(bool force)
