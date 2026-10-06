@@ -15,6 +15,13 @@ def check(condition: bool, message: str) -> None:
 
 lamp = read("UI/Panel/PanelTrendTimeframeLampRow.cs")
 check(
+    "PanelFooterActionGap = 8" in read("UI/Panel/PanelConstants.cs") and
+    "Margin =" in read("UI/Panel/PanelFooterFactory.cs") and
+    "PanelFooterActionGap" in read("UI/Panel/PanelFooterFactory.cs"),
+    "footer clearance must exist as real visual margin, not only as reserved height",
+)
+
+check(
     "_marketDepth" in read("Indicator/State.cs") and
     "MarketData.GetMarketDepth(" in read("UI/Panel/PanelFooterFactory.cs") and
     "BidEntries" in read("UI/Panel/PanelFooterFactory.cs") and
