@@ -95,7 +95,6 @@ namespace cAlgo
                 GetAutoTradingPanelState(),
                 GetAutoOrdersPanelState(),
                 GetAutoProtectionPanelState(),
-                RetainedPanelCompatibilityKey(),
                 _brokerProtectionRecoveryRequired ? "1" : "0",
                 _panelAlertRevision);
         }
