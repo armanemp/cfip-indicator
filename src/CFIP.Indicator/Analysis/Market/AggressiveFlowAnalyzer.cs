@@ -85,12 +85,10 @@ namespace cAlgo
 
             try
             {
-                int start =
-                    Math.Max(
-                        0,
-                        _ticks.Count - 512);
+                int available = Math.Min(512, _ticks.Count);
 
-                for (int i = start; i < _ticks.Count; i++)
+                // Last(0) is newest; process the bounded history oldest -> newest.
+                for (int i = available - 1; i >= 0; i--)
                     ProcessTick(_ticks.Last(i));
 
                 _ticks.Tick += OnTick;
