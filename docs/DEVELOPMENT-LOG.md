@@ -4144,3 +4144,11 @@ Operator action: pull canonical `main` before target-terminal validation.
 - cBot realtime timer deduplication is now scenario-scoped and bounded instead of using one global last-scenario tuple, so concurrent scenarios do not reprocess each other at the same revision.
 - Provider execution-intent capture is reset before each live pending evaluation, preventing an older M5 intent from being reused after current actionability changes.
 - Automated gates must remain green before merge; target-terminal validation remains required for final visual/broker confirmation.
+
+## 2026-10-07 — Arrow / footer / cBot boundary closeout
+- Canonical signal arrows now follow the canonical MTF trend direction and strength snapshot; the fixed overlay is recreated above the panel z-order and uses a visibly heavier symbol glyph.
+- Footer BUY/SELL bars now show live Market Depth Bid/Ask liquidity totals plus share percentage; candle TickVolume/close-location inference is no longer used by the footer.
+- Real footer clearance is 8px between the liquidity rail and alert-message/action area.
+- Indicator-side broker permission requests and obsolete execution UI parameters/reminder were removed. Intent readiness remains internal; broker execution remains cBot-owned.
+- Demo cBot startup self-heals legacy all-disabled demo execution settings. Live execution remains explicitly armed only by cBot live controls.
+- cBot market-hours protection now follows the broker symbol schedule rather than a fixed UTC window.
