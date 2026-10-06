@@ -879,3 +879,5 @@ No trading threshold, MTF role, broker mutation authority or strategy quality ga
 - Native cTrader Quick Trade/global trading permission is never changed by News Guard. Symbol.IsTradingEnabled remains a broker-state observation only.
 - No Indicator/cBot startup or lifetime timeout is introduced. Command-age and provider-staleness limits remain freshness/safety gates, not process shutdown timers.
 - Spot XAUUSD tick flow is explicitly not executed trade volume. cTrader exposes tick data and DOM volumes, while true executed trade volume requires a feed that exposes trades/size. CME Gold futures provide exchange-traded volume as an institutional reference, but that is not the broker's spot XAUUSD volume.
+
+- Newly confirmed boundary defect: legacy Indicator execution validators still reference cTrader Permissions.TradingPermission. This permission is an algo trade-operation permission, not native Quick Trade/global platform disablement; it is retained only as a tracked execution-boundary cleanup item until the remaining Indicator broker paths are cut over to the cBot.
