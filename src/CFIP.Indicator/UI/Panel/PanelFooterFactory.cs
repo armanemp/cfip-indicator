@@ -32,34 +32,21 @@ namespace cAlgo
                     IsHitTestVisible = false
                 };
 
-            StackPanel buyRow;
-            _panelBuyPressureTrack = CreateFlowPressureRow(
-                "BUY",
-                BuyArrowColor,
-                out _panelBuyPressureLabel,
-                out _panelBuyPressureFill);
-            buyRow = _panelBuyPressureTrack.Child as StackPanel == null
-                ? null
-                : null;
-
-            StackPanel sellRow;
-            _panelSellPressureTrack = CreateFlowPressureRow(
-                "SELL",
-                SellArrowColor,
-                out _panelSellPressureLabel,
-                out _panelSellPressureFill);
-            sellRow = _panelSellPressureTrack.Child as StackPanel == null
-                ? null
-                : null;
-
-            // CreateFlowPressureRow returns the bar track; its parent row is
-            // retained internally by attaching it to the rail here.
             _panelFlowPressureRail.AddChild(
-                CreateFlowPressureRowContainer(
-                    _panelBuyPressureTrack));
+                CreateFlowPressureRow(
+                    "BUY",
+                    BuyArrowColor,
+                    out _panelBuyPressureTrack,
+                    out _panelBuyPressureFill,
+                    out _panelBuyPressureLabel));
+
             _panelFlowPressureRail.AddChild(
-                CreateFlowPressureRowContainer(
-                    _panelSellPressureTrack));
+                CreateFlowPressureRow(
+                    "SELL",
+                    SellArrowColor,
+                    out _panelSellPressureTrack,
+                    out _panelSellPressureFill,
+                    out _panelSellPressureLabel));
 
             _panelFooterActions =
                 new StackPanel
@@ -102,11 +89,12 @@ namespace cAlgo
             UpdatePanelFlowPressureRail();
         }
 
-        private Border CreateFlowPressureRow(
+        private StackPanel CreateFlowPressureRow(
             string caption,
             Color accent,
-            out TextBlock label,
-            out Border fill)
+            out Border track,
+            out Border fill,
+            out TextBlock label)
         {
             label =
                 new TextBlock
@@ -131,7 +119,7 @@ namespace cAlgo
             fill =
                 new Border
                 {
-                    Width = 0,
+                    Width = 1,
                     Height = PanelFlowPressureBarHeight,
                     CornerRadius = 4,
                     BorderThickness = 0,
@@ -144,10 +132,10 @@ namespace cAlgo
                     VerticalAlignment = VerticalAlignment.Center
                 };
 
-            Border track =
+            track =
                 new Border
                 {
-                    Width = 0,
+                    Width = 1,
                     Height = PanelFlowPressureBarHeight,
                     CornerRadius = 4,
                     BorderThickness = 0,
@@ -165,7 +153,7 @@ namespace cAlgo
                 new StackPanel
                 {
                     Orientation = Orientation.Vertical,
-                    Width = 0,
+                    Width = 1,
                     Height = PanelFlowPressureRowHeight,
                     HorizontalAlignment = HorizontalAlignment.Stretch,
                     VerticalAlignment = VerticalAlignment.Top,
@@ -175,21 +163,6 @@ namespace cAlgo
             row.AddChild(label);
             row.AddChild(track);
 
-            // Keep the row container associated with its track without adding
-            // a second visual owner.
-            track.Tag = row;
-
-            return track;
-        }
-
-        private StackPanel CreateFlowPressureRowContainer(
-            Border track)
-        {
-            if (track == null ||
-                !(track.Tag is StackPanel row))
-                return null;
-
-            track.Tag = null;
             return row;
         }
 
@@ -197,7 +170,11 @@ namespace cAlgo
         {
             if (_panelFlowPressureRail == null ||
                 _panelBuyPressureTrack == null ||
-                _panelSellPressureTrack == null)
+                _panelSellPressureTrack == null ||
+                _panelBuyPressureFill == null ||
+                _panelSellPressureFill == null ||
+                _panelBuyPressureLabel == null ||
+                _panelSellPressureLabel == null)
                 return;
 
             _panelFlowPressureRail.IsVisible =
@@ -218,65 +195,74 @@ namespace cAlgo
             _panelSellPressureTrack.Width =
                 contentWidth;
 
-            if (_panelBuyPressureTrack.Child is Border buyFill)
-                _panelBuyPressureFill = buyFill;
-
-            if (_panelSellPressureTrack.Child is Border sellFill)
-                _panelSellPressureFill = sellFill;
-
             double buyPressure;
             double sellPressure;
+
             bool ready =
                 TryResolveCanonicalBuySellPressure(
                     out buyPressure,
                     out sellPressure);
 
+            Color buyColor =
+                BuyArrowColor;
+
+            Color sellColor =
+                SellArrowColor;
+
             if (!ready)
             {
                 buyPressure = 0.5;
                 sellPressure = 0.5;
+
                 _panelBuyPressureLabel.Text = "BUY --";
                 _panelSellPressureLabel.Text = "SELL --";
-                _panelBuyPressureFill.BackgroundColor =
+
+                buyColor =
                     Color.FromArgb(
-                        70,
+                        100,
                         PanelMutedTextColor);
-                _panelSellPressureFill.BackgroundColor =
+
+                sellColor =
                     Color.FromArgb(
-                        70,
+                        100,
                         PanelMutedTextColor);
             }
             else
             {
+                int buyPercent =
+                    (int)Math.Round(
+                        buyPressure * 100.0);
+
+                int sellPercent =
+                    100 - buyPercent;
+
                 _panelBuyPressureLabel.Text =
                     "BUY " +
-                    Math.Round(
-                        buyPressure * 100.0)
-                    .ToString(
-                        "0",
+                    buyPercent.ToString(
                         System.Globalization.CultureInfo.InvariantCulture) +
                     "%";
 
                 _panelSellPressureLabel.Text =
                     "SELL " +
-                    Math.Round(
-                        sellPressure * 100.0)
-                    .ToString(
-                        "0",
+                    sellPercent.ToString(
                         System.Globalization.CultureInfo.InvariantCulture) +
                     "%";
-
-                _panelBuyPressureFill.BackgroundColor =
-                    Color.FromArgb(
-                        225,
-                        BuyArrowColor);
-                _panelSellPressureFill.BackgroundColor =
-                    Color.FromArgb(
-                        225,
-                        SellArrowColor);
             }
 
-            int buyWidth =
+            _panelBuyPressureLabel.ForegroundColor = buyColor;
+            _panelSellPressureLabel.ForegroundColor = sellColor;
+
+            _panelBuyPressureFill.BackgroundColor =
+                Color.FromArgb(
+                    225,
+                    buyColor);
+
+            _panelSellPressureFill.BackgroundColor =
+                Color.FromArgb(
+                    225,
+                    sellColor);
+
+            _panelBuyPressureFill.Width =
                 Math.Max(
                     2,
                     (int)Math.Round(
@@ -286,7 +272,7 @@ namespace cAlgo
                             0,
                             1)));
 
-            int sellWidth =
+            _panelSellPressureFill.Width =
                 Math.Max(
                     2,
                     (int)Math.Round(
@@ -295,9 +281,6 @@ namespace cAlgo
                             sellPressure,
                             0,
                             1)));
-
-            _panelBuyPressureFill.Width = buyWidth;
-            _panelSellPressureFill.Width = sellWidth;
         }
 
         private bool TryResolveCanonicalBuySellPressure(
