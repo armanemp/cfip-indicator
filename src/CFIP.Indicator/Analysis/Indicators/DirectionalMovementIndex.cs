@@ -19,7 +19,7 @@ namespace cAlgo
             if (bars == null ||
                 index < 0 ||
                 index >= bars.Count)
-                return 0;
+                return double.NaN;
 
             Native set = GetNative(bars);
             int period =
@@ -28,6 +28,7 @@ namespace cAlgo
                     AdxPeriod);
 
             if (set == null ||
+                !set.IsInitialized ||
                 set.Dms == null ||
                 !NativeIndicatorReadinessRule.IsIndexedSeriesReady(
                     index,
@@ -39,9 +40,13 @@ namespace cAlgo
                     period))
                 return 0;
 
-            return DmiBiasRule.Calculate(
+            double value = DmiBiasRule.Calculate(
                 set.Dms.DIPlus[index],
                 set.Dms.DIMinus[index]);
+
+            return NumericGuards.IsFiniteValue(value)
+                ? value
+                : double.NaN;
         }
     }
 }
