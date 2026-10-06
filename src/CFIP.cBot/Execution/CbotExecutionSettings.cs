@@ -11,8 +11,8 @@ namespace CFIP.cBot.Execution
     {
         public bool EnableAutoTrading { get; }
         public bool EnableAutomaticOrders { get; }
-        public bool CancelCfipPendingBeforeHighImpactNews { get; }
-        public bool ProtectCfipPositionBeforeHighImpactNews { get; }
+        public bool CancelPendingBeforeHighImpactNews { get; }
+        public bool CloseActiveBeforeHighImpactNews { get; }
         public bool UseMarketHoursGuard { get; }
         public int SessionStartUtc { get; }
         public int SessionEndUtc { get; }
@@ -48,8 +48,8 @@ namespace CFIP.cBot.Execution
         {
             EnableAutoTrading = enableAutoTrading;
             EnableAutomaticOrders = enableAutomaticOrders;
-            CancelCfipPendingBeforeHighImpactNews = cancelCfipPendingBeforeHighImpactNews;
-            ProtectCfipPositionBeforeHighImpactNews = protectCfipPositionBeforeHighImpactNews;
+            CancelPendingBeforeHighImpactNews = cancelCfipPendingBeforeHighImpactNews;
+            CloseActiveBeforeHighImpactNews = protectCfipPositionBeforeHighImpactNews;
             UseMarketHoursGuard = useMarketHoursGuard;
             SessionStartUtc = Math.Max(0, Math.Min(23, sessionStartUtc));
             SessionEndUtc = Math.Max(0, Math.Min(23, sessionEndUtc));
@@ -77,8 +77,8 @@ namespace CFIP.cBot.Execution
 
             return new CbotExecutionSettings(
                 robot.EnableAutoTrading, robot.EnableAutomaticOrders,
-                robot.CancelCfipPendingBeforeHighImpactNews,
-                robot.ProtectCfipPositionBeforeHighImpactNews,
+                robot.CancelPendingBeforeHighImpactNews,
+                robot.CloseActiveBeforeHighImpactNews,
                 robot.UseMarketHoursGuard, robot.SessionStartUtc, robot.SessionEndUtc,
                 robot.UseSpreadFilter, robot.MaximumSpreadToStopRiskRatio,
                 robot.EnableDailyLossLimit, robot.MaximumDailyLossPercent,
