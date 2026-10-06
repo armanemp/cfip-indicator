@@ -41,7 +41,7 @@ for token in (
     require(token in publisher, "publisher missing " + token)
 
 require(
-    "CbotIndicatorExecutionSettings executionSettings" in publisher,
+    "CbotExecutionSettings executionSettings" in publisher,
     "publisher must consume the bound Indicator settings snapshot",
 )
 require(
