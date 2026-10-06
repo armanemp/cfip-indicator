@@ -124,7 +124,10 @@ check(
     "_lastRealtimeTimerScenarioOrder" in cbot and
     "scenarioId" in cbot and
     "envelope.Identity.Revision <= observedRevision" in cbot and
-    "ClearRealtimeTimerObservationState();" in cbot,
+    "ClearRealtimeTimerObservationState();" in cbot and
+    "_lastObservedEnvelopeRevision" not in cbot and
+    "_lastObservedEnvelopeScenarioId" not in cbot and
+    "_lastObservedEnvelopeInstanceId" not in cbot,
 )
 
 check(
