@@ -15,10 +15,13 @@ namespace cAlgo
         private const int PanelBottomClearance = 50;
         private const int PanelRestoreBottomClearance = 50;
 
-        // Compact footer chrome: outer PanelPadding is not reused as internal
-        // button spacing, and two alert rows stay within a 37px rail.
-        private const int PanelFooterMinHeight = 56;
-        private const int PanelDataStatusRowHeight = 20;
+        // Compact footer chrome: the buy/sell pressure rail is a fixed-height,
+        // full-width presentation surface above the alert/action area.
+        private const int PanelFooterMinHeight = 66;
+        private const int PanelFlowPressureRailHeight = 42;
+        private const int PanelFlowPressureRowHeight = 20;
+        private const int PanelFlowPressureLabelHeight = 10;
+        private const int PanelFlowPressureBarHeight = 8;
         private const int PanelFooterActionGap = 2;
         private const int PanelFooterButtonInternalMargin = 2;
         private const int PanelStatusLampFontSize = 20;
