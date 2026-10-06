@@ -24,14 +24,6 @@ namespace cAlgo
                 return false;
             }
 
-            if (!EnsureTradingPermission())
-            {
-                reason =
-                    prefix +
-                    "TRADING PERMISSION NOT GRANTED";
-                return false;
-            }
-
             string intentReason;
 
             if (!ValidateExecutionIntent(

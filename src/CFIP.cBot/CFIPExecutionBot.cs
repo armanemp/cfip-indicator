@@ -29,13 +29,13 @@ namespace CFIP.cBot
         [Parameter(
             "Enable Demo Pending Stop Execution",
             Group = "Execution",
-            DefaultValue = false)]
+            DefaultValue = true)]
         public bool EnableDemoPendingStopExecution { get; set; }
 
         [Parameter(
             "Enable Demo Pending Limit Execution",
             Group = "Execution",
-            DefaultValue = false)]
+            DefaultValue = true)]
         public bool EnableDemoPendingLimitExecution { get; set; }
 
         [Parameter(
@@ -47,7 +47,7 @@ namespace CFIP.cBot
         [Parameter(
             "Enable Demo Management Execution",
             Group = "Execution",
-            DefaultValue = false)]
+            DefaultValue = true)]
         public bool EnableDemoManagementExecution { get; set; }
 
         [Parameter(
@@ -80,10 +80,10 @@ namespace CFIP.cBot
             DefaultValue = false)]
         public bool EnableLiveManagementExecution { get; set; }
 
-        [Parameter("Enable Automatic Trading", Group = "Execution Policy", DefaultValue = false)]
+        [Parameter("Enable Automatic Trading", Group = "Execution Policy", DefaultValue = true)]
         public bool EnableAutoTrading { get; set; }
 
-        [Parameter("Enable Automatic Orders", Group = "Execution Policy", DefaultValue = false)]
+        [Parameter("Enable Automatic Orders", Group = "Execution Policy", DefaultValue = true)]
         public bool EnableAutomaticOrders { get; set; }
 
         [Parameter("Pending Order Expiry Minutes", Group = "Execution Policy", DefaultValue = 120, MinValue = 15, MaxValue = 1440)]
@@ -91,12 +91,6 @@ namespace CFIP.cBot
 
         [Parameter("Use Market Hours Guard", Group = "Execution Safety", DefaultValue = true)]
         public bool UseMarketHoursGuard { get; set; }
-
-        [Parameter("Session Start UTC", Group = "Execution Safety", DefaultValue = 6, MinValue = 0, MaxValue = 23)]
-        public int SessionStartUtc { get; set; }
-
-        [Parameter("Session End UTC", Group = "Execution Safety", DefaultValue = 20, MinValue = 0, MaxValue = 23)]
-        public int SessionEndUtc { get; set; }
 
         [Parameter("Use Spread Filter", Group = "Execution Safety", DefaultValue = true)]
         public bool UseSpreadFilter { get; set; }
@@ -297,8 +291,34 @@ namespace CFIP.cBot
         private string EffectiveAccountMode =>
             Account.IsLive ? "LIVE" : "DEMO";
 
+        private void NormalizeLegacyDemoExecutionArming()
+        {
+            if (Account == null ||
+                Account.IsLive)
+                return;
+
+            bool allCoreDemoExecutionModesDisabled =
+                !EnableDemoMarketExecution &&
+                !EnableDemoPendingStopExecution &&
+                !EnableDemoPendingLimitExecution &&
+                !EnableDemoManagementExecution;
+
+            if (!allCoreDemoExecutionModesDisabled)
+                return;
+
+            EnableDemoMarketExecution = true;
+            EnableDemoPendingStopExecution = true;
+            EnableDemoPendingLimitExecution = true;
+            EnableDemoManagementExecution = true;
+
+            Print(
+                "CFIP CBOT DEMO ARM | migrated legacy disabled execution settings to the current safe DEMO defaults.");
+        }
+
         protected override void OnStart()
         {
+            NormalizeLegacyDemoExecutionArming();
+
             _startedUtc = Server.TimeInUtc;
             PublishPresence("STARTING");
             _tickCount = 0;

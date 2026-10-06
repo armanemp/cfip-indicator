@@ -107,7 +107,7 @@ check(
     "SignalTraceId" in outcome_engine,
 )
 aggressive = read(
-    "src/CFIP.Indicator/Trading/Execution/Aggressive/AggressiveAcceptedFillHandler.cs"
+    "src/CFIP.cBot/Execution/DemoMarketExecutionCoordinator.cs"
 )
 factory = read(
     "src/CFIP.Indicator/Trading/Lifecycle/LivePlanFactory.cs"

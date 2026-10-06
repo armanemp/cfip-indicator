@@ -65,8 +65,8 @@ for token in (
     if token not in identity:
         errors.append("broker identity boundary missing: " + token)
 
-if "!ManagedActionsOnly" not in identity:
-    errors.append("ManagedActionsOnly compatibility boundary is no longer explicit")
+if "ManagedActionsOnly" in identity:
+    errors.append("ManagedActionsOnly must not remain in Indicator broker identity")
 
 if "string.IsNullOrWhiteSpace(managedLabel)" not in identity:
     errors.append("managed position lookup must fail closed on unavailable instance identity")

@@ -55,8 +55,6 @@ for token in (
     "EnableAutoTrading",
     "EnableAutomaticOrders",
     "UseMarketHoursGuard",
-    "SessionStartUtc",
-    "SessionEndUtc",
     "UseSpreadFilter",
     "MaximumSpreadToStopRiskRatio",
     "EnableDailyLossLimit",
@@ -70,7 +68,7 @@ for token in (
     "CONCURRENT SCENARIO CAPACITY BLOCKED",
     "ACCOUNT MARGIN LEVEL UNSAFE",
     "LIVE SPREAD EXCEEDS PLAN RISK LIMIT",
-    "OUTSIDE CONFIGURED MARKET HOURS",
+    "SYMBOL MARKET CLOSED",
     "DAILY LOSS LIMIT REACHED",
 ):
     require(token in gate or token in daily, "P6 final execution gate missing " + token)
@@ -126,7 +124,7 @@ print("CBOT-P6 ACCOUNT/RISK/CONNECTION AUDIT: PASS")
 print("direct chart cBot presence: PASS")
 print("Indicator execution-settings bridge: PASS")
 print("trading-permission/account safety: PASS")
-print("session/spread guards: PASS")
+print("broker-session/spread guards: PASS")
 print("daily-loss enforcement: PASS")
 print("scenario-aware capacity: PASS")
 print("cBot final margin/volume ownership: PASS")

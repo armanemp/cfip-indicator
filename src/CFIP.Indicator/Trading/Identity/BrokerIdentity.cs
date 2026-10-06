@@ -14,59 +14,8 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        private bool _managedActionsOnlySafetyNoticeIssued;
-
         // ============================================================
                 
-                        private bool HasTradingPermission()
-                        {
-                            try
-                            {
-                                return Permissions.TradingPermission.IsAllowed;
-                            }
-                            catch
-                            {
-                                return false;
-                            }
-                        }
-        
-        private bool EnsureTradingPermission()
-                        {
-                            if (HasTradingPermission())
-                            {
-                                _lastTradingPermissionRequestUtc =
-                                    DateTime.MinValue;
-                                return true;
-                            }
-                
-                            DateTime nowUtc =
-                                TimeInUtc;
-                
-                            if ((nowUtc -
-                                 _lastTradingPermissionRequestUtc).TotalSeconds < 3)
-                                return false;
-                
-                            _lastTradingPermissionRequestUtc =
-                                nowUtc;
-                
-                            try
-                            {
-                                bool granted =
-                                    Permissions.TradingPermission.Request();
-                
-                                return
-                                    granted &&
-                                    HasTradingPermission();
-                            }
-                            catch (Exception ex)
-                            {
-                                Print(
-                                    "CFIP TradingPermission request failed: {0}",
-                                    ex.Message);
-                                return false;
-                            }
-                        }
-        
         private bool ValidateTradeIdentityConfiguration()
                         {
                             if (!ManagedIdentityRule.TryBuildLabel(
@@ -109,14 +58,6 @@ namespace cAlgo
                                 position.SymbolName != SymbolName)
                                 return false;
                 
-                            if (!ManagedActionsOnly &&
-                                !_managedActionsOnlySafetyNoticeIssued)
-                            {
-                                Print(
-                                    "CFIP Managed Actions Only=false is safety-restricted: foreign/manual positions are never auto-managed; exact CFIP instance identity is still required.");
-                                _managedActionsOnlySafetyNoticeIssued = true;
-                            }
-
                             string managedLabel =
                                 ManagedExecutionLabel();
 

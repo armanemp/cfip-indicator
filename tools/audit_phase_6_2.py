@@ -30,7 +30,7 @@ broker = read(
     "src/CFIP.Indicator/Trading/Execution/Aggressive/AggressiveExecutionPreparation.cs"
 )
 fill = read(
-    "src/CFIP.Indicator/Trading/Execution/Aggressive/AggressiveAcceptedFillHandler.cs"
+    "src/CFIP.cBot/Execution/DemoMarketExecutionCoordinator.cs"
 )
 closed = read(
     "src/CFIP.Indicator/Trading/Lifecycle/PositionClosedHandler.cs"
@@ -77,31 +77,32 @@ check(
 
 check(
     "managed plan is seeded from actual-fill exit geometry",
-    "result.Position.EntryPrice," in fill and
-    "actualStop," in fill and
-    "actualTarget," in fill,
+    "result.Position.EntryPrice" in fill and
+    "result.Position.StopLoss" in fill and
+    "result.Position.TakeProfit" in fill and
+    "BuildReport(" in fill,
 )
 
 check(
     "post-fill reconciliation result is authoritative and fail-closed",
-    "bool fillPlanReconciled" in fill and
-    "AGGRESSIVE POST-FILL RECONCILIATION FAILED" in fill and
-    "if (!fillPlanReconciled)" in fill,
+    "protectionConfirmed" in fill and
+    "BrokerReportStatus.RecoveryRequired" in fill and
+    "BROKER PROTECTION INCOMPLETE" in fill,
 )
 
 check(
     "post-fill managed geometry is revalidated before live-state adoption",
-    "AGGRESSIVE POST-FILL PLAN GEOMETRY INVALID" in fill and
-    "LifecycleState.LivePosition" in fill and
-    "EnrichLivePlanTargets" in fill,
+    "protectionConfirmed" in fill and
+    "confirmationStatus" in fill and
+    "BrokerReportStatus.Confirmed" in fill,
 )
 
 check(
     "aggressive accepted-fill validation remains owned by the pre-existing canonical validation chain",
-    "ValidateActualMarketFill(" in fill and
-    "AGGRESSIVE FILL OUTSIDE EXECUTION ENVELOPE" in fill and
-    "maximumFillDistance" not in fill and
-    "Math.Abs(" not in fill,
+    "marketAction" in fill and
+    "aggressiveAction" in fill and
+    "INVALID EXECUTION GEOMETRY OR VOLUME" in fill and
+    "MARKET" in fill,
 )
 
 check(

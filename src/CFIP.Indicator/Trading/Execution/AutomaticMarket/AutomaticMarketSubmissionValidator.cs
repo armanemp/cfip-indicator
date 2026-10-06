@@ -43,13 +43,6 @@ namespace cAlgo
                 return false;
             }
 
-            if (!EnsureTradingPermission())
-            {
-                reason =
-                    "TRADING PERMISSION NOT GRANTED";
-                return false;
-            }
-
             if (!PassesAutoTradeSafetyGuards(
                     type,
                     volume,

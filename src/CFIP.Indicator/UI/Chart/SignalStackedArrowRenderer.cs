@@ -11,8 +11,7 @@ namespace cAlgo
             new System.Collections.Generic.List<TextBlock>(3);
 
         private void RenderCanonicalMtfTrendArrows(
-            SignalVisualSnapshot snapshot,
-            int bar)
+            SignalVisualSnapshot snapshot)
         {
             if (!ShowSignalArrow ||
                 snapshot == null ||
@@ -36,19 +35,9 @@ namespace cAlgo
             }
 
             int direction =
-                snapshot.AuthoritativeDirection != 0
-                    ? snapshot.AuthoritativeDirection
-                    : snapshot.MtfTrendDirection;
-
-            int mtfDirection =
-                snapshot.MtfTrendDirection;
-
-            bool decisionOwnsDirection =
-                snapshot.PlanActive ||
-                snapshot.ActionableNow ||
-                snapshot.DecisionEntryAllowed ||
-                snapshot.DecisionDirection != 0 ||
-                snapshot.PlanDirection != 0;
+                snapshot.MtfTrendDirection != 0
+                    ? snapshot.MtfTrendDirection
+                    : snapshot.AuthoritativeDirection;
 
             if (direction == 0)
             {
@@ -68,13 +57,6 @@ namespace cAlgo
                 return;
             }
 
-            if (decisionOwnsDirection &&
-                mtfDirection != 0 &&
-                mtfDirection != direction)
-            {
-                strength = Math.Min(3, strength);
-            }
-
             int arrowCount =
                 ((strength - 1) % 3) + 1;
 
@@ -90,9 +72,9 @@ namespace cAlgo
                     CautionSellArrowColor,
                     BlockedReactionArrowColor);
 
-            // Directional arrows are presentation-only and now live in one
-            // fixed chart-control box. No directional glyph is drawn under
-            // candles, so there is exactly one visible arrow owner.
+            // Directional arrows are presentation-only and use the same
+            // canonical MTF trend direction/strength snapshot as the trend
+            // presentation. Decision/plan state remains separate evidence.
             UpdateSignalArrowBox(
                 direction,
                 arrowCount,
@@ -122,7 +104,7 @@ namespace cAlgo
                     new TextBlock
                     {
                         Text = string.Empty,
-                        Width = 20,
+                        Width = 18,
                         Height = 36,
                         FontFamily = "Segoe UI Symbol",
                         FontSize = 28,
@@ -133,7 +115,7 @@ namespace cAlgo
                         VerticalAlignment = VerticalAlignment.Center,
                         ForegroundColor = PanelTextColor,
                         TextWrapping = TextWrapping.NoWrap,
-                        Margin = new Thickness(1, 0, 1, 0)
+                        Margin = new Thickness(0, 0, 0, 0)
                     };
 
                 _signalArrowBoxArrows.Add(arrow);
@@ -166,6 +148,24 @@ namespace cAlgo
                 };
 
             Chart.AddControl(_signalArrowBox);
+        }
+
+        private void BringSignalArrowBoxToFront()
+        {
+            if (_signalArrowBox == null)
+                return;
+
+            try
+            {
+                Chart.RemoveControl(_signalArrowBox);
+                Chart.AddControl(_signalArrowBox);
+            }
+            catch (Exception ex)
+            {
+                Print(
+                    "CFIP signal arrow overlay reorder failed: {0}",
+                    ex.Message);
+            }
         }
 
         private void UpdateSignalArrowBox(
