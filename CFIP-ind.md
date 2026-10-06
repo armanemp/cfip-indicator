@@ -604,3 +604,83 @@
 - Base: `main` / `afedd73dad140bab3654cbaedc36b25cb8d8da2a`
 - Inventory فعلی: 715 فایل C# در زیرساخت src که در دسته‌های این سند ثبت شده‌اند.
 - تاریخ آخرین ممیزی وب: 2026-10-07.
+
+
+## 12. ممیزی عمیق — Batch 01 (Technical + Regime + Consensus)
+
+### 12.1 Primitive indicators — نتیجه ممیزی
+| جزء | مالک فعلی | وضعیت | نتیجه |
+|---|---|---|---|
+| EMA | cTrader native EMA wrapper | PASS | منطق داخلی دوباره‌نویسی نشده؛ readiness کنترل می‌شود؛ برای slope/spread استفاده می‌شود. |
+| RSI | cTrader native RSI | PASS / مراقبت | مقدار 50 در نبود داده برای compatibility نگه داشته شده، اما باید قبل از scoring از evidence-ready بودن native set مطمئن شد؛ 30/70 نباید به‌تنهایی trigger باشد. |
+| ATR | cTrader native ATR + Wilder smoothing | PASS | مرجع volatility/geometry است؛ صفر/non-finite fail-closed. |
+| ADX/DMI | cTrader DirectionalMovementSystem | PASS | ADX و DI+/DI- از یک محاسبه مشترک می‌آیند؛ DMI فقط bias می‌دهد و نباید با ADX دوباره رأی مستقل بسازد. |
+| MACD-line bias | دو EMA canonical | PASS / INTENTIONAL | CFIP آن را عمداً MACD-line bias نگه داشته، نه crossover؛ برای trigger باید histogram/signal از OSS adapter جدا و بدون دوباره‌شماری مصرف شود. |
+| Bollinger | Skender adapter | PASS / نیاز به مصرف دقیق | `%B` و `Width` دو metric متفاوت‌اند؛ Width باید volatility/context باشد و `%B` location/momentum، نه دو رأی مستقل یک خانواده. |
+
+اصل اجرایی: هر primitive باید یک خروجی canonical، warm-up مشخص، closed/live semantics روشن، finite-value policy و مصرف‌کننده مشخص داشته باشد. Built-in cTrader منبع اصلی primitiveهای native باقی می‌ماند؛ این با مستندات رسمی cTrader درباره EMA، RSI، Bollinger و Bars سازگار است.
+
+### 12.2 Market regime — نتیجه ممیزی
+- `ChoppinessIndexAnalyzer` فرمول CHOP را با پنجره کامل محاسبه می‌کند و نزدیک ابتدای سری پنجره ناقص را وارد نتیجه نمی‌کند؛ این رفتار حفظ می‌شود.
+- `RangeEfficiencyAnalyzer` نسبت حرکت خالص به مسیر قیمت را محاسبه می‌کند؛ این metric باید efficiency/context بماند و با ADX/EMA/MACD به‌عنوان چند رأی مستقل هم‌ارزش جمع نشود.
+- `MarketRegimeAnalyzer` اکنون برای M5 مسیر cache مخصوص و برای سایر timeframeها مسیر per-frame دارد؛ این با مدل «همه timeframeها تحلیل شوند» سازگار است. M15 همچنان مرجع تصمیم است، نه تنها timeframe تحلیل.
+- `HealthyVolatilityAnalyzer` در Batch 01 اصلاح شد: baseline دیگر یک ATR قدیمی منفرد نیست و از میانگین 20 ATR از کندل‌های بسته قبلی (`index - 1`) استفاده می‌کند. بنابراین یک spike/drop منفرد نمی‌تواند به‌تنهایی health را flip کند.
+- `RangeSignalQualityEvaluator` در RANGE/COMPRESSION فقط زمانی اجازه عبور می‌دهد که contextهای ساختاری/مکان/دیسپلیسمنت/flow به‌صورت هم‌جهت جمع شوند؛ با این حال این خروجی باید gate کیفیت باشد، نه یک رأی دوم در Decision.
+
+### 12.3 MACD / Bollinger — تصمیم معماری
+1. MACD native line و MACD OSS signal/histogram دو implementation برای یک family هستند؛ نباید هر دو به‌صورت رأی مستقل کامل شمرده شوند.
+2. Bollinger `%B` و `Width` باید در یک family مستقل بمانند: location و volatility-context.
+3. RSI، MACD، WaveTrend، DMI و EMA همگی بخشی از trend/momentum family هستند و `IndicatorEvidenceIndependenceRule` باید وزن گروه را بر اساس family نگه دارد، نه تعداد indicatorها.
+4. هیچ indicator جدیدی فقط برای افزایش vote count اضافه نشود.
+
+### 12.4 ماژول تجمیع و نتیجه‌گیری آرا — ممیزی دقیق
+زنجیره canonical فعلی:
+`DecisionFrameContributionCalculator → DecisionScoreCalculator → DecisionConsensusCalculator → DecisionEvaluator`.
+
+نقاط قوت موجود:
+- contribution هر timeframe با quality و weight مقیاس می‌شود؛ frame ضعیف نمی‌تواند صرفاً با raw-score بزرگ غالب شود.
+- M1 در score رأی مستقل ندارد و فقط بعد از directional consensus برای trigger confirmation مصرف می‌شود.
+- `DecisionConsensusCalculator` از softmax دوطرفه با temperature محدود استفاده می‌کند و tie دقیق را neutral نگه می‌دارد.
+- NaN/Infinity در score/consensus fail-closed است.
+- conflict penalty و independent-evidence diversity جدا از direction authority نگه داشته شده‌اند.
+
+اصلاحات الزامی برای ادامه:
+- `DecisionConsensusCalculator` نباید confidence را به‌عنوان probability معرفی کند؛ share فعلی یک deterministic directional share است.
+- هیچ family همبسته نباید از طریق تعداد indicatorها قدرت بیشتری بگیرد؛ group diversity باید فقط quality/coverage را بهبود دهد.
+- M15 باید canonical anchor باقی بماند؛ M5 نباید با تعداد رأی بیشتر M15 را کنار بزند.
+- H1/H4/D1 باید context/constraint واقعی باشند؛ alignment ضعیف HTF نباید با یک lower-TF vote stack بی‌اثر شود.
+- regime/structure/location/flow باید در score lineage قابل ردیابی باشند و هیچ downstream module نباید رأی خام دوم تولید کند.
+- exact BUY/SELL tie، missing evidence، insufficient warm-up و non-finite data باید همگی neutral/fail-closed باشند.
+
+### 12.5 مدل پیشنهادی نهایی رأی‌گیری
+`Evidence → Family Normalization → Timeframe Contribution → M15 Anchor → HTF Constraint → Consensus → Quality → Trigger Gate`
+
+در این مدل:
+- Evidence فقط واقعیت خام/metric را تولید می‌کند.
+- Family Normalization indicatorهای همبسته را در یک family قرار می‌دهد.
+- Timeframe Contribution کیفیت، وزن timeframe و evidence coverage را اعمال می‌کند.
+- M15 Anchor مرجع directional decision است.
+- HTF Constraint تضاد H1+ قوی را نمی‌گذارد lower-TF stack آن را پنهان کند.
+- Consensus فقط نتیجه نهایی direction/share را می‌دهد.
+- Quality confidence/actionability را ارزیابی می‌کند و direction جدید نمی‌سازد.
+- Trigger Gate M5 و در صورت فعال بودن M1 را برای زمان ورود بررسی می‌کند.
+
+### 12.6 قرارداد جلوگیری از signal flip
+در ادامه باید برای Decision یک state transition contract اضافه/تکمیل شود:
+- تغییر direction فقط با closed canonical evidence یا trigger event معتبر؛
+- تغییرات intrabar صرفاً forming/watch باشند و authority تصمیم بسته را overwrite نکنند؛
+- flip متوالی BUY↔SELL بدون عبور از hysteresis/confirmation threshold ممنوع؛
+- هر flip باید reason/provenance داشته باشد؛
+- M5 trigger نباید direction M15 را بازنویسی کند.
+
+### 12.7 Batch 01 — وضعیت
+- [x] EMA / RSI / ATR / ADX-DMI ownership audit
+- [x] MACD / Bollinger semantic audit
+- [x] CHOP / Range Efficiency audit
+- [x] Market Regime / volatility baseline audit
+- [x] Decision contribution → score → consensus chain audit
+- [x] Healthy-volatility baseline stability fix
+- [ ] M15-anchor/higher-timeframe hard constraint implementation
+- [ ] consensus hysteresis / anti-flip contract
+- [ ] family-level vote matrix test for all OSS + native indicators
+- [ ] numerical benchmark for score/consensus across regimes
