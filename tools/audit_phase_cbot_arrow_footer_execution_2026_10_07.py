@@ -78,6 +78,30 @@ check(
 )
 
 check(
+    "Indicator contains no broker mutation or trading-permission API",
+    "ExecuteMarketOrder(" not in indicator and
+    "ExecuteMarketRangeOrder(" not in indicator and
+    "PlaceStopOrder(" not in indicator and
+    "PlaceLimitOrder(" not in indicator and
+    "ModifyPosition(" not in indicator and
+    "CancelPendingOrder(" not in indicator and
+    "robot.ClosePosition(" not in indicator and
+    "robot.CancelPendingOrder(" not in indicator and
+    "Permissions.TradingPermission" not in indicator,
+)
+
+check(
+    "obsolete Indicator execution UI/reminder parameters are removed",
+    "public bool EnableAutoTrading" not in read("src/CFIP.Indicator/Indicator/Parameters/13_auto_trading.cs") and
+    "public bool EnableAutomaticOrders" not in read("src/CFIP.Indicator/Indicator/Parameters/13_auto_trading.cs") and
+    "AutoTradingReminder" not in read("src/CFIP.Indicator/Indicator/Parameters/13_auto_trading.cs") and
+    "ShowTradeActionButtons" not in read("src/CFIP.Indicator/Indicator/Parameters/13_auto_trading.cs") and
+    "AlwaysShowSafetyButtons" not in read("src/CFIP.Indicator/Indicator/Parameters/13_auto_trading.cs") and
+    "ManagedActionsOnly" not in read("src/CFIP.Indicator/Indicator/Parameters/13_auto_trading.cs") and
+    not (ROOT / "src/CFIP.Indicator/Trading/Lifecycle/AutoTradingDisableReminder.cs").exists(),
+)
+
+check(
     "cBot market and pending coordinators remain the only broker mutation owners",
     "ExecuteMarketOrder(" in market and
     "PlaceStopOrder(" in pending and
