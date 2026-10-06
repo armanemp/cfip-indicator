@@ -468,10 +468,24 @@ namespace cAlgo
                 waveDelta >= DivergenceThresholdRule.HiddenWaveDelta;
 
             int oscillatorAgreement = 0;
-            if (rsiDelta <= -DivergenceThresholdRule.RegularRsiDelta)
-                oscillatorAgreement++;
-            if (waveDelta <= -DivergenceThresholdRule.RegularWaveDelta)
-                oscillatorAgreement++;
+
+            // Regular bearish divergence needs oscillator deterioration; hidden
+            // bearish divergence needs the inverse oscillator movement because
+            // price makes a lower high while the oscillator makes a higher high.
+            if (chosenHidden)
+            {
+                if (rsiDelta >= DivergenceThresholdRule.HiddenRsiDelta)
+                    oscillatorAgreement++;
+                if (waveDelta >= DivergenceThresholdRule.HiddenWaveDelta)
+                    oscillatorAgreement++;
+            }
+            else
+            {
+                if (rsiDelta <= -DivergenceThresholdRule.RegularRsiDelta)
+                    oscillatorAgreement++;
+                if (waveDelta <= -DivergenceThresholdRule.RegularWaveDelta)
+                    oscillatorAgreement++;
+            }
 
             if (!regular && !hidden)
                 return default(DivergenceCandidate);
