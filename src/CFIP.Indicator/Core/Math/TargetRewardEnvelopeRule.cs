@@ -133,10 +133,16 @@ namespace cAlgo
             if (!allowHtfExtension)
                 return baseExtension;
 
+            double safeMaximumRewardRR =
+                double.IsNaN(maximumRewardRR) ||
+                double.IsInfinity(maximumRewardRR)
+                    ? 0
+                    : Math.Max(
+                        0,
+                        maximumRewardRR);
+
             double rrBoundExtension =
-                Math.Max(
-                    0,
-                    maximumRewardRR) *
+                safeMaximumRewardRR *
                 risk /
                 atr;
 
