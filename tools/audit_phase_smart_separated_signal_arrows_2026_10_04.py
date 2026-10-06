@@ -119,12 +119,12 @@ check(
 )
 
 check(
-    "trade-direction conflict downgrades rather than erases the authoritative signal",
-    "AuthoritativeDirection" in stack and
-    "decisionOwnsDirection" in stack and
-    "mtfDirection != 0" in stack and
-    "mtfDirection != direction" in stack and
-    "strength = Math.Min(3, strength)" in stack,
+    "arrow direction is sourced from the canonical MTF trend direction when available",
+    "snapshot.MtfTrendDirection != 0" in stack and
+    "snapshot.MtfTrendDirection != 0" in
+    stack.split("int direction", 1)[1].split("if (direction == 0)", 1)[0] and
+    "decisionOwnsDirection" not in stack and
+    "strength = Math.Min(3, strength)" not in stack,
 )
 
 check(
