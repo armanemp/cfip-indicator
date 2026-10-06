@@ -117,10 +117,12 @@ check(
 )
 
 check(
-    "selected structural stop preserves its exact source timeframe",
+    "selected structural stop preserves its exact source timeframe and rejects non-structural defaults",
     "LastIndexOf(" in
     read("src/CFIP.Indicator/Planning/TradePlan/StructuralStopPlanner.cs")
     and "StructuralTimeframeRule.IsSupported(" in
+    read("src/CFIP.Indicator/Planning/TradePlan/StructuralStopPlanner.cs")
+    and 'string timeframe = "NONE";' in
     read("src/CFIP.Indicator/Planning/TradePlan/StructuralStopPlanner.cs")
     and "candidateTimeframe" in
     read("src/CFIP.Indicator/Planning/TradePlan/StructuralStopPlanner.cs")
