@@ -12,6 +12,8 @@ namespace cAlgo
     {
         private StackPanel _panelFooterActions;
         private StackPanel _panelFlowPressureRail;
+        private StackPanel _panelBuyPressureRow;
+        private StackPanel _panelSellPressureRow;
         private Border _panelBuyPressureTrack;
         private Border _panelSellPressureTrack;
         private Border _panelBuyPressureFill;
@@ -32,21 +34,24 @@ namespace cAlgo
                     IsHitTestVisible = false
                 };
 
-            _panelFlowPressureRail.AddChild(
+            _panelBuyPressureRow =
                 CreateFlowPressureRow(
                     "BUY",
                     BuyArrowColor,
                     out _panelBuyPressureTrack,
                     out _panelBuyPressureFill,
-                    out _panelBuyPressureLabel));
+                    out _panelBuyPressureLabel);
 
-            _panelFlowPressureRail.AddChild(
+            _panelSellPressureRow =
                 CreateFlowPressureRow(
                     "SELL",
                     SellArrowColor,
                     out _panelSellPressureTrack,
                     out _panelSellPressureFill,
-                    out _panelSellPressureLabel));
+                    out _panelSellPressureLabel);
+
+            _panelFlowPressureRail.AddChild(_panelBuyPressureRow);
+            _panelFlowPressureRail.AddChild(_panelSellPressureRow);
 
             _panelFooterActions =
                 new StackPanel
@@ -100,7 +105,6 @@ namespace cAlgo
                 new TextBlock
                 {
                     Text = caption + " --",
-                    Width = 0,
                     Height = PanelFlowPressureLabelHeight,
                     FontFamily =
                         string.IsNullOrWhiteSpace(PanelFontFamily)
@@ -119,7 +123,6 @@ namespace cAlgo
             fill =
                 new Border
                 {
-                    Width = 1,
                     Height = PanelFlowPressureBarHeight,
                     CornerRadius = 4,
                     BorderThickness = 0,
@@ -135,7 +138,6 @@ namespace cAlgo
             track =
                 new Border
                 {
-                    Width = 1,
                     Height = PanelFlowPressureBarHeight,
                     CornerRadius = 4,
                     BorderThickness = 0,
@@ -153,7 +155,6 @@ namespace cAlgo
                 new StackPanel
                 {
                     Orientation = Orientation.Vertical,
-                    Width = 1,
                     Height = PanelFlowPressureRowHeight,
                     HorizontalAlignment = HorizontalAlignment.Stretch,
                     VerticalAlignment = VerticalAlignment.Top,
@@ -169,6 +170,8 @@ namespace cAlgo
         private void UpdatePanelFlowPressureRail()
         {
             if (_panelFlowPressureRail == null ||
+                _panelBuyPressureRow == null ||
+                _panelSellPressureRow == null ||
                 _panelBuyPressureTrack == null ||
                 _panelSellPressureTrack == null ||
                 _panelBuyPressureFill == null ||
@@ -187,6 +190,18 @@ namespace cAlgo
                     EffectivePanelContentWidth());
 
             _panelFlowPressureRail.Width =
+                contentWidth;
+
+            _panelBuyPressureRow.Width =
+                contentWidth;
+
+            _panelSellPressureRow.Width =
+                contentWidth;
+
+            _panelBuyPressureLabel.Width =
+                contentWidth;
+
+            _panelSellPressureLabel.Width =
                 contentWidth;
 
             _panelBuyPressureTrack.Width =
