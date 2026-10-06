@@ -115,10 +115,20 @@ check(
 )
 
 check(
-    "higher-timeframe influence is penalty-only and never changes direction",
-    "return" in penalty and
-    "HigherTfPenalty +" in penalty and
+    "higher-timeframe influence is quality/weight-aware penalty-only and never changes direction",
+    "AccumulateHigherTimeframeInfluence(" in penalty and
+    "opposingInfluence / availableInfluence" in penalty and
+    "HigherTfPenalty" in penalty and
     "decision.Direction" not in penalty
+)
+
+timeframe = read("src/CFIP.Indicator/Analysis/Market/Decision/TimeframeAgreementAnalyzer.cs")
+
+check(
+    "neutral timeframe evidence remains in the agreement denominator",
+    "Neutral is not bearish/bullish evidence" in timeframe and
+    "totalWeight +=" in timeframe and
+    "frames[i].Direction == direction" in timeframe
 )
 
 check(
