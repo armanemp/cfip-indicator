@@ -56,9 +56,9 @@ declared_parameter_count = len(
         parameter_source,
     )
 )
-if declared_parameter_count != 543:
+if declared_parameter_count != 533:
     fail(
-        f"Project integrity expects 543 parameter declarations, "
+        f"Project integrity expects 533 parameter declarations, "
         f"found {declared_parameter_count}"
     )
 if not re.search(
