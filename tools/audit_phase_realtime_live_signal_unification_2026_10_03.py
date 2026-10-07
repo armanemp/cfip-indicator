@@ -47,6 +47,28 @@ live_cycle = read("src/CFIP.Indicator/Runtime/Calculation/CalculationLiveCycle.c
 visual_direction = read("src/CFIP.Indicator/UI/Chart/SignalVisualDirectionResolver.cs")
 snapshot_builder = read("src/CFIP.Indicator/UI/Chart/SignalVisualSnapshotBuilder.cs")
 
+tactical_rule = read("src/CFIP.Indicator/Core/Math/TacticalOpportunityRule.cs")
+tactical_analyzer = read("src/CFIP.Indicator/Analysis/Market/Decision/DecisionTacticalOpportunityAnalyzer.cs")
+consensus = read("src/CFIP.Indicator/Analysis/Market/Decision/DecisionConsensusCalculator.cs")
+
+check(
+    "tactical quality has one canonical owner and no duplicated evidence inputs",
+    "m5Quality * 0.60" in tactical_rule and
+    "zoneQuality" in tactical_rule and
+    "independentEvidenceGroupCount" in tactical_rule and
+    "StructuralConfirmations(direction) *" not in tactical_analyzer and
+    "_m5Frame.WaveTrendQuality *" not in tactical_analyzer and
+    "IndependentEvidence(direction) *" not in tactical_analyzer
+)
+
+check(
+    "directional consensus rejects fragile raw-score near ties",
+    "shareDerivedGap" in consensus and
+    "massDerivedGap" in consensus and
+    "actualRawGap" in consensus and
+    "rawSeparationReady" in consensus
+)
+
 check(
     "live M5 reaction is genuinely realtime on the indicator tick path",
     "Calculate(" in calc_cycle and
