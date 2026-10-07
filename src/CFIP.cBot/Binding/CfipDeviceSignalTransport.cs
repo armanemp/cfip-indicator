@@ -102,15 +102,6 @@ namespace CFIP.cBot.Binding
                     return false;
                 }
 
-                if (TryReadHeartbeat(
-                        robot,
-                        indicatorInstanceId,
-                        out DateTime heartbeatUtc))
-                    envelope =
-                        RefreshEnvelopeHeartbeat(
-                            envelope,
-                            heartbeatUtc);
-
                 return true;
             }
             catch (Exception ex)
@@ -156,33 +147,6 @@ namespace CFIP.cBot.Binding
                 {
                     reason = "CFIP SCENARIO BATCH UNAVAILABLE";
                     return false;
-                }
-
-                if (TryReadHeartbeat(
-                        robot,
-                        indicatorInstanceId,
-                        out DateTime heartbeatUtc) &&
-                    batch.Scenarios != null)
-                {
-                    SignalEnvelope[] refreshed =
-                        new SignalEnvelope[batch.Scenarios.Length];
-
-                    for (int i = 0;
-                         i < batch.Scenarios.Length;
-                         i++)
-                    {
-                        refreshed[i] =
-                            RefreshEnvelopeHeartbeat(
-                                batch.Scenarios[i],
-                                heartbeatUtc);
-                    }
-
-                    batch =
-                        batch with
-                        {
-                            ObservedUtc = heartbeatUtc,
-                            Scenarios = refreshed
-                        };
                 }
 
                 return true;
