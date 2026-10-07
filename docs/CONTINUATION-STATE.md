@@ -2929,3 +2929,12 @@ Correction:
 - Deterministic runtime-contract coverage was added for the 100ms cadence.
 
 Target-terminal verification remains required for actual observed latency, because cTrader executes Indicator `Calculate()` on incoming ticks but terminal performance/market-tick frequency determine the final wall-clock response.
+
+
+## 2026-10-07 — cBot runtime continuity hardening
+- Runtime fault state is now explicitly cycle-local; a recoverable Indicator fault cannot permanently arm/disarm execution state.
+- cBot broker execution remains the only mutation authority.
+- A transient cTrader Indicator chart rebuild no longer immediately clears the known binding and stops OnTick/OnTimer.
+- The known Indicator instance is retained for up to 10 seconds while binding is temporarily unavailable; true detach/unavailability remains fail-closed afterward.
+- This specifically addresses the observed failure mode where trading appears to stop until the Indicator is closed/reopened.
+- Exact PR head: 55d7e97926b73e8a628ec93ad08d74f15d0fcd2a (PR #380); CI must be green before merge.
