@@ -75,7 +75,9 @@ namespace cAlgo
                     BlockReason = "M15 CONTEXT WEAK",
                     Reason =
                         "M15 CONTEXT WEAK | Q=" +
-                        input.M15Frame.Quality
+                        (input.M15Frame == null
+                            ? "NA"
+                            : input.M15Frame.Quality.ToString())
                 };
             }
 
