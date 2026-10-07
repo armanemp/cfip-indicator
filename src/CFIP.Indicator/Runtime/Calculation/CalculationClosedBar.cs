@@ -148,6 +148,10 @@ namespace cAlgo
                 _prediction,
                 closedM5);
 
+            RenderRangeManipulation(
+                _rangeManipulation,
+                closedM5);
+
             EmitContextAlerts(
                 closedM5);
 
