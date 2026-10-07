@@ -220,11 +220,10 @@ namespace cAlgo
 
         public void MarkManagementReadyForRecovery()
         {
-            if (!_cycleFaulted &&
-                _state == RuntimeFaultState.EntryBlocked)
-            {
+            // Management/protection may complete after a recoverable fault, but
+            // the affected cycle remains entry-blocked until its boundary closes.
+            if (_state == RuntimeFaultState.EntryBlocked)
                 _state = RuntimeFaultState.Recovering;
-            }
         }
 
         public void CompleteCycle()
@@ -233,6 +232,15 @@ namespace cAlgo
                 _state == RuntimeFaultState.Recovering)
             {
                 _state = RuntimeFaultState.Healthy;
+                return;
+            }
+
+            if (_cycleFaulted &&
+                _state == RuntimeFaultState.Recovering)
+            {
+                // Preserve a diagnostic degraded state for the completed faulted
+                // cycle. BeginCycle() clears it before the next decision cycle.
+                _state = RuntimeFaultState.Degraded;
             }
         }
     }
