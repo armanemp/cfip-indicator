@@ -108,11 +108,17 @@ check(
     "IndependentEvidenceGroupCount =" in builder,
 )
 
+tactical_analyzer = read(
+    "src/CFIP.Indicator/Analysis/Market/Decision/DecisionTacticalOpportunityAnalyzer.cs"
+)
+
 check(
-    "candidate quality still uses the legacy bounded score rather than changing thresholds",
-    "IndependentEvidence(direction) * 5.0" in read(
-        "src/CFIP.Indicator/Analysis/Market/Decision/DecisionTacticalOpportunityAnalyzer.cs"
-    ),
+    "tactical quality uses the canonical M5 quality + zone quality + evidence-diversity rule",
+    "IndependentEvidenceGroupCount(direction)" in tactical_analyzer and
+    "TacticalOpportunityRule.Evaluate(" in tactical_analyzer and
+    "_m5Frame.Quality" in tactical_analyzer and
+    "zoneQuality" in tactical_analyzer and
+    "IndependentEvidence(direction) * 5.0" not in tactical_analyzer,
 )
 
 check(
