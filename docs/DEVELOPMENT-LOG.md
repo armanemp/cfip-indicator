@@ -4203,3 +4203,19 @@ This is intended to reduce false directional confidence while preserving valid s
 Finding: the Top-Down decision gate previously accepted any `TacticalOpportunityAllowed` result when normal top-down calibration was not eligible. That let the tactical lane act as a broad hierarchy bypass.
 
 Correction: the canonical `TopDownCalibrationRule` now owns a tactical-bypass predicate requiring strong M15/M30 midframe direction, alignment and absolute strength. Counter-HTF tactical candidates additionally require a genuine opposing HTF anchor. Regression contracts cover M5-only rejection and counter-HTF symmetry.
+
+
+## 2026-10-07 — Signal precision closure: M15 direction authority + structural confirmation integrity
+
+Root causes confirmed in the canonical signal path:
+- Structural confirmation treated a neutral timeframe with a directional structure observation as a directional confirmation, inflating structural confirmations and downstream quality.
+- MTF trend strength could select a weighted dominant direction even when canonical closed M15 already had a resolved direction, allowing the user-facing arrow to disagree with the decision hierarchy.
+- The stacked signal-arrow renderer could expose weak/non-actionable MTF trend states through the same visual arrow surface used for actionable signals.
+
+Corrections:
+- Structural confirmation now earns one confirmation only when the source timeframe direction exactly matches the requested direction.
+- M15 owns the resolved MTF trend direction whenever its closed frame has a valid canonical direction; other timeframes modulate strength/context without flipping it.
+- The signal-arrow fallback now requires the canonical MTF trend tier to be STRONG; weak/medium non-actionable trend states are no longer presented as trade arrows.
+- No new public parameter, parallel decision path, or alternate execution logic was introduced.
+
+Focused contract coverage was added for BUY/SELL symmetry, neutral/opposite structural confirmation rejection, and M15 direction anchoring against bearish higher-timeframe strength.

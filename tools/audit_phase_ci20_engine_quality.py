@@ -25,6 +25,9 @@ workflow = read(".github/workflows/source-check.yml")
 entry_zones = read("src/CFIP.Indicator/Planning/Execution/ExecutionZoneCandidateSelectionCore.cs")
 trigger_gate = read("src/CFIP.Indicator/Planning/Execution/TriggerGate.cs")
 actionable_quality = read("src/CFIP.Indicator/Core/Math/ActionableSignalQualityRule.cs")
+structural_confirmation = read("src/CFIP.Indicator/Core/Math/StructuralConfirmationRule.cs")
+mtf_trend_strength = read("src/CFIP.Indicator/Core/Math/MtfTrendStrengthRule.cs")
+signal_arrow = read("src/CFIP.Indicator/UI/Chart/SignalStackedArrowRenderer.cs")
 retest_quality = read("src/CFIP.Indicator/Planning/Filters/RegimeFilter.cs")
 execution_mode = read("src/CFIP.Indicator/Planning/Execution/ExecutionModeResolver.cs")
 
@@ -83,6 +86,23 @@ require(
     "DistanceToRawZone(" in entry_zones and
     "return false;" in entry_zones,
     "execution-zone fallback is not bounded by practical market distance",
+)
+
+require(
+    "return frameDirection == requestedDirection" in structural_confirmation,
+    "structural confirmation must require same-direction frame alignment",
+)
+
+require(
+    "ResolveCanonicalM15Direction(frames)" in mtf_trend_strength and
+    "private static int ResolveCanonicalM15Direction(" in mtf_trend_strength,
+    "MTF trend direction must anchor to canonical M15 direction",
+)
+
+require(
+    "IsStrongMtfTrendPresentation(snapshot)" in signal_arrow and
+    "MtfTrendStrengthTier" in signal_arrow,
+    "weak/non-actionable MTF trends must not render as trade arrows",
 )
 
 require(
