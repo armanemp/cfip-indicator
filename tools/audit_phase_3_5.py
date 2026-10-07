@@ -33,7 +33,7 @@ checks = {
         "string.Equals(" in key
     ),
     "outcome observation stores realized R": (
-        "public double RealizedR;" in observation
+        "public double RealizedR { get; set; }" in observation
     ),
     "realized R comes from aggregated broker outcome": (
         "HistoricalOutcomeAggregate aggregate" in outcome and
