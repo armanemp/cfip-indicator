@@ -932,6 +932,9 @@ for required_transition in (
 if "_cycleFaulted = true;" not in runtime_fault_machine_code:
     raise SystemExit("Runtime fault state machine must mark the affected calculation cycle as faulted")
 
+if "_entryArmed = false;" in runtime_fault_machine_code:
+    raise SystemExit("Runtime fault state machine must not latch the Indicator-wide entry switch off")
+
 if "if (_state != RuntimeFaultState.Healthy)" not in runtime_fault_machine_code:
     raise SystemExit("Runtime fault state machine must clear stale fault state at the next cycle boundary")
 
