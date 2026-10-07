@@ -17,10 +17,10 @@ namespace cAlgo
         public int MinimumTimeframeAgreement { get; }
         public int MinimumIndependentEvidence { get; }
         public int SmartMinimumIndependentEvidence { get; }
-        public int MinimumIndependentEvidenceGroups { get; }
         public bool SmartDecisionEnabled { get; }
         public bool RequireStructuralConfirmation { get; }
         public int MinimumStructuralConfirmations { get; }
+        public int MinimumIndependentEvidenceGroups { get; }
 
         public DecisionThresholdFilterInput(
             int confidence,
@@ -28,7 +28,6 @@ namespace cAlgo
             int smartQuality,
             int timeframeAgreement,
             int independentEvidence,
-            int independentEvidenceGroups,
             int structuralConfirmations,
             int minimumConfidence,
             int minimumEdge,
@@ -37,17 +36,17 @@ namespace cAlgo
             int minimumTimeframeAgreement,
             int minimumIndependentEvidence,
             int smartMinimumIndependentEvidence,
-            int minimumIndependentEvidenceGroups,
             bool smartDecisionEnabled,
             bool requireStructuralConfirmation,
-            int minimumStructuralConfirmations)
+            int minimumStructuralConfirmations,
+            int minimumIndependentEvidenceGroups = 0)
         {
             Confidence = confidence;
             Edge = edge;
             SmartQuality = smartQuality;
             TimeframeAgreement = timeframeAgreement;
             IndependentEvidence = independentEvidence;
-            IndependentEvidenceGroups = independentEvidenceGroups;
+            IndependentEvidenceGroups = 0;
             StructuralConfirmations = structuralConfirmations;
             MinimumConfidence = minimumConfidence;
             MinimumEdge = minimumEdge;
@@ -56,10 +55,36 @@ namespace cAlgo
             MinimumTimeframeAgreement = minimumTimeframeAgreement;
             MinimumIndependentEvidence = minimumIndependentEvidence;
             SmartMinimumIndependentEvidence = smartMinimumIndependentEvidence;
-            MinimumIndependentEvidenceGroups = minimumIndependentEvidenceGroups;
             SmartDecisionEnabled = smartDecisionEnabled;
             RequireStructuralConfirmation = requireStructuralConfirmation;
             MinimumStructuralConfirmations = minimumStructuralConfirmations;
+            MinimumIndependentEvidenceGroups = minimumIndependentEvidenceGroups;
+        }
+
+        public DecisionThresholdFilterInput WithIndependentEvidenceGroups(
+            int independentEvidenceGroups)
+        {
+            return new DecisionThresholdFilterInput(
+                Confidence,
+                Edge,
+                SmartQuality,
+                TimeframeAgreement,
+                IndependentEvidence,
+                StructuralConfirmations,
+                MinimumConfidence,
+                MinimumEdge,
+                MinimumSmartQuality,
+                RequireHigherTfAgreement,
+                MinimumTimeframeAgreement,
+                MinimumIndependentEvidence,
+                SmartMinimumIndependentEvidence,
+                SmartDecisionEnabled,
+                RequireStructuralConfirmation,
+                MinimumStructuralConfirmations,
+                MinimumIndependentEvidenceGroups)
+            {
+                IndependentEvidenceGroups = independentEvidenceGroups
+            };
         }
     }
 }
