@@ -278,6 +278,40 @@ namespace cAlgo
 
                 if (IsFinitePositive(swing))
                 {
+                    double fallbackLow;
+                    double fallbackHigh;
+
+                    if (direction == 1)
+                    {
+                        fallbackLow = swing;
+                        fallbackHigh =
+                            swing +
+                            atr *
+                            Math.Max(
+                                0.10,
+                                ExecutionZoneAtr);
+                    }
+                    else
+                    {
+                        fallbackLow =
+                            swing -
+                            atr *
+                            Math.Max(
+                                0.10,
+                                ExecutionZoneAtr);
+                        fallbackHigh = swing;
+                    }
+
+                    if (DistanceToRawZone(
+                            market,
+                            fallbackLow,
+                            fallbackHigh) >
+                        atr *
+                        maximumPracticalZoneDistanceAtr)
+                    {
+                        return false;
+                    }
+
                     if (direction == 1)
                     {
                         low = swing;
