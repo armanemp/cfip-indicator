@@ -228,10 +228,12 @@ check(
 check(
     "single-position broker safety remains explicit before 6M adoption",
     '"Max Concurrent Scenarios"' in bot and
-    "MaximumOpenPositions" in bot and
-    'DefaultValue = 1' in bot and
-    'MinValue = 1' in bot and
-    'MaxValue = 1' in bot
+    "Max Concurrent Scenarios" in bot and
+    "DefaultValue = 3" in bot and
+    "MinValue = 1" in bot and
+    "MaxValue = 10" in bot and
+    "MaximumOpenPositions" not in bot and
+    "OneOrderPerSignal" not in bot
 )
 check(
     "6M audit is wired into Source/Architecture CI",
