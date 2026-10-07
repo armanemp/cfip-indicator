@@ -21,6 +21,7 @@ content_refresh = read("UI/Panel/PanelContentRefresh.cs")
 row_writer = read("UI/Panel/PanelRowWriter.cs")
 rows_renderer = read("UI/Panel/PanelRowsRenderer.cs")
 heartbeat = read("Runtime/Supervision/PanelHeartbeatLiveState.cs")
+runtime_panel_heartbeat = read("Runtime/Supervision/RuntimePanelHeartbeat.cs")
 panel_exec = read("UI/Panel/PanelExecutionState.cs")
 cbot_reader = read("Runtime/Cbot/CbotExecutionStateReader.cs")
 execution_rows = read("UI/Panel/Rows/PanelOverviewExecutionRowsRenderer.cs")
@@ -103,7 +104,7 @@ require(
     "RenderLatestAlertSignalMarker(" in calc_live and
     "RefreshLiveDecisionActionability(" in calc_live and
     "RefreshPanelContentIfDue(" in content_refresh and
-    "RefreshPanelContentIfDue(" in heartbeat and
+    "RefreshPanelContentIfDue(" in runtime_panel_heartbeat and
     calc_live.index("RefreshLiveDecisionActionability(") <
     calc_live.index("BuildSignalVisualSnapshot(") <
     calc_live.index("RenderLatestAlertSignalMarker("),
