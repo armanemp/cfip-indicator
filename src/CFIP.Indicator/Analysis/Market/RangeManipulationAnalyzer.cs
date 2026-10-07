@@ -99,7 +99,7 @@ namespace cAlgo
                 pipSize * 2,
                 atr * 0.10);
 
-            for (int i = first; i <= index; i++)
+            for (int i = first; i <= rangeLast; i++)
             {
                 if (Math.Abs(bars.HighPrices[i] - high) <= tolerance)
                     upperTouches++;
@@ -116,7 +116,7 @@ namespace cAlgo
                 RangeEfficiency(
                     bars,
                     first,
-                    index);
+                    rangeLast);
 
             if (efficiency > 0.62)
                 return empty;
@@ -295,7 +295,7 @@ namespace cAlgo
                 Low = low,
                 WidthAtr = widthAtr,
                 StartIndex = first,
-                EndIndex = index,
+                EndIndex = rangeLast,
                 SweepIndex = sweepIndex,
                 BreakoutIndex = confirmedBreakout ? index : -1,
                 RetestIndex = retestIndex,
