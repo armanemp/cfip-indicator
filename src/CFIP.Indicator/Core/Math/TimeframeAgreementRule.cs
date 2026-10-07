@@ -9,7 +9,7 @@ namespace cAlgo
             int[] directions,
             int[] qualities,
             int[] actualIndices,
-            int[] expectedIndices,
+            int[] closedIndices,
             double[] weights,
             bool[] enabled)
         {
@@ -24,7 +24,7 @@ namespace cAlgo
                         Math.Min(
                             actualIndices == null ? 0 : actualIndices.Length,
                             Math.Min(
-                                expectedIndices == null ? 0 : expectedIndices.Length,
+                                closedIndices == null ? 0 : closedIndices.Length,
                                 Math.Min(
                                     weights == null ? 0 : weights.Length,
                                     enabled == null ? 0 : enabled.Length)))));
@@ -37,8 +37,8 @@ namespace cAlgo
                 if (!enabled[i] ||
                     weights[i] <= 0 ||
                     qualities[i] <= 0 ||
-                    expectedIndices[i] < 0 ||
-                    actualIndices[i] != expectedIndices[i])
+                    closedIndices[i] < 0 ||
+                    actualIndices[i] != closedIndices[i])
                     continue;
 
                 double qualityFactor =
