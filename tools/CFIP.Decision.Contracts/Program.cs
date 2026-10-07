@@ -23,6 +23,7 @@ namespace cAlgo
             VerifyCorrelationAwareEvidence();
             VerifyQualityWeightedFrameContribution();
             VerifyLocationEvidenceHierarchy();
+            VerifyTacticalOpportunityQuality();
             VerifyExecutionPlanGeometry();
             VerifyLiveExitGeometry();
             VerifyMarketRegimeClassification();
@@ -1302,6 +1303,77 @@ namespace cAlgo
             Assert(
                 legacy.Bull > weakConcentrated.Bull,
                 "compatibility overload treats isolated inputs as strong evidence");
+        }
+
+        private static void VerifyTacticalOpportunityQuality()
+        {
+            TacticalOpportunityResult strong =
+                TacticalOpportunityRule.Evaluate(
+                    1,
+                    88,
+                    92,
+                    4,
+                    1,
+                    80,
+                    72,
+                    3.0,
+                    75,
+                    2.0,
+                    86,
+                    2.20);
+
+            TacticalOpportunityResult weak =
+                TacticalOpportunityRule.Evaluate(
+                    1,
+                    88,
+                    40,
+                    1,
+                    1,
+                    80,
+                    72,
+                    3.0,
+                    75,
+                    2.0,
+                    86,
+                    2.20);
+
+            Assert(
+                strong.Allowed &&
+                strong.Quality > weak.Quality &&
+                strong.Lane == OpportunityLane.Tactical,
+                "tactical quality must reward execution-zone quality without duplicate evidence inflation");
+
+            Assert(
+                TacticalOpportunityRule.Evaluate(
+                    1,
+                    60,
+                    60,
+                    1,
+                    1,
+                    60,
+                    72,
+                    2.0,
+                    75,
+                    2.0,
+                    86,
+                    2.20).Quality <= 100,
+                "tactical quality remains bounded");
+
+            Assert(
+                TacticalOpportunityRule.Evaluate(
+                    -1,
+                    88,
+                    92,
+                    4,
+                    -1,
+                    80,
+                    72,
+                    3.0,
+                    75,
+                    2.0,
+                    86,
+                    2.20).Allowed,
+                "tactical quality BUY/SELL symmetry");
         }
 
         private static void VerifyLocationEvidenceHierarchy()
