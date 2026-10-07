@@ -18,11 +18,15 @@ namespace cAlgo
         private Border _panelBuyPressureFill;
         private Border _panelSellPressureFill;
         private TextBlock _panelBuyPressureLabel;
+        private TextBlock _panelBuyPressureLeftLabel;
+        private TextBlock _panelBuyPressureRightLabel;
         private StackPanel _panelAggBuyFlowRow;
         private Border _panelAggBuyFlowTrack;
         private Border _panelAggBuyFlowFill;
         private Border _panelAggSellFlowFill;
         private TextBlock _panelAggBuyFlowLabel;
+        private TextBlock _panelAggBuyFlowLeftLabel;
+        private TextBlock _panelAggBuyFlowRightLabel;
 
         private void CreatePanelFooter()
         {
@@ -48,7 +52,9 @@ namespace cAlgo
                     out _panelBuyPressureTrack,
                     out _panelBuyPressureFill,
                     out _panelSellPressureFill,
-                    out _panelBuyPressureLabel);
+                    out _panelBuyPressureLabel,
+                    out _panelBuyPressureLeftLabel,
+                    out _panelBuyPressureRightLabel);
 
             _panelAggBuyFlowRow =
                 CreateCombinedFlowPressureRow(
@@ -56,7 +62,9 @@ namespace cAlgo
                     out _panelAggBuyFlowTrack,
                     out _panelAggBuyFlowFill,
                     out _panelAggSellFlowFill,
-                    out _panelAggBuyFlowLabel);
+                    out _panelAggBuyFlowLabel,
+                    out _panelAggBuyFlowLeftLabel,
+                    out _panelAggBuyFlowRightLabel);
 
             _panelBuyPressureRow.Margin =
                 new Thickness(0, 0, 0, PanelFlowPressureRowGap);
@@ -103,88 +111,94 @@ namespace cAlgo
             out Border track,
             out Border buyFill,
             out Border sellFill,
-            out TextBlock label)
+            out TextBlock label,
+            out TextBlock leftLabel,
+            out TextBlock rightLabel)
         {
-            label =
-                new TextBlock
-                {
-                    Text = caption + " --",
-                    Height = PanelFlowPressureLabelHeight,
-                    FontFamily =
-                        string.IsNullOrWhiteSpace(PanelFontFamily)
-                            ? "Arial"
-                            : PanelFontFamily,
-                    FontSize = Math.Max(8, PanelFontSize - 3),
-                    FontWeight = FontWeight.Bold,
-                    ForegroundColor = PanelMutedTextColor,
-                    TextAlignment = TextAlignment.Left,
-                    VerticalAlignment = VerticalAlignment.Top,
-                    HorizontalAlignment = HorizontalAlignment.Left,
-                    TextWrapping = TextWrapping.NoWrap,
-                    BackgroundColor = Color.FromArgb(0, Color.Black)
-                };
+            label = null;
+            leftLabel = CreatePressureSideLabel();
+            rightLabel = CreatePressureSideLabel();
 
-            buyFill =
-                new Border
-                {
-                    Height = PanelFlowPressureBarHeight,
-                    CornerRadius = 4,
-                    BorderThickness = 0,
-                    BackgroundColor = Color.FromArgb(225, BuyArrowColor),
-                    HorizontalAlignment = HorizontalAlignment.Left,
-                    VerticalAlignment = VerticalAlignment.Center
-                };
+            buyFill = new Border
+            {
+                Height = PanelFlowPressureBarHeight,
+                CornerRadius = 4,
+                BorderThickness = 0,
+                BackgroundColor = Color.FromArgb(225, BuyArrowColor),
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Center
+            };
 
-            sellFill =
-                new Border
-                {
-                    Height = PanelFlowPressureBarHeight,
-                    CornerRadius = 4,
-                    BorderThickness = 0,
-                    BackgroundColor = Color.FromArgb(225, SellArrowColor),
-                    HorizontalAlignment = HorizontalAlignment.Left,
-                    VerticalAlignment = VerticalAlignment.Center
-                };
+            sellFill = new Border
+            {
+                Height = PanelFlowPressureBarHeight,
+                CornerRadius = 4,
+                BorderThickness = 0,
+                BackgroundColor = Color.FromArgb(225, SellArrowColor),
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Center
+            };
 
-            StackPanel segments =
-                new StackPanel
-                {
-                    Orientation = Orientation.Horizontal,
-                    HorizontalAlignment = HorizontalAlignment.Left,
-                    VerticalAlignment = VerticalAlignment.Center,
-                    Height = PanelFlowPressureBarHeight,
-                    BackgroundColor = Color.FromArgb(0, Color.Black)
-                };
-
+            StackPanel segments = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Center,
+                Height = PanelFlowPressureBarHeight,
+                BackgroundColor = Color.FromArgb(0, Color.Black)
+            };
             segments.AddChild(buyFill);
             segments.AddChild(sellFill);
 
-            track =
-                new Border
-                {
-                    Height = PanelFlowPressureBarHeight,
-                    CornerRadius = 4,
-                    BorderThickness = 0,
-                    BorderColor = Color.FromArgb(0, Color.Black),
-                    BackgroundColor = Color.FromArgb(48, PanelMutedTextColor),
-                    HorizontalAlignment = HorizontalAlignment.Stretch,
-                    VerticalAlignment = VerticalAlignment.Center,
-                    Child = segments
-                };
+            track = new Border
+            {
+                Height = PanelFlowPressureBarHeight,
+                CornerRadius = 4,
+                BorderThickness = 0,
+                BackgroundColor = Color.FromArgb(48, PanelMutedTextColor),
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Center,
+                Child = segments,
+                Margin = new Thickness(0, PanelFlowPressureLabelToBarGap, 0, 0)
+            };
 
-            StackPanel row =
-                new StackPanel
-                {
-                    Orientation = Orientation.Vertical,
-                    Height = PanelFlowPressureRowHeight,
-                    HorizontalAlignment = HorizontalAlignment.Stretch,
-                    VerticalAlignment = VerticalAlignment.Top,
-                    BackgroundColor = Color.FromArgb(0, Color.Black)
-                };
+            StackPanel labels = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                Height = PanelFlowPressureLabelHeight
+            };
+            labels.AddChild(leftLabel);
+            labels.AddChild(rightLabel);
 
-            row.AddChild(label);
+            StackPanel row = new StackPanel
+            {
+                Orientation = Orientation.Vertical,
+                Height = PanelFlowPressureRowHeight,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Top,
+                BackgroundColor = Color.FromArgb(0, Color.Black)
+            };
+            row.AddChild(labels);
             row.AddChild(track);
             return row;
+        }
+
+        private TextBlock CreatePressureSideLabel()
+        {
+            return new TextBlock
+            {
+                Text = string.Empty,
+                Height = PanelFlowPressureLabelHeight,
+                FontFamily = string.IsNullOrWhiteSpace(PanelFontFamily) ? "Arial" : PanelFontFamily,
+                FontSize = Math.Max(8, PanelFontSize - 3),
+                FontWeight = FontWeight.Bold,
+                ForegroundColor = PanelMutedTextColor,
+                VerticalAlignment = VerticalAlignment.Top,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                TextWrapping = TextWrapping.NoWrap,
+                BackgroundColor = Color.FromArgb(0, Color.Black)
+            };
         }
 
         private void UpdatePanelFlowPressureRail()
@@ -226,7 +240,8 @@ namespace cAlgo
 
             if (!ready)
             {
-                _panelBuyPressureLabel.Text = "DOM BUY --  |  SELL --";
+                _panelBuyPressureLeftLabel.Text = "DOM BUY --";
+                _panelBuyPressureRightLabel.Text = "SELL --";
             }
             else
             {
@@ -235,13 +250,8 @@ namespace cAlgo
                     : 50;
                 int sellPercent = 100 - buyPercent;
 
-                _panelBuyPressureLabel.Text =
-                    "DOM  BUY " + FormatRealtimeVolume(buyLiquidity) +
-                    " (" + buyPercent.ToString(
-                        System.Globalization.CultureInfo.InvariantCulture) +
-                    "%)  |  SELL " + FormatRealtimeVolume(sellLiquidity) +
-                    " (" + sellPercent.ToString(
-                        System.Globalization.CultureInfo.InvariantCulture) + "%)";
+                _panelBuyPressureLeftLabel.Text = "DOM BUY " + FormatRealtimeVolume(buyLiquidity) + " (" + buyPercent.ToString(System.Globalization.CultureInfo.InvariantCulture) + "%)";
+                _panelBuyPressureRightLabel.Text = "SELL " + FormatRealtimeVolume(sellLiquidity) + " (" + sellPercent.ToString(System.Globalization.CultureInfo.InvariantCulture) + "%)";
             }
 
             ApplyCombinedFlowBar(
@@ -258,17 +268,16 @@ namespace cAlgo
             double flowSellShare =
                 flowTotal > 0 ? flow.SellTicks / flowTotal : 0;
 
-            _panelAggBuyFlowLabel.Text =
-                flowTotal > 0
-                    ? "FLOW TICKS  BUY " + flow.BuyTicks.ToString(
-                        System.Globalization.CultureInfo.InvariantCulture) +
-                      " (" + ((int)Math.Round(flowBuyShare * 100.0)).ToString(
-                        System.Globalization.CultureInfo.InvariantCulture) +
-                      "%)  |  SELL " + flow.SellTicks.ToString(
-                        System.Globalization.CultureInfo.InvariantCulture) +
-                      " (" + ((int)Math.Round(flowSellShare * 100.0)).ToString(
-                        System.Globalization.CultureInfo.InvariantCulture) + "%)"
-                    : "FLOW TICKS  BUY --  |  SELL --";
+            if (flowTotal > 0)
+            {
+                _panelAggBuyFlowLeftLabel.Text = "FLOW BUY " + flow.BuyTicks.ToString(System.Globalization.CultureInfo.InvariantCulture) + " (" + ((int)Math.Round(flowBuyShare * 100.0)).ToString(System.Globalization.CultureInfo.InvariantCulture) + "%)";
+                _panelAggBuyFlowRightLabel.Text = "SELL " + flow.SellTicks.ToString(System.Globalization.CultureInfo.InvariantCulture) + " (" + ((int)Math.Round(flowSellShare * 100.0)).ToString(System.Globalization.CultureInfo.InvariantCulture) + "%)";
+            }
+            else
+            {
+                _panelAggBuyFlowLeftLabel.Text = "FLOW BUY --";
+                _panelAggBuyFlowRightLabel.Text = "SELL --";
+            }
 
             ApplyCombinedFlowBar(
                 _panelAggBuyFlowFill,
