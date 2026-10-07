@@ -545,7 +545,7 @@ namespace CFIP.cBot.Execution
                     nowUtc,
                     out string targetMutationReason))
             {
-                status = mutationReason;
+                status = targetMutationReason;
                 return;
             }
 
@@ -975,7 +975,7 @@ namespace CFIP.cBot.Execution
             if (!TryAcquireBrokerMutationSlot(
                     robot,
                     nowUtc,
-                    out string mutationReason))
+                    out string targetMutationReason))
             {
                 StoreReport(
                     robot,
