@@ -346,6 +346,27 @@ namespace cAlgo
                     true,
                     d.ReactionClosedBarConfirmed);
 
+            // Fresh quote flow is modulation only: it can veto an intrabar
+            // reaction when strong current flow opposes the reaction direction,
+            // but it never creates a direction by itself.
+            AggressiveFlowSnapshot flowSnapshot;
+            bool freshFlow =
+                TryGetFreshAggressiveFlowSnapshot(
+                    out flowSnapshot);
+            bool flowOpposes =
+                freshFlow &&
+                flowSnapshot.StronglyOpposes(
+                    d.Direction,
+                    0.35,
+                    0.75);
+
+            if (flowOpposes)
+            {
+                d.EntryAllowed = false;
+                d.TriggerReady = false;
+                d.BlockReason = "FLOW OPPOSITION";
+            }
+
             if (!AllowFastM5ReversalBeforeM15 &&
                 (_m15Frame == null ||
                  _m15Frame.Direction !=
