@@ -55,6 +55,7 @@ namespace cAlgo
             double maxWidthAtr,
             double minWidthAtr,
             double sweepAtr,
+            double pipSize,
             double breakoutAtr,
             double retestAtr,
             int minimumScore)
@@ -95,7 +96,7 @@ namespace cAlgo
             int lowerTouches = 0;
 
             double tolerance = Math.Max(
-                bars.Symbol.PipSize * 2,
+                pipSize * 2,
                 atr * 0.10);
 
             for (int i = first; i <= index; i++)
@@ -130,7 +131,7 @@ namespace cAlgo
 
             double sweepDistance =
                 Math.Max(
-                    bars.Symbol.PipSize * 2,
+                    pipSize * 2,
                     atr * sweepAtr);
 
             for (int i = Math.Max(first + 2, index - 12);
@@ -143,7 +144,7 @@ namespace cAlgo
                 double lowBar = bars.LowPrices[i];
                 double barRange =
                     Math.Max(
-                        bars.Symbol.PipSize,
+                        pipSize,
                         highBar - lowBar);
 
                 double lowerWick =
@@ -237,7 +238,7 @@ namespace cAlgo
             {
                 double toleranceRetest =
                     Math.Max(
-                        bars.Symbol.PipSize * 2,
+                        pipSize * 2,
                         atr * retestAtr);
 
                 if (direction > 0)
