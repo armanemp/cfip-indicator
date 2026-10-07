@@ -2929,3 +2929,14 @@ Correction:
 - Deterministic runtime-contract coverage was added for the 100ms cadence.
 
 Target-terminal verification remains required for actual observed latency, because cTrader executes Indicator `Calculate()` on incoming ticks but terminal performance/market-tick frequency determine the final wall-clock response.
+
+
+## 2026-10-07 — Signal precision extension: quality-aware MTF and directional structure
+
+- [x] MTF agreement no longer counts every aligned frame at full weight regardless of its frame quality.
+- [x] A canonical Core TimeframeAgreementRule now grants alignment credit as configured timeframe weight × validated frame quality, while preserving the existing aligned-frame denominator.
+- [x] Higher-timeframe structural confirmations no longer count when that frame's overall direction is explicitly opposite the candidate direction.
+- [x] Neutral-frame structure remains usable as transition/recovery evidence.
+- [x] Added deterministic Decision Contracts plus CI audit coverage for weak/strong/opposing/symmetric cases.
+
+The correction is intentionally conservative: it reduces artificial confidence without removing the existing M15-canonical / M5-precision architecture or creating a second decision engine.
