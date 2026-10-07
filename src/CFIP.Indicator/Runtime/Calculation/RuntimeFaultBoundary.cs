@@ -54,8 +54,10 @@ namespace cAlgo
             if (state == RuntimeFaultState.Healthy)
                 return;
 
-            _autoTradingEnabledRuntime = false;
-            _automaticOrdersEnabledRuntime = false;
+            // Never turn the Indicator's execution flags into a global kill
+            // switch. Recoverable runtime faults are enforced by the
+            // cycle-local state machine and the cBot remains the sole broker
+            // execution authority.
 
             if (state == RuntimeFaultState.Recovering)
             {
