@@ -529,7 +529,7 @@ Evidence:
 - Git tree: 1,131 files, 82 directories, 218 Markdown files; tree not truncated.
 - Canonical inventory drift was found and corrected: four omitted files were `.vscode/extensions.json`, `docs/CFIP-LIST.md`, `docs/CFIP-PROMPT.md`, and `docs/CFIP-PREPROMPT.md`.
 - Production C# baseline: 668 files.
-- Public parameters: 543 unique declarations across 30 parameter source files; machine audits report zero unread candidates.
+- Public parameters: 533 unique declarations across 30 parameter source files; machine audits report zero unread candidates.
 - MTF contract: M1/M5/M15/M30/H1/H4/D1/W1; M2 absent.
 - Indicator direct broker mutation: zero.
 - cBot→Indicator ProjectReference: zero.

@@ -109,14 +109,16 @@ check(
 aggressive = read(
     "src/CFIP.cBot/Execution/DemoMarketExecutionCoordinator.cs"
 )
-factory = read(
-    "src/CFIP.Indicator/Trading/Lifecycle/LivePlanFactory.cs"
+contract_identity = read(
+    "src/CFIP.Contracts/IdentityContracts.cs"
 )
 check(
     "aggressive fills retain the source trace while recovery remains opt-in",
-    "ExecutionMode.BreakoutMarket,\n                    true)" in aggressive and
-    "bool bindSignalTrace = false" in factory and
-    "if (bindSignalTrace)" in factory,
+    "ExecutionAction.Aggressive" in aggressive and
+    "BuildReport(" in aggressive and
+    "envelope.Identity" in aggressive and
+    "SignalId" in contract_identity and
+    "BrokerReportStatus.RecoveryRequired" in aggressive,
 )
 check(
     "outcome archive is backward-compatible with legacy rows",

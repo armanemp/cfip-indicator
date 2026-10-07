@@ -44,7 +44,7 @@ check("labels share exact normalized price and canonical DateTime/OpenTime ancho
     "GetCompactPlanLabelAnchorTime(" in anchor)
 check("active plan does not create a second arrow lifecycle", "RenderStackedSignalArrows(" not in plan and 'P + "ARROW"' not in plan)
 check("legacy active arrow is cleaned", 'P + "ARROW"' in arrows and 'P + "ARROW"' in clearer)
-check("directional arrows use the fixed canonical signal box", "UpdateSignalArrowBox(" in arrows and "ChartIconType.UpArrow" not in arrows and "ChartIconType.DownArrow" not in arrows)
+check("directional arrows use canonical chart objects", "Chart.DrawIcon(" in arrows and "ChartIconType.UpArrow" in arrows and "ChartIconType.DownArrow" in arrows)
 check("directional marker lifecycle has one owner", "RenderCanonicalMtfTrendArrows(" in (ROOT / "src/CFIP.Indicator/Runtime/Calculation/CalculationLiveCycle.cs").read_text(encoding="utf-8") and "RenderStackedSignalArrows(" in arrows)
 check("legacy alert mirror cannot create second signal marker", 'P + "ALERT_SIGNAL"' in alert_marker and "Chart.DrawIcon" not in alert_marker)
 

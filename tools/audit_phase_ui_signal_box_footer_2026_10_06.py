@@ -28,13 +28,13 @@ display = read("Indicator/Parameters/14_display_core.cs")
 
 checks = [
     ("ShowSignalArrow parameter remains enabled by default", 'Parameter("Show Signal Arrow"' in display and "DefaultValue = true" in display),
-    ("chart arrow renderer owns the new box", "UpdateSignalArrowBox(" in arrows),
-    ("legacy WATCH_ARROW chart objects are only cleanup, never draw targets", "DrawIcon(" not in arrows),
+    ("chart arrow renderer owns the canonical chart objects", "Chart.DrawIcon(" in arrows and "ChartIconType.UpArrow" in arrows and "ChartIconType.DownArrow" in arrows),
+    ("legacy arrow names are cleanup-only", "WATCH_ARROW" in arrows and "RemoveStackedSignalArrows" in arrows),
     ("no obsolete candle M1 trigger circle remains", "M1_TRIGGER" not in signal_renderer and "ChartIconType.Circle" not in signal_renderer),
-    ("box state is owned by the arrow renderer", all(x in arrows for x in ("_signalArrowBox", "_signalArrowBoxArrows", "_signalArrowBoxStack")) and "_signalArrowBox" not in state),
-    ("box is bottom-right aligned", "HorizontalAlignment.Right" in arrows and "VerticalAlignment.Bottom" in arrows),
-    ("box is compact square", "Width = 66" in arrows and "Height = 66" in arrows),
-    ("box is non-interactive", "IsHitTestVisible = false" in arrows),
+    ("arrow state is owned by the chart renderer", "CanonicalTrendArrowPrefix" in arrows and "_signalArrowBox" not in arrows and "_signalArrowBox" not in state),
+    ("arrows are placed outside the candle by canonical renderer", "ResolveArrowBarIndex(" in arrows and "ResolveArrowAtr(" in arrows and "basePrice" in arrows),
+    ("arrow strength is deterministic 1..3 objects", "arrowCount" in arrows and "for (int level = 0" in arrows),
+    ("chart arrows are non-interactive", "IsInteractive = false" in arrows),
     ("footer state is owned by PanelFooterFactory", all(x in footer_factory for x in (
         "_panelFlowPressureRail",
         "_panelBuyPressureRow",

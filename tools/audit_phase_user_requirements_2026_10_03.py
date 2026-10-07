@@ -107,18 +107,18 @@ check(
     "LevelBandSize = 5" in trend and
     "ResolveTier" in trend and
     "int arrowCount" in arrows and
-    '"WATCH_ARROW"' in arrows and
-    '"WATCH_ARROW_2"' in arrows and
-    '"WATCH_ARROW_3"' in arrows and
+    "CanonicalTrendArrowPrefix" in arrows and
+    "ChartIconType.UpArrow" in arrows and
+    "ChartIconType.DownArrow" in arrows and
     "snapshot.MtfTrendStrengthLevel" in arrows and
     "HtfTrendArrowStrengthRule" not in arrows
 )
 
 check(
-    "M1 trigger marker is removed and canonical direction uses the fixed signal box",
+    "M1 trigger marker is removed and canonical direction uses chart trend arrows",
     "ChartIconType.Circle" not in signal_renderer and
     "M1_TRIGGER" not in signal_renderer and
-    "UpdateSignalArrowBox(" in arrows and
+    "Chart.DrawIcon(" in arrows and
     "RenderStackedSignalArrows(" in arrows
 )
 

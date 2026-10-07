@@ -82,7 +82,7 @@ check(
     and "FrameScoringConstants.DisplacementContribution" in scoring
     and "FrameScoringConstants.LiquidityContribution" in scoring
     and "FrameScoringConstants.EqualLevelContribution" in scoring
-    and "ref bear, ref evidence" in scoring,
+    and "ref bear, ref bearEvidence" in scoring,
 )
 check(
     "regime and quality composition constants are centrally owned",

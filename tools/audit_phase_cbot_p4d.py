@@ -130,7 +130,9 @@ check(
 check(
     "ChartIconType.Circle" not in signal_renderer and
     "M1_TRIGGER" not in signal_renderer and
-    "UpdateSignalArrowBox(" in signal_stack and
+    "Chart.DrawIcon(" in signal_stack and
+    "ChartIconType.UpArrow" in signal_stack and
+    "ChartIconType.DownArrow" in signal_stack and
     "RenderStackedSignalArrows(" in signal_stack,
     "directional signal presentation must use the canonical bottom-right arrow box; no obsolete M1 Circle marker remains",
 )
@@ -207,7 +209,7 @@ print("Unified pending Stop/Limit owner: ACTIVE")
 print("Chart timeframe execution dependency: NONE")
 print("Arrow-only signal markers: ENFORCED")
 print("Three directional arrow intensity colors: ENFORCED")
-print("Canonical signal box: fixed 66x66 BottomRight")
+print("Canonical signal arrows: direct Chart.DrawIcon objects")
 print("Legacy popup surface: REMOVED")
 print("Important-alert classifier: ENFORCED")
 
