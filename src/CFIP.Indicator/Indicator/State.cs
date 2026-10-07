@@ -321,7 +321,6 @@ namespace cAlgo
                 private DateTime _panelStableHeaderSinceUtc = DateTime.MinValue;
         private int _runtimeTpStageIndex = -1;
         private int _runtimeTpStagePlanCreatedM5 = -1;
-        private int _lastReactionAlertBar = -1;
 
         private readonly Dictionary<int, int> _directionSamples =
                     new Dictionary<int, int>();
