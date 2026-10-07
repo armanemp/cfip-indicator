@@ -134,10 +134,18 @@ namespace cAlgo
                     0,
                     100);
 
+            // M15 is the canonical decision/reference frame. Once its
+            // closed-bar direction is resolved, higher/lower frames may
+            // modulate strength but must not flip the displayed direction.
+            int canonicalM15Direction =
+                ResolveCanonicalM15Direction(frames);
+
             int overallDirection =
-                ResolveDominantDirection(
-                    bullAverage,
-                    bearAverage);
+                canonicalM15Direction != 0
+                    ? canonicalM15Direction
+                    : ResolveDominantDirection(
+                        bullAverage,
+                        bearAverage);
 
             int arrowDirection = overallDirection;
 
@@ -616,6 +624,26 @@ namespace cAlgo
                 signedPressure * 50.0,
                 50.0,
                 100.0);
+        }
+
+        private static int ResolveCanonicalM15Direction(
+            Frame[] frames)
+        {
+            if (frames == null ||
+                frames.Length <= 2)
+                return 0;
+
+            Frame m15 =
+                frames[2];
+
+            if (m15 == null ||
+                !m15.NativeIndicatorsReady ||
+                m15.Atr <= 0)
+                return 0;
+
+            return m15.Direction == 1 || m15.Direction == -1
+                ? m15.Direction
+                : 0;
         }
 
         private static double ResolveRangeQuality(

@@ -12,9 +12,11 @@ namespace cAlgo
                  requestedDirection != -1))
                 return 0;
 
-            return frameDirection == -requestedDirection
-                ? 0
-                : 1;
+            // A structural event on a neutral frame is context, not confirmation.
+            // Only same-direction structure earns a directional confirmation.
+            return frameDirection == requestedDirection
+                ? 1
+                : 0;
         }
     }
 }

@@ -37,7 +37,9 @@ namespace cAlgo
             int direction =
                 snapshot.AuthoritativeDirection != 0
                     ? snapshot.AuthoritativeDirection
-                    : snapshot.MtfTrendDirection;
+                    : IsStrongMtfTrendPresentation(snapshot)
+                        ? snapshot.MtfTrendDirection
+                        : 0;
 
             if (direction == 0)
             {
@@ -82,6 +84,18 @@ namespace cAlgo
                 arrowColor);
         }
 
+
+        private bool IsStrongMtfTrendPresentation(
+            SignalVisualSnapshot snapshot)
+        {
+            return
+                snapshot != null &&
+                snapshot.MtfTrendDirection != 0 &&
+                string.Equals(
+                    snapshot.MtfTrendStrengthTier,
+                    "STRONG",
+                    StringComparison.OrdinalIgnoreCase);
+        }
 
         private void EnsureSignalArrowBox()
         {
