@@ -49,6 +49,7 @@ namespace cAlgo
             return Math.Max(
                 PanelFooterMinHeight,
                 PanelFlowPressureRailHeight +
+                PanelFlowPressureTopSpacing +
                 PanelFooterActionGap +
                 actionHeight);
         }
