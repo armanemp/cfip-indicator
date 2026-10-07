@@ -8855,22 +8855,32 @@ namespace cAlgo
             Assert(
                 machine.RequestExplicitRearm() &&
                 machine.CanAutomaticEntryProceed,
-                "healthy runtime accepts an explicit re-arm request");
+                "healthy runtime accepts a re-arm request");
 
+            machine.BeginCycle();
             machine.BlockAutomaticEntry();
 
             Assert(
-                !machine.RequestExplicitRearm() &&
                 !machine.CanAutomaticEntryProceed,
-                "entry-blocked runtime cannot be bypassed by explicit re-arm");
+                "a recoverable runtime fault blocks automatic entry in the affected cycle");
 
-            machine = new RuntimeFaultStateMachine();
+            machine.BeginCycle();
+
+            Assert(
+                machine.CanAutomaticEntryProceed,
+                "the next clean runtime cycle automatically restores entry without a hidden permanent trading switch");
+
             machine.RecordRecoverableFault();
 
             Assert(
-                !machine.RequestExplicitRearm() &&
                 !machine.CanAutomaticEntryProceed,
-                "degraded runtime cannot be re-armed before recovery");
+                "a later recoverable runtime fault blocks only its current cycle");
+
+            machine.BeginCycle();
+
+            Assert(
+                machine.CanAutomaticEntryProceed,
+                "a new clean cycle clears the previous recoverable fault");
         }
 
         private static AlertDelivery BuildTestAlertDelivery(
