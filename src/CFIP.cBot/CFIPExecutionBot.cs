@@ -644,10 +644,9 @@ namespace CFIP.cBot
             if (logNow)
             {
                 Print(
-                    "CFIP cBot RUNTIME FAULT | source={0} | count={1} | type={2} | message={3}",
+                    "CFIP cBot RUNTIME FAULT | source={0} | count={1} | message={2}",
                     source ?? "UNKNOWN",
                     _runtimeFaultCount,
-                    exception == null ? "UNKNOWN" : exception.GetType().Name,
                     exception == null ? "UNKNOWN" : exception.Message);
             }
 
@@ -666,8 +665,7 @@ namespace CFIP.cBot
             {
                 if (logNow)
                     Print(
-                        "CFIP cBot RUNTIME FAULT TELEMETRY FAILED | type={0} | message={1}",
-                        publishException.GetType().Name,
+                        "CFIP cBot RUNTIME FAULT TELEMETRY FAILED | message={0}",
                         publishException.Message);
             }
         }
