@@ -69,6 +69,14 @@ require(
 )
 
 require(
+    "canonicalContextQuality" in quality and
+    "effectiveCanonicalContextQuality" in quality and
+    "effectiveCanonicalContextQuality * 0.15" in quality and
+    "effectiveCanonicalContextQuality * 0.10" in quality,
+    "canonical M15 quality is not part of SmartQuality calculation",
+)
+
+require(
     "M15 is the canonical decision timeframe" in evaluator and
     "strongM15Conflict" in evaluator and
     "bool weakM15Context" in evaluator and
