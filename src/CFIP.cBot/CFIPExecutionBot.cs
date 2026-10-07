@@ -605,7 +605,7 @@ namespace CFIP.cBot
                 exception);
         }
 
-        private void ProcessSignalEnvelope(
+        private bool ProcessSignalEnvelope(
             SignalEnvelope envelope,
             DateTime nowUtc)
         {
@@ -621,7 +621,7 @@ namespace CFIP.cBot
                     "SIGNAL PREFLIGHT BLOCKED • " +
                     signalPreflightReason,
                     true);
-                return;
+                return false;
             }
 
             TrackScenarioEnvelope(envelope);
@@ -682,7 +682,7 @@ namespace CFIP.cBot
                         envelope.Identity == null
                             ? ""
                             : envelope.Identity.ScenarioId);
-                    return;
+                    return false;
                 }
             }
 
@@ -719,7 +719,7 @@ namespace CFIP.cBot
                     "EXECUTION BLOCKED • " +
                     environmentReason,
                     true);
-                return;
+                return false;
             }
 
             bool actionEnabled =
@@ -740,7 +740,7 @@ namespace CFIP.cBot
                 PublishExecutionState(
                     "EXECUTION DISABLED • ENABLE cBOT EXECUTION",
                     true);
-                return;
+                return true;
             }
 
             if (envelope.Intent == null ||
@@ -757,7 +757,7 @@ namespace CFIP.cBot
                         ? "NO INTENT"
                         : envelope.Intent.Action.ToString()),
                     true);
-                return;
+                return true;
             }
 
             if (shadowResult == null)
@@ -767,7 +767,7 @@ namespace CFIP.cBot
                 PublishExecutionState(
                     "WAITING • SHADOW STATE UNAVAILABLE",
                     true);
-                return;
+                return true;
             }
 
             if (shadowResult.State != ShadowHostState.Ready)
@@ -780,14 +780,14 @@ namespace CFIP.cBot
                     (shadowResult.Reason ??
                      shadowResult.State.ToString()),
                     true);
-                return;
+                return true;
             }
 
             if (_sessionExecutions >=
                 EffectiveSessionExecutionCap)
             {
                 LogBlockedState("SESSION EXECUTION CAP REACHED");
-                return;
+                return true;
             }
 
             if (envelope.Intent.Action == ExecutionAction.PendingStop ||
@@ -846,7 +846,8 @@ namespace CFIP.cBot
                             : envelope.Identity.ScenarioId);
                 }
 
-                return;
+                return pendingReport == null &&
+                       ShouldRetryExecutionReason(pendingReason);
             }
 
             if (_market.TryExecute(
@@ -917,6 +918,8 @@ namespace CFIP.cBot
                         ? ""
                         : envelope.Identity.ScenarioId);
             }
+        return report == null &&
+               ShouldRetryExecutionReason(executionReason);
         }
 
         private void PlayBrokerOutcomeAudio(
