@@ -13,7 +13,7 @@ namespace cAlgo
         [Parameter("Require Fresh M5 Trigger", Group = "16 · Accuracy", DefaultValue = true)]
         public bool RequireFreshM5Trigger { get; set; }
 
-        [Parameter("Minimum Fresh Trigger Evidence", Group = "16 · Accuracy", DefaultValue = 3, MinValue = 1, MaxValue = 8)]
+        [Parameter("Minimum Fresh Trigger Evidence", Group = "16 · Accuracy", DefaultValue = 4, MinValue = 1, MaxValue = 8)]
         public int MinimumFreshTriggerEvidence { get; set; }
 
         [Parameter("Use False Signal Guard", Group = "16 · Accuracy", DefaultValue = true)]
@@ -91,7 +91,7 @@ namespace cAlgo
         [Parameter("Require Entry Location Confluence", Group = "16 · Accuracy", DefaultValue = true)]
         public bool RequireEntryLocationConfluence { get; set; }
 
-        [Parameter("Minimum Entry Location Quality", Group = "16 · Accuracy", DefaultValue = 64, MinValue = 40, MaxValue = 95)]
+        [Parameter("Minimum Entry Location Quality", Group = "16 · Accuracy", DefaultValue = 68, MinValue = 40, MaxValue = 95)]
         public int MinimumEntryLocationQuality { get; set; }
 
         [Parameter("Use Reward Quality Gate", Group = "16 · Accuracy", DefaultValue = true)]
