@@ -565,6 +565,33 @@ namespace CFIP.cBot
                 exception);
         }
 
+        protected override void OnError(Error error)
+        {
+            string detail =
+                error == null
+                    ? "UNKNOWN"
+                    : error.ToString();
+
+            Print(
+                "CFIP cBot TRADE ERROR | {0} | utc={1:O}",
+                detail,
+                Server.TimeInUtc);
+
+            try
+            {
+                PublishExecutionState(
+                    "TRADE ERROR • " +
+                    detail,
+                    true);
+            }
+            catch (Exception publishException)
+            {
+                Print(
+                    "CFIP cBot trade-error state publish failed: {0}",
+                    publishException.Message);
+            }
+        }
+
         private void ProcessSignalEnvelope(
             SignalEnvelope envelope,
             DateTime nowUtc)
