@@ -186,6 +186,14 @@ check(
     "ProcessSignalEnvelope(" in bot,
 )
 check(
+    "broker coordinator rejections remain observable instead of silently returning",
+    "PENDING EXECUTION BLOCKED • " in bot and
+    "MARKET EXECUTION BLOCKED • " in bot and
+    "pendingReason" in bot and
+    "executionReason" in bot,
+)
+
+check(
     "Timer and Tick cycles are exception-isolated so one runtime fault cannot terminate the lifecycle",
     "TIMER CYCLE EXCEPTION" in bot and
     "TICK CYCLE EXCEPTION" in bot and
