@@ -35,9 +35,9 @@ namespace cAlgo
             }
 
             int direction =
-                snapshot.MtfTrendDirection != 0
-                    ? snapshot.MtfTrendDirection
-                    : snapshot.AuthoritativeDirection;
+                snapshot.AuthoritativeDirection != 0
+                    ? snapshot.AuthoritativeDirection
+                    : snapshot.MtfTrendDirection;
 
             if (direction == 0)
             {
@@ -72,9 +72,10 @@ namespace cAlgo
                     CautionSellArrowColor,
                     BlockedReactionArrowColor);
 
-            // Directional arrows are presentation-only and use the same
-            // canonical MTF trend direction/strength snapshot as the trend
-            // presentation. Decision/plan state remains separate evidence.
+            // Direction is owned by the canonical signal snapshot so a
+            // qualifying live M5 reaction can surface without waiting for a
+            // new closed M5 bar. Strength remains owned by the canonical MTF
+            // trend-strength ladder.
             UpdateSignalArrowBox(
                 direction,
                 arrowCount,
