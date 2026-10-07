@@ -2899,7 +2899,7 @@ Repository-side CI is the next verification boundary for these synchronized cont
 - `FullWidthLevelLines` was removed as an unread/dead public parameter; canonical plan lines remain finite 40-bar geometry.
 - Parameter inventory is now 533 total / 530 non-OSS baseline; architecture and parameter audits were reconciled to the actual source tree.
 
-Repository CI for this closeout is pending on the latest PR head; target-terminal visual/audio/cBot acceptance remains mandatory.
+Repository CI closeout is PASS on PR #375 final head `7ed5d74f97460d01a54912845bd5688986d2079c`: Source/Architecture #5127, cTrader Compile #5120, Runtime Acceptance #4936. Target-terminal visual/audio/cBot acceptance remains mandatory.
 
 ## 2026-10-07 — Current continuation state
 - Mainline continuation now includes the arrow/footer/cBot hardening work.
