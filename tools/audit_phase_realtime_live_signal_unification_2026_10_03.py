@@ -53,7 +53,9 @@ consensus = read("src/CFIP.Indicator/Analysis/Market/Decision/DecisionConsensusC
 
 check(
     "tactical quality has one canonical owner and no duplicated evidence inputs",
-    "m5Quality * 0.60" in tactical_rule and
+    "0.60 +" in tactical_rule and
+    "0.25 +" in tactical_rule and
+    "0.15" in tactical_rule and
     "zoneQuality" in tactical_rule and
     "independentEvidenceGroupCount" in tactical_rule and
     "StructuralConfirmations(direction) *" not in tactical_analyzer and
