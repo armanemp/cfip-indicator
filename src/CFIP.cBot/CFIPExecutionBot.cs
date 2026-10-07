@@ -539,6 +539,13 @@ namespace CFIP.cBot
             }
         }
 
+        protected override void OnException(Exception exception)
+        {
+            LogRuntimeFault(
+                "OnException",
+                exception);
+        }
+
         private void ProcessSignalEnvelope(
             SignalEnvelope envelope,
             DateTime nowUtc)
@@ -1016,11 +1023,20 @@ namespace CFIP.cBot
                     out ChartIndicator indicator,
                     out string reason))
             {
-                // The custom Indicator is a local chart algorithm and must be
-                // attached explicitly by the operator. Never create/resolve it
-                // from this lifecycle path: doing so re-enters cTrader's
-                // algorithm-resolution flow during cBot restart/reload and can
-                // surface a Local/Cloud selection prompt.
+                // cTrader can briefly return an incomplete chart-indicator
+                // enumeration while the local Indicator is being rebuilt. A
+                // periodic non-forced miss is therefore non-destructive: retain
+                // the last known binding and let the safety preflight decide.
+                if (!force &&
+                    !string.IsNullOrWhiteSpace(_boundIndicatorInstanceId))
+                {
+                    Print(
+                        "CFIP ANALYSIS BIND | transient lookup miss | retainedInstance={0} | reason={1}",
+                        _boundIndicatorInstanceId,
+                        reason);
+                    return true;
+                }
+
                 Print(
                     "CFIP ANALYSIS BIND | unresolved | reason={0} | chart={1} | action=ATTACH LOCAL INDICATOR",
                     reason,
