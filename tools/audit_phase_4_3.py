@@ -110,7 +110,7 @@ aggressive = read(
     "src/CFIP.cBot/Execution/DemoMarketExecutionCoordinator.cs"
 )
 contract_identity = read(
-    "src/CFIP.Contracts/ContractIdentity.cs"
+    "src/CFIP.Contracts/IdentityContracts.cs"
 )
 check(
     "aggressive fills retain the source trace while recovery remains opt-in",
