@@ -49,10 +49,29 @@ namespace cAlgo
                     strategic))
                 AddOpportunityCandidate(strategic);
 
-            for (int candidateDirection = 1;
-                 candidateDirection >= -1;
-                 candidateDirection -= 2)
+            int canonicalM15TrendDirection =
+                _m15Frame != null
+                    ? _m15Frame.TrendBull
+                        ? 1
+                        : _m15Frame.TrendBear
+                            ? -1
+                            : 0
+                    : 0;
+
+            // In a clear M15 trend, parallel tactical discovery is still allowed,
+            // but only on the canonical direction. The opposite direction belongs
+            // to the explicit reversal/reaction lifecycle and must not appear as a
+            // normal user-facing SELL/BUY signal while the canonical trend persists.
+            int[] candidateDirections =
+                canonicalM15TrendDirection != 0
+                    ? new[] { canonicalM15TrendDirection }
+                    : new[] { 1, -1 };
+
+            for (int i = 0; i < candidateDirections.Length; i++)
             {
+                int candidateDirection =
+                    candidateDirections[i];
+
                 TacticalOpportunityResult tacticalAssessment =
                     EvaluateTacticalOpportunityForDirection(
                         _decision,
