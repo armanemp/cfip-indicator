@@ -17,12 +17,14 @@ namespace cAlgo
 
         // Compact footer chrome: the buy/sell pressure rail is a fixed-height,
         // full-width presentation surface above the alert/action area.
-        private const int PanelFooterMinHeight = 160;
-        private const int PanelFlowPressureRailHeight = 96;
-        private const int PanelFlowPressureRowHeight = 23;
+        private const int PanelFooterMinHeight = 156;
+        private const int PanelFlowPressureRailHeight = 74;
+        private const int PanelFlowPressureRowHeight = 30;
         private const int PanelFlowPressureLabelHeight = 10;
         private const int PanelFlowPressureBarHeight = 10;
-        private const int PanelFooterActionGap = 8;
+        private const int PanelFooterActionGap = 6;
+        private const int PanelFlowPressureTopSpacing = 8;
+        private const int PanelFlowPressureRowGap = 6;
         private const int PanelFooterButtonInternalMargin = 2;
         private const int PanelStatusLampFontSize = 20;
         private const int PanelStatusLampWidth = 30;
