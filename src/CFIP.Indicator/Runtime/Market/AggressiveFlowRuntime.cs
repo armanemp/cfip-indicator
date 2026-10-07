@@ -31,8 +31,16 @@ namespace cAlgo
             // then ask cTrader for more history. Both paths converge on the same
             // analyzer owner; no second flow cache is introduced.
             _aggressiveFlowAnalyzer.SeedFromHistory(_aggressiveFlowTicks);
-            RefreshAggressiveFlowSnapshot(
-                _aggressiveFlowTicks.LastTick.Time.ToUniversalTime());
+
+            if (_aggressiveFlowTicks.Count > 0)
+            {
+                RefreshAggressiveFlowSnapshot(
+                    _aggressiveFlowTicks.LastTick.Time.ToUniversalTime());
+            }
+            else
+            {
+                RefreshAggressiveFlowSnapshot(TimeInUtc);
+            }
 
             try
             {
