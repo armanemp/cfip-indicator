@@ -22,6 +22,9 @@ namespace CFIP.cBot.Execution
         public bool AutoProtectBrokerPositions { get; }
         public bool SyncBrokerTakeProfit { get; }
         public bool ManagedActionsOnly { get; }
+        public int MaxConcurrentScenarios { get; }
+        public double MaxExecutionMarginUsagePercent { get; }
+        public double ExecutionMarginBufferPercent { get; }
         public int BrokerModifyCooldownMs { get; }
         public int PendingOrderExpiryMinutes { get; }
         public string AutoTradeLabel { get; }
@@ -34,6 +37,9 @@ namespace CFIP.cBot.Execution
             bool enableLiveExitManagement, bool enablePartialTakeProfit,
             bool autoBrokerProtection, bool autoProtectBrokerPositions,
             bool syncBrokerTakeProfit, bool managedActionsOnly,
+            int maxConcurrentScenarios,
+            double maxExecutionMarginUsagePercent,
+            double executionMarginBufferPercent,
             int brokerModifyCooldownMs, int pendingOrderExpiryMinutes,
             string autoTradeLabel)
         {
@@ -50,6 +56,24 @@ namespace CFIP.cBot.Execution
             AutoProtectBrokerPositions = autoProtectBrokerPositions;
             SyncBrokerTakeProfit = syncBrokerTakeProfit;
             ManagedActionsOnly = managedActionsOnly;
+            MaxConcurrentScenarios =
+                Math.Max(
+                    1,
+                    Math.Min(
+                        10,
+                        maxConcurrentScenarios));
+            MaxExecutionMarginUsagePercent =
+                NormalizeRange(
+                    maxExecutionMarginUsagePercent,
+                    10,
+                    100,
+                    80);
+            ExecutionMarginBufferPercent =
+                NormalizeRange(
+                    executionMarginBufferPercent,
+                    0,
+                    40,
+                    10);
             BrokerModifyCooldownMs = Math.Max(100, Math.Min(5000, brokerModifyCooldownMs));
             PendingOrderExpiryMinutes = Math.Max(15, Math.Min(1440, pendingOrderExpiryMinutes));
             AutoTradeLabel = string.IsNullOrWhiteSpace(autoTradeLabel) ? "CFIP-SMART" : autoTradeLabel.Trim();
@@ -68,6 +92,9 @@ namespace CFIP.cBot.Execution
                 robot.EnableLiveExitManagement, robot.EnablePartialTakeProfit,
                 robot.AutoBrokerProtection, robot.AutoProtectBrokerPositions,
                 robot.SyncBrokerTakeProfit, robot.ManagedActionsOnly,
+                robot.MaxConcurrentScenarios,
+                robot.MaxExecutionMarginUsagePercent,
+                robot.ExecutionMarginBufferPercent,
                 robot.BrokerModifyCooldownMs, robot.PendingOrderExpiryMinutes,
                 robot.AutoTradeLabel);
         }
@@ -75,6 +102,23 @@ namespace CFIP.cBot.Execution
         private static double NormalizePositive(double value, double fallback)
         {
             return double.IsNaN(value) || double.IsInfinity(value) || value <= 0 ? fallback : value;
+        }
+
+        private static double NormalizeRange(
+            double value,
+            double minimum,
+            double maximum,
+            double fallback)
+        {
+            if (double.IsNaN(value) ||
+                double.IsInfinity(value))
+                return fallback;
+
+            return Math.Max(
+                minimum,
+                Math.Min(
+                    maximum,
+                    value));
         }
     }
 }

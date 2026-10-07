@@ -279,9 +279,29 @@ namespace CFIP.cBot
                     ? MaxLiveExecutionsPerSession
                     : MaxDemoExecutionsPerSession);
         private int EffectiveConcurrentScenarioLimit =>
-            Math.Max(
-                1,
-                MaxConcurrentScenarios);
+            _executionSettings == null
+                ? Math.Max(
+                    1,
+                    MaxConcurrentScenarios)
+                : _executionSettings.MaxConcurrentScenarios;
+
+        private double EffectiveMaxExecutionMarginUsagePercent =>
+            _executionSettings == null
+                ? Math.Max(
+                    10,
+                    Math.Min(
+                        100,
+                        MaxExecutionMarginUsagePercent))
+                : _executionSettings.MaxExecutionMarginUsagePercent;
+
+        private double EffectiveExecutionMarginBufferPercent =>
+            _executionSettings == null
+                ? Math.Max(
+                    0,
+                    Math.Min(
+                        40,
+                        ExecutionMarginBufferPercent))
+                : _executionSettings.ExecutionMarginBufferPercent;
 
         private string EffectiveAccountMode =>
             Account.IsLive ? "LIVE" : "DEMO";
@@ -690,8 +710,8 @@ namespace CFIP.cBot
                 !_executionEnvironment.Evaluate(
                     this,
                     envelope,
-                    MaxExecutionMarginUsagePercent,
-                    ExecutionMarginBufferPercent,
+                    EffectiveMaxExecutionMarginUsagePercent,
+                    EffectiveExecutionMarginBufferPercent,
                     _executionSettings,
                     _dailyLossGuard,
                     pendingAction,
@@ -785,8 +805,8 @@ namespace CFIP.cBot
                         envelope,
                         Account.IsLive,
                         nowUtc,
-                        MaxExecutionMarginUsagePercent,
-                        ExecutionMarginBufferPercent,
+                        EffectiveMaxExecutionMarginUsagePercent,
+                        EffectiveExecutionMarginBufferPercent,
                         EffectiveConcurrentScenarioLimit,
                         _idempotencyStore,
                         out BrokerExecutionReport pendingReport,
