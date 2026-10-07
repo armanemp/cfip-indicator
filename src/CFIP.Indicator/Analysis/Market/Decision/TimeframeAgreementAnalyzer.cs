@@ -21,7 +21,7 @@ namespace cAlgo
                 context == null)
                 return 0;
 
-            int[] expectedIndices =
+            int[] closedIndices =
             {
                 context.M1,
                 context.M5,
@@ -122,7 +122,7 @@ namespace cAlgo
                 directions,
                 qualities,
                 actualIndices,
-                expectedIndices,
+                closedIndices,
                 weights,
                 enabled);
         }
