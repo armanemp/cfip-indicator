@@ -513,6 +513,8 @@ namespace CFIP.cBot
                     if (validBatch &&
                         scenarios.Length > 0)
                     {
+                        int processedScenarioCount = 0;
+
                         for (int i = 0; i < scenarios.Length; i++)
                         {
                             SignalEnvelope scenario = scenarios[i];
@@ -521,11 +523,17 @@ namespace CFIP.cBot
                                 continue;
 
                             ProcessSignalEnvelope(scenario, nowUtc);
+                            processedScenarioCount++;
                         }
 
-                        SweepScenarioProtectionStates(nowUtc);
-                        PublishExecutionState("HEARTBEAT", false);
-                        return;
+                        // A valid batch that contained only already-observed
+                        // revisions must not starve the canonical envelope.
+                        if (processedScenarioCount > 0)
+                        {
+                            SweepScenarioProtectionStates(nowUtc);
+                            PublishExecutionState("HEARTBEAT", false);
+                            return;
+                        }
                     }
                 }
 
