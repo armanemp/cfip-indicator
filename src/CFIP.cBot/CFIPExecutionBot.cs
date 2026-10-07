@@ -1435,6 +1435,42 @@ namespace CFIP.cBot
                 out _);
         }
 
+        private void LogRuntimeFault(
+            string stage,
+            Exception exception)
+        {
+            string detail =
+                exception == null
+                    ? "UNKNOWN"
+                    : exception.GetType().Name +
+                      ": " +
+                      (exception.Message ?? "NO MESSAGE");
+
+            Print(
+                "CFIP cBot RUNTIME FAULT | stage={0} | error={1} | utc={2:O} | ticks={3} | executions={4}",
+                stage ?? "UNKNOWN",
+                detail,
+                Server.TimeInUtc,
+                _tickCount,
+                _sessionExecutions);
+
+            try
+            {
+                PublishExecutionState(
+                    "RUNTIME FAULT • " +
+                    (stage ?? "UNKNOWN") +
+                    " • " +
+                    detail,
+                    true);
+            }
+            catch (Exception publishException)
+            {
+                Print(
+                    "CFIP cBot runtime-fault state publish failed: {0}",
+                    publishException.Message);
+            }
+        }
+
         private void PublishPresence(
             string state)
         {
