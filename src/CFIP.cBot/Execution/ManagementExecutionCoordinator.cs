@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using cAlgo.API;
 using CFIP.Contracts;
 
@@ -10,8 +11,18 @@ namespace CFIP.cBot.Execution
         private const int MaxReports = 128;
         private const int RetryDelaySeconds = 1;
 
-        private readonly Dictionary<long, DateTime> _lastProtectionMutationUtcByPosition =
-            new Dictionary<long, DateTime>();
+        // One cBot-owned broker-mutation budget protects the whole connection
+        // from rate-limit bursts. Every actual broker mutation consumes one slot;
+        // analytical polling and broker-state reads do not.
+        private const int GlobalBrokerMutationSpacingMilliseconds = 1000;
+        private const string BrokerMutationBudgetKeyPrefix =
+            "CFIP|CBOT|BROKER-MUTATION-NEXT|";
+
+        private static readonly object BrokerMutationBudgetLock =
+            new object();
+
+        private static DateTime _processNextBrokerMutationUtc =
+            DateTime.MinValue;
 
         public bool Process(
             Robot robot,
@@ -63,7 +74,18 @@ namespace CFIP.cBot.Execution
                         return true;
                     }
 
-                    continue;
+                    // A submitted close/cancel must never be duplicated while the
+                    // broker is still reconciling it. Protection commands are safe
+                    // to retry because their geometry is explicitly monotonic and
+                    // the broker-mutation budget below serializes actual changes.
+                    bool retryableProtection =
+                        command.Command == ManagementCommandType.ModifyProtection ||
+                        command.Command == ManagementCommandType.BreakEven ||
+                        command.Command == ManagementCommandType.AdvanceTarget;
+
+                    if (!retryableProtection ||
+                        latest.EventUtc.AddSeconds(RetryDelaySeconds) > nowUtc)
+                        continue;
                 }
 
                 if (latest != null &&
@@ -406,6 +428,15 @@ namespace CFIP.cBot.Execution
                 return;
             }
 
+            if (!TryAcquireBrokerMutationSlot(
+                    robot,
+                    nowUtc,
+                    out string mutationReason))
+            {
+                status = mutationReason;
+                return;
+            }
+
             try
             {
                 TradeResult result = robot.CancelPendingOrder(order);
@@ -524,6 +555,15 @@ namespace CFIP.cBot.Execution
                 }
             }
 
+            if (!TryAcquireBrokerMutationSlot(
+                    robot,
+                    nowUtc,
+                    out string mutationReason))
+            {
+                status = mutationReason;
+                return;
+            }
+
             try
             {
                 TradeResult result =
@@ -633,6 +673,26 @@ namespace CFIP.cBot.Execution
                     return;
                 }
 
+                if (!TryAcquireBrokerMutationSlot(
+                        robot,
+                        nowUtc,
+                        out string mutationReason))
+                {
+                    StoreReport(
+                        robot,
+                        instanceId,
+                        reports,
+                        BuildReport(
+                            command,
+                            BrokerAction.ModifyStop,
+                            BrokerReportStatus.Accepted,
+                            nowUtc,
+                            null,
+                            mutationReason));
+                    status = mutationReason;
+                    return;
+                }
+
                 if (!TryModifyStop(
                         position,
                         command.DesiredStop.Value,
@@ -693,6 +753,27 @@ namespace CFIP.cBot.Execution
                                 BrokerReportStatus.Rejected, nowUtc, null,
                                 "TARGET REQUEST IS NOT FORWARD"));
                         status = "TARGET REQUEST IS NOT FORWARD";
+                        return;
+                    }
+
+                    if (!TryAcquireBrokerMutationSlot(
+                            robot,
+                            nowUtc,
+                            out string mutationReason))
+                    {
+                        StoreReport(
+                            robot,
+                            instanceId,
+                            reports,
+                            BuildReport(
+                                command,
+                                BrokerAction.ModifyTarget,
+                                BrokerReportStatus.Accepted,
+                                nowUtc,
+                                null,
+                                "STOP UPDATED • TARGET DEFERRED • " +
+                                mutationReason));
+                        status = mutationReason;
                         return;
                     }
 
@@ -824,6 +905,26 @@ namespace CFIP.cBot.Execution
                     return;
                 }
 
+                if (!TryAcquireBrokerMutationSlot(
+                        robot,
+                        nowUtc,
+                        out string mutationReason))
+                {
+                    StoreReport(
+                        robot,
+                        instanceId,
+                        reports,
+                        BuildReport(
+                            command,
+                            BrokerAction.ModifyTargetLadder,
+                            BrokerReportStatus.Accepted,
+                            nowUtc,
+                            null,
+                            mutationReason));
+                    status = mutationReason;
+                    return;
+                }
+
                 if (!TryModifyLadder(
                         position,
                         command,
@@ -886,6 +987,26 @@ namespace CFIP.cBot.Execution
                 return;
             }
 
+            if (!TryAcquireBrokerMutationSlot(
+                    robot,
+                    nowUtc,
+                    out string mutationReason))
+            {
+                StoreReport(
+                    robot,
+                    instanceId,
+                    reports,
+                    BuildReport(
+                        command,
+                        BrokerAction.ModifyTarget,
+                        BrokerReportStatus.Accepted,
+                        nowUtc,
+                        null,
+                        mutationReason));
+                status = mutationReason;
+                return;
+            }
+
             TradeResult targetResult;
             string targetReason;
             bool mutationOk =
@@ -936,79 +1057,99 @@ namespace CFIP.cBot.Execution
                 : "TARGET ADVANCE ACCEPTED";
         }
 
-        private bool TryAllowProtectionMutation(
+        private static bool TryAcquireBrokerMutationSlot(
             Robot robot,
-            ManagementCommand command,
-            CbotExecutionSettings settings,
             DateTime nowUtc,
             out string reason)
         {
             reason = "OK";
 
-            if (command == null ||
-                settings == null ||
-                (command.Command != ManagementCommandType.ModifyProtection &&
-                 command.Command != ManagementCommandType.BreakEven &&
-                 command.Command != ManagementCommandType.AdvanceTarget))
-                return true;
-
-            Position position =
-                FindPosition(
-                    robot,
-                    command);
-
-            if (position == null)
-                return true;
-
-            int cooldownMs =
-                Math.Max(
-                    100,
-                    Math.Min(
-                        5000,
-                        settings.BrokerModifyCooldownMs));
-
-            if (_lastProtectionMutationUtcByPosition.TryGetValue(
-                    position.Id,
-                    out DateTime lastUtc))
+            if (robot == null ||
+                robot.Account == null)
             {
-                TimeSpan elapsed =
-                    nowUtc - lastUtc;
+                reason = "BROKER MUTATION BUDGET ACCOUNT UNAVAILABLE";
+                return false;
+            }
 
-                if (elapsed.TotalMilliseconds < cooldownMs)
+            DateTime persistedNextUtc =
+                DateTime.MinValue;
+
+            string key =
+                BrokerMutationBudgetKeyPrefix +
+                robot.Account.Number +
+                "|" +
+                (robot.SymbolName ?? "");
+
+            lock (BrokerMutationBudgetLock)
+            {
+                try
                 {
-                    reason =
-                        "BROKER MODIFY COOLDOWN • " +
+                    string raw =
+                        robot.LocalStorage.GetString(
+                            key,
+                            LocalStorageScope.Device);
+
+                    if (!string.IsNullOrWhiteSpace(raw))
+                    {
+                        DateTime.TryParse(
+                            raw,
+                            CultureInfo.InvariantCulture,
+                            DateTimeStyles.RoundtripKind,
+                            out persistedNextUtc);
+                    }
+                }
+                catch
+                {
+                    persistedNextUtc = DateTime.MinValue;
+                }
+
+                DateTime nextAllowedUtc =
+                    _processNextBrokerMutationUtc >
+                    persistedNextUtc
+                        ? _processNextBrokerMutationUtc
+                        : persistedNextUtc;
+
+                if (nowUtc < nextAllowedUtc)
+                {
+                    int remaining =
                         Math.Max(
-                            0,
-                            cooldownMs -
-                            (int)Math.Max(
-                                0,
-                                elapsed.TotalMilliseconds)) +
+                            1,
+                            (int)Math.Ceiling(
+                                (nextAllowedUtc - nowUtc).TotalMilliseconds));
+
+                    reason =
+                        "BROKER MUTATION BUDGET • WAIT " +
+                        remaining +
                         "ms";
                     return false;
                 }
-            }
 
-            _lastProtectionMutationUtcByPosition[
-                position.Id] = nowUtc;
+                DateTime reservedUntil =
+                    nowUtc.AddMilliseconds(
+                        GlobalBrokerMutationSpacingMilliseconds);
 
-            if (_lastProtectionMutationUtcByPosition.Count > 256)
-            {
-                long removeId = -1;
+                _processNextBrokerMutationUtc =
+                    reservedUntil;
 
-                foreach (KeyValuePair<long, DateTime> item in
-                         _lastProtectionMutationUtcByPosition)
+                try
                 {
-                    removeId = item.Key;
-                    break;
+                    robot.LocalStorage.SetString(
+                        key,
+                        reservedUntil.ToString(
+                            "O",
+                            CultureInfo.InvariantCulture),
+                        LocalStorageScope.Device);
+                    robot.LocalStorage.Flush(
+                        LocalStorageScope.Device);
+                }
+                catch
+                {
+                    // The in-process reservation remains authoritative even when
+                    // persistent storage is unavailable.
                 }
 
-                if (removeId >= 0)
-                    _lastProtectionMutationUtcByPosition.Remove(
-                        removeId);
+                return true;
             }
-
-            return true;
         }
 
         private static bool Validate(
