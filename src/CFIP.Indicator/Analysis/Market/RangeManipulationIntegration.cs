@@ -12,13 +12,12 @@ namespace cAlgo
         private const double RangeSweepAtrInternal = 0.05;
         private const double RangeBreakoutAtrInternal = 0.10;
         private const double RangeRetestAtrInternal = 0.12;
-        private const int RangeSignalMinimumScoreInternalInternal = 72;
+        private const int RangeSignalMinimumScoreInternal = 72;
 
         private void UpdateRangeManipulation(
             int closedM5)
         {
-            if (true ||
-                _m5Bars == null ||
+            if (_m5Bars == null ||
                 closedM5 < 30)
             {
                 _rangeManipulation =
@@ -37,7 +36,8 @@ namespace cAlgo
                     RangeSweepAtrInternal,
                     RangeBreakoutAtrInternal,
                     RangeRetestAtrInternal,
-                    RangeSignalMinimumScoreInternal);
+                    RangeSignalMinimumScoreInternal,
+                    Symbol.PipSize);
         }
 
         private void ApplyRangeIntelligenceToDecision(
@@ -45,7 +45,6 @@ namespace cAlgo
             int closedM5)
         {
             if (decision == null ||
-                !RangeEngineEnabled ||
                 _rangeManipulation == null ||
                 !_rangeManipulation.IsRange)
                 return;
@@ -68,7 +67,7 @@ namespace cAlgo
 
             bool strong =
                 _rangeManipulation.Score >=
-                RangeSignalMinimumScore;
+                RangeSignalMinimumScoreInternal;
 
             bool confirmedBreakout =
                 _rangeManipulation.IsConfirmedBreakout &&
