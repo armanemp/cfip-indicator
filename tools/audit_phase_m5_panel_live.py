@@ -102,7 +102,7 @@ require(
     "BuildSignalVisualSnapshot(" in calc_live and
     "RenderLatestAlertSignalMarker(" in calc_live and
     "RefreshLiveDecisionActionability(" in calc_live and
-    "RefreshPanelContentIfDue(" in panel_content and
+    "RefreshPanelContentIfDue(" in content_refresh and
     "RefreshPanelContentIfDue(" in heartbeat and
     calc_live.index("RefreshLiveDecisionActionability(") <
     calc_live.index("BuildSignalVisualSnapshot(") <
