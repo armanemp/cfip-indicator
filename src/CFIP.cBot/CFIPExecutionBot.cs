@@ -19,6 +19,7 @@ namespace CFIP.cBot
     {
 #pragma warning restore CS0612
         private const string StartupState = "READY";
+        private const int SignalStoreReloadIntervalMilliseconds = 1000;
 
         [Parameter(
             "Enable Demo Market Execution",
@@ -478,7 +479,7 @@ namespace CFIP.cBot
                     return;
 
                 RefreshExecutionSettings(false);
-                ReloadSignalStore(true);
+                ReloadSignalStore(false);
 
                 DateTime nowUtc = Server.TimeInUtc;
 
@@ -1142,7 +1143,7 @@ namespace CFIP.cBot
                 return;
 
             _nextSignalReloadUtc =
-                now.AddMilliseconds(100);
+                now.AddMilliseconds(SignalStoreReloadIntervalMilliseconds);
 
             try
             {
