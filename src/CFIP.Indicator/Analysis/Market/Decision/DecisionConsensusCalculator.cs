@@ -59,13 +59,56 @@ namespace cAlgo
                     50,
                     minimumDirectionShare);
 
+            // A softmax share alone can overstate a very small raw score
+            // difference when the temperature is high. Require a minimum
+            // absolute and relative raw separation as well, derived from the
+            // configured share threshold rather than introducing a new tuning
+            // parameter. This prevents fragile near-ties from becoming
+            // directional consensus.
+            double totalRaw =
+                Math.Max(
+                    1e-9,
+                    Math.Abs(buy) + Math.Abs(sell));
+
+            double thresholdProbability =
+                NumericGuards.ClampDouble(
+                    directionThreshold / 100.0,
+                    0.5001,
+                    0.999);
+
+            double shareDerivedGap =
+                t *
+                0.5 *
+                Math.Log(
+                    thresholdProbability /
+                    (1.0 - thresholdProbability));
+
+            double massDerivedGap =
+                totalRaw * 0.08;
+
+            double requiredRawGap =
+                Math.Max(
+                    1.5,
+                    Math.Max(
+                        shareDerivedGap,
+                        massDerivedGap));
+
+            double actualRawGap =
+                Math.Abs(buy - sell);
+
+            bool rawSeparationReady =
+                actualRawGap + 1e-9 >=
+                requiredRawGap;
+
             // Exact ties are neutral. A >= comparison here would create a
             // deterministic BUY bias and break the BUY/SELL mirror contract.
             int direction =
+                rawSeparationReady &&
                 strongest >= directionThreshold &&
                 buyShare > sellShare
                     ? 1
-                    : strongest >= directionThreshold &&
+                    : rawSeparationReady &&
+                      strongest >= directionThreshold &&
                       sellShare > buyShare
                         ? -1
                         : 0;
