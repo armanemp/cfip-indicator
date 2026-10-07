@@ -168,7 +168,7 @@ namespace cAlgo
                                     TextWrapping =
                                         TextWrapping.NoWrap,
                                     TextTrimming =
-                                        TextTrimming.Ellipsis,
+                                        TextTrimming.CharacterEllipsis,
                                     IsHitTestVisible = false,
                                     BackgroundColor =
                                         Color.FromArgb(
