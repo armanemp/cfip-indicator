@@ -738,11 +738,55 @@ namespace CFIP.cBot
                             : envelope.Intent.Action == ExecutionAction.Market &&
                           EffectiveMarketExecutionEnabled);
 
-            if (!executionEnabled ||
-                !actionEnabled ||
-                shadowResult == null ||
-                shadowResult.State != ShadowHostState.Ready)
+            if (!executionEnabled)
+            {
+                LogBlockedState(
+                    "CBOT EXECUTION SWITCHES OFF");
+                PublishExecutionState(
+                    "EXECUTION DISABLED • ENABLE cBOT EXECUTION",
+                    true);
                 return;
+            }
+
+            if (envelope.Intent == null ||
+                !actionEnabled)
+            {
+                LogBlockedState(
+                    "CBOT ACTION SWITCH OFF • " +
+                    (envelope.Intent == null
+                        ? "NO INTENT"
+                        : envelope.Intent.Action.ToString()));
+                PublishExecutionState(
+                    "ACTION DISABLED • " +
+                    (envelope.Intent == null
+                        ? "NO INTENT"
+                        : envelope.Intent.Action.ToString()),
+                    true);
+                return;
+            }
+
+            if (shadowResult == null)
+            {
+                LogBlockedState(
+                    "SHADOW STATE UNAVAILABLE");
+                PublishExecutionState(
+                    "WAITING • SHADOW STATE UNAVAILABLE",
+                    true);
+                return;
+            }
+
+            if (shadowResult.State != ShadowHostState.Ready)
+            {
+                LogBlockedState(
+                    shadowResult.Reason ??
+                    "SHADOW STATE NOT READY");
+                PublishExecutionState(
+                    "EXECUTION WAITING • " +
+                    (shadowResult.Reason ??
+                     shadowResult.State.ToString()),
+                    true);
+                return;
+            }
 
             if (_sessionExecutions >=
                 EffectiveSessionExecutionCap)
