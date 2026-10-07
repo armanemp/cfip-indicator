@@ -5,10 +5,19 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
+        private const int RangeLookbackM5Internal = 36;
+        private const int RangeMinimumTouchesInternal = 2;
+        private const double RangeMinWidthAtrInternal = 0.35;
+        private const double RangeMaxWidthAtrInternal = 3.0;
+        private const double RangeSweepAtrInternal = 0.05;
+        private const double RangeBreakoutAtrInternal = 0.10;
+        private const double RangeRetestAtrInternal = 0.12;
+        private const int RangeSignalMinimumScoreInternalInternal = 72;
+
         private void UpdateRangeManipulation(
             int closedM5)
         {
-            if (!RangeEngineEnabled ||
+            if (true ||
                 _m5Bars == null ||
                 closedM5 < 30)
             {
@@ -21,14 +30,14 @@ namespace cAlgo
                 _rangeManipulationAnalyzer.Evaluate(
                     _m5Bars,
                     closedM5,
-                    RangeLookbackM5,
-                    RangeMinimumTouches,
-                    RangeMaxWidthAtr,
-                    RangeMinWidthAtr,
-                    RangeSweepAtr,
-                    RangeBreakoutAtr,
-                    RangeRetestAtr,
-                    RangeSignalMinimumScore);
+                    RangeLookbackM5Internal,
+                    RangeMinimumTouchesInternal,
+                    RangeMaxWidthAtrInternal,
+                    RangeMinWidthAtrInternal,
+                    RangeSweepAtrInternal,
+                    RangeBreakoutAtrInternal,
+                    RangeRetestAtrInternal,
+                    RangeSignalMinimumScoreInternal);
         }
 
         private void ApplyRangeIntelligenceToDecision(
