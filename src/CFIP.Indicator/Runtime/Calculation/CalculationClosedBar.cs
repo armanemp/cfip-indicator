@@ -104,6 +104,11 @@ namespace cAlgo
                     reference,
                     mtf);
 
+            // Range/Manipulation is calculated from the same closed M5 snapshot
+            // that feeds Decision. Rendering and decision gates therefore consume
+            // one canonical range result.
+            UpdateRangeManipulation(closedM5);
+
             if (_marketStateSnapshot == null ||
                 !_marketStateSnapshot.MatchesReference(reference) ||
                 !_marketStateSnapshot.IsAlignedWithClosedIndices(
