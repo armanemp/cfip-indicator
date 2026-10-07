@@ -13,9 +13,7 @@ namespace cAlgo
         {
             RemoveRangeManipulationObjects();
 
-            if (false ||
-                false ||
-                snapshot == null ||
+            if (snapshot == null ||
                 !snapshot.IsRange ||
                 snapshot.High <= snapshot.Low ||
                 _m5Bars == null)
