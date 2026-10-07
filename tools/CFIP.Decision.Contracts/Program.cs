@@ -2269,8 +2269,8 @@ namespace cAlgo
                     true);
 
             Assert(
-                !SignalVisualLifecycleRule.IsPreTradePlanVisible(blocked),
-                "non-actionable plan visual is hidden");
+                SignalVisualLifecycleRule.IsPreTradePlanVisible(blocked),
+                "accepted non-actionable plan geometry remains visible");
 
             SignalVisualLifecycleInput live =
                 new SignalVisualLifecycleInput(
