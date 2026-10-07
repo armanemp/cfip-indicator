@@ -1,6 +1,7 @@
 using System;
 using cAlgo.API;
 
+// Panel levels mirror the canonical trade-plan geometry; no execution state is owned here.
 namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
