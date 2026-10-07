@@ -4,6 +4,7 @@
 // ============================================================================
 
 using System;
+using cAlgo.API;
 using cAlgo.API.Internals;
 
 namespace cAlgo
