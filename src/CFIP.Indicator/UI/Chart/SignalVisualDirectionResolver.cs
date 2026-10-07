@@ -47,7 +47,8 @@ namespace cAlgo
                 // closed-M5 trigger have passed.
                 if (_decision.Direction != 0 &&
                     _decision.EntryAllowed &&
-                    _decision.TriggerReady)
+                    _decision.TriggerReady &&
+                    _decision.ActionableNow)
                     return _decision.Direction;
 
                 return 0;
