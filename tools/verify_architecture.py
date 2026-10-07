@@ -1523,7 +1523,7 @@ if "MapM5ToChart(" in visual_line_code:
 if "Chart.FirstVisibleBarIndex" in visual_line_code or "Chart.LastVisibleBarIndex" in visual_line_code:
     raise SystemExit("Compact plan levels must not use full-width visible-chart boundaries")
 if "new Border" not in plan_label_renderer_code or "Chart.AddControl(" not in plan_label_renderer_code:
-    raise SystemExit("Plan labels must reuse existing ChartText objects")
+    raise SystemExit("Plan labels must use one reusable chart-control box")
 if 'name + "_BOX"' not in plan_label_renderer_code:
     raise SystemExit("Plan labels must retain legacy box cleanup compatibility")
 if 'RemovePlanLabel(P + "ENTRY_LABEL")' not in plan_label_remover_code:
