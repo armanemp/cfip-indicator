@@ -153,6 +153,13 @@ namespace cAlgo
                     _decisionInputSnapshotFactory.Create(
                         request));
 
+            // Range intelligence is a decision input, not a second signal path.
+            // It is applied before the normal filters/actionability gates so
+            // the existing decision owner remains authoritative.
+            ApplyRangeIntelligenceToDecision(
+                decision,
+                closedM5);
+
             decision.IndependentEvidenceGroupCount =
                 decision.Direction == 0
                     ? 0
