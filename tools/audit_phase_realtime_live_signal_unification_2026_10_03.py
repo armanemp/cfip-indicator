@@ -42,6 +42,28 @@ historical_roadmap = read("docs/archive/ROADMAP-LEGACY-2026-10-04.md")
 continuation = read("docs/CONTINUATION-STATE.md")
 phase = read("docs/PHASE-REALTIME-LIVE-SIGNAL-UNIFICATION-2026-10-03.md")
 
+reaction_timing = read("src/CFIP.Indicator/Core/Math/ReactionTimingRule.cs")
+live_cycle = read("src/CFIP.Indicator/Runtime/Calculation/CalculationLiveCycle.cs")
+visual_direction = read("src/CFIP.Indicator/UI/Chart/SignalVisualDirectionResolver.cs")
+snapshot_builder = read("src/CFIP.Indicator/UI/Chart/SignalVisualSnapshotBuilder.cs")
+
+check(
+    "live M5 reaction is genuinely realtime on the indicator tick path",
+    "Calculate(" in calc_cycle and
+    "UpdateLiveReaction();" in read("src/CFIP.Indicator/Runtime/Calculation/CalculationStageIsolation.cs") and
+    "LiveReactionRefreshIntervalMilliseconds = 100" in reaction_timing and
+    "ReactionTimingRule.IsLiveRefreshDue(" in live_cycle and
+    "TotalMilliseconds >= 750" not in live_cycle
+)
+
+check(
+    "live reaction can surface immediately without bypassing direction stability",
+    "if (reactionReady" in visual_direction and
+    "acceptedDirection" in visual_direction and
+    "acceptedDirection == _reaction.Direction" in visual_direction and
+    'snapshot.Stage = "REACTION";' in snapshot_builder
+)
+
 check(
     "live action arms exist and default off",
     all(x in bot for x in (
