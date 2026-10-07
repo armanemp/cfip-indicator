@@ -8,8 +8,10 @@ namespace CFIP.cBot.Execution
     internal sealed class CbotExecutionStatePublisher
     {
         private const int MaxPublishIntervalMilliseconds = 1000;
+        private const int PresencePublishIntervalMilliseconds = 500;
 
         private DateTime _lastPublishUtc = DateTime.MinValue;
+        private DateTime _lastPresencePublishUtc = DateTime.MinValue;
 
         public void PublishPresence(
             Robot robot,
@@ -18,6 +20,11 @@ namespace CFIP.cBot.Execution
             string boundIndicatorInstanceId)
         {
             if (robot == null)
+                return;
+
+            if (_lastPresencePublishUtc != DateTime.MinValue &&
+                (nowUtc - _lastPresencePublishUtc).TotalMilliseconds <
+                    PresencePublishIntervalMilliseconds)
                 return;
 
             try
@@ -46,6 +53,8 @@ namespace CFIP.cBot.Execution
 
                 robot.LocalStorage.Flush(
                     LocalStorageScope.Device);
+
+                _lastPresencePublishUtc = nowUtc;
             }
             catch (Exception ex)
             {
