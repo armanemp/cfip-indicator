@@ -135,16 +135,37 @@ namespace cAlgo
                 if (!next.PlaySound)
                     continue;
 
-                if (!DeliverAlertSound(next))
+                int repeatCount =
+                    Math.Max(
+                        1,
+                        Math.Min(
+                            2,
+                            next.SoundRepeatCount));
+
+                bool delivered = true;
+
+                for (int repeat = 0;
+                     repeat < repeatCount;
+                     repeat++)
+                {
+                    if (!DeliverAlertSound(next))
+                    {
+                        delivered = false;
+                        break;
+                    }
+                }
+
+                if (!delivered)
                 {
                     if (_alertSoundDeliveryQueue != null &&
                         _alertSoundDeliveryQueue.Enqueue(next))
                     {
                         Print(
-                            "CFIP ALERT SOUND RETRY QUEUED | id={0}",
+                            "CFIP ALERT SOUND RETRY QUEUED | id={0} | repeats={1}",
                             next.Envelope == null
                                 ? ""
-                                : next.Envelope.AlertId);
+                                : next.Envelope.AlertId,
+                            repeatCount);
                     }
                 }
             }
