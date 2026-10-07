@@ -45,18 +45,6 @@ namespace cAlgo
                                         _w1Frame
                                     };
                         
-                                    Bars[] bars =
-                                    {
-                                        _m1Bars,
-                                        _m5Bars,
-                                        _m15Bars,
-                                        _m30Bars,
-                                        _h1Bars,
-                                        _h4Bars,
-                                        _d1Bars,
-                                        _w1Bars
-                                    };
-                        
                                     double[] weights =
                                     {
                                         UseM1Trigger ? Math.Max(1.0, M5Weight * 0.35) : 0,
