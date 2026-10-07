@@ -442,23 +442,21 @@ namespace CFIP.cBot
 
             if (_lastRealtimeTimerRevisionByScenario.TryGetValue(
                     key,
-                    out long observedRevision) &&
-                envelope.Identity.Revision <= observedRevision)
+                    out long observedRevision))
             {
-                if (!IsRealtimeExecutionRetryableReason(
-                        _lastLoggedReason))
+                if (envelope.Identity.Revision < observedRevision)
                     return false;
 
-                if (_nextRealtimeExecutionRetryUtcByScenario.TryGetValue(
-                        key,
-                        out DateTime retryUtc) &&
-                    Server.TimeInUtc < retryUtc)
-                    return false;
+                if (envelope.Identity.Revision == observedRevision)
+                {
+                    if (!_nextRealtimeExecutionRetryUtcByScenario.TryGetValue(
+                            key,
+                            out DateTime retryUtc) ||
+                        Server.TimeInUtc < retryUtc)
+                        return false;
 
-                _nextRealtimeExecutionRetryUtcByScenario[key] =
-                    Server.TimeInUtc.Add(
-                        RealtimeExecutionRetryInterval);
-                return true;
+                    return true;
+                }
             }
 
             if (!_lastRealtimeTimerRevisionByScenario.ContainsKey(key))
@@ -566,9 +564,17 @@ namespace CFIP.cBot
                                 ProcessSignalEnvelope(
                                     scenario,
                                     nowUtc);
-                            if (!retryScenario)
+                            string scenarioKey =
+                                BuildRealtimeScenarioKey(
+                                    scenario);
+
+                            if (retryScenario)
+                                _nextRealtimeExecutionRetryUtcByScenario[scenarioKey] =
+                                    nowUtc.Add(
+                                        RealtimeExecutionRetryInterval);
+                            else
                                 _nextRealtimeExecutionRetryUtcByScenario.Remove(
-                                    BuildRealtimeScenarioKey(scenario));
+                                    scenarioKey);
                             processedScenarioCount++;
                         }
 
@@ -597,9 +603,17 @@ namespace CFIP.cBot
                     ProcessSignalEnvelope(
                         envelope,
                         nowUtc);
-                if (!retryEnvelope)
+                string envelopeKey =
+                    BuildRealtimeScenarioKey(
+                        envelope);
+
+                if (retryEnvelope)
+                    _nextRealtimeExecutionRetryUtcByScenario[envelopeKey] =
+                        nowUtc.Add(
+                            RealtimeExecutionRetryInterval);
+                else
                     _nextRealtimeExecutionRetryUtcByScenario.Remove(
-                        BuildRealtimeScenarioKey(envelope));
+                        envelopeKey);
                 SweepScenarioProtectionStates(nowUtc);
                 PublishExecutionState("HEARTBEAT", false);
             }
