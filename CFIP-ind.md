@@ -897,3 +897,12 @@ Footer اکنون چهار ردیف canonical دارد:
 6. cBot live/pending execution + reconciliation + protection lifecycle.
 7. End-to-end compile/runtime/architecture gates و terminal verification.
 8. Outcome/calibration/leakage audit.
+
+
+## 2026-10-07 — Batch 05 Flow reconnect/history reliability
+- AggressiveFlowAnalyzer remains the sole owner of the bounded 30-second directional tick proxy.
+- AggressiveFlowRuntime now owns Tick + HistoryLoaded + Reloaded lifecycle and reseeds the newest available ticks chronologically after startup/history refresh/reconnect.
+- Reconnect reseeding resets previous-mid state so provider generations cannot be bridged into one synthetic direction.
+- AggressiveFlowSnapshot exposes an explicit freshness contract; the footer fails closed after 5 seconds without a fresh observation.
+- DOM BUY/SELL and FLOW BUY/SELL TICKS remain distinct semantic surfaces.
+- No decision vote was added: Flow remains reserved for controlled confirmation/modulation rather than vote inflation.
