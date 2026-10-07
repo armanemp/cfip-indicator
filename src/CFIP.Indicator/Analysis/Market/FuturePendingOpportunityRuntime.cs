@@ -132,6 +132,12 @@ namespace cAlgo
             if (!IsFinitePositive(distanceAtr))
                 return false;
 
+            int independentEvidenceGroups =
+                IndependentEvidenceGroupCount(direction);
+
+            if (independentEvidenceGroups < 3)
+                return false;
+
             RiskRewardMathResult rr =
                 RiskRewardMathRule.Evaluate(
                     direction,
@@ -231,9 +237,7 @@ namespace cAlgo
                                 ? 0
                                 : _reaction.ReactionConfirmedEvidence),
                     IndependentEvidenceGroupCount =
-                        mode == ExecutionMode.ContinuationStop
-                            ? IndependentEvidenceGroupCount(direction)
-                            : 1,
+                        independentEvidenceGroups,
                     IndicatorIndependentEvidenceGroupCount =
                         _m5Frame.IndicatorIndependentEvidenceGroupCount,
                     Quality =
