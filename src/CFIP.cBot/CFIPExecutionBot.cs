@@ -793,7 +793,7 @@ namespace CFIP.cBot
                 PublishExecutionState(
                     "EXECUTION DISABLED • ENABLE cBOT EXECUTION",
                     true);
-                return true;
+                return false;
             }
 
             if (envelope.Intent == null ||
@@ -810,7 +810,7 @@ namespace CFIP.cBot
                         ? "NO INTENT"
                         : envelope.Intent.Action.ToString()),
                     true);
-                return true;
+                return false;
             }
 
             if (shadowResult == null)
@@ -851,9 +851,9 @@ namespace CFIP.cBot
                         envelope,
                         Account.IsLive,
                         nowUtc,
-                        MaxExecutionMarginUsagePercent,
-                        ExecutionMarginBufferPercent,
-                        EffectiveConcurrentScenarioLimit,
+                        _executionSettings.MaxExecutionMarginUsagePercent,
+                        _executionSettings.ExecutionMarginBufferPercent,
+                        _executionSettings.MaxConcurrentScenarios,
                         _idempotencyStore,
                         out BrokerExecutionReport pendingReport,
                         out string pendingReason))
