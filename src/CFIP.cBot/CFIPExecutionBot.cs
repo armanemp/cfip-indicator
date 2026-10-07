@@ -1379,7 +1379,10 @@ namespace CFIP.cBot
         private void OnChartIndicatorModified(
             ChartIndicatorModifiedEventArgs args)
         {
-            RefreshIndicatorBinding(true);
+            // Modification can be emitted while cTrader is internally rebuilding
+            // the custom Indicator. Treat a transient enumeration gap as non-
+            // destructive; only explicit removal is authoritative for unbinding.
+            RefreshIndicatorBinding(false);
 
             ReconcileBrokerState(true);
             RefreshExecutionSettings(true);
