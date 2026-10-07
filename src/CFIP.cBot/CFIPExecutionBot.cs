@@ -1303,7 +1303,7 @@ namespace CFIP.cBot
         private void OnChartIndicatorModified(
             ChartIndicatorModifiedEventArgs args)
         {
-            RefreshIndicatorBinding(true);
+            RefreshIndicatorBinding(false);
 
             ReconcileBrokerState(true);
             RefreshExecutionSettings(true);
