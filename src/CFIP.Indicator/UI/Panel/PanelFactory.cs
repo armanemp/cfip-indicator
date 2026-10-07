@@ -256,7 +256,6 @@ namespace cAlgo
                                         _panelFlowPressureRail = null;
                                         _panelBuyPressureRow = null;
                                         _panelBuyPressureTrack = null;
-                                        _panelSellPressureTrack = null;
                                         _panelBuyPressureFill = null;
                                         _panelSellPressureFill = null;
                                         _panelBuyPressureLabel = null;
