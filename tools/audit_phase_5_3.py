@@ -109,8 +109,11 @@ check(
 )
 
 check(
-    "candidate quality still uses the legacy bounded score rather than changing thresholds",
-    "IndependentEvidence(direction) * 5.0" in read(
+    "candidate quality uses the canonical independent-group count without changing thresholds",
+    "IndependentEvidenceGroupCount(direction)" in read(
+        "src/CFIP.Indicator/Analysis/Market/Decision/DecisionTacticalOpportunityAnalyzer.cs"
+    ) and
+    "TacticalOpportunityMinimumQuality" in read(
         "src/CFIP.Indicator/Analysis/Market/Decision/DecisionTacticalOpportunityAnalyzer.cs"
     ),
 )
