@@ -6,14 +6,23 @@ namespace cAlgo
 {
     internal readonly struct AlertSoundDecision
     {
-        public AlertSoundDecision(SoundType soundType, string groupKey)
+        public AlertSoundDecision(
+            SoundType soundType,
+            string groupKey,
+            int repeatCount = 1)
         {
             SoundType = soundType;
             GroupKey = groupKey;
+            RepeatCount = Math.Max(
+                1,
+                Math.Min(
+                    2,
+                    repeatCount));
         }
 
         public SoundType SoundType { get; }
         public string GroupKey { get; }
+        public int RepeatCount { get; }
     }
 
     internal static class AlertSoundPolicy
@@ -30,9 +39,20 @@ namespace cAlgo
                 ? ResolveSemanticSound(normalized, envelope)
                 : configuredSoundType;
 
+            int repeatCount =
+                StartsWithAny(
+                    normalized,
+                    "RANGE-MANIPULATION|")
+                    ? 2
+                    : 1;
+
             return new AlertSoundDecision(
                 soundType,
-                BuildGroupKey(normalized, envelope, symbolName));
+                BuildGroupKey(
+                    normalized,
+                    envelope,
+                    symbolName),
+                repeatCount);
         }
 
         private static SoundType ResolveSemanticSound(string key, AlertEnvelope envelope)
@@ -56,6 +76,9 @@ namespace cAlgo
                 "PLANUPDATE|", "OUTCOME-TIMEOUT|"))
                 return SoundType.Announcement;
 
+            if (StartsWithAny(key, "RANGE-MANIPULATION|"))
+                return SoundType.Doorbell;
+
             if (StartsWithAny(key, "REACTION|", "AUTO-REACTION|", "BOS|",
                 "MSS|", "SWEEP|"))
                 return SoundType.Doorbell;
@@ -75,7 +98,8 @@ namespace cAlgo
 
             ContractIdentity identity = envelope.Identity;
             bool signalFamily = StartsWithAny(key, "WATCH|", "EARLY|",
-                "REACTION|", "AUTO-REACTION|", "ACTION|", "HIGH|", "SMART|");
+                "REACTION|", "AUTO-REACTION|", "ACTION|", "HIGH|", "SMART|",
+                "RANGE-MANIPULATION|");
 
             if (signalFamily)
                 return "SIGNAL|" + (symbolName ?? string.Empty) + "|" +
