@@ -67,8 +67,9 @@ checks = [
      "flow.BuyTicks" in footer_factory and
      "flow.SellTicks" in footer_factory),
     ("each pressure row and track spans the full panel content width", "contentWidth" in footer_factory and
-     "_panelBuyPressureRow.Width" in footer_factory and
-     "_panelSellPressureRow.Width" in footer_factory and
+     "SetFlowRowWidth(" in footer_factory and
+     "_panelBuyPressureRow" in footer_factory and
+     "_panelSellPressureRow" in footer_factory and
      "track.Width = width" in footer_factory and
      "row.Width = width" in footer_factory and
      "label.Width = width" in footer_factory and
