@@ -13,9 +13,6 @@ namespace cAlgo
         [Parameter("Alert On Confirmed Signal", Group = "12 · ALERTS — CORE", DefaultValue = true)]
         public bool AlertOnConfirmedSignal { get; set; }
 
-        [Parameter("Alert On Reaction", Group = "12 · ALERTS — CORE", DefaultValue = true)]
-        public bool AlertOnReaction { get; set; }
-
         [Parameter("Alert On Early Watch", Group = "12 · ALERTS — CORE", DefaultValue = true)]
         public bool AlertOnEarlyWatch { get; set; }
 
