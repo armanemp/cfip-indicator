@@ -39,6 +39,16 @@ namespace cAlgo
         public bool IsConfirmedBreakout { get; set; }
         public bool IsRetest { get; set; }
         public bool IsFailedBreakout { get; set; }
+
+        // Context-enriched pre-manipulation state. This is still one canonical
+        // range snapshot; decision, panel, chart and alerts all consume it.
+        public bool IsManipulationWatch { get; set; }
+        public int WatchDirection { get; set; }
+        public int WatchScore { get; set; }
+        public int BoundaryPressure { get; set; }
+        public int MomentumPressure { get; set; }
+        public int VolumePressure { get; set; }
+        public string WatchReason { get; set; }
         public string Reason { get; set; }
     }
 }
