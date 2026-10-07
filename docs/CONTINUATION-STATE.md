@@ -2948,3 +2948,17 @@ Integrated without duplicate production owners:
 
 Remaining manual terminal boundary:
 target cTrader validation of panel hide/show restore, combined live buy/sell pressure bar geometry, arrow thickness/placement, same-tick cBot handoff, binding continuity after reload, audible event uniqueness and live/demo execution behavior.
+
+
+## 2026-10-07 — Signal Quality + cBot Execution Continuity Hardening
+
+Status: IMPLEMENTED — pending local cTrader/.NET build and runtime verification.
+
+Canonical corrections:
+- Final live actionability now requires the canonical TriggerReady state; a setup that passes analytical gates but has not passed the M5/M1 trigger lifecycle cannot become an executable signal.
+- cBot scenario-batch transport no longer starves the canonical signal when the batch is empty, invalid, or contains only already-observed revisions.
+- Demo/live session execution defaults were raised from 3 to 20 executions per session; the existing hard parameter cap and concurrent-scenario/risk gates remain in force.
+- Existing cBot binding remains instance-stable and transient chart-enumeration misses remain non-destructive.
+- No duplicate execution engine or Indicator-side broker execution path was introduced.
+
+Verification note: GitHub source inspection confirms the intended ordering: M1 trigger runtime -> live opportunity/actionability refresh -> provider publication, followed by cBot timer ingestion and execution preflight. Local Windows/cTrader build and live/demo runtime execution still require user-side verification.
