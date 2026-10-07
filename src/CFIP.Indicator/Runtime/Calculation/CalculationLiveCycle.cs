@@ -180,6 +180,19 @@ namespace cAlgo
                 return;
             }
 
+            // Actionability is the final executable state. A setup that has
+            // passed analytical gates but has not passed the canonical M5/M1
+            // trigger lifecycle is still a setup, never an executable signal.
+            if (!_decision.TriggerReady)
+            {
+                ResetLiveActionability(
+                    string.IsNullOrWhiteSpace(
+                        _triggerRuntime.Reason)
+                        ? "TRIGGER NOT READY"
+                        : _triggerRuntime.Reason);
+                return;
+            }
+
             ExecutionModel actionExecution =
                 _executionModel;
 
