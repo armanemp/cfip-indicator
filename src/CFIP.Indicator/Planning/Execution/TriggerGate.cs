@@ -88,13 +88,10 @@ namespace cAlgo
                     direction))
                 return true;
 
-            if (AllowStrongTriggerOverride &&
-                AllowStrongM5TriggerOverride &&
-                _decision != null &&
-                _decision.Direction == direction &&
-                _decision.Confidence >= 85 &&
-                _decision.Edge >= 20)
-                return true;
+            // A strong higher-level score is not a substitute for the canonical
+            // closed-M5 trigger. M15 owns direction; M5 owns entry confirmation.
+            // This prevents confidence from manufacturing an entry before price
+            // has actually confirmed the trigger on a closed bar.
 
             return false;
         }
