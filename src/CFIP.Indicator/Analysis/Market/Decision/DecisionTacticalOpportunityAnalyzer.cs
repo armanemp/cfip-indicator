@@ -147,21 +147,10 @@ namespace cAlgo
             double rr =
                 rewardRiskGeometry.NominalRR;
 
-            int quality =
-                (int)Math.Round(
-                    Math.Min(
-                        100,
-                        Math.Max(
-                            50,
-                            directionalScore * 1.6)) * 0.45 +
-                    zoneQuality * 0.15 +
-                    _m5Frame.WaveTrendQuality * 0.20 +
-                    IndependentEvidence(direction) * 5.0 +
-                    StructuralConfirmations(direction) * 5.0);
-
             return TacticalOpportunityRule.Evaluate(
                 direction,
-                quality,
+                _m5Frame.Quality,
+                zoneQuality,
                 _m5Frame.WaveTrendQuality,
                 StructuralConfirmations(direction),
                 IndependentEvidence(direction),
