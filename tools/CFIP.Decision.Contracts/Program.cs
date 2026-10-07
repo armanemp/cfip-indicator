@@ -37,6 +37,8 @@ namespace cAlgo
             VerifySmartBreakEven();
             VerifyEntryGeometry();
             VerifyEntrySignalTiming();
+            SignalQualityPrecisionContracts.VerifyTimeframeAgreementPrecision();
+            SignalQualityPrecisionContracts.VerifyStructuralConfirmationDirectionality();
 
             Console.WriteLine("Decision contracts OK");
         }
