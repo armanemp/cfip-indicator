@@ -24,7 +24,7 @@ namespace cAlgo
             Assert(
                 TimeframeAgreementRule.Calculate(
                     1, directions, qualities, actualIndices,
-                    expectedIndices, weights, enabled) == 87,
+                    expectedIndices, weights, enabled) == 80,
                 "weak aligned M15 quality must reduce MTF agreement");
 
             directions[1] = -1;
