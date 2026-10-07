@@ -987,8 +987,8 @@ namespace CFIP.cBot.Execution
                         BrokerReportStatus.Accepted,
                         nowUtc,
                         null,
-                        mutationReason));
-                status = mutationReason;
+                        targetMutationReason));
+                status = targetMutationReason;
                 return;
             }
 
