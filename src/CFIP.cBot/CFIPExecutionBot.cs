@@ -419,7 +419,12 @@ namespace CFIP.cBot
                 }
             }
 
-            SweepScenarioProtectionStates(nowUtc);
+                SweepScenarioProtectionStates(nowUtc);
+            }
+            catch (Exception ex)
+            {
+                LogRuntimeFault("TICK CYCLE EXCEPTION", ex);
+            }
         }
 
         private bool ShouldProcessRealtimeTimerEnvelope(
@@ -477,14 +482,18 @@ namespace CFIP.cBot
 
         protected override void OnTimer()
         {
-            if (!RefreshIndicatorBinding(false))
-                return;
+            try
+            {
+                PublishPresence("RUNNING");
 
-            RefreshExecutionSettings(false);
-            ReloadSignalStore(true);
+                if (!RefreshIndicatorBinding(false))
+                    return;
 
-            DateTime nowUtc =
-                Server.TimeInUtc;
+                RefreshExecutionSettings(false);
+                ReloadSignalStore(true);
+
+                DateTime nowUtc =
+                    Server.TimeInUtc;
 
             if (CfipDeviceSignalTransport.TryReadScenarioBatch(
                     this,
@@ -524,11 +533,12 @@ namespace CFIP.cBot
                         nowUtc);
                 }
 
-                SweepScenarioProtectionStates(nowUtc);
-                return;
-            }
+                    SweepScenarioProtectionStates(nowUtc);
+                    PublishExecutionState("HEARTBEAT", false);
+                    return;
+                }
 
-            if (!CfipDeviceSignalTransport.TryRead(
+                if (!CfipDeviceSignalTransport.TryRead(
                     this,
                     _boundIndicatorInstanceId,
                     out SignalEnvelope envelope,
@@ -543,7 +553,30 @@ namespace CFIP.cBot
                 envelope,
                 nowUtc);
 
-            SweepScenarioProtectionStates(nowUtc);
+                SweepScenarioProtectionStates(nowUtc);
+                PublishExecutionState("HEARTBEAT", false);
+            }
+            catch (Exception ex)
+            {
+                LogRuntimeFault("TIMER CYCLE EXCEPTION", ex);
+            }
+        }
+
+        private void LogRuntimeFault(string stage, Exception ex)
+        {
+            string message =
+                ex == null ? "UNKNOWN" : ex.Message;
+
+            Print(
+                "CFIP cBot RUNTIME FAULT | stage={0} | error={1} | timer={2} | tickCount={3}",
+                stage ?? "UNKNOWN",
+                message,
+                Server.TimeInUtc.ToString("O"),
+                _tickCount);
+
+            PublishExecutionState(
+                "RUNTIME FAULT • " + (stage ?? "UNKNOWN"),
+                true);
         }
 
         private void ProcessSignalEnvelope(
