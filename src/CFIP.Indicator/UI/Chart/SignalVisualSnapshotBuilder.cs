@@ -285,6 +285,19 @@ namespace cAlgo
                         ? "TRIGGER READY"
                         : "CONFIRMED";
             }
+            else if (_rangeManipulation != null &&
+                     _rangeManipulation.IsRange)
+            {
+                snapshot.Stage =
+                    _rangeManipulation.IsManipulationWatch
+                        ? "MANIPULATION WATCH"
+                        : "RANGE WATCH";
+                snapshot.DecisionReason =
+                    string.IsNullOrWhiteSpace(
+                        _rangeManipulation.WatchReason)
+                        ? _rangeManipulation.Reason
+                        : _rangeManipulation.WatchReason;
+            }
             else if (predictionReady)
             {
                 snapshot.Stage = "PREDICTION";
