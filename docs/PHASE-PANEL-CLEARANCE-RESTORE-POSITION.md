@@ -60,7 +60,8 @@ Root cause:
 - the panel could therefore return using stale or small bootstrap geometry, leaving the fixed footer/pressure rail clipped below the timeframe-lamp row.
 
 Correction:
-- panel restoration invalidates the canonical presentation key and forces the existing RenderPanel() owner once after visibility is restored;
+- panel restoration invalidates the canonical presentation key and resets the existing panel-refresh timestamp;
+- the existing panel heartbeat consumes that request and invokes the same RenderPanel() owner once on the next heartbeat;
 - no second height calculation, footer renderer, or alternate layout path is introduced;
 - the existing footer, lamp rail, ScrollViewer budget, and panel-height equation remain the single geometry owners.
 

@@ -68,16 +68,23 @@ require(
 )
 
 toggle_code = visibility[toggle_start:toggle_end]
-restore_block_start = toggle_code.find("if (!_panelHidden)")
-restore_block_end = toggle_code.find(
-    "if (_panel != null)",
-    restore_block_start,
-)
 require(
-    restore_block_start >= 0 and
-    restore_block_end > restore_block_start and
-    "RenderPanel();" in toggle_code[restore_block_start:],
-    "panel restore must force the canonical full panel renderer after becoming visible",
+    "_lastPanelContentRefreshUtc =\n                                            DateTime.MinValue;" in toggle_code,
+    "panel restore must request a canonical layout refresh through the existing timestamp owner",
+)
+
+require(
+    "RenderPanel();" not in toggle_code,
+    "panel visibility toggle must remain free of synchronous full-layout rendering",
+)
+
+heartbeat = read("src/CFIP.Indicator/Runtime/Supervision/RuntimePanelHeartbeat.cs")
+require(
+    "if (!_panelHidden" in heartbeat and
+    "_lastPanelContentRefreshUtc ==" in heartbeat and
+    "DateTime.MinValue" in heartbeat and
+    "RenderPanel();" in heartbeat,
+    "panel heartbeat must consume the restore reflow request with the canonical full renderer",
 )
 
 require(

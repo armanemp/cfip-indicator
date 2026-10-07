@@ -55,6 +55,26 @@ namespace cAlgo
                 UpdatePanelHeaderLiveState();
                 UpdatePanelTrendTimeframeLamps();
 
+                // A restored panel invalidates the canonical full-render key and
+                // uses the existing panel heartbeat as the single scheduling owner.
+                // This preserves the responsive visibility-only toggle contract while
+                // guaranteeing the complete footer/lamp/scroll geometry is rebuilt.
+                if (!_panelHidden &&
+                    _lastPanelContentRefreshUtc ==
+                        DateTime.MinValue)
+                {
+                    try
+                    {
+                        RenderPanel();
+                    }
+                    catch (Exception ex)
+                    {
+                        Print(
+                            "CFIP panel restore full-layout refresh failed: {0}",
+                            ex.ToString());
+                    }
+                }
+
                 RefreshPanelContentIfDue(
                     now);
 
