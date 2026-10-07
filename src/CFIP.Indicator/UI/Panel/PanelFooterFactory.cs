@@ -293,12 +293,28 @@ namespace cAlgo
             TextBlock label,
             int width)
         {
-            if (row == null || track == null || label == null)
+            if (row == null || track == null)
                 return;
 
             row.Width = width;
             track.Width = width;
-            label.Width = width;
+            if (label != null)
+                label.Width = width;
+
+            TextBlock left = row == _panelBuyPressureRow
+                ? _panelBuyPressureLeftLabel
+                : _panelAggBuyFlowLeftLabel;
+            TextBlock right = row == _panelBuyPressureRow
+                ? _panelBuyPressureRightLabel
+                : _panelAggBuyFlowRightLabel;
+
+            if (left != null)
+                left.Width = Math.Max(1, width / 2 - PanelFlowPressureLabelSideGap);
+            if (right != null)
+            {
+                right.Width = Math.Max(1, width / 2);
+                right.TextAlignment = TextAlignment.Right;
+            }
         }
 
         private void ApplyCombinedFlowBar(
