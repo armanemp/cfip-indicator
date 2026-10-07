@@ -29,26 +29,10 @@ namespace cAlgo
             if (pendingDirection != 0)
                 return pendingDirection;
         
-            // The live M5 reaction is the realtime trigger/presentation layer.
-            // It may surface immediately when it agrees with the already accepted
-            // lifecycle direction; an opposite live reaction must never bypass the
-            // canonical anti-flip gate.
-            if (reactionReady &&
-                _reaction != null)
-            {
-                int acceptedDirection =
-                    _lastConfirmedDirection != 0
-                        ? _lastConfirmedDirection
-                        : _decision != null &&
-                          _decision.EntryAllowed
-                            ? _decision.Direction
-                            : 0;
-
-                if (acceptedDirection == 0 ||
-                    acceptedDirection == _reaction.Direction)
-                    return _reaction.Direction;
-            }
-
+            // Live Reaction is an internal M5/M1 precision signal only. It must
+            // never become the authoritative chart trade direction while the
+            // current M5 candle is still forming. The canonical visible direction
+            // comes from the accepted Plan/Decision lifecycle below.
             if (preTradePlanVisible &&
                 _plan != null &&
                 (_plan.Direction == 1 ||
