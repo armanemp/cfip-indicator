@@ -20,8 +20,16 @@ namespace cAlgo
                                         !_panelHidden;
 
                                     if (!_panelHidden)
+                                    {
+                                        // Visibility restoration must force the canonical
+                                        // panel layout renderer to run again. Merely toggling
+                                        // IsVisible can resurrect the old bootstrap height and
+                                        // leave the fixed footer clipped below the lamp rail.
                                         _lastPanelContentRefreshUtc =
                                             DateTime.MinValue;
+                                        _lastPanelPresentationKey =
+                                            string.Empty;
+                                    }
                         
                                     if (_panel != null)
                                         _panel.IsVisible =
@@ -30,6 +38,20 @@ namespace cAlgo
                                     if (_panelRestoreButton != null)
                                         _panelRestoreButton.IsVisible =
                                             _panelHidden;
+                        
+                                    if (!_panelHidden)
+                                    {
+                                        try
+                                        {
+                                            RenderPanel();
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            Print(
+                                                "CFIP panel restore layout refresh failed: {0}",
+                                                ex.ToString());
+                                        }
+                                    }
 
                                 }
         

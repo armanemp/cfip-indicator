@@ -48,3 +48,24 @@ Manual target-terminal boundary:
 ## Operator action
 
 After merge to main, run: `git pull --ff-only`.
+
+
+## 2026-10-07 — Hide/show footer restore regression
+
+**Status:** IMPLEMENTED ON THIS WORKING BRANCH — automated source audit added; target-terminal visual confirmation remains required.
+
+Root cause:
+- the hide/show handler only changed control visibility;
+- the canonical full-panel layout renderer was not guaranteed to run when the panel became visible again;
+- the panel could therefore return using stale or small bootstrap geometry, leaving the fixed footer/pressure rail clipped below the timeframe-lamp row.
+
+Correction:
+- panel restoration invalidates the canonical presentation key and forces the existing RenderPanel() owner once after visibility is restored;
+- no second height calculation, footer renderer, or alternate layout path is introduced;
+- the existing footer, lamp rail, ScrollViewer budget, and panel-height equation remain the single geometry owners.
+
+Acceptance:
+- hidden state still exposes only the restore button;
+- restoring the panel immediately rebuilds the complete panel geometry;
+- timeframe lamps, scrollable rows, pressure/footer rail and footer actions are all visible within the same bounded panel;
+- repeated hide/show cycles do not accumulate controls or handlers.

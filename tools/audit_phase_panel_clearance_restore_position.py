@@ -54,6 +54,21 @@ require(
 )
 
 require(
+    "_lastPanelPresentationKey" in visibility and
+    "_lastPanelPresentationKey = string.Empty" in visibility,
+    "panel restore must invalidate the canonical full-render presentation key",
+)
+
+restore_block_start = visibility.find("if (!_panelHidden)")
+restore_block_end = visibility.find("if (_panelHidden)", restore_block_start)
+require(
+    restore_block_start >= 0 and
+    restore_block_end > restore_block_start and
+    "RenderPanel();" in visibility[restore_block_start:restore_block_end],
+    "panel restore must force the canonical full panel renderer after becoming visible",
+)
+
+require(
     "python tools/audit_phase_mtf_primary_panel.py" in workflow and
     "python tools/audit_phase_panel_clearance_restore_position.py" in workflow,
     "panel spacing audit must accumulate with the existing P1 audit",
