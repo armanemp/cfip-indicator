@@ -128,6 +128,15 @@ namespace cAlgo
             return _aggressiveFlowSnapshot;
         }
 
+        private bool TryGetFreshAggressiveFlowSnapshot(
+            out AggressiveFlowSnapshot snapshot)
+        {
+            snapshot = GetAggressiveFlowSnapshot();
+            return snapshot.IsFresh(
+                TimeInUtc,
+                TimeSpan.FromSeconds(5));
+        }
+
         private void StopAggressiveFlowRuntime()
         {
             if (_aggressiveFlowTicks == null)
