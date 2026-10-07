@@ -64,3 +64,11 @@ The 1–9 strength ladder remains unchanged and still determines whether one, tw
 The M1 precision/confirmation layer no longer creates a separate Circle or other chart marker. This removes the competing-marker path entirely; M1 remains analytical/confirmation evidence only.
 
 The fixed-box contract is now the active visual contract. The older pip/price-coordinate separation and M1 Circle wording in this historical phase description are superseded by this correction.
+
+
+## 2026-10-07 — Canonical chart-arrow renderer correction
+- The single arrow owner remains SignalStackedArrowRenderer.
+- The presentation surface is now the chart-object API (Chart.DrawIcon) rather than a chart-control overlay coupled to panel lifecycle.
+- Direction still comes from MtfTrendStrengthSnapshot/SignalVisualSnapshot; strength still resolves to 1–9 levels and 1–3 visible arrows.
+- Arrow positions are anchored to the canonical M5-to-chart bar and spaced from the candle using ATR-aware distance.
+- Panel creation/reordering no longer participates in arrow rendering.
