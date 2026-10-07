@@ -655,10 +655,21 @@ namespace CFIP.cBot
             // cBot lifecycle. Keep the canonical execution state intact and
             // publish the fault as telemetry so the Indicator can distinguish
             // a live cBot from a stale heartbeat.
-            PublishExecutionState(
-                "RUNTIME FAULT RECOVERED • " +
-                (source ?? "UNKNOWN"),
-                true);
+            try
+            {
+                PublishExecutionState(
+                    "RUNTIME FAULT RECOVERED • " +
+                    (source ?? "UNKNOWN"),
+                    true);
+            }
+            catch (Exception publishException)
+            {
+                if (logNow)
+                    Print(
+                        "CFIP cBot RUNTIME FAULT TELEMETRY FAILED | type={0} | message={1}",
+                        publishException.GetType().Name,
+                        publishException.Message);
+            }
         }
 
         protected override void OnException(Exception exception)
@@ -1085,11 +1096,23 @@ namespace CFIP.cBot
                     out ChartIndicator indicator,
                     out string reason))
             {
-                // The custom Indicator is a local chart algorithm and must be
-                // attached explicitly by the operator. Never create/resolve it
-                // from this lifecycle path: doing so re-enters cTrader's
-                // algorithm-resolution flow during cBot restart/reload and can
-                // surface a Local/Cloud selection prompt.
+                // A periodic chart-enumeration miss can be transient while cTrader
+                // refreshes/reloads a local Indicator instance. Preserve an already
+                // resolved binding during non-forced checks; the signal preflight
+                // and heartbeat contracts remain the execution safety boundary.
+                if (!force &&
+                    !string.IsNullOrWhiteSpace(_boundIndicatorInstanceId))
+                {
+                    Print(
+                        "CFIP ANALYSIS BIND | transient lookup miss | retainedInstance={0} | reason={1}",
+                        _boundIndicatorInstanceId,
+                        reason);
+                    return true;
+                }
+
+                // A forced check is authoritative (startup/lifecycle event) and
+                // therefore may clear the binding when the Indicator is genuinely
+                // absent or ambiguous.
                 Print(
                     "CFIP ANALYSIS BIND | unresolved | reason={0} | chart={1} | action=ATTACH LOCAL INDICATOR",
                     reason,
