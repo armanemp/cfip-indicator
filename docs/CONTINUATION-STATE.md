@@ -2850,7 +2850,7 @@ Required terminal evidence before closeout:
 - [x] Replaced the ambiguous five mini data bars with two full-width combined pressure tracks owned and rendered by PanelFooterFactory; each track contains adjacent BUY/SELL segments whose widths always sum to the same total track width.
 - [x] BUY/SELL pressure uses the closed M15 bar window and cTrader TickVolumes with close-location weighting; it is a pressure estimate, not true bid/ask volume.
 - [x] Footer geometry reserves the pressure rail independently from the alert/action area so it cannot disappear when the toggle or alert rail is absent.
-- [x] Architecture parameter contract reconciled: total parameter groups remain 533 declarations, with 530 non-OSS baseline declarations after removal of obsolete arrow offset parameters.
+- [x] Architecture parameter contract reconciled: total parameter groups are now 531 declarations, with 528 non-OSS baseline declarations after removal of obsolete advanced controls.
 - [x] PR #361 repository gates passed on the final pre-merge head and the merged main was re-verified.
 - [ ] Target-terminal visual acceptance remains mandatory; repository CI never counts as visual proof.
 
@@ -2897,7 +2897,7 @@ Repository-side CI is the next verification boundary for these synchronized cont
 - A resolved directional trend remains visible at Weak-1 instead of disappearing solely because its presentation score is below the actionability floor. Trade qualification is unchanged.
 - Footer flow surface is explicitly four-row (DOM BUY/SELL + FLOW BUY/SELL), with 10px bars and deterministic 23px row spacing.
 - `FullWidthLevelLines` was removed as an unread/dead public parameter; canonical plan lines remain finite 40-bar geometry.
-- Parameter inventory is now 533 total / 530 non-OSS baseline; architecture and parameter audits were reconciled to the actual source tree.
+- Parameter inventory is now 531 total / 528 non-OSS baseline; architecture and parameter audits are reconciled to the actual source tree.
 
 Repository CI closeout is PASS on PR #375 final head `7ed5d74f97460d01a54912845bd5688986d2079c`: Source/Architecture #5127, cTrader Compile #5120, Runtime Acceptance #4936. Target-terminal visual/audio/cBot acceptance remains mandatory.
 
