@@ -198,10 +198,10 @@ check(
     "ApplyMtfTrendStrength(" in snapshot_builder and
     "visualDirection" in snapshot_builder and
     "((strength - 1) % 3) + 1" in stack and
-    '"WATCH_ARROW_3"' in stack and
-    "UpdateSignalArrowBox(" in stack and
-    "Width = 66" in stack and
-    "Height = 66" in stack and
+    "CanonicalTrendArrowPrefix" in stack and
+    "Chart.DrawIcon(" in stack and
+    "ChartIconType.UpArrow" in stack and
+    "ChartIconType.DownArrow" in stack and
     "HorizontalAlignment = HorizontalAlignment.Right" in stack and
     "VerticalAlignment = VerticalAlignment.Bottom" in stack and
     "ChartIconType.UpArrow" not in stack and
