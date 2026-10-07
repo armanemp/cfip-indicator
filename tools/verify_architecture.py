@@ -1443,6 +1443,7 @@ DECISION_REQUEST = ROOT / "Analysis" / "Market" / "Decision" / "DecisionInputBui
 DECISION_FACTORY = ROOT / "Analysis" / "Market" / "Decision" / "DecisionInputSnapshotFactory.cs"
 DECISION_ORCHESTRATION = ROOT / "Analysis" / "Market" / "Decision" / "DecisionOrchestration.cs"
 DECISION_TIMEFRAME = ROOT / "Analysis" / "Market" / "Decision" / "TimeframeAgreementAnalyzer.cs"
+DECISION_TIMEFRAME_RULE = ROOT / "Core" / "Math" / "TimeframeAgreementRule.cs"
 CLOSED_CALCULATION = ROOT / "Runtime" / "Calculation" / "CalculationClosedBar.cs"
 RUNTIME_CONTRACT_PROJECT = ROOT.parent.parent / "tools" / "CFIP.Runtime.Contracts" / "CFIP.Runtime.Contracts.csproj"
 
@@ -1466,6 +1467,7 @@ decision_request_code = DECISION_REQUEST.read_text(encoding="utf-8")
 decision_factory_code = DECISION_FACTORY.read_text(encoding="utf-8")
 decision_orchestration_code = DECISION_ORCHESTRATION.read_text(encoding="utf-8")
 decision_timeframe_code = DECISION_TIMEFRAME.read_text(encoding="utf-8")
+decision_timeframe_rule_code = DECISION_TIMEFRAME_RULE.read_text(encoding="utf-8")
 closed_calculation_code = CLOSED_CALCULATION.read_text(encoding="utf-8")
 
 if "ResolveClosedIndex(" not in closed_bar_rule_code or "IsFullyClosed(" not in closed_bar_rule_code:
@@ -1500,7 +1502,7 @@ if "ClosedContext = closedContext" not in decision_orchestration_code:
 if "TimeframeAgreement(1, closedContext)" not in decision_orchestration_code or "TimeframeAgreement(-1, closedContext)" not in decision_orchestration_code:
     raise SystemExit("Decision timeframe evidence must use the canonical closed context")
 
-if "int[] closedIndices" not in decision_timeframe_code or "closedIndices[i]" not in decision_timeframe_code:
+if "int[] closedIndices" not in decision_timeframe_rule_code or "closedIndices[i]" not in decision_timeframe_rule_code:
     raise SystemExit("Timeframe agreement must consume canonical closed indices")
 
 if "BuildDecision(" not in closed_calculation_code or "mtf);" not in closed_calculation_code:
