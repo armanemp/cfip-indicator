@@ -56,7 +56,12 @@ namespace cAlgo
         {
             get
             {
+                // Runtime faults are cycle-local. A recoverable fault blocks
+                // automatic entry for the affected calculation cycle only.
+                // The next clean cycle can resume without a hidden global
+                // trading switch or manual UI re-arm.
                 return _state == RuntimeFaultState.Healthy &&
+                       !_cycleFaulted &&
                        _entryArmed;
             }
         }
@@ -64,6 +69,11 @@ namespace cAlgo
         public void BeginCycle()
         {
             _cycleFaulted = false;
+
+            // A recoverable fault is diagnostic/cycle-scoped. Do not carry an
+            // old calculation fault forward as a permanent entry kill switch.
+            if (_state != RuntimeFaultState.Healthy)
+                _state = RuntimeFaultState.Healthy;
         }
 
         public void ObserveAutoTradingSetting(
@@ -107,7 +117,10 @@ namespace cAlgo
 
         public void BlockAutomaticEntry()
         {
-            _entryArmed = false;
+            // Block the current runtime cycle only. The execution master policy
+            // belongs to the cBot and must never be latched off by this
+            // Indicator-side recoverable fault boundary.
+            _cycleFaulted = true;
             _state = RuntimeFaultState.EntryBlocked;
         }
 
