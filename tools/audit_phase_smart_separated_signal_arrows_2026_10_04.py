@@ -107,7 +107,7 @@ check(
     "M1 precision marker no longer owns a competing visual marker",
     "P + " + chr(34) + "M1_TRIGGER" + chr(34) not in signal and
     "ChartIconType.Circle" not in signal and
-    "UpdateSignalArrowBox(" in stack,
+    "DrawCanonicalTrendArrow(" in stack,
 )
 
 check(
