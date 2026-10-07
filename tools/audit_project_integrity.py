@@ -29,7 +29,8 @@ param_re = re.compile(
     r'([A-Za-z_]\w*)\s*\{\s*get;\s*set;\s*\}',
     re.S,
 )
-for p, text in texts.items():
+for p in sorted(PARAM_ROOT.glob("*.cs")):
+    text = p.read_text(encoding="utf-8")
     for name in param_re.findall(text):
         param_decls[name].append(str(p.relative_to(ROOT)))
 
