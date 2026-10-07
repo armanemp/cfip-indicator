@@ -77,32 +77,34 @@ require(
 # Direction arrow follows the live chart bar and remains visible whenever a
 # valid direction exists; no direction means removal.
 require(
-    "safeBar" in signal_renderer and
-    "Bars.Count - 1" in signal_renderer,
+    "ResolveArrowBarIndex(" in signal_renderer and
+    "Bars.Count - 1" in signal_renderer and
+    "Chart.DrawIcon(" in signal_renderer,
     "signal arrow renderer must use a bounded canonical chart-bar index",
 )
 require(
-    "snapshot.PlanActive" in signal_renderer and
-    "decisionOwnsDirection" in signal_renderer,
+    "snapshot.MtfTrendDirection" in signal_renderer and
+    "snapshot.AuthoritativeDirection" in signal_renderer and
+    "CanonicalTrendArrowPrefix" in signal_renderer,
     "active-plan direction remains owned by the canonical arrow renderer",
 )
 watch_gate = signal_renderer
 require(
-    "decisionOwnsDirection" in watch_gate and
-    "snapshot.ActionableNow" in watch_gate and
-    "snapshot.DecisionEntryAllowed" in watch_gate,
+    "snapshot.MtfTrendStrengthLevel" in watch_gate and
+    "ChartIconType.UpArrow" in watch_gate and
+    "ChartIconType.DownArrow" in watch_gate,
     "directional WATCH arrow must use the canonical actionable decision state",
 )
 require(
-    "visualDirection == 0" in signal_renderer and
-    "WATCH_ARROW" in signal_renderer and
-    "RemoveObject" in signal_renderer,
+    "direction == 0" in signal_renderer and
+    "RemoveStackedSignalArrows();" in signal_renderer and
+    "Chart.RemoveObject" in signal_renderer,
     "directional arrow must hide when no direction is available",
 )
 
 require(
-    "snapshot.PlanActive" in watch_gate and
-    "snapshot.ActionableNow" in watch_gate,
+    "snapshot.MtfTrendDirection != 0" in watch_gate and
+    "arrowCount" in watch_gate,
     "directional WATCH layer must remain subordinate to the canonical active/actionable state",
 )
 
