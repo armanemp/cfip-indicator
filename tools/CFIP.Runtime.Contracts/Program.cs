@@ -4226,7 +4226,7 @@ namespace cAlgo
             TacticalOpportunityResult counterWeak =
                 TacticalOpportunityRule.Evaluate(
                     1,
-                    80,
+                    78,
                     75,
                     4,
                     1,
