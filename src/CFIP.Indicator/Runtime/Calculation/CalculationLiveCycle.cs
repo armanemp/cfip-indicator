@@ -17,19 +17,6 @@ namespace cAlgo
             DateTime now =
                 Server.TimeInUtc;
 
-            double market =
-                Symbol.Ask > 0 &&
-                Symbol.Bid > 0
-                    ? (Symbol.Ask + Symbol.Bid) * 0.5
-                    : Symbol.Ask;
-
-            double atr =
-                liveM5 > 1
-                    ? Atr(
-                        _m5Bars,
-                        liveM5 - 1)
-                    : 0;
-
             bool newM5 =
                 liveM5 != _lastReactionM5;
 
@@ -52,9 +39,6 @@ namespace cAlgo
 
                 _lastReactionM5 =
                     liveM5;
-
-                _lastReactionMarket =
-                    market;
             }
         }
 
