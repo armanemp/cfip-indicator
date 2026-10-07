@@ -748,6 +748,13 @@ namespace CFIP.cBot
                     _sessionExecutions++;
                 }
 
+                if (pendingReport == null &&
+                    !string.IsNullOrWhiteSpace(pendingReason))
+                {
+                    LogBlockedState(
+                        "PENDING EXECUTION BLOCKED • " + pendingReason);
+                }
+
                 if (pendingReport != null)
                 {
                     Print(
@@ -795,6 +802,13 @@ namespace CFIP.cBot
                     out string executionReason))
             {
                 _sessionExecutions++;
+            }
+
+            if (report == null &&
+                !string.IsNullOrWhiteSpace(executionReason))
+            {
+                LogBlockedState(
+                    "MARKET EXECUTION BLOCKED • " + executionReason);
             }
 
             if (report != null)
