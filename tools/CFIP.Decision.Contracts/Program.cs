@@ -12,6 +12,7 @@ namespace cAlgo
             VerifyNeutralQualityIsolation();
             VerifyQualityBoundaries();
             VerifyTopDownCalibrationAbsoluteStrength();
+            VerifyTacticalTopDownBypass();
             VerifyConfidenceCalibrationKeyEquality();
             VerifyConfidenceCalibration();
             VerifyContextualConfidenceCalibration();
@@ -589,6 +590,45 @@ namespace cAlgo
                 calculator.Calculate(50, 0, 0, 0, 0, 50);
 
             Assert(neutralQuality >= 0 && neutralQuality <= 100, "zero-input quality");
+        }
+
+        private static void VerifyTacticalTopDownBypass()
+        {
+            Assert(
+                TopDownCalibrationRule.AllowsTacticalBypass(
+                    true,
+                    1,
+                    OpportunityLane.Tactical,
+                    1,
+                    1,
+                    70,
+                    70,
+                    72),
+                "tactical bypass requires strong same-direction midframe support");
+
+            Assert(
+                !TopDownCalibrationRule.AllowsTacticalBypass(
+                    true,
+                    1,
+                    OpportunityLane.Tactical,
+                    1,
+                    0,
+                    90,
+                    90,
+                    72),
+                "M5-only tactical direction cannot bypass the top-down hierarchy");
+
+            Assert(
+                TopDownCalibrationRule.AllowsTacticalBypass(
+                    true,
+                    -1,
+                    OpportunityLane.CounterHtfTactical,
+                    1,
+                    -1,
+                    80,
+                    80,
+                    72),
+                "counter-HTF tactical path requires strong midframe support and an opposing HTF anchor");
         }
 
         private static void VerifyConfidenceCalibrationKeyEquality()
