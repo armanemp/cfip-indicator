@@ -84,7 +84,7 @@ require(
     "ResolveCanonicalPlanLineColor(" in label and
     "semanticColor" in label and
     "GetCompactPlanLabelAnchorTime(" in label and
-    "TextTrimming = TextTrimming.Ellipsis" in label and
+    "TextTrimming = TextTrimming.CharacterEllipsis" in label and
     "Chart.MoveControl(" in label,
     "canonical chart labels must be one-owner compact boxes, bounded, colored by the line color and separated one bar left of the line",
 )
