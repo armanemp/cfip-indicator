@@ -869,3 +869,12 @@ No trading threshold, MTF role, broker mutation authority or strategy quality ga
 - Removed the remaining 30-second Indicator startup data-load lifetime timeout.
 - Added flow architecture acceptance gate and aligned legacy footer gate.
 - Remaining: reconnect/history reseed, session/regime normalization, arrow-strength integration, full compile/runtime/architecture CI.
+
+
+## 2026-10-07 — Arrow renderer correction
+- [x] Canonical trend-arrow owner retained: MtfTrendStrengthRule → SignalVisualSnapshot → SignalStackedArrowRenderer.
+- [x] Removed panel-lifecycle coupling from arrow rendering.
+- [x] Canonical arrows now render directly as chart objects on the mapped chart bar via Chart.DrawIcon.
+- [x] Direction uses canonical MTF trend direction first; strength uses the existing 1–9 canonical level and displays 1–3 arrows.
+- [x] Arrow placement is ATR-aware and outside the candle high/low to avoid hiding the candle.
+- [ ] Demo/live visual verification remains required after the green build.
