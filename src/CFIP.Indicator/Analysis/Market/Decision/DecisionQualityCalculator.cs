@@ -13,7 +13,8 @@ namespace cAlgo
             int retestQuality,
             int indicatorConfluenceQuality = 0,
             int indicatorConflict = 0,
-            int independentEvidenceGroupCount = 0)
+            int independentEvidenceGroupCount = 0,
+            int canonicalContextQuality = 0)
         {
             double normalizedIndependentEvidence =
                 Math.Min(
@@ -42,17 +43,24 @@ namespace cAlgo
                 IndependentEvidenceDiversityRule.QualityBonus(
                     independentEvidenceGroupCount);
 
+            int effectiveCanonicalContextQuality =
+                NumericGuards.ClampInt(
+                    canonicalContextQuality,
+                    0,
+                    100);
+
             if (indicatorConfluenceQuality <= 0 &&
                 indicatorConflict <= 0)
             {
                 int baselineQuality =
                     (int)Math.Round(
-                        NumericGuards.ClampInt(strongestShare, 0, 100) * 0.25 +
-                        NumericGuards.ClampInt(timeframeAgreement, 0, 100) * 0.20 +
-                        normalizedIndependentEvidence * 0.20 +
-                        normalizedStructural * 0.15 +
-                        NumericGuards.ClampInt(regimeQuality, 0, 100) * 0.10 +
-                        effectiveRetestQuality * 0.10 +
+                        NumericGuards.ClampInt(strongestShare, 0, 100) * 0.22 +
+                        NumericGuards.ClampInt(timeframeAgreement, 0, 100) * 0.18 +
+                        normalizedIndependentEvidence * 0.18 +
+                        normalizedStructural * 0.14 +
+                        NumericGuards.ClampInt(regimeQuality, 0, 100) * 0.08 +
+                        effectiveRetestQuality * 0.05 +
+                        effectiveCanonicalContextQuality * 0.15 +
                         diversityBonus);
 
                 return NumericGuards.ClampInt(
@@ -63,13 +71,14 @@ namespace cAlgo
 
             return NumericGuards.ClampInt(
                 (int)Math.Round(
-                    NumericGuards.ClampInt(strongestShare, 0, 100) * 0.22 +
-                    NumericGuards.ClampInt(timeframeAgreement, 0, 100) * 0.18 +
-                    normalizedIndependentEvidence * 0.18 +
-                    normalizedStructural * 0.15 +
-                    NumericGuards.ClampInt(regimeQuality, 0, 100) * 0.10 +
-                    effectiveRetestQuality * 0.07 +
-                    NumericGuards.ClampInt(indicatorConfluenceQuality, 0, 100) * 0.10 +
+                    NumericGuards.ClampInt(strongestShare, 0, 100) * 0.20 +
+                    NumericGuards.ClampInt(timeframeAgreement, 0, 100) * 0.16 +
+                    normalizedIndependentEvidence * 0.16 +
+                    normalizedStructural * 0.13 +
+                    NumericGuards.ClampInt(regimeQuality, 0, 100) * 0.08 +
+                    effectiveRetestQuality * 0.05 +
+                    effectiveCanonicalContextQuality * 0.10 +
+                    NumericGuards.ClampInt(indicatorConfluenceQuality, 0, 100) * 0.12 +
                     diversityBonus) -
                 Math.Min(
                     12,
