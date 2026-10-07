@@ -110,7 +110,9 @@ namespace cAlgo
                     closedM5,
                     _setupPreview == null ? 0 : _setupPreview.Direction,
                     _decision == null ? 0 : _decision.Direction,
-                    _decision != null && _decision.EntryAllowed) &&
+                    _decision != null &&
+                    _decision.EntryAllowed &&
+                    _decision.TriggerReady) &&
                 SignalVisualLifecycleRule.IsSetupPreviewWithinPracticalDistance(
                     setupPreviewMarket,
                     _setupPreview == null ? 0 : _setupPreview.Entry,
