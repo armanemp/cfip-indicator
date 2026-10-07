@@ -379,45 +379,39 @@ namespace CFIP.cBot
         protected override void OnTick()
         {
             _tickCount++;
-            PublishPresence("RUNNING");
 
-            if (!RefreshIndicatorBinding(false))
+            try
             {
-                LogBlockedState("INDICATOR BINDING BLOCKED");
-                return;
-            }
-
-            RefreshExecutionSettings(false);
-            ReloadSignalStore(false);
-
-            DateTime nowUtc = Server.TimeInUtc;
-
-            ReconcileBrokerState(false);
-            PublishExecutionState("HEARTBEAT", false);
-
-            // Broker management is tick-driven because protection changes must
-            // react to the live position immediately. Signal ingestion/execution
-            // has one owner only: OnTimer().
-            if (EffectiveManagementExecutionEnabled &&
-                !string.IsNullOrWhiteSpace(_boundIndicatorInstanceId))
-            {
-                _management.Process(
-                    this,
-                    _boundIndicatorInstanceId,
-                    nowUtc,
-                    ManagementCommandMaxAgeSeconds,
-                    _executionSettings,
-                    out string managementStatus);
-
-                if (!string.IsNullOrWhiteSpace(managementStatus) &&
-                    !string.Equals(
-                        managementStatus,
-                        "NO MANAGEMENT COMMAND",
-                        StringComparison.Ordinal))
+                if (!RefreshIndicatorBinding(false))
                 {
-                    Print("CFIP MANAGEMENT | {0}", managementStatus);
+                    LogBlockedState("INDICATOR BINDING BLOCKED");
+                    return;
                 }
-            }
+
+                DateTime nowUtc = Server.TimeInUtc;
+
+                ReconcileBrokerState(false);
+
+                if (EffectiveManagementExecutionEnabled &&
+                    !string.IsNullOrWhiteSpace(_boundIndicatorInstanceId))
+                {
+                    _management.Process(
+                        this,
+                        _boundIndicatorInstanceId,
+                        nowUtc,
+                        ManagementCommandMaxAgeSeconds,
+                        _executionSettings,
+                        out string managementStatus);
+
+                    if (!string.IsNullOrWhiteSpace(managementStatus) &&
+                        !string.Equals(
+                            managementStatus,
+                            "NO MANAGEMENT COMMAND",
+                            StringComparison.Ordinal))
+                    {
+                        Print("CFIP MANAGEMENT | {0}", managementStatus);
+                    }
+                }
 
                 SweepScenarioProtectionStates(nowUtc);
             }
@@ -492,46 +486,39 @@ namespace CFIP.cBot
                 RefreshExecutionSettings(false);
                 ReloadSignalStore(true);
 
-                DateTime nowUtc =
-                    Server.TimeInUtc;
+                DateTime nowUtc = Server.TimeInUtc;
 
-            if (CfipDeviceSignalTransport.TryReadScenarioBatch(
+                if (CfipDeviceSignalTransport.TryReadScenarioBatch(
                     this,
                     _boundIndicatorInstanceId,
                     out SignalScenarioBatch scenarioBatch,
                     out _))
-            {
-                if (scenarioBatch == null ||
-                    scenarioBatch.ContractVersion != ContractVersion.Current ||
-                    !string.Equals(
-                        scenarioBatch.IndicatorInstanceId,
-                        _boundIndicatorInstanceId,
-                        StringComparison.Ordinal) ||
-                    !string.Equals(
-                        scenarioBatch.Symbol,
-                        SymbolName,
-                        StringComparison.Ordinal))
-                    return;
-
-                SignalEnvelope[] scenarios =
-                    scenarioBatch.Scenarios ??
-                    Array.Empty<SignalEnvelope>();
-
-                for (int i = 0;
-                     i < scenarios.Length;
-                     i++)
                 {
-                    SignalEnvelope scenario =
-                        scenarios[i];
+                    if (scenarioBatch == null ||
+                        scenarioBatch.ContractVersion != ContractVersion.Current ||
+                        !string.Equals(
+                            scenarioBatch.IndicatorInstanceId,
+                            _boundIndicatorInstanceId,
+                            StringComparison.Ordinal) ||
+                        !string.Equals(
+                            scenarioBatch.Symbol,
+                            SymbolName,
+                            StringComparison.Ordinal))
+                        return;
 
-                    if (!ShouldProcessRealtimeTimerEnvelope(
-                            scenario))
-                        continue;
+                    SignalEnvelope[] scenarios =
+                        scenarioBatch.Scenarios ??
+                        Array.Empty<SignalEnvelope>();
 
-                    ProcessSignalEnvelope(
-                        scenario,
-                        nowUtc);
-                }
+                    for (int i = 0; i < scenarios.Length; i++)
+                    {
+                        SignalEnvelope scenario = scenarios[i];
+
+                        if (!ShouldProcessRealtimeTimerEnvelope(scenario))
+                            continue;
+
+                        ProcessSignalEnvelope(scenario, nowUtc);
+                    }
 
                     SweepScenarioProtectionStates(nowUtc);
                     PublishExecutionState("HEARTBEAT", false);
@@ -543,16 +530,12 @@ namespace CFIP.cBot
                     _boundIndicatorInstanceId,
                     out SignalEnvelope envelope,
                     out _))
-                return;
+                    return;
 
-            if (!ShouldProcessRealtimeTimerEnvelope(
-                    envelope))
-                return;
+                if (!ShouldProcessRealtimeTimerEnvelope(envelope))
+                    return;
 
-            ProcessSignalEnvelope(
-                envelope,
-                nowUtc);
-
+                ProcessSignalEnvelope(envelope, nowUtc);
                 SweepScenarioProtectionStates(nowUtc);
                 PublishExecutionState("HEARTBEAT", false);
             }
@@ -560,23 +543,6 @@ namespace CFIP.cBot
             {
                 LogRuntimeFault("TIMER CYCLE EXCEPTION", ex);
             }
-        }
-
-        private void LogRuntimeFault(string stage, Exception ex)
-        {
-            string message =
-                ex == null ? "UNKNOWN" : ex.Message;
-
-            Print(
-                "CFIP cBot RUNTIME FAULT | stage={0} | error={1} | timer={2} | tickCount={3}",
-                stage ?? "UNKNOWN",
-                message,
-                Server.TimeInUtc.ToString("O"),
-                _tickCount);
-
-            PublishExecutionState(
-                "RUNTIME FAULT • " + (stage ?? "UNKNOWN"),
-                true);
         }
 
         private void ProcessSignalEnvelope(
