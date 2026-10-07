@@ -876,7 +876,7 @@ Footer اکنون چهار ردیف canonical دارد:
 - [x] explicit DOM-vs-flow volume semantics
 - [x] startup lifetime timeout removed
 - [x] dead `FullWidthLevelLines` parameter removed
-- [ ] final compile/runtime/architecture CI on the latest head
+- [x] final compile/runtime/architecture CI on the latest head (PR #375: Source/Architecture #5127, cTrader Compile #5120, Runtime Acceptance #4936)
 - [ ] target-terminal validation
 
 ## 17. به‌روزرسانی پیشرفت — Batch 04
