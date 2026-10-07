@@ -70,10 +70,9 @@ namespace cAlgo
                 (activeRegime.Regime == "RANGE" ||
                  activeRegime.Regime == "COMPRESSION"))
             {
-                if (predictionReady &&
-                    _prediction != null)
-                    return _prediction.Direction;
-        
+                // Prediction is informational only. Range/compression does not
+                // receive an authoritative trade direction from the prediction
+                // layer.
                 return 0;
             }
         
@@ -92,10 +91,8 @@ namespace cAlgo
                    _m5Frame.ChochBear))))
                 return _m5Frame.Direction;
         
-            if (predictionReady &&
-                _prediction != null)
-                return _prediction.Direction;
-        
+            // Prediction remains presentation-only and can never manufacture the
+            // authoritative trade direction.
             return 0;
         }
         
