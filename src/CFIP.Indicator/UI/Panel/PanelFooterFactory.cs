@@ -282,8 +282,9 @@ namespace cAlgo
                 domSellShare,
                 SellArrowColor);
 
-            AggressiveFlowSnapshot flow = GetAggressiveFlowSnapshot();
-            double flowTotal = flow.BuyTicks + flow.SellTicks;
+            AggressiveFlowSnapshot flow;
+            bool flowReady = TryGetFreshAggressiveFlowSnapshot(out flow);
+            double flowTotal = flowReady ? flow.BuyTicks + flow.SellTicks : 0;
             double flowBuyShare =
                 flowTotal > 0 ? flow.BuyTicks / flowTotal : 0;
             double flowSellShare =
