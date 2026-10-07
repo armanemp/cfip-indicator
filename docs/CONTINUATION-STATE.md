@@ -2850,7 +2850,7 @@ Required terminal evidence before closeout:
 - [x] Replaced the ambiguous five mini data bars with two stacked full-width BUY/SELL pressure tracks owned and rendered by PanelFooterFactory.
 - [x] BUY/SELL pressure uses the closed M15 bar window and cTrader TickVolumes with close-location weighting; it is a pressure estimate, not true bid/ask volume.
 - [x] Footer geometry reserves the pressure rail independently from the alert/action area so it cannot disappear when the toggle or alert rail is absent.
-- [x] Architecture parameter contract reconciled: total parameter groups remain 543 declarations, with 540 non-OSS baseline declarations after removal of obsolete arrow offset parameters.
+- [x] Architecture parameter contract reconciled: total parameter groups remain 533 declarations, with 530 non-OSS baseline declarations after removal of obsolete arrow offset parameters.
 - [x] PR #361 repository gates passed on the final pre-merge head and the merged main was re-verified.
 - [ ] Target-terminal visual acceptance remains mandatory; repository CI never counts as visual proof.
 
@@ -2888,6 +2888,18 @@ Repository-side CI is the next verification boundary for these synchronized cont
 - cBot realtime timer deduplication is now scenario-scoped and bounded instead of using one global last-scenario tuple, so concurrent scenarios do not reprocess each other at the same revision.
 - Provider execution-intent capture is reset before each live pending evaluation, preventing an older M5 intent from being reused after current actionability changes.
 - Automated gates must remain green before merge; target-terminal validation remains required for final visual/broker confirmation.
+
+## 2026-10-07 — Batch 04 Flow / DOM / Aggressive Flow closeout
+
+- Aggressive Flow now seeds from resident tick history and reseeds on both `HistoryLoaded` and `Reloaded`, so startup/reconnect no longer creates an artificial zero-flow window.
+- Flow normalization uses directional share plus bounded observation confidence; raw tick activity is never treated as executed trade volume and does not become an independent vote.
+- The canonical `MtfTrendStrengthRule` consumes that flow modulation with a hard bounded influence; trend direction remains the primary owner.
+- A resolved directional trend remains visible at Weak-1 instead of disappearing solely because its presentation score is below the actionability floor. Trade qualification is unchanged.
+- Footer flow surface is explicitly four-row (DOM BUY/SELL + FLOW BUY/SELL), with 10px bars and deterministic 23px row spacing.
+- `FullWidthLevelLines` was removed as an unread/dead public parameter; canonical plan lines remain finite 40-bar geometry.
+- Parameter inventory is now 533 total / 530 non-OSS baseline; architecture and parameter audits were reconciled to the actual source tree.
+
+Repository CI for this closeout is pending on the latest PR head; target-terminal visual/audio/cBot acceptance remains mandatory.
 
 ## 2026-10-07 — Current continuation state
 - Mainline continuation now includes the arrow/footer/cBot hardening work.

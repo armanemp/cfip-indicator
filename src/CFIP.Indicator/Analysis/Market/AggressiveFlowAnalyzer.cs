@@ -16,10 +16,37 @@ namespace cAlgo
         private const int MaxSamples = 4096;
         private static readonly TimeSpan Window = TimeSpan.FromSeconds(30);
 
-        private readonly Queue<Sample> _samples = new Queue<Sample>(MaxSamples);
+        private readonly Queue<AggressiveFlowSample> _samples = new Queue<AggressiveFlowSample>(MaxSamples);
         private double _previousMid;
         private bool _hasPreviousMid;
         private long _sequence;
+
+        internal void Reset()
+        {
+            _samples.Clear();
+            _previousMid = 0;
+            _hasPreviousMid = false;
+        }
+
+        internal void SeedFromHistory(Ticks ticks)
+        {
+            Reset();
+
+            if (ticks == null || ticks.Count <= 0)
+                return;
+
+            Tick lastTick = ticks.LastTick;
+            DateTime cutoff =
+                lastTick.Time.ToUniversalTime() - Window;
+
+            int start = ticks.Count - 1;
+            while (start > 0 &&
+                   ticks[start - 1].Time.ToUniversalTime() >= cutoff)
+                start--;
+
+            for (int i = start; i < ticks.Count; i++)
+                ProcessTick(ticks[i]);
+        }
 
         internal AggressiveFlowSnapshot Snapshot(DateTime nowUtc)
         {
@@ -59,7 +86,7 @@ namespace cAlgo
             _hasPreviousMid = true;
 
             _samples.Enqueue(
-                new Sample(
+                new AggressiveFlowSample(
                     tick.Time.ToUniversalTime(),
                     direction));
 
@@ -85,17 +112,18 @@ namespace cAlgo
                 value > 0;
         }
 
-        private readonly struct Sample
-        {
-            internal Sample(DateTime utc, int direction)
-            {
-                Utc = utc;
-                Direction = direction;
-            }
+    }
 
-            internal DateTime Utc { get; }
-            internal int Direction { get; }
+    internal readonly struct AggressiveFlowSample
+    {
+        internal AggressiveFlowSample(DateTime utc, int direction)
+        {
+            Utc = utc;
+            Direction = direction;
         }
+
+        internal DateTime Utc { get; }
+        internal int Direction { get; }
     }
 
     internal readonly struct AggressiveFlowSnapshot
@@ -128,5 +156,21 @@ namespace cAlgo
 
         internal double SellShare =>
             TotalTicks > 0 ? (double)SellTicks / TotalTicks : 0;
+
+        // Share is intentionally used instead of raw tick count so the signal
+        // remains comparable across sessions/regimes with different activity.
+        internal double DirectionalBias =>
+            NumericGuards.ClampDouble(
+                BuyShare - SellShare,
+                -1.0,
+                1.0);
+
+        // Confidence saturates from the number of directional observations;
+        // it is not an executed-volume claim.
+        internal double DirectionalConfidence =>
+            NumericGuards.ClampDouble(
+                (BuyTicks + SellTicks) / 40.0,
+                0.0,
+                1.0);
     }
 }

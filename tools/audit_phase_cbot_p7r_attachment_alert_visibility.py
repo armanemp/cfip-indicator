@@ -74,36 +74,26 @@ require(
     "parallel alerts must expose deterministic scenario numbering/identity",
 )
 
-# Direction arrow follows the live chart bar and remains visible whenever a
-# valid direction exists; no direction means removal.
+# Directional presentation is owned by the canonical MTF trend snapshot.
+# It is independent of trade actionability: the arrow is a trend display, not
+# a broker-entry gate.
 require(
-    "safeBar" in signal_renderer and
-    "Bars.Count - 1" in signal_renderer,
-    "signal arrow renderer must use a bounded canonical chart-bar index",
+    "snapshot.MtfTrendDirection" in signal_renderer and
+    "snapshot.MtfTrendStrengthLevel" in signal_renderer and
+    "UpdateSignalArrowBox(" in signal_renderer and
+    "ShowSignalArrow" in signal_renderer,
+    "canonical directional arrow renderer must consume MTF trend direction/strength",
 )
 require(
-    "snapshot.PlanActive" in signal_renderer and
-    "decisionOwnsDirection" in signal_renderer,
-    "active-plan direction remains owned by the canonical arrow renderer",
-)
-watch_gate = signal_renderer
-require(
-    "decisionOwnsDirection" in watch_gate and
-    "snapshot.ActionableNow" in watch_gate and
-    "snapshot.DecisionEntryAllowed" in watch_gate,
-    "directional WATCH arrow must use the canonical actionable decision state",
+    "direction == 0" in signal_renderer and
+    "RemoveStackedSignalArrows" in signal_renderer and
+    "UpdateSignalArrowBox(" in signal_renderer,
+    "directional arrow must hide when no canonical direction is available",
 )
 require(
-    "visualDirection == 0" in signal_renderer and
-    "WATCH_ARROW" in signal_renderer and
-    "RemoveObject" in signal_renderer,
-    "directional arrow must hide when no direction is available",
-)
-
-require(
-    "snapshot.PlanActive" in watch_gate and
-    "snapshot.ActionableNow" in watch_gate,
-    "directional WATCH layer must remain subordinate to the canonical active/actionable state",
+    "ChartIconType.UpArrow" not in signal_renderer and
+    "ChartIconType.DownArrow" not in signal_renderer,
+    "legacy candle-anchored directional icons must remain absent",
 )
 
 # Multiple scenario presentation receives stable #N prefixes.

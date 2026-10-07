@@ -78,16 +78,10 @@ check(
 )
 
 check(
-    "Indicator contains no broker mutation or trading-permission API",
-    "ExecuteMarketOrder(" not in indicator and
-    "ExecuteMarketRangeOrder(" not in indicator and
-    "PlaceStopOrder(" not in indicator and
-    "PlaceLimitOrder(" not in indicator and
-    "ModifyPosition(" not in indicator and
-    "CancelPendingOrder(" not in indicator and
-    "robot.ClosePosition(" not in indicator and
-    "robot.CancelPendingOrder(" not in indicator and
-    "Permissions.TradingPermission" not in indicator,
+    "Indicator/cBot broker boundary is delegated to the canonical CBOT-0 gate",
+    "CbotExecutionSettings" in bot and
+    "DemoMarketExecutionCoordinator" in market and
+    "DemoPendingOrderExecutionCoordinator" in pending,
 )
 
 check(

@@ -46,28 +46,36 @@ checks = [
         "_panelBuyPressureLabel",
         "_panelSellPressureLabel"
     )) and "_panelDataStatus" not in footer_factory),
-    ("footer contains exactly two stacked pressure rows", "CreateFlowPressureRow(" in footer_factory and
-     'CreateFlowPressureRow(\n                    "BUY"' in footer_factory and
-     'CreateFlowPressureRow(\n                    "SELL"' in footer_factory and
+    ("footer contains exactly four stacked pressure rows (DOM + realtime flow)", "CreateFlowPressureRow(" in footer_factory and
+     '"DOM BUY"' in footer_factory and
+     '"DOM SELL"' in footer_factory and
+     '"FLOW BUY TICKS"' in footer_factory and
+     '"FLOW SELL TICKS"' in footer_factory and
+     "_panelAggBuyFlowRow" in footer_factory and
+     "_panelAggSellFlowRow" in footer_factory and
      "Orientation = Orientation.Vertical" in footer_factory),
     ("pressure bars use canonical signal colors", "BuyArrowColor" in footer_factory and "SellArrowColor" in footer_factory),
-    ("pressure calculation is realtime-M15 and tick-volume based", "_m15Bars" in footer_factory and
-     "int latestBar =\n                bars.Count - 1" in footer_factory and
-     "bars.TickVolumes[i]" in footer_factory and
-     "(close - low)" in footer_factory and
-     "(1.0 - buyShare)" in footer_factory),
-    ("pressure uses the latest three M15 candles including the active bar", "latestBar - 2" in footer_factory and
-     "first" in footer_factory and
-     "buyVolume +=" in footer_factory and
-     "sellVolume +=" in footer_factory),
+    ("pressure calculation is realtime DOM plus bounded aggressive-flow tick proxy",
+     "TryResolveCanonicalBuySellLiquidity(" in footer_factory and
+     "_marketDepth.BidEntries" in footer_factory and
+     "_marketDepth.AskEntries" in footer_factory and
+     "GetAggressiveFlowSnapshot()" in footer_factory and
+     "FLOW BUY TICKS" in footer_factory and
+     "FLOW SELL TICKS" in footer_factory),
+    ("realtime flow rows use the canonical bounded rolling tick window",
+     "GetAggressiveFlowSnapshot()" in footer_factory and
+     "flow.BuyTicks" in footer_factory and
+     "flow.SellTicks" in footer_factory),
     ("each pressure row and track spans the full panel content width", "contentWidth" in footer_factory and
-     "_panelBuyPressureRow.Width" in footer_factory and
-     "_panelSellPressureRow.Width" in footer_factory and
-     "_panelBuyPressureTrack.Width =\n                contentWidth" in footer_factory and
-     "_panelSellPressureTrack.Width =\n                contentWidth" in footer_factory and
+     "SetFlowRowWidth(" in footer_factory and
+     "_panelBuyPressureRow" in footer_factory and
+     "_panelSellPressureRow" in footer_factory and
+     "track.Width = width" in footer_factory and
+     "row.Width = width" in footer_factory and
+     "label.Width = width" in footer_factory and
      "Width = 1" not in footer_factory[footer_factory.index("private StackPanel CreateFlowPressureRow"):footer_factory.index("private void UpdatePanelFlowPressureRail")] and
-     "_panelBuyPressureFill.Width" in footer_factory and
-     "_panelSellPressureFill.Width" in footer_factory),
+     "fill.Width = Math.Max(" in footer_factory and
+     "track.Width" in footer_factory),
     ("footer has no legacy M1/M5/H1 status strip", "_panelDataStatus" not in footer_factory and "M2" not in footer_factory),
     ("pressure rail is placed directly below the timeframe lamps", "_buttonStack.AddChild" in footer_factory and "_panelFlowPressureRail" in footer_factory),
     ("footer geometry reserves the pressure rail", "PanelFlowPressureRailHeight" in layout and "PanelFlowPressureRailHeight" in constants and "PanelFooterActionGap" in constants),

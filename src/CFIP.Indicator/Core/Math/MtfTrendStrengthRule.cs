@@ -50,7 +50,9 @@ namespace cAlgo
         public static MtfTrendStrengthResult Evaluate(
             Frame[] frames,
             double[] weights,
-            double referencePrice)
+            double referencePrice,
+            double flowBias = 0.0,
+            double flowConfidence = 0.0)
         {
             if (frames == null ||
                 frames.Length == 0)
@@ -159,6 +161,37 @@ namespace cAlgo
                 ResolveCompositeScore(
                     selectedStrength,
                     selectedDominance);
+
+            // Flow is a realtime modulation, not an additional vote. It uses
+            // directional share rather than raw activity, so quiet/active
+            // sessions remain comparable and flow cannot dominate MTF evidence.
+            double normalizedFlowBias =
+                NumericGuards.ClampDouble(
+                    flowBias,
+                    -1.0,
+                    1.0);
+            double normalizedFlowConfidence =
+                NumericGuards.ClampDouble(
+                    flowConfidence,
+                    0.0,
+                    1.0);
+
+            if (arrowDirection != 0 &&
+                normalizedFlowConfidence > 0)
+            {
+                double alignment =
+                    normalizedFlowBias * arrowDirection;
+
+                score =
+                    NumericGuards.ClampInt(
+                        score +
+                        (int)Math.Round(
+                            alignment *
+                            normalizedFlowConfidence *
+                            4.0),
+                        0,
+                        100);
+            }
 
             int level =
                 ResolveNineLevel(score);
@@ -284,13 +317,19 @@ namespace cAlgo
         private static int ResolveNineLevel(
             int score)
         {
-            if (score < LevelMinimumScore)
+            // Directional arrows are trend presentation, not trade approval.
+            // A resolved directional trend therefore remains visible at the
+            // weakest level instead of disappearing solely because the trend
+            // score is below the actionability floor.
+            if (score <= 0)
                 return 0;
 
             return NumericGuards.ClampInt(
-                1 +
-                (score - LevelMinimumScore) /
-                LevelBandSize,
+                score < LevelMinimumScore
+                    ? 1
+                    : 1 +
+                      (score - LevelMinimumScore) /
+                      LevelBandSize,
                 1,
                 9);
         }
