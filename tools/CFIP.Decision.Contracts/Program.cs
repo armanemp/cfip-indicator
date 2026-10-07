@@ -542,14 +542,13 @@ namespace cAlgo
                     0,
                     0,
                     directional.RegimeQuality,
-                    50);
+                    0);
 
             int expected =
                 NumericGuards.ClampInt(
                     (int)Math.Round(
                         50 * 0.25 +
-                        70 * 0.10 +
-                        50 * 0.10),
+                        70 * 0.10),
                     0,
                     100);
 
@@ -587,7 +586,7 @@ namespace cAlgo
             Assert(quality >= 0 && quality <= 100, "quality clamp");
 
             int neutralQuality =
-                calculator.Calculate(50, 0, 0, 0, 0, 50);
+                calculator.Calculate(50, 0, 0, 0, 0, 0);
 
             Assert(neutralQuality >= 0 && neutralQuality <= 100, "zero-input quality");
         }
