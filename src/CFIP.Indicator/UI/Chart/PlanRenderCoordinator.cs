@@ -104,12 +104,16 @@ namespace cAlgo
             // If the internal trigger has already been crossed and therefore
             // sits behind the live market Entry, keep execution state intact
             // but do not render a misleading trigger line between Entry and SL.
+            int triggerDirection =
+                preview
+                    ? snapshot.PlanDirection
+                    : snapshot.AuthoritativeDirection;
+
             bool triggerOnEntrySide =
-                (preview ? snapshot.PlanDirection : snapshot.AuthoritativeDirection) == 1
-                    ? trigger >= entry
-                    : (preview ? snapshot.PlanDirection : snapshot.AuthoritativeDirection) == -1
-                        ? trigger <= entry
-                        : false;
+                EntryGeometryRule.IsTriggerOnEntrySide(
+                    triggerDirection,
+                    entry,
+                    trigger);
 
             bool triggerAllowed =
                 preview
