@@ -14,6 +14,22 @@ namespace cAlgo
             AggressiveFlowSnapshot flow =
                 GetAggressiveFlowSnapshot();
 
+            // Flow is realtime modulation only. If the provider has gone
+            // quiet, do not let an old flow snapshot keep influencing the
+            // current signal/arrow strength.
+            if (!TryGetFreshAggressiveFlowSnapshot(
+                    out flow))
+            {
+                flow =
+                    new AggressiveFlowSnapshot(
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        DateTime.MinValue);
+            }
+
             MtfTrendStrengthResult trendStrength =
                 MtfTrendStrengthRule.Evaluate(
                     new[]
