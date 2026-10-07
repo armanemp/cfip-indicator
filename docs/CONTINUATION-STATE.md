@@ -2847,7 +2847,7 @@ Required terminal evidence before closeout:
 ## 2026-10-06 — UI footer ownership and signal-quality continuation lock
 
 - [x] Footer construction extracted from PanelFactory into PanelFooterFactory to satisfy production-module size limits without creating a second footer behavior owner.
-- [x] Replaced the ambiguous five mini data bars with two stacked full-width BUY/SELL pressure tracks owned and rendered by PanelFooterFactory.
+- [x] Replaced the ambiguous five mini data bars with two full-width combined pressure tracks owned and rendered by PanelFooterFactory; each track contains adjacent BUY/SELL segments whose widths always sum to the same total track width.
 - [x] BUY/SELL pressure uses the closed M15 bar window and cTrader TickVolumes with close-location weighting; it is a pressure estimate, not true bid/ask volume.
 - [x] Footer geometry reserves the pressure rail independently from the alert/action area so it cannot disappear when the toggle or alert rail is absent.
 - [x] Architecture parameter contract reconciled: total parameter groups remain 533 declarations, with 530 non-OSS baseline declarations after removal of obsolete arrow offset parameters.
