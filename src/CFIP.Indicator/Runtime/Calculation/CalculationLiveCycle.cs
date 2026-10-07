@@ -411,7 +411,10 @@ namespace cAlgo
                 RenderParallelOpportunityCandidates(
                     closedM5);
 
-                RenderPanel();
+                // Full panel layout/content rendering is timer-owned by
+                // RuntimePanelHeartbeat/RefreshPanelContentIfDue. Keeping it
+                // off the hot tick path prevents UI work from delaying realtime
+                // chart signal presentation.
             }
             finally
             {
