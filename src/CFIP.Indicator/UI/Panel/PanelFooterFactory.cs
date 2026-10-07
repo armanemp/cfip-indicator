@@ -34,6 +34,11 @@ namespace cAlgo
                     VerticalAlignment = VerticalAlignment.Top,
                     Height = PanelFlowPressureRailHeight,
                     BackgroundColor = Color.FromArgb(0, Color.Black),
+                    Margin = new Thickness(
+                        0,
+                        PanelFlowPressureTopSpacing,
+                        0,
+                        0),
                     IsHitTestVisible = false
                 };
 
@@ -53,6 +58,9 @@ namespace cAlgo
                     out _panelAggSellFlowFill,
                     out _panelAggBuyFlowLabel);
 
+            _panelBuyPressureRow.Margin =
+                new Thickness(0, 0, 0, PanelFlowPressureRowGap);
+
             _panelFlowPressureRail.AddChild(_panelBuyPressureRow);
             _panelFlowPressureRail.AddChild(_panelAggBuyFlowRow);
 
@@ -64,6 +72,7 @@ namespace cAlgo
                     VerticalAlignment = VerticalAlignment.Top,
                     Height = PanelFooterMinHeight -
                         PanelFlowPressureRailHeight -
+                        PanelFlowPressureTopSpacing -
                         PanelFooterActionGap,
                     BackgroundColor = Color.FromArgb(0, Color.Black),
                     Margin = new Thickness(
