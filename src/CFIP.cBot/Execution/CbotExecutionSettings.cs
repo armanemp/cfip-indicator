@@ -65,7 +65,7 @@ namespace CFIP.cBot.Execution
                     10,
                     Math.Min(
                         100,
-                        NormalizeFinitePositive(maxExecutionMarginUsagePercent, 80)));
+                        NormalizePositive(maxExecutionMarginUsagePercent, 80)));
             ExecutionMarginBufferPercent =
                 Math.Max(
                     0,
@@ -95,11 +95,6 @@ namespace CFIP.cBot.Execution
         }
 
         private static double NormalizePositive(double value, double fallback)
-        {
-            return double.IsNaN(value) || double.IsInfinity(value) || value <= 0 ? fallback : value;
-        }
-
-        private static double NormalizeFinitePositive(double value, double fallback)
         {
             return double.IsNaN(value) || double.IsInfinity(value) || value <= 0 ? fallback : value;
         }
