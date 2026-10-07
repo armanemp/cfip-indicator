@@ -64,6 +64,13 @@ require(
 )
 
 require(
+    "M15 is the canonical decision timeframe" in evaluator and
+    "strongM15Conflict" in evaluator and
+    'BlockReason = "M15 CANONICAL CONFLICT"' in evaluator,
+    "M15 canonical directional ownership is not enforced",
+)
+
+require(
     "switch (groupCount)" in diversity and
     "case 4:" in diversity and
     "case 3:" in diversity and
