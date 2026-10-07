@@ -21,8 +21,10 @@ def check(name, ok):
 check("plan lines are solid and canonical", "return LineStyle.Solid;" in line)
 check("plan line geometry is fixed to 40 bars from latest candle", "CompactPlanLineLengthBars = 40" in line and "GetPlanLineRightBar()" in line and "GetPlanLineRightBar() -" in line and "if (FullWidthLevelLines)" not in line.split("private int GetPlanLineLeftBar", 1)[1])
 check("plan thickness contract is one pixel", "return MinimumThickness;" in line_rule and "MinimumThickness = 1" in line_rule)
-check("plan labels use canonical line-owned color", "Chart.DrawText(" in labels and
-    "Chart.DrawRectangle(" not in labels and
+check("plan labels use canonical line-owned compact box", "Chart.AddControl(" in labels and
+    "new Border" in labels and
+    "Chart.MoveControl(" in labels and
+    "Chart.RemoveControl(box)" in labels and
     "ResolveCanonicalPlanLineColor(" in line and
     "ResolveCanonicalPlanLineColor(" in labels and
     "semanticColor" in labels)
@@ -30,11 +32,11 @@ check("plan labels use the canonical readable font, one-bar left clearance and f
     "CompactPlanLabelFontSize = 11.0" in labels and
     "CompactPlanLabelGapBars = 1" in anchor and
     "GetCompactPlanLabelAnchorTime(" in anchor and
+    "HorizontalAlignment.Right" in labels and
     "HorizontalAlignment.Left" in labels and
-    "Chart.DrawText(" in labels and
-    "label.Time != expectedTime" in labels and
-    "label.HorizontalAlignment" in labels and
-    "label.VerticalAlignment" in labels and
+    "TextTrimming = TextTrimming.Ellipsis" in labels and
+    "FontWeight = FontWeight.Normal" in labels and
+    "Chart.MoveControl(" in labels and
     "GetCompactPlanLabelAnchorTime(" in labels)
 check("labels share exact normalized price and canonical DateTime/OpenTime anchor", "NormalizePrice(price)" in labels and
     "GetPlanLineLeftBar" in anchor and
@@ -51,10 +53,11 @@ check("legacy alert mirror cannot create second signal marker", 'P + "ALERT_SIGN
 if errors:
     raise SystemExit("\n".join(errors))
 
-check("canonical labels and line share the exact normalized Y price with centered text",
+check("canonical labels use exact normalized price and centered chart-control placement",
     "double labelPrice =\n                    NormalizePrice(price)" in labels and
-    "label.Y =\n                    labelPrice" in labels and
-    "label.VerticalAlignment =\n                    VerticalAlignment.Center" in labels and
+    "Chart.AddControl(\n                        box,\n                        labelTime,\n                        labelPrice)" in labels and
+    "Chart.MoveControl(\n                        box,\n                        labelTime,\n                        labelPrice)" in labels and
+    "VerticalAlignment =\n                                VerticalAlignment.Center" in labels and
     "line.Y1 =\n                    normalized" in line and
     "line.Y2 =\n                    normalized" in line
 )
