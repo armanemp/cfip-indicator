@@ -42,6 +42,43 @@ namespace cAlgo
                     ? 0
                     : input.M15Frame.Direction;
 
+            bool m15ContextTooWeak =
+                consensus.Direction != 0 &&
+                m15Direction != 0 &&
+                input.M15Frame != null &&
+                input.M15Frame.Quality <
+                    Math.Max(
+                        65,
+                        input.MinimumSmartDirectionShare);
+
+            if (m15ContextTooWeak)
+            {
+                return new Decision
+                {
+                    BuyShare = consensus.BuyShare,
+                    SellShare = consensus.SellShare,
+                    Direction = 0,
+                    Edge = consensus.Edge,
+                    Regime = input.Regime,
+                    RegimeQuality = evidence.RegimeQuality,
+                    IndicatorConfluenceQuality =
+                        input.M5Frame == null
+                            ? 0
+                            : input.M5Frame.IndicatorConfluenceQuality,
+                    IndicatorConflict =
+                        input.M5Frame == null
+                            ? 0
+                            : input.M5Frame.IndicatorConflict,
+                    Confidence = consensus.Edge,
+                    TriggerReady = false,
+                    EntryAllowed = false,
+                    BlockReason = "M15 CONTEXT WEAK",
+                    Reason =
+                        "M15 CONTEXT WEAK | Q=" +
+                        input.M15Frame.Quality
+                };
+            }
+
             bool strongM15Conflict =
                 consensus.Direction != 0 &&
                 m15Direction != 0 &&
@@ -49,7 +86,7 @@ namespace cAlgo
                 input.M15Frame != null &&
                 input.M15Frame.Quality >=
                     Math.Max(
-                        60,
+                        65,
                         input.MinimumSmartDirectionShare);
 
             if (strongM15Conflict)
