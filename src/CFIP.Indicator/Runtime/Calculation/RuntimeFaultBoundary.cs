@@ -100,9 +100,9 @@ namespace cAlgo
 
             SetAutoTradingState(
                 "ENTRY_BLOCKED",
-                "RUNTIME FAULT • EXPLICIT RE-ARM REQUIRED");
+                "RUNTIME FAULT • CURRENT CYCLE BLOCKED");
             _autoTradingReason =
-                "RUNTIME FAULT • EXPLICIT RE-ARM REQUIRED";
+                "RUNTIME FAULT • CURRENT CYCLE BLOCKED";
             _status =
                 "RUNTIME ENTRY BLOCKED";
         }
