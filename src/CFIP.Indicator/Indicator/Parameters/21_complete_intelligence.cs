@@ -34,7 +34,7 @@ namespace cAlgo
         [Parameter("Use Healthy Volatility Evidence", Group = "21 · Complete Intelligence", DefaultValue = true)]
         public bool UseHealthyVolatilityEvidence { get; set; }
 
-        [Parameter("Minimum Smart Direction Share", Group = "21 · Complete Intelligence", DefaultValue = 57, MinValue = 50, MaxValue = 95)]
+        [Parameter("Minimum Smart Direction Share", Group = "21 · Complete Intelligence", DefaultValue = 60, MinValue = 50, MaxValue = 95)]
         public int MinimumSmartDirectionShare { get; set; }
 
         [Parameter("Adaptive Smart Thresholds", Group = "21 · Complete Intelligence", DefaultValue = true)]
@@ -43,10 +43,10 @@ namespace cAlgo
         [Parameter("Smart Regime Buffer", Group = "21 · Complete Intelligence", DefaultValue = 6, MinValue = 0, MaxValue = 15)]
         public int SmartRegimeBuffer { get; set; }
 
-        [Parameter("Smart Score Temperature", Group = "21 · Complete Intelligence", DefaultValue = 12.0, MinValue = 1.0, MaxValue = 50.0, Step = 0.5)]
+        [Parameter("Smart Score Temperature", Group = "21 · Complete Intelligence", DefaultValue = 10.0, MinValue = 1.0, MaxValue = 50.0,, Step = 0.5)]
         public double SmartScoreTemperature { get; set; }
 
-        [Parameter("Smart Consensus Threshold", Group = "21 · Complete Intelligence", DefaultValue = 57, MinValue = 50, MaxValue = 95)]
+        [Parameter("Smart Consensus Threshold", Group = "21 · Complete Intelligence", DefaultValue = 60, MinValue = 50, MaxValue = 95)]
         public int SmartConsensusThreshold { get; set; }
 
         [Parameter("Adaptive Regime Weighting", Group = "21 · Complete Intelligence", DefaultValue = true)]
