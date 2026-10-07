@@ -375,6 +375,41 @@ namespace cAlgo
             Assert(buy.BuyShare == sell.SellShare, "BUY/SELL share symmetry");
             Assert(buy.SellShare == sell.BuyShare, "SELL/BUY share symmetry");
             Assert(buy.Edge == sell.Edge, "BUY/SELL edge symmetry");
+
+            DecisionConsensusSnapshot fragile =
+                calculator.Calculate(
+                    20.0,
+                    18.0,
+                    12.0,
+                    57);
+
+            Assert(
+                fragile.Direction == 0,
+                "near-tied raw score must remain neutral despite softmax share");
+
+            DecisionConsensusSnapshot materiallySeparated =
+                calculator.Calculate(
+                    24.0,
+                    18.0,
+                    12.0,
+                    57);
+
+            Assert(
+                materiallySeparated.Direction == 1 &&
+                materiallySeparated.BuyShare > materiallySeparated.SellShare,
+                "meaningful raw score separation may form directional consensus");
+
+            DecisionConsensusSnapshot mirroredFragile =
+                calculator.Calculate(
+                    18.0,
+                    20.0,
+                    12.0,
+                    57);
+
+            Assert(
+                mirroredFragile.Direction == 0 &&
+                fragile.BuyShare == mirroredFragile.SellShare,
+                "raw-separation protection remains BUY/SELL symmetric");
         }
 
         private static void VerifyDecisionScoreBoundariesAndTraceability()
