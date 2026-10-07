@@ -22,7 +22,6 @@ PARAMETER_FILES = [
 
 CONSUMERS = {
     "ShowLevelLines": ["UI/Chart/PlanRenderCoordinator.cs"],
-    "FullWidthLevelLines": ["UI/Chart/PlanLineRenderer.cs"],
     "LevelLineThickness": ["UI/Chart/PlanLineRenderer.cs"],
     "ShowEntry": ["UI/Chart/PlanRenderCoordinator.cs", "UI/Panel/Rows/PanelTradePlanLevelRowsRenderer.cs"],
     "ShowTrigger": ["UI/Chart/PlanRenderCoordinator.cs", "UI/Panel/Rows/PanelTradePlanLevelRowsRenderer.cs"],
