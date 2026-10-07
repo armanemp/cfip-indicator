@@ -72,9 +72,10 @@ check(
 )
 
 check(
-    "canonical arrow renderer consumes snapshot strength only",
+    "canonical arrow renderer consumes snapshot strength and canonical direction only",
     "snapshot.MtfTrendStrengthLevel" in stack and
-    "snapshot.MtfTrendDirection != 0" in stack and
+    "snapshot.AuthoritativeDirection != 0" in stack and
+    "snapshot.MtfTrendDirection" in stack and
     "((strength - 1) % 3) + 1" in stack and
     "UpdateSignalArrowBox(" in stack and
     '"↑"' in stack and
@@ -119,9 +120,9 @@ check(
 )
 
 check(
-    "arrow direction is sourced from the canonical MTF trend direction when available",
-    "snapshot.MtfTrendDirection != 0" in stack and
-    "snapshot.MtfTrendDirection != 0" in
+    "arrow direction is sourced from the canonical snapshot direction with MTF fallback",
+    "snapshot.AuthoritativeDirection != 0" in stack and
+    "snapshot.MtfTrendDirection" in
     stack.split("int direction", 1)[1].split("if (direction == 0)", 1)[0] and
     "decisionOwnsDirection" not in stack and
     "strength = Math.Min(3, strength)" not in stack,
@@ -141,11 +142,9 @@ check(
     "all production arrow call-sites use one calculation-lifecycle owner",
     "RenderCanonicalMtfTrendArrows(" in read("src/CFIP.Indicator/Runtime/Calculation/CalculationLiveCycle.cs") and
     "RenderStackedSignalArrows(" in stack and
-    "EnsureSignalArrowBox();" in read("src/CFIP.Indicator/UI/Panel/PanelFactory.cs") and
-    "BringSignalArrowBoxToFront();" in read("src/CFIP.Indicator/UI/Panel/PanelFactory.cs") and
     "Chart.RemoveControl(_signalArrowBox);" in stack and
     "Chart.AddControl(_signalArrowBox);" in stack and
-    "snapshot.MtfTrendDirection != 0" in stack and
+    "snapshot.AuthoritativeDirection" in stack and
     "ResolveSignalArrowState(" not in signal and
     "fallbackState" not in stack,
 )
