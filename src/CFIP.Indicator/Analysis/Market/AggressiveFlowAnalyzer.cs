@@ -85,17 +85,6 @@ namespace cAlgo
                 value > 0;
         }
 
-        private readonly struct Sample
-        {
-            internal Sample(DateTime utc, int direction)
-            {
-                Utc = utc;
-                Direction = direction;
-            }
-
-            internal DateTime Utc { get; }
-            internal int Direction { get; }
-        }
     }
 
     internal readonly struct AggressiveFlowSnapshot
