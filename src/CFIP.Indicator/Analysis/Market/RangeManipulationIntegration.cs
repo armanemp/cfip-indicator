@@ -34,10 +34,10 @@ namespace cAlgo
                     RangeMaxWidthAtrInternal,
                     RangeMinWidthAtrInternal,
                     RangeSweepAtrInternal,
+                    Symbol.PipSize,
                     RangeBreakoutAtrInternal,
                     RangeRetestAtrInternal,
-                    RangeSignalMinimumScoreInternal,
-                    Symbol.PipSize);
+                    RangeSignalMinimumScoreInternal);
         }
 
         private void ApplyRangeIntelligenceToDecision(
