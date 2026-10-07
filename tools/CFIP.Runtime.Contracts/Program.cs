@@ -98,6 +98,7 @@ namespace cAlgo
             VerifyDivergenceConflictSemantics();
             VerifyStructuralTimeframeSemantics();
             VerifyReactionQualificationSemantics();
+            VerifyReactionTimingSemantics();
             VerifyIndicatorExecutionQualitySemantics();
             VerifyPendingDecisionArbiterSemantics();
             VerifyLifecycleOutcomeSemantics();
@@ -8066,6 +8067,41 @@ namespace cAlgo
                     20,
                     19),
                 "closed-bar confirmation never accepts a candidate after the known closed index");
+        }
+
+        private static void VerifyReactionTimingSemantics()
+        {
+            DateTime start =
+                Utc(12, 0);
+
+            Assert(
+                ReactionTimingRule.IsLiveRefreshDue(
+                    start.AddMilliseconds(50),
+                    start,
+                    100,
+                    100) == false &&
+                ReactionTimingRule.IsLiveRefreshDue(
+                    start.AddMilliseconds(100),
+                    start,
+                    100,
+                    100),
+                "live reaction cadence refreshes at the canonical 100ms boundary");
+
+            Assert(
+                ReactionTimingRule.IsLiveRefreshDue(
+                    start.AddMilliseconds(1),
+                    start,
+                    101,
+                    100),
+                "a new live M5 bar refreshes reaction state immediately");
+
+            Assert(
+                ReactionTimingRule.IsLiveRefreshDue(
+                    start,
+                    DateTime.MinValue,
+                    100,
+                    100),
+                "an uninitialized live reaction timestamp must refresh immediately");
         }
 
         private static void VerifyIndicatorExecutionQualitySemantics()
