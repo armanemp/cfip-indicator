@@ -1748,3 +1748,17 @@ No trading threshold, MTF role, broker mutation authority or strategy quality ga
 - Removed the remaining 30-second Indicator startup data-load lifetime timeout.
 - Added flow architecture acceptance gate and aligned legacy footer gate.
 - Remaining: reconnect/history reseed, session/regime normalization, arrow-strength integration, full compile/runtime/architecture CI.
+
+
+## Realtime signal latency hardening — 2026-10-07
+
+Status: implemented on `main`.
+
+Scope closed:
+- live M5 reaction cadence hardened to a 100ms deterministic refresh owner;
+- live reaction exposed immediately through the canonical signal snapshot without bypassing direction-acceptance stability;
+- signal arrow direction switched to the canonical realtime signal snapshot while retaining the existing 1..9 MTF strength ladder;
+- full panel layout removed from the per-tick hot path and retained under the timer-owned panel refresh boundary;
+- runtime contract and source audit updated to enforce the realtime path.
+
+Live cTrader replay is still required to measure terminal-level latency and verify the observed time from tick -> reaction -> visual signal/alert.
