@@ -45,18 +45,6 @@ namespace cAlgo
                                         _w1Frame
                                     };
                         
-                                    Bars[] bars =
-                                    {
-                                        _m1Bars,
-                                        _m5Bars,
-                                        _m15Bars,
-                                        _m30Bars,
-                                        _h1Bars,
-                                        _h4Bars,
-                                        _d1Bars,
-                                        _w1Bars
-                                    };
-                        
                                     double[] weights =
                                     {
                                         UseM1Trigger ? Math.Max(1.0, M5Weight * 0.35) : 0,
@@ -82,49 +70,51 @@ namespace cAlgo
                                         W1Weight > 0
                                     };
                         
-                                    double totalWeight = 0;
-                                    double alignedWeight = 0;
-                        
-                                    for (int i = 0;
-                                         i < frames.Length;
-                                         i++)
+                                    int[] directions =
                                     {
-                                        if (!enabled[i] ||
-                                            weights[i] <= 0 ||
-                                            frames[i] == null ||
-                                            bars[i] == null ||
-                                            frames[i].Quality <= 0)
-                                            continue;
-                        
-                                        int closedIndex =
-                                            closedIndices[i];
-                        
-                                        if (closedIndex < 0 ||
-                                            frames[i].Index != closedIndex)
-                                            continue;
-                        
-                                        // Neutral is not bearish/bullish evidence, but it is
-                                        // still an unavailable alignment for this direction.
-                                        // Keep it in the denominator so partial evidence cannot
-                                        // manufacture 100% timeframe agreement.
-                                        totalWeight +=
-                                            weights[i];
-                        
-                                        if (frames[i].Direction == direction)
-                                            alignedWeight +=
-                                                weights[i];
-                                    }
-                        
+                                        _m1Frame == null ? 0 : _m1Frame.Direction,
+                                        _m5Frame == null ? 0 : _m5Frame.Direction,
+                                        _m15Frame == null ? 0 : _m15Frame.Direction,
+                                        _m30Frame == null ? 0 : _m30Frame.Direction,
+                                        _h1Frame == null ? 0 : _h1Frame.Direction,
+                                        _h4Frame == null ? 0 : _h4Frame.Direction,
+                                        _d1Frame == null ? 0 : _d1Frame.Direction,
+                                        _w1Frame == null ? 0 : _w1Frame.Direction
+                                    };
+
+                                    int[] qualities =
+                                    {
+                                        _m1Frame == null ? 0 : _m1Frame.Quality,
+                                        _m5Frame == null ? 0 : _m5Frame.Quality,
+                                        _m15Frame == null ? 0 : _m15Frame.Quality,
+                                        _m30Frame == null ? 0 : _m30Frame.Quality,
+                                        _h1Frame == null ? 0 : _h1Frame.Quality,
+                                        _h4Frame == null ? 0 : _h4Frame.Quality,
+                                        _d1Frame == null ? 0 : _d1Frame.Quality,
+                                        _w1Frame == null ? 0 : _w1Frame.Quality
+                                    };
+
+                                    int[] actualIndices =
+                                    {
+                                        _m1Frame == null ? -1 : _m1Frame.Index,
+                                        _m5Frame == null ? -1 : _m5Frame.Index,
+                                        _m15Frame == null ? -1 : _m15Frame.Index,
+                                        _m30Frame == null ? -1 : _m30Frame.Index,
+                                        _h1Frame == null ? -1 : _h1Frame.Index,
+                                        _h4Frame == null ? -1 : _h4Frame.Index,
+                                        _d1Frame == null ? -1 : _d1Frame.Index,
+                                        _w1Frame == null ? -1 : _w1Frame.Index
+                                    };
+
                                     return
-                                        totalWeight <= 0
-                                            ? 0
-                                            : ClampInt(
-                                                (int)Math.Round(
-                                                    100.0 *
-                                                    alignedWeight /
-                                                    totalWeight),
-                                                0,
-                                                100);
+                                        TimeframeAgreementRule.Calculate(
+                                            direction,
+                                            directions,
+                                            qualities,
+                                            actualIndices,
+                                            closedIndices,
+                                            weights,
+                                            enabled);
                                 }
     }
 }
