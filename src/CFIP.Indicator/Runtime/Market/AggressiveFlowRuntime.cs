@@ -65,9 +65,16 @@ namespace cAlgo
                 _aggressiveFlowAnalyzer.SeedFromHistory(
                     _aggressiveFlowTicks);
 
-                Tick lastTick = _aggressiveFlowTicks.LastTick;
-                RefreshAggressiveFlowSnapshot(
-                    lastTick.Time.ToUniversalTime());
+                if (_aggressiveFlowTicks.Count > 0)
+                {
+                    Tick lastTick = _aggressiveFlowTicks.LastTick;
+                    RefreshAggressiveFlowSnapshot(
+                        lastTick.Time.ToUniversalTime());
+                }
+                else
+                {
+                    RefreshAggressiveFlowSnapshot(TimeInUtc);
+                }
             }
             catch (Exception ex)
             {
