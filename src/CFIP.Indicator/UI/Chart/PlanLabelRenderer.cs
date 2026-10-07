@@ -143,7 +143,6 @@ namespace cAlgo
                             VerticalAlignment =
                                 VerticalAlignment.Center,
                             IsHitTestVisible = false,
-                            IsInteractive = false,
                             Child =
                                 new TextBlock
                                 {
@@ -222,8 +221,6 @@ namespace cAlgo
                     new CornerRadius(3);
                 box.IsHitTestVisible =
                     false;
-                box.IsInteractive =
-                    false;
                 box.HorizontalAlignment =
                     HorizontalAlignment.Right;
                 box.VerticalAlignment =
@@ -235,8 +232,6 @@ namespace cAlgo
                     desiredWidth - 10.0;
                 label.Height =
                     CompactPlanLabelHeight - 2.0;
-                label.Color =
-                    labelTextColor;
                 label.ForegroundColor =
                     labelTextColor;
                 label.FontSize =
