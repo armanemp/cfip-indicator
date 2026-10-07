@@ -30,12 +30,24 @@ namespace cAlgo
                                                 _m5Frame.MssBull,
                                                 _m5Frame.ChochBull);
                                         if (_m5Frame.DisplacementBull) count++;
-                                        if (_m15Frame != null &&
-                                            _m15Frame.StructureBull) count++;
-                                        if (_h1Frame != null &&
-                                            _h1Frame.StructureBull) count++;
-                                        if (_h4Frame != null &&
-                                            _h4Frame.StructureBull) count++;
+                                        count +=
+                                            StructuralConfirmationRule.CountDirectionalStructureContribution(
+                                                direction,
+                                                _m15Frame == null ? 0 : _m15Frame.Direction,
+                                                _m15Frame != null &&
+                                                _m15Frame.StructureBull);
+                                        count +=
+                                            StructuralConfirmationRule.CountDirectionalStructureContribution(
+                                                direction,
+                                                _h1Frame == null ? 0 : _h1Frame.Direction,
+                                                _h1Frame != null &&
+                                                _h1Frame.StructureBull);
+                                        count +=
+                                            StructuralConfirmationRule.CountDirectionalStructureContribution(
+                                                direction,
+                                                _h4Frame == null ? 0 : _h4Frame.Direction,
+                                                _h4Frame != null &&
+                                                _h4Frame.StructureBull);
                                     }
                                     else
                                     {
@@ -45,12 +57,24 @@ namespace cAlgo
                                                 _m5Frame.MssBear,
                                                 _m5Frame.ChochBear);
                                         if (_m5Frame.DisplacementBear) count++;
-                                        if (_m15Frame != null &&
-                                            _m15Frame.StructureBear) count++;
-                                        if (_h1Frame != null &&
-                                            _h1Frame.StructureBear) count++;
-                                        if (_h4Frame != null &&
-                                            _h4Frame.StructureBear) count++;
+                                        count +=
+                                            StructuralConfirmationRule.CountDirectionalStructureContribution(
+                                                direction,
+                                                _m15Frame == null ? 0 : _m15Frame.Direction,
+                                                _m15Frame != null &&
+                                                _m15Frame.StructureBear);
+                                        count +=
+                                            StructuralConfirmationRule.CountDirectionalStructureContribution(
+                                                direction,
+                                                _h1Frame == null ? 0 : _h1Frame.Direction,
+                                                _h1Frame != null &&
+                                                _h1Frame.StructureBear);
+                                        count +=
+                                            StructuralConfirmationRule.CountDirectionalStructureContribution(
+                                                direction,
+                                                _h4Frame == null ? 0 : _h4Frame.Direction,
+                                                _h4Frame != null &&
+                                                _h4Frame.StructureBear);
                                     }
                         
                                     return count;
