@@ -4227,7 +4227,7 @@ namespace cAlgo
                 TacticalOpportunityRule.Evaluate(
                     1,
                     80,
-                    75,
+                    64,
                     4,
                     1,
                     -1,
