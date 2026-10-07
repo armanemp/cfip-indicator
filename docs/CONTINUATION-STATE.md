@@ -2962,3 +2962,11 @@ Canonical corrections:
 - No duplicate execution engine or Indicator-side broker execution path was introduced.
 
 Verification note: GitHub source inspection confirms the intended ordering: M1 trigger runtime -> live opportunity/actionability refresh -> provider publication, followed by cBot timer ingestion and execution preflight. Local Windows/cTrader build and live/demo runtime execution still require user-side verification.
+
+
+## 2026-10-07 — cBot Build Boundary + Action Policy Hardening
+
+- `CFIP.cBot` is a separate net6.0 library and references `CFIP.Contracts`; cBot changes therefore require a fresh cBot build/compile in cTrader. Indicator changes require the Indicator build separately.
+- Final cBot environment preflight now enforces action-specific execution policy at the broker boundary: Market actions require cBot automatic trading policy; Pending Stop/Limit actions require automatic-order policy.
+- Indicator remains analysis/signal-only; no broker execution path was moved back into the Indicator.
+- Local Windows build and actual cTrader runtime execution remain the required verification step.
