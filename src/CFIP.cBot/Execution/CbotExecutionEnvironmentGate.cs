@@ -52,10 +52,24 @@ namespace CFIP.cBot.Execution
                 return false;
             }
 
+            if (robot.Symbol == null)
+            {
+                reason = "SYMBOL UNAVAILABLE";
+                return false;
+            }
+
+            // Broker-level trading permission is distinct from the cBot's
+            // automatic-execution switches. Surface it explicitly so a broker/
+            // terminal disabled symbol cannot look like a signal-quality issue.
+            if (!robot.Symbol.IsTradingEnabled)
+            {
+                reason = "SYMBOL TRADING DISABLED";
+                return false;
+            }
+
             if (settings.UseMarketHoursGuard)
             {
-                if (robot.Symbol == null ||
-                    robot.Symbol.MarketHours == null)
+                if (robot.Symbol.MarketHours == null)
                 {
                     reason = "SYMBOL MARKET HOURS UNAVAILABLE";
                     return false;
