@@ -378,7 +378,7 @@ Plan lines:
 Labels:
 - canonical owner: `PlanLabelRenderer`;
 - exact price;
-- readable regular-weight native ChartText;
+- readable regular-weight compact chart-control label box with ellipsis trimming;
 - canonical anchor owner: `PlanLabelAnchorCalculator`;
 - visible start of left-aligned text exactly one chart bar before the canonical line start;
 - label text must use the exact materialized color of its corresponding signal line;
