@@ -15,13 +15,11 @@ namespace cAlgo
         private StackPanel _panelFlowPressureRail;
         private StackPanel _panelBuyPressureRow;
         private Border _panelBuyPressureTrack;
-        private Border _panelSellPressureTrack;
         private Border _panelBuyPressureFill;
         private Border _panelSellPressureFill;
         private TextBlock _panelBuyPressureLabel;
         private StackPanel _panelAggBuyFlowRow;
         private Border _panelAggBuyFlowTrack;
-        private Border _panelAggSellFlowTrack;
         private Border _panelAggBuyFlowFill;
         private Border _panelAggSellFlowFill;
         private TextBlock _panelAggBuyFlowLabel;
