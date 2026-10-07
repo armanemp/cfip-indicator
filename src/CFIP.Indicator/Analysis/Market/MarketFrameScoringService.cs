@@ -105,13 +105,13 @@ namespace cAlgo
                 f.EqualLow,
                 FrameScoringConstants.EqualLevelContribution,
                 ref bull,
-                ref evidence);
+                ref bullEvidence);
 
             AddScore(
                 f.EqualHigh,
                 FrameScoringConstants.EqualLevelContribution,
                 ref bear,
-                ref evidence);
+                ref bearEvidence);
 
             IndicatorEvidenceFusionInput indicatorFusionInput =
                 new IndicatorEvidenceFusionInput(
