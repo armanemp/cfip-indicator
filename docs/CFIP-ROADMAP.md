@@ -1793,3 +1793,13 @@ The tactical exception path was hardened so `TacticalOpportunityAllowed` alone c
 - [x] Strong opposing fresh flow is a veto/modulation of the intrabar reaction, not an additional vote.
 - [x] Stale flow cannot influence MTF arrow strength.
 - [ ] Empirical replay/OOS validation of live-reaction thresholds and false-positive rate remains open.
+
+
+## 2026-10-07 — Batch 04.3 / cBot runtime continuity + execution-boundary hardening
+- [x] Runtime fault recovery is cycle-local; Indicator runtime faults no longer latch the runtime entry arm off.
+- [x] cBot remains the sole broker-mutation owner; Indicator-side execution components are preparation/policy/command-publication only.
+- [x] cBot chart binding now tolerates a short transient ChartIndicators.Custom rebuild/reload window without clearing the known Indicator instance.
+- [x] True binding loss still fails closed after a bounded 10-second grace window.
+- [x] Existing signal freshness, idempotency, margin, spread, market-hours, daily-loss and broker-confirmation gates remain cBot-owned.
+- [ ] cBot terminal demo/live verification remains mandatory.
+- [ ] Remaining migration audit: remove any Indicator execution state/policy that is not required to produce a platform-neutral signal/management command.
