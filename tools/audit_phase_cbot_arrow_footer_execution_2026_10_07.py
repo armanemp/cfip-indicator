@@ -45,17 +45,16 @@ check(
 )
 
 check(
-    "arrow overlay is reordered above the panel after panel creation",
-    "EnsureSignalArrowBox();" in panel_factory and
-    "BringSignalArrowBoxToFront();" in panel_factory and
+    "arrow overlay owns its own creation and z-order lifecycle",
+    "EnsureSignalArrowBox();" in arrow and
     "Chart.RemoveControl(_signalArrowBox);" in arrow and
     "Chart.AddControl(_signalArrowBox);" in arrow,
 )
 
 check(
-    "arrow direction follows canonical MTF trend when available",
-    "snapshot.MtfTrendDirection != 0" in arrow and
-    "snapshot.MtfTrendDirection != 0" in arrow.split("int direction", 1)[1].split("if (direction == 0)", 1)[0],
+    "arrow direction follows the canonical snapshot direction with MTF fallback",
+    "snapshot.AuthoritativeDirection != 0" in arrow and
+    "snapshot.MtfTrendDirection" in arrow.split("int direction", 1)[1].split("if (direction == 0)", 1)[0],
 )
 
 check(
