@@ -38,22 +38,25 @@ checks = [
     ("footer state is owned by PanelFooterFactory", all(x in footer_factory for x in (
         "_panelFlowPressureRail",
         "_panelBuyPressureRow",
-        "_panelSellPressureRow",
         "_panelBuyPressureTrack",
         "_panelSellPressureTrack",
         "_panelBuyPressureFill",
         "_panelSellPressureFill",
         "_panelBuyPressureLabel",
-        "_panelSellPressureLabel"
+        "_panelAggBuyFlowRow",
+        "_panelAggBuyFlowTrack",
+        "_panelAggBuyFlowFill",
+        "_panelAggSellFlowFill",
+        "_panelAggBuyFlowLabel"
     )) and "_panelDataStatus" not in footer_factory),
-    ("footer contains exactly four stacked pressure rows (DOM + realtime flow)", "CreateFlowPressureRow(" in footer_factory and
-     '"DOM BUY"' in footer_factory and
-     '"DOM SELL"' in footer_factory and
-     '"FLOW BUY TICKS"' in footer_factory and
-     '"FLOW SELL TICKS"' in footer_factory and
-     "_panelAggBuyFlowRow" in footer_factory and
-     "_panelAggSellFlowRow" in footer_factory and
-     "Orientation = Orientation.Vertical" in footer_factory),
+    ("BUY/SELL volumes share one physical bar per source", "CreateCombinedFlowPressureRow(" in footer_factory and
+     '"DOM"' in footer_factory and
+     '"FLOW TICKS"' in footer_factory and
+     "Orientation = Orientation.Horizontal" in footer_factory and
+     "segments.AddChild(buyFill)" in footer_factory and
+     "segments.AddChild(sellFill)" in footer_factory and
+     "ApplyCombinedFlowBar(" in footer_factory),
+
     ("pressure bars use canonical signal colors", "BuyArrowColor" in footer_factory and "SellArrowColor" in footer_factory),
     ("pressure calculation is realtime DOM plus bounded aggressive-flow tick proxy",
      "TryResolveCanonicalBuySellLiquidity(" in footer_factory and
@@ -66,15 +69,16 @@ checks = [
      "GetAggressiveFlowSnapshot()" in footer_factory and
      "flow.BuyTicks" in footer_factory and
      "flow.SellTicks" in footer_factory),
-    ("each pressure row and track spans the full panel content width", "contentWidth" in footer_factory and
-     "SetFlowRowWidth(" in footer_factory and
+    ("each combined pressure row and track spans the full panel content width", "contentWidth" in footer_factory and
+     "SetCombinedFlowRowWidth(" in footer_factory and
      "_panelBuyPressureRow" in footer_factory and
-     "_panelSellPressureRow" in footer_factory and
+     "_panelAggBuyFlowRow" in footer_factory and
      "track.Width = width" in footer_factory and
      "row.Width = width" in footer_factory and
      "label.Width = width" in footer_factory and
      "Width = 1" not in footer_factory[footer_factory.index("private StackPanel CreateFlowPressureRow"):footer_factory.index("private void UpdatePanelFlowPressureRail")] and
-     "fill.Width = Math.Max(" in footer_factory and
+     "buyFill.Width = buyWidth" in footer_factory and
+     "sellFill.Width = sellWidth" in footer_factory and
      "track.Width" in footer_factory),
     ("footer has no legacy M1/M5/H1 status strip", "_panelDataStatus" not in footer_factory and "M2" not in footer_factory),
     ("pressure rail is placed directly below the timeframe lamps", "_buttonStack.AddChild" in footer_factory and "_panelFlowPressureRail" in footer_factory),
