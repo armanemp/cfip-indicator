@@ -56,7 +56,7 @@ namespace cAlgo
                     ? Color.Green
                     : snapshot.Direction < 0
                         ? Color.Red
-                        : Color.Gray;
+                        : Color.White;
 
             ChartRectangle zone =
                 Chart.DrawRectangle(
