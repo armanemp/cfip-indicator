@@ -163,11 +163,11 @@ if "CreatePanelAlertMessageRail(" not in alert_rail or "ResolvePanelAlertMessage
 compact_label_renderer = labels_renderer[labels_renderer.find("private void DrawCompactPlanLabel("):]
 if "ResolveCanonicalPlanLineColor(" not in line or "ResolveCanonicalPlanLineColor(" not in compact_label_renderer:
     raise SystemExit("Plan labels must use the exact canonical signal-line color owner")
-if "Chart.DrawText(" not in compact_label_renderer:
-    raise SystemExit("Plan label renderer must own the native ChartText")
-if "Chart.DrawRectangle(" in compact_label_renderer:
-    raise SystemExit("Plan label renderer must remain background-free")
-if "semanticColor" not in compact_label_renderer or "label.Color =" not in compact_label_renderer:
+if "Chart.AddControl(" not in compact_label_renderer or "new Border" not in compact_label_renderer:
+    raise SystemExit("Plan label renderer must own the compact chart-control box")
+if "TextTrimming.CharacterEllipsis" not in compact_label_renderer:
+    raise SystemExit("Plan label boxes must prevent text overflow")
+if "semanticColor" not in compact_label_renderer or "label.ForegroundColor =" not in compact_label_renderer or "box.BorderColor =" not in compact_label_renderer:
     raise SystemExit("Plan label renderer must apply the exact semantic line color")
 anchor = read("UI/Chart/PlanLabelAnchorCalculator.cs")
 if (

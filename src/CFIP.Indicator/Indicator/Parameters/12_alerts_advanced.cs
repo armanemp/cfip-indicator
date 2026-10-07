@@ -4,9 +4,6 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
-        [Parameter("Alert On Live Reaction", Group = "12 · ALERTS — ADVANCED", DefaultValue = true)]
-        public bool AlertOnLiveReaction { get; set; }
-
         [Parameter("Alert On Smart Decision", Group = "12 · ALERTS — ADVANCED", DefaultValue = true)]
         public bool AlertOnSmartDecision { get; set; }
 

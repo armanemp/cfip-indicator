@@ -179,6 +179,28 @@ check(
     "compositeBonus" in quality_selection
 )
 check(
+    "signal ingestion and transport reload remain Timer-owned",
+    "protected override void OnTimer()" in bot and
+    "ReloadSignalStore(true)" in bot and
+    "ReloadSignalStore(false)" not in bot and
+    "ProcessSignalEnvelope(" in bot,
+)
+check(
+    "broker coordinator rejections remain observable instead of silently returning",
+    "PENDING EXECUTION BLOCKED • " in bot and
+    "MARKET EXECUTION BLOCKED • " in bot and
+    "pendingReason" in bot and
+    "executionReason" in bot,
+)
+
+check(
+    "Timer and Tick cycles are exception-isolated so one runtime fault cannot terminate the lifecycle",
+    "TIMER CYCLE EXCEPTION" in bot and
+    "TICK CYCLE EXCEPTION" in bot and
+    "catch (Exception ex)" in bot,
+)
+
+check(
     "timer dedupe tracks each scenario revision independently",
     "MaxRealtimeTimerScenarioRevisions = 128" in bot and
     "_lastRealtimeTimerRevisionByScenario" in bot and
@@ -206,10 +228,12 @@ check(
 check(
     "single-position broker safety remains explicit before 6M adoption",
     '"Max Concurrent Scenarios"' in bot and
-    "MaximumOpenPositions" in bot and
-    'DefaultValue = 1' in bot and
-    'MinValue = 1' in bot and
-    'MaxValue = 1' in bot
+    "Max Concurrent Scenarios" in bot and
+    "DefaultValue = 3" in bot and
+    "MinValue = 1" in bot and
+    "MaxValue = 10" in bot and
+    "MaximumOpenPositions" not in bot and
+    "OneOrderPerSignal" not in bot
 )
 check(
     "6M audit is wired into Source/Architecture CI",

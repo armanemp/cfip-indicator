@@ -14,6 +14,20 @@ namespace cAlgo
 {
     public partial class CFIPIndicator : Indicator
     {
+        private string FormatPlanDistanceSuffix(
+            double entry,
+            double level)
+        {
+            string pips =
+                FormatPlanPips(
+                    entry,
+                    level);
+
+            return string.IsNullOrWhiteSpace(pips)
+                ? ""
+                : " (" + pips + ")";
+        }
+
         private void RenderPredictionLabels(
                                     Prediction prediction,
                                     int closedM5)
@@ -39,7 +53,10 @@ namespace cAlgo
                                         DrawPlanLabel(
                                             P + "PRED_STOP_LABEL",
                                             "SL " +
-                                            Price(prediction.StopLoss),
+                                            Price(prediction.StopLoss) +
+                                            FormatPlanDistanceSuffix(
+                                                prediction.Entry,
+                                                prediction.StopLoss),
                                                 lineLeftBar,
                                             prediction.StopLoss,
                                             SlLineColor);
@@ -65,7 +82,10 @@ namespace cAlgo
                                             DrawPlanLabel(
                                                 P + "PRED_TARGET1_LABEL",
                                                 "TP1 " +
-                                                Price(prediction.Target1),
+                                                Price(prediction.Target1) +
+                                                FormatPlanDistanceSuffix(
+                                                    prediction.Entry,
+                                                    prediction.Target1),
                                                 lineLeftBar,
                                                 prediction.Target1,
                                                 TpLineColor);
@@ -77,7 +97,10 @@ namespace cAlgo
                                             DrawPlanLabel(
                                                 P + "PRED_TARGET2_LABEL",
                                                 "TP2 " +
-                                                Price(prediction.Target2),
+                                                Price(prediction.Target2) +
+                                                FormatPlanDistanceSuffix(
+                                                    prediction.Entry,
+                                                    prediction.Target2),
                                                 lineLeftBar,
                                                 prediction.Target2,
                                                 Tp2LineColor);
@@ -89,7 +112,10 @@ namespace cAlgo
                                             DrawPlanLabel(
                                                 P + "PRED_TARGET3_LABEL",
                                                 "TP3 " +
-                                                Price(prediction.Target3),
+                                                Price(prediction.Target3) +
+                                                FormatPlanDistanceSuffix(
+                                                    prediction.Entry,
+                                                    prediction.Target3),
                                                 lineLeftBar,
                                                 prediction.Target3,
                                                 Tp3LineColor);
@@ -101,7 +127,10 @@ namespace cAlgo
                                             DrawPlanLabel(
                                                 P + "PRED_TARGET4_LABEL",
                                                 "TP4 " +
-                                                Price(prediction.Target4),
+                                                Price(prediction.Target4) +
+                                                FormatPlanDistanceSuffix(
+                                                    prediction.Entry,
+                                                    prediction.Target4),
                                                 lineLeftBar,
                                                 prediction.Target4,
                                                 Tp4LineColor);

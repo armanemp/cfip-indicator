@@ -18,13 +18,22 @@ namespace cAlgo
                                     Prediction prediction,
                                     int closedM5)
                                 {
-                                    RemovePredictionObjects();
-                        
-                                    if (!ShowPredictionObjects ||
+                                    // Prediction is a pre-plan presentation only. Once the
+                                    // canonical plan exists, its labels/lines are authoritative.
+                                    // Never allow prediction and plan label families to coexist.
+                                    if (_plan != null ||
+                                        !ShowPredictionObjects ||
                                         !EnableEarlyPrediction ||
                                         prediction == null ||
-                                        prediction.Direction == 0 ||
-                                        prediction.Confidence <
+                                        prediction.Direction == 0)
+                                    {
+                                        RemovePredictionObjects();
+                                        return;
+                                    }
+
+                                    RemovePredictionObjects();
+
+                                    if (prediction.Confidence <
                                         Math.Max(
                                             Math.Max(
                                                 MinimumEarlyConfidence,
@@ -33,6 +42,33 @@ namespace cAlgo
                                                 60,
                                                 MinimumConfidence - 4)))
                                         return;
+
+                                    double predictionMarket =
+                                        prediction.Direction == 1
+                                            ? Symbol.Ask
+                                            : Symbol.Bid;
+
+                                    double predictionAtr =
+                                        _m5Bars != null &&
+                                        closedM5 >= 1
+                                            ? Atr(
+                                                _m5Bars,
+                                                closedM5)
+                                            : 0;
+
+                                    // Early Prediction is a forecast, not a remote
+                                    // order instruction. Do not draw a prediction
+                                    // Entry/SL/TP ladder when its entry is materially
+                                    // displaced from the current executable quote.
+                                    if (!SignalVisualLifecycleRule.IsSetupPreviewWithinPracticalDistance(
+                                            predictionMarket,
+                                            prediction.Entry,
+                                            predictionAtr,
+                                            MaximumEntryDistanceAtr))
+                                    {
+                                        RemovePredictionObjects();
+                                        return;
+                                    }
                         
                                     int start =
                                         MapM5ToChart(

@@ -1,4 +1,4 @@
-# Phase — Native cTrader Signal-Line Presentation Closure — 2026-10-04
+STATUS: SUPERSEDED — Active signal-label presentation is governed by the 2026-10-07 compact colored chart-control contract in docs/WORKFLOW.md and docs/CFIP-ROADMAP.md. This file remains historical implementation context.\n\n# Phase — Native cTrader Signal-Line Presentation Closure — 2026-10-04
 
 ## Objective
 Close the remaining visual mismatch in signal/plan lines and labels at the existing canonical owners. The result must read as one integrated cTrader-style chart object rather than a line plus a detached annotation.

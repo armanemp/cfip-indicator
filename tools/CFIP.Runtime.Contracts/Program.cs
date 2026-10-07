@@ -4207,7 +4207,6 @@ namespace cAlgo
                     92,
                     78,
                     4,
-                    4,
                     1,
                     1,
                     55,
@@ -4227,9 +4226,8 @@ namespace cAlgo
             TacticalOpportunityResult counterWeak =
                 TacticalOpportunityRule.Evaluate(
                     1,
-                    80,
+                    79,
                     75,
-                    4,
                     4,
                     1,
                     -1,
@@ -4251,7 +4249,6 @@ namespace cAlgo
                     1,
                     95,
                     86,
-                    5,
                     5,
                     1,
                     -1,
@@ -6191,25 +6188,20 @@ namespace cAlgo
                 "entry remains blocked after fault");
 
             machine.BeginCycle();
-            machine.MarkManagementReadyForRecovery();
-
-            Assert(
-                machine.State == RuntimeFaultState.Recovering,
-                "healthy management enters recovery");
-
-            Assert(
-                !machine.CanAutomaticEntryProceed,
-                "recovery does not re-arm entry");
-
-            machine.CompleteCycle();
 
             Assert(
                 machine.State == RuntimeFaultState.Healthy,
-                "clean recovery returns healthy");
+                "next clean cycle clears the recoverable runtime fault");
 
             Assert(
-                !machine.CanAutomaticEntryProceed,
-                "healthy recovery remains disarmed");
+                machine.CanAutomaticEntryProceed,
+                "next clean cycle re-arms automatic entry");
+
+            machine.MarkManagementReadyForRecovery();
+
+            Assert(
+                machine.State == RuntimeFaultState.Healthy,
+                "management readiness is a no-op after the clean boundary");
 
             machine.ObserveAutoTradingSetting(false);
             machine.ObserveAutoTradingSetting(true);

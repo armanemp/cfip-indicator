@@ -37,19 +37,15 @@ namespace CFIP.cBot.Execution
                 robot.Account != null &&
                 robot.Account.IsLive;
 
-            // Demo execution is armed by the explicit per-action demo switches.
-            // The master Auto Trading / Automatic Orders flags remain live-account
-            // policy gates so an old saved demo instance cannot silently remain
-            // inert after the dedicated demo execution controls are enabled.
-            if (liveAccount &&
-                !settings.EnableAutoTrading)
+            // The cBot owns the master execution switches for both demo and live
+            // accounts. The Indicator never controls broker execution policy.
+            if (!settings.EnableAutoTrading)
             {
                 reason = "CBOT AUTO TRADING DISABLED";
                 return false;
             }
 
-            if (liveAccount &&
-                pendingAction &&
+            if (pendingAction &&
                 !settings.EnableAutomaticOrders)
             {
                 reason = "CBOT AUTOMATIC ORDERS DISABLED";
@@ -213,14 +209,20 @@ namespace CFIP.cBot.Execution
                     return false;
                 }
 
-                double spreadLimit =
+                double intentSpreadLimit =
                     envelope.Intent.MaxSpreadToStopRiskRatio;
 
-                if (!FinitePositive(spreadLimit))
+                if (!FinitePositive(intentSpreadLimit) ||
+                    !FinitePositive(settings.MaximumSpreadToStopRiskRatio))
                 {
                     reason = "SPREAD RISK LIMIT UNAVAILABLE";
                     return false;
                 }
+
+                double spreadLimit =
+                    Math.Min(
+                        settings.MaximumSpreadToStopRiskRatio,
+                        intentSpreadLimit);
 
                 if (spread / envelope.Plan.PlanRisk >
                     Math.Max(0.02, spreadLimit))

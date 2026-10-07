@@ -11,8 +11,19 @@ namespace cAlgo
             if (snapshot == null)
                 return;
 
-            AggressiveFlowSnapshot flow =
-                GetAggressiveFlowSnapshot();
+            AggressiveFlowSnapshot flow;
+            if (!TryGetFreshAggressiveFlowSnapshot(
+                    out flow))
+            {
+                flow =
+                    new AggressiveFlowSnapshot(
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        DateTime.MinValue);
+            }
 
             MtfTrendStrengthResult trendStrength =
                 MtfTrendStrengthRule.Evaluate(

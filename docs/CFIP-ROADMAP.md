@@ -574,7 +574,7 @@ These requirements are treated as acceptance targets and must be verified agains
 ## Chart contract
 - One signal produces one canonical visual set.
 - Directional arrows are separated deterministically and use the canonical nine-level strength ladder.
-- Signal/plan line labels are owned by `PlanLabelRenderer`; the label’s visible text start must sit exactly one chart-bar width left of the canonical `PlanLineRenderer` line start in actual chart X space. `PlanLabelAnchorCalculator` is the sole owner: it measures the real bar width with `Chart.BarIndexToX`, moves exactly one such width left, then resolves that X to the label's canonical `DateTime` anchor with `Chart.XToTime`. `PlanLabelRenderer` consumes only that canonical anchor and never mutates `ChartText.Time`.
+- Signal/plan line labels are owned by `PlanLabelRenderer`; each level uses one reusable compact chart-control box positioned one chart bar left of the canonical `PlanLineRenderer` line start at the exact normalized price. `PlanLabelAnchorCalculator` remains the sole owner of the one-bar gap. The box uses the exact materialized line color for its border/fill accent, regular-weight 11px text with bounded ellipsis trimming, and a right-edge anchor so the whole box stays left of the line. No second label renderer or alternate geometry path is permitted.
 - `PlanLabelAnchorCalculator` is the sole owner of that one-bar gap, and `PlanLineRenderer` is the sole owner of the materialized line color consumed by the label.
 - Label text must use the exact same materialized color as its corresponding line; `Color.White` is forbidden for canonical line labels.
 - Pending, parallel and prediction labels must continue through the same renderer/anchor contract; no secondary label geometry is allowed. A parallel candidate matching the canonical plan is not a second opportunity and must not render a second line/label set.
@@ -839,7 +839,7 @@ No trading threshold, MTF role, broker mutation authority or strategy quality ga
 
 - [x] Replace candle-anchored directional arrow presentation with one fixed bottom-right signal box; Show Signal Arrow remains the single default-on visibility control.
 - [x] Preserve canonical 9-level strength and centralized signal color ownership in the box.
-- [x] Replace the ambiguous M1/M5/M15/H1/H4 mini-bars with two full-width BUY/SELL pressure bars directly below the timeframe lamps.
+- [x] Replace the ambiguous M1/M5/M15/H1/H4 mini-bars with two full-width combined BUY/SELL pressure bars directly below the timeframe lamps; each source uses one physical track whose green/red segments resize against the same total width.
 - [x] Keep BUY/SELL pressure presentation owned by PanelFooterFactory and derived from closed M15 tick-volume/candle-range evidence.
 - [x] Add a CI source gate for arrow-box single ownership and BUY/SELL footer-pressure ownership.
 - [ ] Target-terminal visual acceptance of the Release artifact remains required before declaring this UI work unit complete.

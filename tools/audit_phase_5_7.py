@@ -59,11 +59,11 @@ check(
 )
 
 check(
-    "WATCH/REACTION alert emission is owned by the runtime decision-alert boundary",
+    "WATCH alert remains decision-owned while intrabar REACTION is suppressed",
     "ProcessDecisionOwnedWatchReactionAlerts(" in alerts and
     "BuildWatchAlertKey(" in alerts and
-    "BuildReactionAlertKey(" in alerts and
-    'SendUnifiedAlert(' in alerts,
+    "private void ProcessDecisionOwnedReactionAlert()" in alerts and
+    "never a user-facing signal" in alerts,
 )
 
 check(

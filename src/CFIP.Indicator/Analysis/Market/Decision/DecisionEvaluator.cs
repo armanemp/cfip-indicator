@@ -34,6 +34,54 @@ namespace cAlgo
 
             DecisionEvidenceSnapshot evidence = input.Evidence;
 
+            // M15 is the canonical decision timeframe. Lower-timeframe evidence
+            // may improve entry precision, but a strong, closed M15 direction
+            // must not be overturned by a collection of faster-frame votes.
+            int m15Direction =
+                input.M15Frame == null
+                    ? 0
+                    : input.M15Frame.Direction;
+
+            bool strongM15Conflict =
+                consensus.Direction != 0 &&
+                m15Direction != 0 &&
+                m15Direction != consensus.Direction &&
+                input.M15Frame != null &&
+                input.M15Frame.Quality >=
+                    Math.Max(
+                        60,
+                        input.MinimumSmartDirectionShare);
+
+            if (strongM15Conflict)
+            {
+                return new Decision
+                {
+                    BuyShare = consensus.BuyShare,
+                    SellShare = consensus.SellShare,
+                    Direction = 0,
+                    Edge = consensus.Edge,
+                    Regime = input.Regime,
+                    RegimeQuality = evidence.RegimeQuality,
+                    IndicatorConfluenceQuality =
+                        input.M5Frame == null
+                            ? 0
+                            : input.M5Frame.IndicatorConfluenceQuality,
+                    IndicatorConflict =
+                        input.M5Frame == null
+                            ? 0
+                            : input.M5Frame.IndicatorConflict,
+                    Confidence = consensus.Edge,
+                    TriggerReady = false,
+                    EntryAllowed = false,
+                    BlockReason = "M15 CANONICAL CONFLICT",
+                    Reason =
+                        "M15 CANONICAL CONFLICT | M15=" +
+                        m15Direction +
+                        " | CONSENSUS=" +
+                        consensus.Direction
+                };
+            }
+
             Decision decision =
                 new Decision
                 {

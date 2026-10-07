@@ -14,21 +14,15 @@ namespace cAlgo
         private StackPanel _panelFooterActions;
         private StackPanel _panelFlowPressureRail;
         private StackPanel _panelBuyPressureRow;
-        private StackPanel _panelSellPressureRow;
         private Border _panelBuyPressureTrack;
-        private Border _panelSellPressureTrack;
         private Border _panelBuyPressureFill;
         private Border _panelSellPressureFill;
         private TextBlock _panelBuyPressureLabel;
-        private TextBlock _panelSellPressureLabel;
         private StackPanel _panelAggBuyFlowRow;
-        private StackPanel _panelAggSellFlowRow;
         private Border _panelAggBuyFlowTrack;
-        private Border _panelAggSellFlowTrack;
         private Border _panelAggBuyFlowFill;
         private Border _panelAggSellFlowFill;
         private TextBlock _panelAggBuyFlowLabel;
-        private TextBlock _panelAggSellFlowLabel;
 
         private void CreatePanelFooter()
         {
@@ -44,94 +38,62 @@ namespace cAlgo
                 };
 
             _panelBuyPressureRow =
-                CreateFlowPressureRow(
-                    "DOM BUY",
-                    BuyArrowColor,
+                CreateCombinedFlowPressureRow(
+                    "DOM",
                     out _panelBuyPressureTrack,
                     out _panelBuyPressureFill,
+                    out _panelSellPressureFill,
                     out _panelBuyPressureLabel);
 
-            _panelSellPressureRow =
-                CreateFlowPressureRow(
-                    "DOM SELL",
-                    SellArrowColor,
-                    out _panelSellPressureTrack,
-                    out _panelSellPressureFill,
-                    out _panelSellPressureLabel);
-
             _panelAggBuyFlowRow =
-                CreateFlowPressureRow(
-                    "FLOW BUY TICKS",
-                    BuyArrowColor,
+                CreateCombinedFlowPressureRow(
+                    "FLOW TICKS",
                     out _panelAggBuyFlowTrack,
                     out _panelAggBuyFlowFill,
+                    out _panelAggSellFlowFill,
                     out _panelAggBuyFlowLabel);
 
-            _panelAggSellFlowRow =
-                CreateFlowPressureRow(
-                    "FLOW SELL TICKS",
-                    SellArrowColor,
-                    out _panelAggSellFlowTrack,
-                    out _panelAggSellFlowFill,
-                    out _panelAggSellFlowLabel);
-
             _panelFlowPressureRail.AddChild(_panelBuyPressureRow);
-            _panelFlowPressureRail.AddChild(_panelSellPressureRow);
             _panelFlowPressureRail.AddChild(_panelAggBuyFlowRow);
-            _panelFlowPressureRail.AddChild(_panelAggSellFlowRow);
 
             _panelFooterActions =
                 new StackPanel
                 {
-                    Orientation =
-                        Orientation.Horizontal,
-                    HorizontalAlignment =
-                        HorizontalAlignment.Stretch,
-                    VerticalAlignment =
-                        VerticalAlignment.Top,
+                    Orientation = Orientation.Horizontal,
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    VerticalAlignment = VerticalAlignment.Top,
                     Height = PanelFooterMinHeight -
                         PanelFlowPressureRailHeight -
                         PanelFooterActionGap,
-                    BackgroundColor =
-                        Color.FromArgb(0, Color.Black),
-                    Margin =
-                        new Thickness(
-                            0,
-                            PanelFooterActionGap,
-                            0,
-                            0)
+                    BackgroundColor = Color.FromArgb(0, Color.Black),
+                    Margin = new Thickness(
+                        0,
+                        PanelFooterActionGap,
+                        0,
+                        0)
                 };
 
-            // The Indicator panel is analysis/presentation only.
-            // Broker Close/Cancel actions belong to the cBot surface.
-            // The hide/show toggle is the only interactive control
-            // owned by the Indicator panel. Broker actions are cBot-owned.
             CreatePanelToggleButton();
 
             if (_panelToggleButton != null)
-                _panelFooterActions.AddChild(
-                    _panelToggleButton);
+                _panelFooterActions.AddChild(_panelToggleButton);
 
             CreatePanelAlertMessageRail();
 
             if (_panelAlertMessageStack != null)
-                _panelFooterActions.AddChild(
-                    _panelAlertMessageStack);
+                _panelFooterActions.AddChild(_panelAlertMessageStack);
 
-            _buttonStack.AddChild(
-                _panelFlowPressureRail);
-
-            _buttonStack.AddChild(
-                _panelFooterActions);
+            _buttonStack.AddChild(_panelFlowPressureRail);
+            _buttonStack.AddChild(_panelFooterActions);
 
             UpdatePanelFlowPressureRail();
         }
 
-        private StackPanel CreateFlowPressureRow(
+        private StackPanel CreateCombinedFlowPressureRow(
             string caption,
-            Color accent,
             out Border track,
-            out Border fill,
+            out Border buyFill,
+            out Border sellFill,
             out TextBlock label)
         {
             label =
@@ -145,7 +107,7 @@ namespace cAlgo
                             : PanelFontFamily,
                     FontSize = Math.Max(8, PanelFontSize - 3),
                     FontWeight = FontWeight.Bold,
-                    ForegroundColor = accent,
+                    ForegroundColor = PanelMutedTextColor,
                     TextAlignment = TextAlignment.Left,
                     VerticalAlignment = VerticalAlignment.Top,
                     HorizontalAlignment = HorizontalAlignment.Left,
@@ -153,20 +115,40 @@ namespace cAlgo
                     BackgroundColor = Color.FromArgb(0, Color.Black)
                 };
 
-            fill =
+            buyFill =
                 new Border
                 {
                     Height = PanelFlowPressureBarHeight,
                     CornerRadius = 4,
                     BorderThickness = 0,
-                    BorderColor = Color.FromArgb(0, Color.Black),
-                    BackgroundColor =
-                        Color.FromArgb(
-                            225,
-                            accent),
+                    BackgroundColor = Color.FromArgb(225, BuyArrowColor),
                     HorizontalAlignment = HorizontalAlignment.Left,
                     VerticalAlignment = VerticalAlignment.Center
                 };
+
+            sellFill =
+                new Border
+                {
+                    Height = PanelFlowPressureBarHeight,
+                    CornerRadius = 4,
+                    BorderThickness = 0,
+                    BackgroundColor = Color.FromArgb(225, SellArrowColor),
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    VerticalAlignment = VerticalAlignment.Center
+                };
+
+            StackPanel segments =
+                new StackPanel
+                {
+                    Orientation = Orientation.Horizontal,
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Height = PanelFlowPressureBarHeight,
+                    BackgroundColor = Color.FromArgb(0, Color.Black)
+                };
+
+            segments.AddChild(buyFill);
+            segments.AddChild(sellFill);
 
             track =
                 new Border
@@ -175,13 +157,10 @@ namespace cAlgo
                     CornerRadius = 4,
                     BorderThickness = 0,
                     BorderColor = Color.FromArgb(0, Color.Black),
-                    BackgroundColor =
-                        Color.FromArgb(
-                            48,
-                            PanelMutedTextColor),
+                    BackgroundColor = Color.FromArgb(48, PanelMutedTextColor),
                     HorizontalAlignment = HorizontalAlignment.Stretch,
                     VerticalAlignment = VerticalAlignment.Center,
-                    Child = fill
+                    Child = segments
                 };
 
             StackPanel row =
@@ -196,7 +175,6 @@ namespace cAlgo
 
             row.AddChild(label);
             row.AddChild(track);
-
             return row;
         }
 
@@ -204,9 +182,7 @@ namespace cAlgo
         {
             if (_panelFlowPressureRail == null ||
                 _panelBuyPressureRow == null ||
-                _panelSellPressureRow == null ||
-                _panelAggBuyFlowRow == null ||
-                _panelAggSellFlowRow == null)
+                _panelAggBuyFlowRow == null)
                 return;
 
             _panelFlowPressureRail.IsVisible =
@@ -215,25 +191,16 @@ namespace cAlgo
 
             int contentWidth = Math.Max(1, EffectivePanelContentWidth());
 
-            SetFlowRowWidth(
+            SetCombinedFlowRowWidth(
                 _panelBuyPressureRow,
                 _panelBuyPressureTrack,
                 _panelBuyPressureLabel,
                 contentWidth);
-            SetFlowRowWidth(
-                _panelSellPressureRow,
-                _panelSellPressureTrack,
-                _panelSellPressureLabel,
-                contentWidth);
-            SetFlowRowWidth(
+
+            SetCombinedFlowRowWidth(
                 _panelAggBuyFlowRow,
                 _panelAggBuyFlowTrack,
                 _panelAggBuyFlowLabel,
-                contentWidth);
-            SetFlowRowWidth(
-                _panelAggSellFlowRow,
-                _panelAggSellFlowTrack,
-                _panelAggSellFlowLabel,
                 contentWidth);
 
             double buyLiquidity;
@@ -250,8 +217,7 @@ namespace cAlgo
 
             if (!ready)
             {
-                _panelBuyPressureLabel.Text = "DOM BUY --";
-                _panelSellPressureLabel.Text = "DOM SELL --";
+                _panelBuyPressureLabel.Text = "DOM BUY --  |  SELL --";
             }
             else
             {
@@ -261,26 +227,20 @@ namespace cAlgo
                 int sellPercent = 100 - buyPercent;
 
                 _panelBuyPressureLabel.Text =
-                    "DOM BUY " + FormatRealtimeVolume(buyLiquidity) +
-                    " u (" + buyPercent.ToString(
-                        System.Globalization.CultureInfo.InvariantCulture) + "%)";
-
-                _panelSellPressureLabel.Text =
-                    "DOM SELL " + FormatRealtimeVolume(sellLiquidity) +
-                    " u (" + sellPercent.ToString(
+                    "DOM  BUY " + FormatRealtimeVolume(buyLiquidity) +
+                    " (" + buyPercent.ToString(
+                        System.Globalization.CultureInfo.InvariantCulture) +
+                    "%)  |  SELL " + FormatRealtimeVolume(sellLiquidity) +
+                    " (" + sellPercent.ToString(
                         System.Globalization.CultureInfo.InvariantCulture) + "%)";
             }
 
-            ApplyFlowBar(
+            ApplyCombinedFlowBar(
                 _panelBuyPressureFill,
+                _panelSellPressureFill,
                 _panelBuyPressureTrack,
                 domBuyShare,
-                BuyArrowColor);
-            ApplyFlowBar(
-                _panelSellPressureFill,
-                _panelSellPressureTrack,
-                domSellShare,
-                SellArrowColor);
+                domSellShare);
 
             AggressiveFlowSnapshot flow = GetAggressiveFlowSnapshot();
             double flowTotal = flow.BuyTicks + flow.SellTicks;
@@ -291,33 +251,25 @@ namespace cAlgo
 
             _panelAggBuyFlowLabel.Text =
                 flowTotal > 0
-                    ? "FLOW BUY TICKS " + flow.BuyTicks.ToString(
+                    ? "FLOW TICKS  BUY " + flow.BuyTicks.ToString(
                         System.Globalization.CultureInfo.InvariantCulture) +
                       " (" + ((int)Math.Round(flowBuyShare * 100.0)).ToString(
-                        System.Globalization.CultureInfo.InvariantCulture) + "%)"
-                    : "FLOW BUY TICKS --";
-
-            _panelAggSellFlowLabel.Text =
-                flowTotal > 0
-                    ? "FLOW SELL TICKS " + flow.SellTicks.ToString(
+                        System.Globalization.CultureInfo.InvariantCulture) +
+                      "%)  |  SELL " + flow.SellTicks.ToString(
                         System.Globalization.CultureInfo.InvariantCulture) +
                       " (" + ((int)Math.Round(flowSellShare * 100.0)).ToString(
                         System.Globalization.CultureInfo.InvariantCulture) + "%)"
-                    : "FLOW SELL TICKS --";
+                    : "FLOW TICKS  BUY --  |  SELL --";
 
-            ApplyFlowBar(
+            ApplyCombinedFlowBar(
                 _panelAggBuyFlowFill,
+                _panelAggSellFlowFill,
                 _panelAggBuyFlowTrack,
                 flowBuyShare,
-                BuyArrowColor);
-            ApplyFlowBar(
-                _panelAggSellFlowFill,
-                _panelAggSellFlowTrack,
-                flowSellShare,
-                SellArrowColor);
+                flowSellShare);
         }
 
-        private void SetFlowRowWidth(
+        private void SetCombinedFlowRowWidth(
             StackPanel row,
             Border track,
             TextBlock label,
@@ -331,21 +283,48 @@ namespace cAlgo
             label.Width = width;
         }
 
-        private void ApplyFlowBar(
-            Border fill,
+        private void ApplyCombinedFlowBar(
+            Border buyFill,
+            Border sellFill,
             Border track,
-            double share,
-            Color color)
+            double buyShare,
+            double sellShare)
         {
-            if (fill == null || track == null)
+            if (buyFill == null || sellFill == null || track == null)
                 return;
 
-            fill.BackgroundColor = Color.FromArgb(225, color);
-            fill.Width = Math.Max(
-                2,
-                (int)Math.Round(
-                    track.Width *
-                    NumericGuards.ClampDouble(share, 0, 1)));
+            double normalizedBuy =
+                NumericGuards.ClampDouble(buyShare, 0, 1);
+            double normalizedSell =
+                NumericGuards.ClampDouble(sellShare, 0, 1);
+
+            double total =
+                normalizedBuy + normalizedSell;
+
+            if (total <= 0)
+            {
+                normalizedBuy = 0.5;
+                normalizedSell = 0.5;
+            }
+            else
+            {
+                normalizedBuy /= total;
+                normalizedSell /= total;
+            }
+
+            int width = Math.Max(2, (int)Math.Round(track.Width));
+            int buyWidth =
+                Math.Max(1, (int)Math.Round(width * normalizedBuy));
+            int sellWidth =
+                Math.Max(1, width - buyWidth);
+
+            buyFill.Width = buyWidth;
+            sellFill.Width = sellWidth;
+
+            buyFill.BackgroundColor =
+                Color.FromArgb(225, BuyArrowColor);
+            sellFill.BackgroundColor =
+                Color.FromArgb(225, SellArrowColor);
         }
 
         private bool TryResolveCanonicalBuySellLiquidity(
@@ -405,32 +384,24 @@ namespace cAlgo
                 return "--";
 
             if (volume >= 1000000000.0)
-            {
                 return (volume / 1000000000.0).ToString(
                     "0.00",
-                    System.Globalization.CultureInfo.InvariantCulture) +
-                    "B";
-            }
+                    System.Globalization.CultureInfo.InvariantCulture) + "B";
 
             if (volume >= 1000000.0)
-            {
                 return (volume / 1000000.0).ToString(
                     "0.00",
-                    System.Globalization.CultureInfo.InvariantCulture) +
-                    "M";
-            }
+                    System.Globalization.CultureInfo.InvariantCulture) + "M";
 
             if (volume >= 1000.0)
-            {
                 return (volume / 1000.0).ToString(
                     "0.00",
-                    System.Globalization.CultureInfo.InvariantCulture) +
-                    "K";
-            }
+                    System.Globalization.CultureInfo.InvariantCulture) + "K";
 
             return volume.ToString(
                 "0.##",
                 System.Globalization.CultureInfo.InvariantCulture);
         }
+
     }
 }

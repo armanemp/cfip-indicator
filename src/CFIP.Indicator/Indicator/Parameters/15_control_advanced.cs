@@ -10,9 +10,6 @@ namespace cAlgo
         [Parameter("Precision Trigger Score", Group = "15 · CONTROL — ADVANCED", DefaultValue = 5, MinValue = 2, MaxValue = 6)]
         public int PrecisionTriggerScore { get; set; }
 
-        [Parameter("Allow Strong M5 Trigger Override", Group = "15 · CONTROL — ADVANCED", DefaultValue = true)]
-        public bool AllowStrongM5TriggerOverride { get; set; }
-
         [Parameter("M5 Only Confirmed Trigger", Group = "15 · CONTROL — ADVANCED", DefaultValue = true)]
         public bool M5OnlyConfirmedTrigger { get; set; }
 
@@ -87,9 +84,6 @@ namespace cAlgo
 
         [Parameter("Use Regime No-Trade Guard", Group = "15 · CONTROL — ADVANCED", DefaultValue = true)]
         public bool UseRegimeNoTradeGuard { get; set; }
-
-        [Parameter("Show Reaction Arrow", Group = "15 · CONTROL — ADVANCED", DefaultValue = true)]
-        public bool ShowReactionArrow { get; set; }
 
         [Parameter("Show Historical Arrows", Group = "15 · CONTROL — ADVANCED", DefaultValue = true)]
         public bool ShowHistoricalArrows { get; set; }

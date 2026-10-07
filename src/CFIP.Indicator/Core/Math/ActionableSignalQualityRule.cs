@@ -112,8 +112,7 @@ namespace cAlgo
                     "SIGNAL QUALITY • STRUCTURE");
 
             if (input.EntryLocationQuality <
-                input.MinimumEntryLocationQuality &&
-                !AllowsQualityRecovery(input))
+                input.MinimumEntryLocationQuality)
                 return new ActionableSignalQualityResult(
                     false,
                     "SIGNAL QUALITY • LOCATION");
@@ -126,8 +125,7 @@ namespace cAlgo
                     "SIGNAL QUALITY • TIMING");
 
             if (input.EntryPositionQuality <
-                input.MinimumEntryPositionQuality &&
-                !AllowsQualityRecovery(input))
+                input.MinimumEntryPositionQuality)
                 return new ActionableSignalQualityResult(
                     false,
                     "SIGNAL QUALITY • PRICE POSITION");
@@ -141,10 +139,8 @@ namespace cAlgo
             return new ActionableSignalQualityResult(
                 true,
                 AllowsQualityRecovery(input) &&
-                (input.EntryLocationQuality < input.MinimumEntryLocationQuality ||
-                 input.EntryTimingQuality < input.MinimumEntryTimingQuality ||
-                 input.EntryPositionQuality < input.MinimumEntryPositionQuality)
-                    ? "ACTIONABLE • QUALITY RECOVERY"
+                input.EntryTimingQuality < input.MinimumEntryTimingQuality
+                    ? "ACTIONABLE • TIMING RECOVERY"
                     : string.Empty);
         }
 

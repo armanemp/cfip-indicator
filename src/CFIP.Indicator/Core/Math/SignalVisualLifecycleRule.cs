@@ -70,6 +70,43 @@ namespace cAlgo
             return true;
         }
 
+        public static bool IsSetupPreviewWithinPracticalDistance(
+            double market,
+            double proposedEntry,
+            double atr,
+            double configuredMaximumEntryDistanceAtr)
+        {
+            if (!NumericGuards.IsFinitePositive(market) ||
+                !NumericGuards.IsFinitePositive(proposedEntry) ||
+                !NumericGuards.IsFinitePositive(atr))
+                return false;
+
+            double configured =
+                NumericGuards.IsFiniteValue(
+                    configuredMaximumEntryDistanceAtr)
+                    ? System.Math.Max(
+                        0.05,
+                        configuredMaximumEntryDistanceAtr)
+                    : 0.45;
+
+            // A preview is a nearby structural setup, not a multi-session forecast.
+            // Keep it bounded by the existing entry-distance policy and cap the
+            // display envelope at 1.5 ATR of the canonical M5 volatility.
+            double maximumDistanceAtr =
+                System.Math.Max(
+                    0.80,
+                    System.Math.Min(
+                        1.50,
+                        configured * 2.50));
+
+            return
+                System.Math.Abs(
+                    proposedEntry -
+                    market) /
+                atr <=
+                maximumDistanceAtr;
+        }
+
         public static bool IsPreTradePlanVisible(
             SignalVisualLifecycleInput input)
         {

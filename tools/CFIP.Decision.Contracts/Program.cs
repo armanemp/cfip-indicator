@@ -2133,7 +2133,7 @@ namespace cAlgo
             Assert(
                 weakTiming.Allowed &&
                 weakTiming.Reason ==
-                    "ACTIONABLE • QUALITY RECOVERY",
+                    "ACTIONABLE • TIMING RECOVERY",
                 "strong one-dimension timing recovery accepted");
 
             ActionableSignalQualityResult veryWeakTiming =
@@ -2159,10 +2159,10 @@ namespace cAlgo
                         70, 75, 70, 1.50));
 
             Assert(
-                recoveredPosition.Allowed &&
+                !recoveredPosition.Allowed &&
                 recoveredPosition.Reason ==
-                    "ACTIONABLE • QUALITY RECOVERY",
-                "strong one-dimension price-position recovery accepted");
+                    "SIGNAL QUALITY • PRICE POSITION",
+                "price-position deficiency remains blocked");
 
             ActionableSignalQualityResult weakEvidence =
                 ActionableSignalQualityRule.Evaluate(

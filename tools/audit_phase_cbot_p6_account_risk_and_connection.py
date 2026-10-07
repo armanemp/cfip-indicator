@@ -59,8 +59,8 @@ for token in (
     "MaximumSpreadToStopRiskRatio",
     "EnableDailyLossLimit",
     "MaximumDailyLossPercent",
-    "MaximumOpenPositions",
-    "OneOrderPerSignal",
+    "MaxConcurrentScenarios",
+    "MaxExecutionMarginUsagePercent",
 ):
     require(token in settings, "execution settings bridge missing " + token)
 
@@ -114,6 +114,13 @@ require(
     "P6 must be recorded in continuity documents",
 )
 
+require(
+    "MaximumOpenPositions" not in bot and
+    "OneOrderPerSignal" not in bot and
+    "Max Concurrent Scenarios" in bot,
+    "cBot must expose one broker-side concurrency authority without dead compatibility controls",
+)
+
 if errors:
     print("CBOT-P6 ACCOUNT/RISK/CONNECTION AUDIT: FAIL")
     for e in errors:
@@ -128,3 +135,10 @@ print("broker-session/spread guards: PASS")
 print("daily-loss enforcement: PASS")
 print("scenario-aware capacity: PASS")
 print("cBot final margin/volume ownership: PASS")
+
+require(
+    "MaximumOpenPositions" not in bot and
+    "OneOrderPerSignal" not in bot and
+    "Max Concurrent Scenarios" in bot,
+    "cBot must expose one broker-side concurrency authority without dead compatibility controls",
+)

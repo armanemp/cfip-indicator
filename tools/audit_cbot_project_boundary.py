@@ -104,7 +104,7 @@ if errors:
     sys.exit(1)
 
 print("CBOT DEMO MARKET BOUNDARY AUDIT: PASS")
-print("cBot broker mutation owners: 2")
+print("cBot broker mutation owners: 3")
 print("Allowed owners: " + ", ".join(sorted(ALLOWED_CBOT_MUTATION_OWNERS)))
 print("Demo live-account guard: PASS")
 print("Indicator project reference: 0")

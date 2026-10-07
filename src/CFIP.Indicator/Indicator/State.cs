@@ -94,6 +94,7 @@ namespace cAlgo
                 private bool _outcomeRegistered;
                 private int _lastAutoM5 = -1;
                 private int _lastEarlyAlertM5 = -1;
+                private string _lastRangeManipulationWatchKey = "";
                 private int _lastActionableEntryAlertM5 = -1;
                 private int _lastActionableEntryAlertDirection = 0;
                 private int _tp1Hit;
@@ -320,7 +321,6 @@ namespace cAlgo
                 private DateTime _panelStableHeaderSinceUtc = DateTime.MinValue;
         private int _runtimeTpStageIndex = -1;
         private int _runtimeTpStagePlanCreatedM5 = -1;
-        private int _lastReactionAlertBar = -1;
 
         private readonly Dictionary<int, int> _directionSamples =
                     new Dictionary<int, int>();

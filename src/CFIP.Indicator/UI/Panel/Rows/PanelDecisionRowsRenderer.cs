@@ -14,6 +14,10 @@ namespace cAlgo
             ref int slot,
             int contentWidth)
         {
+                                                RenderPanelRangeIntelligenceRows(
+                                                    ref slot,
+                                                    contentWidth);
+
                                                 if (_decision != null)
                                                 {
                                                     int direction =

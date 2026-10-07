@@ -55,8 +55,8 @@ parameters = sum(
     len(re.findall(r"\[Parameter\s*\(", p.read_text(encoding="utf-8")))
     for p in parameter_files
 )
-if parameters != 533:
-    raise SystemExit(f"Expected 533 total parameters, found {parameters}")
+if parameters != 529:
+    raise SystemExit(f"Expected 529 total parameters, found {parameters}")
 if len(parameter_files) != 30:
     raise SystemExit(f"Expected 30 parameter-group files, found {len(parameter_files)}")
 
@@ -75,8 +75,8 @@ if news_parameters != 14:
     )
 baseline_parameter_files = [p for p in parameter_files if p.stem != "25_oss_analytics"]
 baseline_parameters = sum(len(re.findall(r"\[Parameter\s*\(", p.read_text(encoding="utf-8"))) for p in baseline_parameter_files)
-if baseline_parameters != 530:
-    raise SystemExit(f"Expected 530 baseline parameters, found {baseline_parameters}")
+if baseline_parameters != 526:
+    raise SystemExit(f"Expected 526 baseline parameters, found {baseline_parameters}")
 extension_parameters = len(re.findall(r"\[Parameter\s*\(", (PARAMETER_ROOT / "25_oss_analytics.cs").read_text(encoding="utf-8")))
 if extension_parameters != 3:
     raise SystemExit(f"Expected 3 OSS extension parameters, found {extension_parameters}")
@@ -1522,8 +1522,8 @@ if "MapM5ToChart(" in visual_line_code:
     raise SystemExit("Compact plan levels must not use M5 time mapping for their right edge")
 if "Chart.FirstVisibleBarIndex" in visual_line_code or "Chart.LastVisibleBarIndex" in visual_line_code:
     raise SystemExit("Compact plan levels must not use full-width visible-chart boundaries")
-if "as ChartText" not in plan_label_renderer_code:
-    raise SystemExit("Plan labels must reuse existing ChartText objects")
+if "new Border" not in plan_label_renderer_code or "Chart.AddControl(" not in plan_label_renderer_code:
+    raise SystemExit("Plan labels must use one reusable chart-control box")
 if 'name + "_BOX"' not in plan_label_renderer_code:
     raise SystemExit("Plan labels must retain legacy box cleanup compatibility")
 if 'RemovePlanLabel(P + "ENTRY_LABEL")' not in plan_label_remover_code:
@@ -2768,9 +2768,9 @@ compact_label_code = PLAN_LABEL_RENDERER_CODE[compact_label_start:] if compact_l
 if compact_label_start < 0:
     raise SystemExit("Compact plan label renderer method is missing")
 if "Chart.DrawRectangle(" in compact_label_code:
-    raise SystemExit("Compact plan labels must remain background-free")
-if "Chart.DrawText(" not in compact_label_code:
-    raise SystemExit("Compact plan labels must own their native ChartText object")
+    raise SystemExit("Compact plan labels must not use independent chart-drawing rectangles")
+if "Chart.AddControl(" not in compact_label_code or "Chart.MoveControl(" not in compact_label_code:
+    raise SystemExit("Compact plan labels must own one reusable chart-control box")
 if "CompactPlanLabelFontSize = 11.0" not in PLAN_LABEL_RENDERER_CODE:
     raise SystemExit("Compact plan labels must use the canonical readable font size")
 PLAN_LABEL_ANCHOR = ROOT / "UI" / "Chart" / "PlanLabelAnchorCalculator.cs"
@@ -3210,9 +3210,9 @@ compact_label_code = label_code[compact_label_start:] if compact_label_start >= 
 if compact_label_start < 0:
     raise SystemExit("Compact plan label renderer method is missing")
 if "Chart.DrawRectangle(" in compact_label_code:
-    raise SystemExit("Plan labels must remain background-free")
-if "Chart.DrawText(" not in compact_label_code:
-    raise SystemExit("Plan labels must own their native ChartText object")
+    raise SystemExit("Plan labels must not use independent chart-drawing rectangles")
+if "Chart.AddControl(" not in compact_label_code or "Chart.MoveControl(" not in compact_label_code:
+    raise SystemExit("Plan labels must own one reusable chart-control box")
 if "CompactPlanLabelFontSize = 11.0" not in label_code:
     raise SystemExit("Plan labels must use the canonical readable font size")
 label_anchor = ROOT / "UI" / "Chart" / "PlanLabelAnchorCalculator.cs"
@@ -3227,8 +3227,8 @@ if (
     "GetCompactPlanLabelAnchorTime(" not in label_anchor_code
 ):
     raise SystemExit("Plan label anchor must use exactly one canonical bar before line start")
-if "HorizontalAlignment.Left" not in compact_label_code:
-    raise SystemExit("Plan labels must terminate at the left-of-line anchor")
+if "HorizontalAlignment.Right" not in compact_label_code or "HorizontalAlignment.Left" not in compact_label_code:
+    raise SystemExit("Plan label box must sit left of the line while keeping text left-aligned")
 
 live_calc = ROOT / "Runtime" / "Calculation" / "CalculationLiveCycle.cs"
 live_calc_code = live_calc.read_text(encoding="utf-8")

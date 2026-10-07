@@ -90,11 +90,10 @@ check(
 )
 
 check(
-    "live reaction can surface immediately without bypassing direction stability",
-    "if (reactionReady" in visual_direction and
-    "acceptedDirection" in visual_direction and
-    "acceptedDirection == _reaction.Direction" in visual_direction and
-    'snapshot.Stage = "REACTION";' in snapshot_builder
+    "live reaction remains internal and cannot become the user-facing trade signal",
+    "UpdateLiveReaction();" in read("src/CFIP.Indicator/Runtime/Calculation/CalculationStageIsolation.cs") and
+    "bool reactionReady = false;" in snapshot_builder and
+    "if (reactionReady" not in visual_direction
 )
 
 check(

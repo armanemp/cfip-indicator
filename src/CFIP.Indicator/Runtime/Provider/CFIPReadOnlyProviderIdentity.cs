@@ -7,6 +7,9 @@ namespace cAlgo
 {
     public partial class CFIPIndicator
     {
+        private const int ProviderHeartbeatPublishIntervalSeconds = 1;
+        private DateTime _lastProviderHeartbeatBusPublishUtc = DateTime.MinValue;
+
         private int ResolvePlanQuality()
         {
             if (_decision == null)
@@ -164,6 +167,38 @@ namespace cAlgo
             DateTime now)
         {
             _cfipProviderUpdatedUtc = now;
+
+            if (_lastProviderHeartbeatBusPublishUtc != DateTime.MinValue &&
+                (now - _lastProviderHeartbeatBusPublishUtc).TotalSeconds <
+                ProviderHeartbeatPublishIntervalSeconds)
+                return;
+
+            try
+            {
+                string payload =
+                    _cfipProviderRevision.ToString(
+                        CultureInfo.InvariantCulture) +
+                    "|" +
+                    now.Ticks.ToString(
+                        CultureInfo.InvariantCulture);
+
+                LocalStorage.SetString(
+                    SignalBusKey.ForHeartbeat(InstanceId),
+                    payload,
+                    LocalStorageScope.Device);
+
+                LocalStorage.Flush(
+                    LocalStorageScope.Device);
+
+                _lastProviderHeartbeatBusPublishUtc = now;
+            }
+            catch (Exception ex)
+            {
+                Print(
+                    "CFIP PROVIDER HEARTBEAT PUBLISH FAILED | revision={0} | {1}",
+                    _cfipProviderRevision,
+                    ex.Message);
+            }
         }
 
         private void PublishProviderHeartbeatValue(

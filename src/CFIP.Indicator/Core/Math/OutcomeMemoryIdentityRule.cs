@@ -38,7 +38,6 @@ namespace cAlgo
                 "EndOfDayAlertMinutesBefore",
 
 
-                "ShowReactionArrow",
                 "ShowHistoricalArrows",
 
                 "UseSemanticAlertSounds",

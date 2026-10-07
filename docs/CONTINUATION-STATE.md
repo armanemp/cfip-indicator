@@ -18,8 +18,8 @@ PR #338 merged to `main` as `55d2ad4f146f373374e348bd706620f0831c13db`.
 
 Canonical contract:
 - `PlanLineRenderer` owns signal-line geometry and the final materialized line color.
-- `PlanLabelAnchorCalculator` is the sole owner of the horizontal gap and resolves the label anchor exactly one chart bar before the canonical line start in the same `Bars.OpenTimes` DateTime/OpenTime coordinate system used by the native label creation path.
-- `PlanLabelRenderer` is the sole native `ChartText` label owner; labels are 11px, regular-weight, exact-price, background-free and `HorizontalAlignment.Left`. The visible start of the label text is anchored one chart bar before the canonical line start.
+- `PlanLabelAnchorCalculator` remains the sole owner of the horizontal gap and resolves the label anchor exactly one chart bar before the canonical line start in the same `Bars.OpenTimes` DateTime/OpenTime coordinate system used by the chart-control placement path.
+- `PlanLabelRenderer` is the sole plan-label owner; each label is a compact reusable chart-control box at the exact normalized line price, right-anchored to remain left of the line, with regular-weight 11px text, matching canonical line color and ellipsis trimming. Legacy ChartText/no-box statements are historical and no longer govern active presentation.
 - Label text uses exactly the same materialized color as its corresponding line.
 - Pending, parallel and prediction label paths reuse the same canonical renderer/anchor/formatter instead of creating a second geometry or presentation authority.
 - Obsolete `CFIP.cBot/Execution/CbotExecutionSettings.cs` was removed; current cBot execution settings remain owned by the active cBot execution-settings contract.
@@ -118,7 +118,7 @@ Status: VERIFIED COMPLETE — implemented directly on `main`.
 Closure:
 - One canonical directional-arrow renderer now owns active Plan/WATCH/Reaction arrows.
 - Signal/plan lines are Solid, one-pixel and finite 40-bar geometry.
-- Labels are regular-weight native ChartText using the exact line color, with their visible text start one chart bar before the canonical line start.
+- Labels are owned by the compact boxed renderer; they remain regular-weight, use the exact canonical line color, and are positioned one chart bar before the line without overlap.
 - User-reported Release-build CS0219 warning for dead `PanelMainRenderer.buttonMargin` was removed.
 - Source/Architecture, Runtime Acceptance and cTrader Compile all passed on code head `a3cd97f715ed6b6b91599b79fe3fa42c82690e1c`.
 
@@ -2847,10 +2847,10 @@ Required terminal evidence before closeout:
 ## 2026-10-06 — UI footer ownership and signal-quality continuation lock
 
 - [x] Footer construction extracted from PanelFactory into PanelFooterFactory to satisfy production-module size limits without creating a second footer behavior owner.
-- [x] Replaced the ambiguous five mini data bars with two stacked full-width BUY/SELL pressure tracks owned and rendered by PanelFooterFactory.
+- [x] Replaced the ambiguous five mini data bars with two full-width combined pressure tracks owned and rendered by PanelFooterFactory; each track contains adjacent BUY/SELL segments whose widths always sum to the same total track width.
 - [x] BUY/SELL pressure uses the closed M15 bar window and cTrader TickVolumes with close-location weighting; it is a pressure estimate, not true bid/ask volume.
 - [x] Footer geometry reserves the pressure rail independently from the alert/action area so it cannot disappear when the toggle or alert rail is absent.
-- [x] Architecture parameter contract reconciled: total parameter groups remain 533 declarations, with 530 non-OSS baseline declarations after removal of obsolete arrow offset parameters.
+- [x] Architecture parameter contract reconciled: total parameter groups are now 529 declarations, with 526 non-OSS baseline declarations after removal of obsolete advanced controls.
 - [x] PR #361 repository gates passed on the final pre-merge head and the merged main was re-verified.
 - [ ] Target-terminal visual acceptance remains mandatory; repository CI never counts as visual proof.
 
@@ -2897,7 +2897,7 @@ Repository-side CI is the next verification boundary for these synchronized cont
 - A resolved directional trend remains visible at Weak-1 instead of disappearing solely because its presentation score is below the actionability floor. Trade qualification is unchanged.
 - Footer flow surface is explicitly four-row (DOM BUY/SELL + FLOW BUY/SELL), with 10px bars and deterministic 23px row spacing.
 - `FullWidthLevelLines` was removed as an unread/dead public parameter; canonical plan lines remain finite 40-bar geometry.
-- Parameter inventory is now 533 total / 530 non-OSS baseline; architecture and parameter audits were reconciled to the actual source tree.
+- Parameter inventory is now 529 total / 526 non-OSS baseline; architecture and parameter audits are reconciled to the actual source tree.
 
 Repository CI closeout is PASS on PR #375 final head `7ed5d74f97460d01a54912845bd5688986d2079c`: Source/Architecture #5127, cTrader Compile #5120, Runtime Acceptance #4936. Target-terminal visual/audio/cBot acceptance remains mandatory.
 
@@ -2929,3 +2929,22 @@ Correction:
 - Deterministic runtime-contract coverage was added for the 100ms cadence.
 
 Target-terminal verification remains required for actual observed latency, because cTrader executes Indicator `Calculate()` on incoming ticks but terminal performance/market-tick frequency determine the final wall-clock response.
+
+
+## 2026-10-07 — Integrated CR7 / Signal-Quality / cBot Runtime Closeout
+
+Status: **IMPLEMENTED — consolidated on feature/cfip-smart-range-manipulation-2026-10-07; CI verification pending on exact final head.**
+
+Integrated without duplicate production owners:
+- M15 remains canonical decision/reference timeframe; M5 remains trigger/entry precision; M1 remains optional confirmation.
+- Smart range/manipulation/breakout intelligence remains one canonical RangeManipulationAnalyzer/Integration path, including opening-range context; no separate competing opening-range signal path was added.
+- Quality-aware structural confirmations and timeframe agreement were restored as canonical Core/Math owners and consumed by decision evidence.
+- Fresh aggressive flow is realtime modulation/veto only; stale flow is excluded from arrow-strength modulation and cannot create a direction.
+- cBot runtime faults are contained at callback and exception boundaries; transient Indicator enumeration misses preserve an established binding during non-forced checks.
+- cBot presence publishing is bounded at 500 ms; Indicator panel heartbeat remains lightweight and timer-owned.
+- Current public Indicator parameter contract remains 529; stale 533-count audits were reconciled to the canonical 529 contract.
+- Indicator remains broker-mutation-free; cBot remains the broker execution owner.
+- M2 / 2-minute timeframe remains prohibited.
+
+Remaining manual terminal boundary:
+target cTrader validation of panel hide/show restore, combined live buy/sell pressure bar geometry, arrow thickness/placement, same-tick cBot handoff, binding continuity after reload, audible event uniqueness and live/demo execution behavior.

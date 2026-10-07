@@ -24,6 +24,9 @@ namespace cAlgo
                 
                             _lastContextM5 =
                                 closedM5;
+
+                            EmitRangeManipulationWatchAlert(
+                                closedM5);
                 
                             bool structuralBull =
                                 _m5Frame.StructureBull ||
@@ -165,5 +168,64 @@ namespace cAlgo
                                 }
                             }
                         }
+
+        
+        private void EmitRangeManipulationWatchAlert(
+            int closedM5)
+        {
+            RangeManipulationSnapshot range =
+                _rangeManipulation;
+
+            if (range == null ||
+                !range.IsRange)
+                return;
+
+            if (!range.IsManipulationWatch ||
+                range.WatchDirection == 0 ||
+                range.WatchScore < 64)
+            {
+                _lastRangeManipulationWatchKey = "";
+                return;
+            }
+
+            string watchKey =
+                range.StartIndex.ToString(
+                    CultureInfo.InvariantCulture) +
+                "|" +
+                range.WatchDirection.ToString(
+                    CultureInfo.InvariantCulture);
+
+            if (string.Equals(
+                    watchKey,
+                    _lastRangeManipulationWatchKey,
+                    StringComparison.Ordinal))
+                return;
+
+            bool sent =
+                SendUnifiedAlert(
+                    "RANGE-MANIPULATION|" +
+                    closedM5 +
+                    "|" +
+                    range.WatchDirection,
+                    "CFIP RANGE MANIPULATION WATCH | " +
+                    (range.WatchDirection > 0
+                        ? "BUY"
+                        : "SELL") +
+                    " | SCORE " +
+                    range.WatchScore +
+                    " | BND " +
+                    range.BoundaryPressure +
+                    " | MOM " +
+                    range.MomentumPressure +
+                    " | VOL " +
+                    range.VolumePressure,
+                    range.WatchDirection,
+                    false);
+
+            if (sent)
+                _lastRangeManipulationWatchKey =
+                    watchKey;
+        }
+
     }
 }

@@ -22,6 +22,11 @@ evidence = read("src/CFIP.Indicator/Analysis/Market/Decision/DecisionEvidenceSna
 orchestration = read("src/CFIP.Indicator/Analysis/Market/Decision/DecisionOrchestration.cs")
 evaluator = read("src/CFIP.Indicator/Analysis/Market/Decision/DecisionEvaluator.cs")
 workflow = read(".github/workflows/source-check.yml")
+entry_zones = read("src/CFIP.Indicator/Planning/Execution/ExecutionZoneCandidateSelectionCore.cs")
+trigger_gate = read("src/CFIP.Indicator/Planning/Execution/TriggerGate.cs")
+actionable_quality = read("src/CFIP.Indicator/Core/Math/ActionableSignalQualityRule.cs")
+retest_quality = read("src/CFIP.Indicator/Planning/Filters/RegimeFilter.cs")
+execution_mode = read("src/CFIP.Indicator/Planning/Execution/ExecutionModeResolver.cs")
 
 def require(condition, message):
     if not condition:
@@ -61,6 +66,49 @@ require(
     "evidence.BullIndependentEvidenceGroups" in evaluator and
     "evidence.BearIndependentEvidenceGroups" in evaluator,
     "decision evaluator does not bind direction-specific evidence diversity",
+)
+
+require(
+    "M15 is the canonical decision timeframe" in evaluator and
+    "strongM15Conflict" in evaluator and
+    'BlockReason = "M15 CANONICAL CONFLICT"' in evaluator,
+    "M15 canonical directional ownership is not enforced",
+)
+
+require(
+    "maximumPracticalZoneDistanceAtr" in entry_zones and
+    "DistanceToRawZone(" in entry_zones and
+    "return false;" in entry_zones,
+    "execution-zone fallback is not bounded by practical market distance",
+)
+
+require(
+    "ClosedBarTriggerReady(" in trigger_gate and
+    "strong higher-level score is not a substitute" in trigger_gate and
+    "AllowStrongTriggerOverride" not in trigger_gate,
+    "strong-score trigger override can bypass the canonical closed-M5 trigger",
+)
+
+require(
+    "input.EntryLocationQuality <" in actionable_quality and
+    "input.EntryPositionQuality <" in actionable_quality and
+    "&& !AllowsQualityRecovery(input)" not in actionable_quality.split("if (input.EntryLocationQuality",1)[1].split("if (input.EntryTimingQuality",1)[0] and
+    "&& !AllowsQualityRecovery(input)" not in actionable_quality.split("if (input.EntryPositionQuality",1)[1].split("if (!IsFinitePositiveValue",1)[0],
+    "quality recovery can still authorize a materially bad entry location/position",
+)
+
+require(
+    "private int RetestQuality(" in retest_quality and
+    "bars.ClosePrices[index]" in retest_quality and
+    "bars.HighPrices[i] >= zone.Low" in retest_quality,
+    "retest quality does not use closed-M5 price/zone confirmation",
+)
+
+require(
+    "RetestQuality(" in execution_mode and
+    "retest >= MinimumRetestQuality" in execution_mode and
+    "ExecutionMode.RetestMarket" in execution_mode,
+    "RetestMarket can become ready without the canonical retest-quality gate",
 )
 
 require(

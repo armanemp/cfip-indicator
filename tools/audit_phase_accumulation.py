@@ -148,10 +148,10 @@ for chart_path in sorted((ROOT / "UI" / "Chart").glob("*.cs")):
 compact_label_renderer = labels[labels.find("private void DrawCompactPlanLabel("):]
 if "ResolveCanonicalPlanLineColor(" not in compact_label_renderer or "semanticColor" not in compact_label_renderer:
     raise SystemExit("level labels must use the exact canonical signal-line color resolver")
-if "Chart.DrawText(" not in compact_label_renderer:
-    raise SystemExit("level labels must own their native ChartText object")
-if "Chart.DrawRectangle(" in compact_label_renderer:
-    raise SystemExit("level labels must remain background-free")
+if "Chart.AddControl(" not in compact_label_renderer or "new Border" not in compact_label_renderer:
+    raise SystemExit("level labels must own their compact chart-control box")
+if "TextTrimming.CharacterEllipsis" not in compact_label_renderer:
+    raise SystemExit("level labels must prevent text overflow")
 label_anchor = read("UI/Chart/PlanLabelAnchorCalculator.cs")
 if (
     "CompactPlanLabelGapBars = 1" not in label_anchor or
@@ -191,8 +191,8 @@ if "ResolvePanelAlertMessageColor(" not in read("UI/Panel/PanelAlertMessageRende
     raise SystemExit("panel alert semantic color owner is missing")
 if "ResolveCanonicalPlanLineColor(" not in labels:
     raise SystemExit("level label renderer must consume the canonical signal-line color resolver")
-if "Chart.DrawRectangle(" in labels:
-    raise SystemExit("level label renderer must remain background-free")
+if "Chart.DrawRectangle(" in labels and "Chart.AddControl(" not in labels:
+    raise SystemExit("level label renderer must not introduce an independent chart-drawing rectangle")
 if "CompactPlanLabelGapBars = 1" not in label_anchor or "GetCompactPlanLabelAnchorTime(" not in label_anchor or "canonicalLineLeftBar" not in label_anchor or "CompactPlanLabelGapBars" not in label_anchor:
     raise SystemExit("level label renderer must retain the one-bar left clearance in the canonical anchor owner")
 
@@ -210,7 +210,7 @@ if "GetCanonicalSignalPanelStatus()" not in g4_overview_rows:
 parameter_source = "\n".join(
     p.read_text(encoding="utf-8") for p in PARAM_ROOT.glob("*.cs")
 )
-EXPECTED_CURRENT_PARAMETERS = 533
+EXPECTED_CURRENT_PARAMETERS = 529
 if len(re.findall(r"\[Parameter\s*\(", parameter_source)) != EXPECTED_CURRENT_PARAMETERS:
     raise SystemExit("public parameter contract changed unexpectedly")
 

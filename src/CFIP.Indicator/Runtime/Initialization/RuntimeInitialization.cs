@@ -490,6 +490,7 @@ namespace cAlgo
                                     PersistOutcomeHistory();
                                     PersistPortableMemorySnapshot();
 
+                                    RemoveAllPlanLabelControls();
                                     RemoveAllChartObjects();
                                     RemovePanel();
                                     _panelAlertHistory.Clear();

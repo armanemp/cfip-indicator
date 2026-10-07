@@ -11,7 +11,8 @@ namespace cAlgo
             bool playSound,
             string soundTypeName,
             string soundFilePath,
-            string soundGroupKey = null)
+            string soundGroupKey = null,
+            int soundRepeatCount = 1)
         {
             Envelope = envelope;
             Key = envelope == null ? "" : envelope.AlertKey;
@@ -25,6 +26,11 @@ namespace cAlgo
             SoundTypeName = soundTypeName;
             SoundFilePath = soundFilePath;
             SoundGroupKey = soundGroupKey;
+            SoundRepeatCount = Math.Max(
+                1,
+                Math.Min(
+                    2,
+                    soundRepeatCount));
         }
 
         public AlertEnvelope Envelope { get; }
@@ -37,5 +43,6 @@ namespace cAlgo
         public string SoundTypeName { get; }
         public string SoundFilePath { get; }
         public string SoundGroupKey { get; }
+        public int SoundRepeatCount { get; }
     }
 }

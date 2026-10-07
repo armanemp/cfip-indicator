@@ -1,4 +1,4 @@
-# Phase — Signal Label Presentation & Stable Left Gap — 2026-10-04
+STATUS: SUPERSEDED — Active signal-label presentation is governed by the 2026-10-07 compact colored chart-control contract in docs/WORKFLOW.md and docs/CFIP-ROADMAP.md. This file remains historical implementation context.\n\n# Phase — Signal Label Presentation & Stable Left Gap — 2026-10-04
 
 > Superseded within the same existing label owner: the obsolete 2-pip/box-era wording below has been reconciled to the current one-bar, text-only contract.
 
