@@ -104,9 +104,6 @@ namespace CFIP.cBot
         [Parameter("Maximum Daily Loss Percent", Group = "Execution Safety", DefaultValue = 3.0, MinValue = 0.5, MaxValue = 20, Step = 0.5)]
         public double MaximumDailyLossPercent { get; set; }
 
-        [Parameter("Maximum Open Positions", Group = "Execution Safety", DefaultValue = 1, MinValue = 1, MaxValue = 1)]
-        public int MaximumOpenPositions { get; set; }
-
         [Parameter("One Order Per Signal", Group = "Execution Safety", DefaultValue = true)]
         public bool OneOrderPerSignal { get; set; }
 
