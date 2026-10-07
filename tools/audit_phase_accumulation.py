@@ -150,7 +150,7 @@ if "ResolveCanonicalPlanLineColor(" not in compact_label_renderer or "semanticCo
     raise SystemExit("level labels must use the exact canonical signal-line color resolver")
 if "Chart.AddControl(" not in compact_label_renderer or "new Border" not in compact_label_renderer:
     raise SystemExit("level labels must own their compact chart-control box")
-if "TextTrimming = TextTrimming.CharacterEllipsis" not in compact_label_renderer:
+if "TextTrimming.CharacterEllipsis" not in compact_label_renderer:
     raise SystemExit("level labels must prevent text overflow")
 label_anchor = read("UI/Chart/PlanLabelAnchorCalculator.cs")
 if (
