@@ -13,9 +13,10 @@ namespace cAlgo
                 ShowTrigger &&
                 _plan.EntryMode != ExecutionMode.BreakoutMarket &&
                 IsFinitePositive(_plan.EntryTrigger) &&
-                !SamePrice(
-                    _plan.EntryTrigger,
-                    _plan.Entry))
+                EntryGeometryRule.IsTriggerOnEntrySide(
+                    _plan.Direction,
+                    _plan.Entry,
+                    _plan.EntryTrigger)
             {
                 AddPanelRow(
                     ref slot,
