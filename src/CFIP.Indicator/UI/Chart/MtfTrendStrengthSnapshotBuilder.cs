@@ -11,6 +11,9 @@ namespace cAlgo
             if (snapshot == null)
                 return;
 
+            AggressiveFlowSnapshot flow =
+                GetAggressiveFlowSnapshot();
+
             MtfTrendStrengthResult trendStrength =
                 MtfTrendStrengthRule.Evaluate(
                     new[]
@@ -37,7 +40,9 @@ namespace cAlgo
                             ? Math.Max(0, W1Weight)
                             : 0
                     },
-                    0.0);
+                    0.0,
+                    flow.DirectionalBias,
+                    flow.DirectionalConfidence);
 
             snapshot.MtfTrendDirection =
                 trendStrength.Direction;
