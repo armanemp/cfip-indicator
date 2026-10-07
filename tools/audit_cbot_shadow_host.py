@@ -152,9 +152,11 @@ check(
 )
 
 check(
-    "demo market execution is explicit and fail-closed",
+    "demo market execution is explicit while live execution remains fail-closed",
     "EnableDemoMarketExecution" in host and
-    "DefaultValue = false" in host and
+    "DefaultValue = true" in host and
+    "EnableLiveMarketExecution" in host and
+    host.count("DefaultValue = false") >= 1 and
     "Account.IsLive" in host and
     "DemoMarketExecutionCoordinator" in host and
     "_market.TryExecute(" in host,
