@@ -1064,26 +1064,32 @@ Before starting the next phase:
 
 Status: complete.
 
-Implementation:
-- added `Runtime/Calculation/RuntimeFaultState.cs` with `HEALTHY`, `DEGRADED`, `ENTRY_BLOCKED` and `RECOVERING`;
-- added deterministic `RuntimeFaultStateMachine` cycle/fault/recovery/re-arm semantics;
-- connected the existing `RuntimeFaultBoundary` to the new state machine;
-- added explicit fault-state cycle boundaries around `Calculate()`;
-- entered recovery only after pre-analysis reconciliation, lifecycle recovery, active-plan management and protection complete without a current-cycle recoverable fault;
-- kept broker automatic entry disarmed through recovery and after return to `HEALTHY` until an explicit `AutoTradingEnabled` false-to-true transition is observed;
-- guarded market, aggressive and pending broker-entry owners without suppressing pending safety cleanup;
-- added runtime contract and static architecture checks.
+Original implementation introduced a persistent Indicator-side automatic-entry latch. This was later identified as incompatible with the current Indicator = analysis/signal and cBot = execution architecture because a recoverable Indicator exception could permanently suppress future entry intent generation.
 
-Important finding:
-- `HEALTHY` is deliberately not an execution re-arm signal. Broker-confirmed state remains authoritative and recovery cannot silently reopen automatic execution.
+Corrective implementation:
+- retained the explicit runtime states `HEALTHY`, `DEGRADED`, `ENTRY_BLOCKED` and `RECOVERING`;
+- retained cycle boundaries around `Calculate()` and management-first recovery ordering;
+- changed runtime fault blocking to be **cycle-local** through `_cycleFaulted`;
+- removed the fault boundary's mutation of `_autoTradingEnabledRuntime` / `_automaticOrdersEnabledRuntime`;
+- a recoverable fault now blocks automatic entry for the affected calculation cycle only;
+- the next clean calculation cycle clears stale runtime-fault state and restores entry eligibility without a hidden UI or permanent Indicator trading switch;
+- cBot remains the sole broker-execution authority and its own execution/risk gates remain authoritative.
+
+Forensic root cause:
+- `RuntimeFaultBoundary.ApplyRuntimeFaultState()` was setting both Indicator runtime execution flags to `false`;
+- `RuntimeFaultStateMachine.BlockAutomaticEntry()` also latched `_entryArmed = false`;
+- there was no live caller providing the required explicit re-arm transition after the Indicator had been split from execution controls, so one recoverable fault could effectively disable all subsequent Indicator trading intents.
+
+Corrective contract:
+- the faulted cycle must report `ENTRY_BLOCKED`;
+- management/protection/reconciliation continue;
+- the next clean cycle must return to entry-eligible state;
+- no recoverable runtime fault may become a permanent Indicator-wide trading kill switch.
 
 Verification:
-- source and architecture checks: PASS (workflow run 758);
-- runtime acceptance contracts: PASS (workflow run 567);
-- cTrader compile: PASS (workflow run 751).
-
-Result:
-- next phase after CI confirmation: **Phase 1.4 — Runtime recovery semantics**.
+- source/architecture contract updated to require cycle-local isolation;
+- runtime acceptance contract updated to verify faulted-cycle blocking followed by automatic clean-cycle recovery;
+- cTrader compile/live terminal validation remains required after the operator pulls the corrected main state.
 
 Certification record: implementation snapshot was verified by Source and architecture workflow 758, Runtime acceptance workflow 567, and cTrader compile workflow 751 before this documentation-only continuity update.
 
