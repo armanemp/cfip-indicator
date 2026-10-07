@@ -27,6 +27,7 @@ namespace cAlgo
         internal static TacticalOpportunityResult Evaluate(
             int m5Direction,
             int m5Quality,
+            int zoneQuality,
             int waveTrendQuality,
             int structuralEvidence,
             int independentEvidence,
@@ -51,7 +52,12 @@ namespace cAlgo
 
             int quality =
                 (int)Math.Round(
-                    m5Quality * 0.55 +
+                    m5Quality * 0.45 +
+                    Math.Max(
+                        0,
+                        Math.Min(
+                            100,
+                            zoneQuality)) * 0.10 +
                     waveTrendQuality * 0.20 +
                     Math.Min(
                         100,
