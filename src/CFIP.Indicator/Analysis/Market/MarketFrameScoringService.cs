@@ -262,8 +262,6 @@ namespace cAlgo
 
             return f;
         }
-    }
-}
 
         private int ResolveScoredFrameDirection(
             Frame frame,
