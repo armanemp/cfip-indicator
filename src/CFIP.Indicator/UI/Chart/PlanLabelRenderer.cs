@@ -246,7 +246,7 @@ namespace cAlgo
                 label.TextWrapping =
                     TextWrapping.NoWrap;
                 label.TextTrimming =
-                    TextTrimming.Ellipsis;
+                    TextTrimming.CharacterEllipsis;
                 label.TextAlignment =
                     TextAlignment.Left;
                 label.VerticalAlignment =
