@@ -23,6 +23,8 @@ jobs:
           dotnet-version: '6.0.x'
       - run: dotnet restore src/CFIP.Indicator/CFIP.Indicator.csproj
       - run: dotnet build src/CFIP.Indicator/CFIP.Indicator.csproj --configuration Release --no-restore
+      - run: dotnet restore src/CFIP.OpeningRange/CFIP.OpeningRange.csproj
+      - run: dotnet build src/CFIP.OpeningRange/CFIP.OpeningRange.csproj --configuration Release --no-restore
       - run: dotnet restore src/CFIP.Contracts/CFIP.Contracts.csproj
       - run: dotnet build src/CFIP.Contracts/CFIP.Contracts.csproj --configuration Release --no-restore
       - run: dotnet restore src/CFIP.cBot/CFIP.cBot.csproj
