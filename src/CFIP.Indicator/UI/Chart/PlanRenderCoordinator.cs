@@ -98,10 +98,25 @@ namespace cAlgo
                 !SamePrice(trigger, entry) &&
                 !SamePrice(trigger, idealEntry);
 
+            // Trigger is a confirmation level, not a stop-side level.
+            // Long: trigger must be at/above Entry.
+            // Short: trigger must be at/below Entry.
+            // If the internal trigger has already been crossed and therefore
+            // sits behind the live market Entry, keep execution state intact
+            // but do not render a misleading trigger line between Entry and SL.
+            bool triggerOnEntrySide =
+                snapshot.Direction == 1
+                    ? trigger >= entry
+                    : snapshot.Direction == -1
+                        ? trigger <= entry
+                        : false;
+
             bool triggerAllowed =
                 preview
-                    ? true
-                    : snapshot.TriggerVisible && !snapshot.LivePosition;
+                    ? triggerOnEntrySide
+                    : snapshot.TriggerVisible &&
+                      !snapshot.LivePosition &&
+                      triggerOnEntrySide;
 
             bool tp1Distinct =
                 IsFinitePositive(tp1) &&
