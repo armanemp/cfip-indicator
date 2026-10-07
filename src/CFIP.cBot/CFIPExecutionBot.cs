@@ -562,7 +562,13 @@ namespace CFIP.cBot
                             if (!ShouldProcessRealtimeTimerEnvelope(scenario))
                                 continue;
 
-                            ProcessSignalEnvelope(scenario, nowUtc);
+                            bool retryScenario =
+                                ProcessSignalEnvelope(
+                                    scenario,
+                                    nowUtc);
+                            if (!retryScenario)
+                                _nextRealtimeExecutionRetryUtcByScenario.Remove(
+                                    BuildRealtimeScenarioKey(scenario));
                             processedScenarioCount++;
                         }
 
@@ -587,7 +593,13 @@ namespace CFIP.cBot
                 if (!ShouldProcessRealtimeTimerEnvelope(envelope))
                     return;
 
-                ProcessSignalEnvelope(envelope, nowUtc);
+                bool retryEnvelope =
+                    ProcessSignalEnvelope(
+                        envelope,
+                        nowUtc);
+                if (!retryEnvelope)
+                    _nextRealtimeExecutionRetryUtcByScenario.Remove(
+                        BuildRealtimeScenarioKey(envelope));
                 SweepScenarioProtectionStates(nowUtc);
                 PublishExecutionState("HEARTBEAT", false);
             }
@@ -604,7 +616,32 @@ namespace CFIP.cBot
                 exception);
         }
 
-        private void ProcessSignalEnvelope(
+        private string BuildRealtimeScenarioKey(
+            SignalEnvelope envelope)
+        {
+            if (envelope == null ||
+                envelope.Identity == null)
+                return string.Empty;
+
+            return (_boundIndicatorInstanceId ?? string.Empty) +
+                   "\u001F" +
+                   (envelope.Identity.ScenarioId ?? string.Empty);
+        }
+
+        private static bool ShouldRetryBrokerReport(
+            BrokerExecutionReport report,
+            string reason)
+        {
+            if (report == null ||
+                report.Status == BrokerReportStatus.RecoveryRequired)
+                return false;
+
+            return
+                report.Status == BrokerReportStatus.Rejected &&
+                IsRealtimeExecutionRetryableReason(reason);
+        }
+
+        private bool ProcessSignalEnvelope(
             SignalEnvelope envelope,
             DateTime nowUtc)
         {
@@ -620,7 +657,7 @@ namespace CFIP.cBot
                     "SIGNAL PREFLIGHT BLOCKED • " +
                     signalPreflightReason,
                     true);
-                return;
+                return false;
             }
 
             TrackScenarioEnvelope(envelope);
@@ -681,7 +718,7 @@ namespace CFIP.cBot
                         envelope.Identity == null
                             ? ""
                             : envelope.Identity.ScenarioId);
-                    return;
+                    return false;
                 }
             }
 
@@ -739,7 +776,7 @@ namespace CFIP.cBot
                 PublishExecutionState(
                     "EXECUTION DISABLED • ENABLE cBOT EXECUTION",
                     true);
-                return;
+                return false;
             }
 
             if (envelope.Intent == null ||
@@ -756,20 +793,20 @@ namespace CFIP.cBot
                         ? "NO INTENT"
                         : envelope.Intent.Action.ToString()),
                     true);
-                return;
+                return false;
             }
 
-            if (shadowResult == null)
+            if (shadowResult == null
             {
                 LogBlockedState(
                     "SHADOW STATE UNAVAILABLE");
                 PublishExecutionState(
                     "WAITING • SHADOW STATE UNAVAILABLE",
                     true);
-                return;
+                return true;
             }
 
-            if (shadowResult.State != ShadowHostState.Ready)
+            if (shadowResult.State != ShadowHostState.Ready
             {
                 LogBlockedState(
                     shadowResult.Reason ??
@@ -779,7 +816,7 @@ namespace CFIP.cBot
                     (shadowResult.Reason ??
                      shadowResult.State.ToString()),
                     true);
-                return;
+                return true;
             }
 
             if (_sessionExecutions >=
@@ -916,6 +953,12 @@ namespace CFIP.cBot
                         ? ""
                         : envelope.Identity.ScenarioId);
             }
+        return report == null
+            ? IsRealtimeExecutionRetryableReason(
+                executionReason)
+            : ShouldRetryBrokerReport(
+                report,
+                executionReason);
         }
 
         private void PlayBrokerOutcomeAudio(
