@@ -89,8 +89,8 @@ namespace cAlgo
 
             if (!enabled)
             {
-                _entryArmed = false;
-                _lastAutoTradingEnabled = false;
+                _entryArmed = enabled;
+                _lastAutoTradingEnabled = enabled;
                 return;
             }
 
