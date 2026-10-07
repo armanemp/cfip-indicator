@@ -34,6 +34,7 @@ pending_limit = read("src/CFIP.Indicator/Trading/Pending/Placement/ReversalLimit
 pending_fill = read("src/CFIP.Indicator/Trading/Lifecycle/PendingFilledHandler.cs")
 pending_snapshot = read("src/CFIP.Indicator/Trading/Lifecycle/PendingOrderPlanSnapshot.cs")
 fill_rule = read("src/CFIP.Indicator/Core/Math/ExecutionFillAcceptanceRule.cs")
+fill_reconciliation = read("src/CFIP.Indicator/Trading/Lifecycle/LiveFillReconciliation.cs")
 submission = read("src/CFIP.Indicator/Trading/Execution/SubmissionGateCoordinator.cs")
 planning_project = read("tools/CFIP.Planning.Contracts/CFIP.Planning.Contracts.csproj")
 planning_contracts = read("tools/CFIP.Planning.Contracts/Program.cs")
@@ -141,6 +142,12 @@ check(
     and "intent.Stop" in pending_snapshot
     and "intent.Target" in pending_snapshot
     and "ReconcileLivePlanToActualFill(" in pending_fill,
+)
+
+check(
+    "all initial fill paths initialize peak price from the broker-confirmed entry",
+    "_plan.Entry =\n                                        actualEntry" in fill_reconciliation
+    and "_peakPrice =\n                                        actualEntry" in fill_reconciliation,
 )
 
 check(
