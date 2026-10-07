@@ -69,8 +69,9 @@ checks = [
     ("each pressure row and track spans the full panel content width", "contentWidth" in footer_factory and
      "_panelBuyPressureRow.Width" in footer_factory and
      "_panelSellPressureRow.Width" in footer_factory and
-     "_panelBuyPressureTrack.Width =\n                contentWidth" in footer_factory and
-     "_panelSellPressureTrack.Width =\n                contentWidth" in footer_factory and
+     "track.Width = width" in footer_factory and
+     "row.Width = width" in footer_factory and
+     "label.Width = width" in footer_factory and
      "Width = 1" not in footer_factory[footer_factory.index("private StackPanel CreateFlowPressureRow"):footer_factory.index("private void UpdatePanelFlowPressureRail")] and
      "_panelBuyPressureFill.Width" in footer_factory and
      "_panelSellPressureFill.Width" in footer_factory),
