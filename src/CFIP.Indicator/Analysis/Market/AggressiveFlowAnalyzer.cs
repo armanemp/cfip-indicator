@@ -172,5 +172,41 @@ namespace cAlgo
                 (BuyTicks + SellTicks) / 40.0,
                 0.0,
                 1.0);
+
+        internal bool IsFresh(
+            DateTime nowUtc,
+            TimeSpan maxAge)
+        {
+            if (ObservedUtc == DateTime.MinValue ||
+                maxAge < TimeSpan.Zero)
+                return false;
+
+            TimeSpan age =
+                nowUtc.ToUniversalTime() -
+                ObservedUtc.ToUniversalTime();
+
+            return age >= TimeSpan.Zero &&
+                   age <= maxAge;
+        }
+
+        internal bool StronglyOpposes(
+            int direction,
+            double minimumAbsoluteBias,
+            double minimumConfidence)
+        {
+            if (direction != 1 && direction != -1)
+                return false;
+
+            double alignment =
+                DirectionalBias * direction;
+
+            return alignment <=
+                       -Math.Abs(minimumAbsoluteBias) &&
+                   DirectionalConfidence >=
+                       NumericGuards.ClampDouble(
+                           minimumConfidence,
+                           0.0,
+                           1.0);
+        }
     }
 }
