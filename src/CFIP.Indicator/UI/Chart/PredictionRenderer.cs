@@ -18,13 +18,22 @@ namespace cAlgo
                                     Prediction prediction,
                                     int closedM5)
                                 {
-                                    RemovePredictionObjects();
-                        
-                                    if (!ShowPredictionObjects ||
+                                    // Prediction is a pre-plan presentation only. Once the
+                                    // canonical plan exists, its labels/lines are authoritative.
+                                    // Never allow prediction and plan label families to coexist.
+                                    if (_plan != null ||
+                                        !ShowPredictionObjects ||
                                         !EnableEarlyPrediction ||
                                         prediction == null ||
-                                        prediction.Direction == 0 ||
-                                        prediction.Confidence <
+                                        prediction.Direction == 0)
+                                    {
+                                        RemovePredictionObjects();
+                                        return;
+                                    }
+
+                                    RemovePredictionObjects();
+
+                                    if (prediction.Confidence <
                                         Math.Max(
                                             Math.Max(
                                                 MinimumEarlyConfidence,
