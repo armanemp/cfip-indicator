@@ -2929,3 +2929,22 @@ Correction:
 - Deterministic runtime-contract coverage was added for the 100ms cadence.
 
 Target-terminal verification remains required for actual observed latency, because cTrader executes Indicator `Calculate()` on incoming ticks but terminal performance/market-tick frequency determine the final wall-clock response.
+
+
+## 2026-10-07 — Integrated CR7 / Signal-Quality / cBot Runtime Closeout
+
+Status: **IMPLEMENTED — consolidated on feature/cfip-smart-range-manipulation-2026-10-07; CI verification pending on exact final head.**
+
+Integrated without duplicate production owners:
+- M15 remains canonical decision/reference timeframe; M5 remains trigger/entry precision; M1 remains optional confirmation.
+- Smart range/manipulation/breakout intelligence remains one canonical RangeManipulationAnalyzer/Integration path, including opening-range context; no separate competing opening-range signal path was added.
+- Quality-aware structural confirmations and timeframe agreement were restored as canonical Core/Math owners and consumed by decision evidence.
+- Fresh aggressive flow is realtime modulation/veto only; stale flow is excluded from arrow-strength modulation and cannot create a direction.
+- cBot runtime faults are contained at callback and exception boundaries; transient Indicator enumeration misses preserve an established binding during non-forced checks.
+- cBot presence publishing is bounded at 500 ms; Indicator panel heartbeat remains lightweight and timer-owned.
+- Current public Indicator parameter contract remains 529; stale 533-count audits were reconciled to the canonical 529 contract.
+- Indicator remains broker-mutation-free; cBot remains the broker execution owner.
+- M2 / 2-minute timeframe remains prohibited.
+
+Remaining manual terminal boundary:
+target cTrader validation of panel hide/show restore, combined live buy/sell pressure bar geometry, arrow thickness/placement, same-tick cBot handoff, binding continuity after reload, audible event uniqueness and live/demo execution behavior.
