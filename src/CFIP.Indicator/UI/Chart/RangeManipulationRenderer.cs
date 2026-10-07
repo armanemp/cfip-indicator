@@ -187,7 +187,6 @@ namespace cAlgo
                         ? snapshot.Low
                         : snapshot.High,
                     baseColor);
-            }
         }
 
         private void RemoveRangeManipulationObjects()
@@ -201,3 +200,4 @@ namespace cAlgo
             Chart.RemoveObject(RangeVisualPrefix + "LABEL");
         }
     }
+}
