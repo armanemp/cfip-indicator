@@ -84,7 +84,6 @@ namespace cAlgo
                                     _panelHidden = false;
                                     _lastPanelContentRefreshUtc =
                                         DateTime.MinValue;
-                                    _lastReactionAlertBar = -1;
                                     _panelStableHeader = "";
                                     _panelStableHeaderSinceUtc =
                                         DateTime.MinValue;
