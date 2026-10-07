@@ -418,7 +418,6 @@ namespace cAlgo
             return d;
         }
 
-        private void ReversalQuality(
             Bars bars,
             int index,
             int direction,
