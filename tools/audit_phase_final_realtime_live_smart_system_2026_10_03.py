@@ -60,22 +60,18 @@ require(
 require(
     "RenderCanonicalMtfTrendArrows(" in read("src/CFIP.Indicator/Runtime/Calculation/CalculationLiveCycle.cs") and
     "RenderStackedSignalArrows(" in arrow and
-    "UpdateSignalArrowBox(" in arrow and
-    "EnsureSignalArrowBox()" in arrow and
-    "Width = 66" in arrow and
-    "Height = 66" in arrow and
-    "HorizontalAlignment.Right" in arrow and
-    "VerticalAlignment.Bottom" in arrow and
-    "IsHitTestVisible = false" in arrow and
-    '"WATCH_ARROW"' in arrow and
-    '"WATCH_ARROW_2"' in arrow and
-    '"WATCH_ARROW_3"' in arrow,
+    "Chart.DrawIcon(" in arrow and
+    "ChartIconType.UpArrow" in arrow and
+    "ChartIconType.DownArrow" in arrow and
+    "CanonicalTrendArrowPrefix" in arrow and
+    "arrowCount" in arrow and
+    "RemoveStackedSignalArrows();" in arrow,
     "signal direction must have one canonical fixed box owner with deterministic 1..3 arrow strength and legacy-object cleanup",
 )
 
 require(
-    "if (visualDirection == 0)" in renderer and
-    "RemoveStackedSignalArrows();" in renderer and
+    "direction == 0" in arrow and
+    "RemoveStackedSignalArrows();" in arrow and
     "ChartIconType.Circle" not in renderer and
     "M1_TRIGGER" not in renderer,
     "directionless signal presentation must be hidden and no obsolete M1 marker may become a second visual path",
