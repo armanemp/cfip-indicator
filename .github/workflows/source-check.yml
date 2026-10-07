@@ -182,3 +182,4 @@ jobs:
       - run: python tools/audit_phase_ui_signal_box_footer_2026_10_06.py
       - run: python tools/audit_phase_cbot_arrow_footer_execution_2026_10_07.py
       - run: python tools/audit_phase_signal_stability_2026_10_06.py
+      - run: python tools/audit_phase_signal_quality_precision_2026_10_07.py
