@@ -34,7 +34,7 @@ check("plan labels use the canonical readable font, one-bar left clearance and f
     "GetCompactPlanLabelAnchorTime(" in anchor and
     "HorizontalAlignment.Right" in labels and
     "HorizontalAlignment.Left" in labels and
-    "TextTrimming = TextTrimming.Ellipsis" in labels and
+    "TextTrimming = TextTrimming.CharacterEllipsis" in labels and
     "FontWeight = FontWeight.Normal" in labels and
     "Chart.MoveControl(" in labels and
     "GetCompactPlanLabelAnchorTime(" in labels)
