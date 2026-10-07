@@ -1785,3 +1785,11 @@ The intent is higher signal precision through removal of artificial confidence, 
 ## Top-Down tactical precision hardening — 2026-10-07
 
 The tactical exception path was hardened so `TacticalOpportunityAllowed` alone can no longer bypass the M15/M30 hierarchy. A tactical bypass now requires strong same-direction midframe confirmation; a Counter-HTF tactical path additionally requires an explicit opposing HTF anchor. This preserves the intentional tactical/counter-HTF lane while preventing M5-only directions from becoming canonical signals.
+
+
+## 2026-10-07 — Live-signal flow precision
+- [x] Current open-M5 reaction remains the realtime signal layer; closed M15/M5 decision remains authoritative for direction lifecycle.
+- [x] Aggressive flow is consumed only through a fresh five-second snapshot.
+- [x] Strong opposing fresh flow is a veto/modulation of the intrabar reaction, not an additional vote.
+- [x] Stale flow cannot influence MTF arrow strength.
+- [ ] Empirical replay/OOS validation of live-reaction thresholds and false-positive rate remains open.
