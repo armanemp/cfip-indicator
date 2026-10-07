@@ -1,3 +1,5 @@
+using System;
+
 namespace cAlgo
 {
     internal static class ReactionTimingRule
