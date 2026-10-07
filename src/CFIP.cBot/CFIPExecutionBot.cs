@@ -239,12 +239,14 @@ namespace CFIP.cBot
         private int _sessionExecutions;
         private DateTime _startedUtc;
         private DateTime _nextBindingCheckUtc = DateTime.MinValue;
+        private DateTime _indicatorBindingLostSinceUtc = DateTime.MinValue;
         private DateTime _nextSignalReloadUtc = DateTime.MinValue;
         private string _boundIndicatorInstanceId = "";
         private string _activeManagedExecutionLabel = "";
         private SignalEnvelope _lastSignalEnvelope;
         private long _stateRevision;
         private const int MaxRealtimeTimerScenarioRevisions = 128;
+        private const int IndicatorBindingGraceSeconds = 10;
 
         private readonly Dictionary<string, long> _lastRealtimeTimerRevisionByScenario =
             new Dictionary<string, long>(StringComparer.Ordinal);
@@ -1029,6 +1031,28 @@ namespace CFIP.cBot
                     out ChartIndicator indicator,
                     out string reason))
             {
+                // cTrader can transiently rebuild ChartIndicators.Custom while
+                // an attached Indicator is reloaded/modified. Do not turn that
+                // short host-side transition into an execution shutdown.
+                if (!string.IsNullOrWhiteSpace(_boundIndicatorInstanceId))
+                {
+                    if (_indicatorBindingLostSinceUtc == DateTime.MinValue)
+                        _indicatorBindingLostSinceUtc = now;
+
+                    double lossSeconds =
+                        (now - _indicatorBindingLostSinceUtc).TotalSeconds;
+
+                    if (lossSeconds <= IndicatorBindingGraceSeconds)
+                    {
+                        Print(
+                            "CFIP ANALYSIS BIND | transient | reason={0} | retainedInstance={1} | age={2:0.0}s",
+                            reason,
+                            _boundIndicatorInstanceId,
+                            Math.Max(0, lossSeconds));
+                        return true;
+                    }
+                }
+
                 // The custom Indicator is a local chart algorithm and must be
                 // attached explicitly by the operator. Never create/resolve it
                 // from this lifecycle path: doing so re-enters cTrader's
@@ -1039,6 +1063,7 @@ namespace CFIP.cBot
                     reason,
                     SymbolName);
 
+                _indicatorBindingLostSinceUtc = DateTime.MinValue;
                 _boundIndicatorInstanceId = "";
                 _activeManagedExecutionLabel = "";
                 _executionSettings = null;
@@ -1049,6 +1074,8 @@ namespace CFIP.cBot
                 LogBlockedState(reason);
                 return false;
             }
+
+            _indicatorBindingLostSinceUtc = DateTime.MinValue;
 
             string instanceId = indicator.InstanceId ?? "";
 
@@ -1070,6 +1097,7 @@ namespace CFIP.cBot
                 return true;
 
             _boundIndicatorInstanceId = instanceId;
+            _indicatorBindingLostSinceUtc = DateTime.MinValue;
             _idempotencyStore.Reload(
                 this,
                 _boundIndicatorInstanceId,
