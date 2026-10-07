@@ -57,8 +57,8 @@ parameters = sum(
 )
 if parameters != 534:
     raise SystemExit(f"Expected 534 total parameters, found {parameters}")
-if len(parameter_files) != 28:
-    raise SystemExit(f"Expected 28 parameter-group files, found {len(parameter_files)}")
+if len(parameter_files) != 30:
+    raise SystemExit(f"Expected 30 parameter-group files, found {len(parameter_files)}")
 
 news_parameter_file = PARAMETER_ROOT / "28_news_guard.cs"
 if not news_parameter_file.exists():
