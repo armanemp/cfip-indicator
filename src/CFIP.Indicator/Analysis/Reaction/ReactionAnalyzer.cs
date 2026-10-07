@@ -322,6 +322,30 @@ namespace cAlgo
                     closedIndex) &&
                 confirmedDirection == direction;
 
+            // Broker/venue tick flow is not an extra directional vote.
+            // It is only a fresh, strong-opposition veto for the intrabar
+            // reaction layer. This prevents a stale/fragmented flow sample
+            // from creating a signal while preserving the closed M15/M5
+            // decision authority.
+            AggressiveFlowSnapshot flowSnapshot;
+            bool freshFlow =
+                TryGetFreshAggressiveFlowSnapshot(
+                    out flowSnapshot);
+
+            bool flowOpposes =
+                freshFlow &&
+                flowSnapshot.StronglyOpposes(
+                    direction,
+                    0.35,
+                    0.75);
+
+            if (flowOpposes)
+            {
+                d.TriggerReady = false;
+                d.EntryAllowed = false;
+                d.BlockReason = "FLOW OPPOSITION";
+            }
+
             d.TriggerReady =
                 ReactionQualificationRule.IsQualified(
                     direction,
