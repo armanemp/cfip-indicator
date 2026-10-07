@@ -563,7 +563,13 @@ namespace CFIP.cBot
                             if (!ShouldProcessRealtimeTimerEnvelope(scenario))
                                 continue;
 
-                            ProcessSignalEnvelope(scenario, nowUtc);
+                            bool retryScenario =
+                                ProcessSignalEnvelope(
+                                    scenario,
+                                    nowUtc);
+                            RecordRealtimeTimerAttempt(
+                                scenario,
+                                !retryScenario);
                             processedScenarioCount++;
                         }
 
@@ -588,7 +594,13 @@ namespace CFIP.cBot
                 if (!ShouldProcessRealtimeTimerEnvelope(envelope))
                     return;
 
-                ProcessSignalEnvelope(envelope, nowUtc);
+                bool retryEnvelope =
+                    ProcessSignalEnvelope(
+                        envelope,
+                        nowUtc);
+                RecordRealtimeTimerAttempt(
+                    envelope,
+                    !retryEnvelope);
                 SweepScenarioProtectionStates(nowUtc);
                 PublishExecutionState("HEARTBEAT", false);
             }
@@ -603,6 +615,31 @@ namespace CFIP.cBot
             LogRuntimeFault(
                 "OnException",
                 exception);
+        }
+
+        private static bool ShouldRetryExecutionReason(
+            string reason)
+        {
+            if (string.IsNullOrWhiteSpace(reason))
+                return false;
+
+            string value =
+                reason.ToUpperInvariant();
+
+            return
+                value.Contains("COOLDOWN") ||
+                value.Contains("CAPACITY") ||
+                value.Contains("SPREAD") ||
+                value.Contains("MARGIN") ||
+                value.Contains("MARKET CLOSED") ||
+                value.Contains("MARKET HOURS") ||
+                value.Contains("PERMISSION") ||
+                value.Contains("TRADING") ||
+                value.Contains("QUOTE") ||
+                value.Contains("UNAVAILABLE") ||
+                value.Contains("NOT READY") ||
+                value.Contains("BLOCKED") ||
+                value.Contains("RECOVERY REQUIRED");
         }
 
         private bool ProcessSignalEnvelope(
@@ -719,7 +756,8 @@ namespace CFIP.cBot
                     "EXECUTION BLOCKED • " +
                     environmentReason,
                     true);
-                return false;
+                return ShouldRetryExecutionReason(
+                    environmentReason);
             }
 
             bool actionEnabled =
