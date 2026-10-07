@@ -128,80 +128,9 @@ namespace cAlgo
 
         private void ProcessDecisionOwnedReactionAlert()
         {
-            // Reaction is calculated from the currently forming M5 candle.
-            // It remains an internal precision input, never a user-facing signal
-            // or alert. Confirmed signal alerts are emitted only from the closed-M5
-            // decision lifecycle.
-            return;
-
-            int reactionM5 =
-                _m5Bars.Count - 1;
-
-            bool hasPlan =
-                _plan != null;
-
-            bool hasPendingOrder =
-                GetManagedPendingOrder() != null;
-
-            bool hasLivePosition =
-                _plan != null &&
-                _plan.IsLivePosition;
-
-            SignalVisualSnapshot canonicalSnapshot =
-                BuildSignalVisualSnapshot(
-                    reactionM5);
-
-            // Reaction alerts are informational, but they must never announce a
-            // direction that contradicts the same canonical snapshot used by the
-            // chart arrow. An already-actionable canonical plan also owns the alert.
-            if (canonicalSnapshot != null &&
-                canonicalSnapshot.ActionableNow)
-                return;
-
-            if (canonicalSnapshot != null &&
-                canonicalSnapshot.AuthoritativeDirection != 0 &&
-                canonicalSnapshot.AuthoritativeDirection != _reaction.Direction)
-                return;
-
-            bool rangeAllowed =
-                IsRangeSignalVisualAllowed(
-                    reactionM5,
-                    _reaction.Direction,
-                    _reaction.Confidence,
-                    _reaction.SmartQuality,
-                    _reaction.Edge,
-                    _reaction.IndependentEvidence,
-                    StructuralConfirmations(
-                        _reaction.Direction));
-
-            if (_lastReactionAlertBar ==
-                    reactionM5 ||
-                !WatchReactionAlertRule.IsReactionAlertEligible(
-                    AlertOnReaction,
-                    AlertOnLiveReaction,
-                    _reaction.TriggerReady,
-                    hasPlan,
-                    hasPendingOrder,
-                    hasLivePosition,
-                    rangeAllowed,
-                    _reaction.Direction,
-                    _reaction.Confidence,
-                    _reaction.IndependentEvidence,
-                    LiveReactionThreshold,
-                    MinimumLiveReactionEvidence))
-                return;
-
-            if (SendUnifiedAlert(
-                    WatchReactionAlertRule.BuildReactionAlertKey(
-                        reactionM5,
-                        _reaction.Direction),
-                    _reaction.Reason,
-                    _reaction.Direction,
-                    false))
-            {
-                _lastReactionAlertBar =
-                    reactionM5;
-            }
+            // Forming-M5 Reaction remains an internal precision input only.
+            // User-facing signal alerts are emitted exclusively from the
+            // closed-M5 canonical decision lifecycle.
         }
 
         private void ProcessParallelOpportunityAlerts(
