@@ -15,7 +15,7 @@ def check(condition: bool, message: str) -> None:
 
 lamp = read("UI/Panel/PanelTrendTimeframeLampRow.cs")
 check(
-    "PanelFooterActionGap = 16" in read("UI/Panel/PanelConstants.cs") and
+    "PanelFooterActionGap = 8" in read("UI/Panel/PanelConstants.cs") and
     "Margin =" in read("UI/Panel/PanelFooterFactory.cs") and
     "PanelFooterActionGap" in read("UI/Panel/PanelFooterFactory.cs"),
     "footer clearance must exist as real visual margin, not only as reserved height",
@@ -120,8 +120,10 @@ constants = read("UI/Panel/PanelConstants.cs")
 canonical_arrows = read("UI/Chart/SignalStackedArrowRenderer.cs")
 
 check(
-    "PanelFooterMinHeight = 146" in constants and
-    "PanelFlowPressureRailHeight = 84" in constants and
+    "PanelFooterMinHeight = 160" in constants and
+    "PanelFlowPressureRailHeight = 96" in constants and
+    "PanelFlowPressureRowHeight = 23" in constants and
+    "PanelFlowPressureBarHeight = 10" in constants and
     "ResolvePanelFooterAreaHeight(" in layout and
     "ResolvePanelFooterAreaHeight(" in panel and
     "ResolvePanelFooterAreaHeight(" in visual and
@@ -218,15 +220,15 @@ check(
 )
 
 check(
-    "PanelFooterMinHeight = 146" in constants and
-    "PanelFooterActionGap = 16" in constants and
+    "PanelFooterMinHeight = 160" in constants and
+    "PanelFooterActionGap = 8" in constants and
     "return contentHeight;" in layout and
-    "PanelFlowPressureRailHeight = 84" in constants and
-    "PanelFlowPressureRowHeight = 20" in constants and
-    "PanelFlowPressureBarHeight = 8" in constants and
-    "PanelFooterActionGap = 16" in constants and
+    "PanelFlowPressureRailHeight = 96" in constants and
+    "PanelFlowPressureRowHeight = 23" in constants and
+    "PanelFlowPressureBarHeight = 10" in constants and
+    "PanelFooterActionGap = 8" in constants and
     "PanelAlertMessageRowHeight = 18" in read("UI/Panel/PanelAlertMessageRenderer.cs"),
-    "footer geometry must reserve the two-row pressure rail at the actual content boundary",
+    "footer geometry must reserve the four-row pressure rail at the actual content boundary",
 )
 
 check(
