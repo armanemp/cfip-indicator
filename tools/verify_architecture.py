@@ -55,8 +55,8 @@ parameters = sum(
     len(re.findall(r"\[Parameter\s*\(", p.read_text(encoding="utf-8")))
     for p in parameter_files
 )
-if parameters != 533:
-    raise SystemExit(f"Expected 533 total parameters, found {parameters}")
+if parameters != 531:
+    raise SystemExit(f"Expected 531 total parameters, found {parameters}")
 if len(parameter_files) != 30:
     raise SystemExit(f"Expected 30 parameter-group files, found {len(parameter_files)}")
 
