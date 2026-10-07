@@ -70,9 +70,12 @@ require(
 )
 
 require(
-    "Chart.DrawText(" in label and
+    "Chart.AddControl(" in label and
+    "new Border" in label and
+    "Chart.DrawText(" not in label and
     "Chart.DrawRectangle(" not in label and
     "Chart.DrawIcon(" not in label and
+    "HorizontalAlignment.Right" in label and
     "HorizontalAlignment.Left" in label and
     "CompactPlanLabelFontSize = 11.0" in label and
     'Chart.RemoveObject(name + "_BOX")' in label and
@@ -80,8 +83,10 @@ require(
     "ResolveCanonicalPlanLineColor(" in line and
     "ResolveCanonicalPlanLineColor(" in label and
     "semanticColor" in label and
-    "GetCompactPlanLabelAnchorTime(" in label,
-    "canonical chart labels must be native ChartText, background-free and separated one bar left of the line",
+    "GetCompactPlanLabelAnchorTime(" in label and
+    "TextTrimming = TextTrimming.Ellipsis" in label and
+    "Chart.MoveControl(" in label,
+    "canonical chart labels must be one-owner compact boxes, bounded, colored by the line color and separated one bar left of the line",
 )
 
 require(
@@ -149,5 +154,5 @@ print("CFIP SINGLE-OWNER / NO-DUALITY AUDIT: PASS")
 print("cBot startup audio: one owner / one cue")
 print("Signal/plan line geometry: one owner / 40 bars / Solid / 1px")
 print("Pending + parallel lines: delegated to canonical line owner")
-print("Chart labels: one renderer / native ChartText / exact price / no rectangle or marker")
+print("Chart labels: one renderer / compact chart-control box / exact price / no marker")
 print("Label formatting + source timeframe: one canonical formatter")
