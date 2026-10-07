@@ -181,7 +181,8 @@ if (SuppressDuplicateAlerts)
                                         playSound,
                                         soundType.ToString(),
                                         SoundFilePath,
-                                        soundDecision.GroupKey));
+                                        soundDecision.GroupKey,
+                                        soundDecision.RepeatCount));
 
                             Print(
                                 "CFIP ALERT QUEUED | id={0} | key={1} | stage={2} | critical={3} | sound={4} | soundType={5} | queue={6}",
