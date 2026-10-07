@@ -101,12 +101,12 @@ require(
 require(
     "BuildSignalVisualSnapshot(" in calc_live and
     "RenderLatestAlertSignalMarker(" in calc_live and
-    "RenderPanel()" in calc_live and
+    "RefreshLiveDecisionActionability(" in calc_live and
+    "RefreshPanelContentIfDue(" in heartbeat and
     calc_live.index("RefreshLiveDecisionActionability(") <
     calc_live.index("BuildSignalVisualSnapshot(") <
-    calc_live.index("RenderLatestAlertSignalMarker(") <
-    calc_live.index("RenderPanel()"),
-    "M5: live calculation chain lost decision -> visual -> panel ordering",
+    calc_live.index("RenderLatestAlertSignalMarker("),
+    "M5: live decision -> visual chain or timer-owned panel refresh ordering is missing",
 )
 
 require(
