@@ -114,6 +114,13 @@ require(
     "P6 must be recorded in continuity documents",
 )
 
+require(
+    "MaximumOpenPositions" not in bot and
+    "OneOrderPerSignal" not in bot and
+    "Max Concurrent Scenarios" in bot,
+    "cBot must expose one broker-side concurrency authority without dead compatibility controls",
+)
+
 if errors:
     print("CBOT-P6 ACCOUNT/RISK/CONNECTION AUDIT: FAIL")
     for e in errors:
