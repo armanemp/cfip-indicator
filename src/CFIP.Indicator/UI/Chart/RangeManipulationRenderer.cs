@@ -53,7 +53,7 @@ namespace cAlgo
             // snapshot score/watch score and must not be encoded as a third hue.
             Color baseColor =
                 snapshot.Direction > 0
-                    ? Color.LimeGreen
+                    ? Color.Green
                     : snapshot.Direction < 0
                         ? Color.Red
                         : Color.Gray;
