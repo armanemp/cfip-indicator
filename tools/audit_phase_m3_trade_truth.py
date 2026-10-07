@@ -106,11 +106,11 @@ require(
 )
 
 require(
-    "bool decisionOwnsDirection" in watch_renderer and
-    "snapshot.PlanActive" in watch_renderer and
-    "snapshot.ActionableNow" in watch_renderer and
-    "snapshot.DecisionEntryAllowed" in watch_renderer,
-    "M3: directional watch marks must use the canonical actionable decision state",
+    "snapshot.MtfTrendDirection" in watch_renderer and
+    "snapshot.MtfTrendStrengthLevel" in watch_renderer and
+    "SignalPresentationColorRule.Resolve(" in watch_renderer and
+    "UpdateSignalArrowBox(" in watch_renderer,
+    "M3: directional arrows must consume the canonical MTF trend direction/strength snapshot",
 )
 
 require(
