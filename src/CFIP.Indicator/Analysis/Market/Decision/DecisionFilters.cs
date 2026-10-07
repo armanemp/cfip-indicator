@@ -35,6 +35,7 @@ namespace cAlgo
                         decision == null ? 0 : decision.SmartQuality,
                         decision == null ? 0 : decision.TimeframeAgreement,
                         decision == null ? 0 : decision.IndependentEvidence,
+                        decision == null ? 0 : decision.IndependentEvidenceGroupCount,
                         decision == null ? 0 : decision.StructuralConfirmations,
                         MinimumConfidence,
                         adaptiveEdgeThreshold,
@@ -43,6 +44,7 @@ namespace cAlgo
                         MinimumTimeframeAgreement,
                         MinimumIndependentEvidence,
                         SmartMinimumIndependentEvidence,
+                        3,
                         EnableSmartDecisionEngine,
                         RequireStructuralConfirmation,
                         MinimumStructuralConfirmations));
@@ -121,9 +123,6 @@ namespace cAlgo
                 return false;
             }
 
-            // DirectionAcceptanceGate is the single owner of the accepted
-            // direction lifecycle. Persist it only after every decision gate
-            // passes so visual state and plan eligibility cannot disagree.
             _lastConfirmedM5 = closedM5;
             _lastConfirmedDirection = decision.Direction;
 
