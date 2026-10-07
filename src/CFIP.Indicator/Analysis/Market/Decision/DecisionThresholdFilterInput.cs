@@ -54,10 +54,10 @@ namespace cAlgo
                 minimumTimeframeAgreement,
                 minimumIndependentEvidence,
                 smartMinimumIndependentEvidence,
+                0,
                 smartDecisionEnabled,
                 requireStructuralConfirmation,
-                minimumStructuralConfirmations,
-                0)
+                minimumStructuralConfirmations)
         {
         }
 
