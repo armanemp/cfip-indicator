@@ -6,7 +6,8 @@ namespace cAlgo
     public partial class CFIPIndicator : Indicator
     {
         private DecisionFilterResult EvaluateDecisionMarketGates(
-            int closedM5)
+            int closedM5,
+            Decision decision)
         {
             if (!SessionAllowed(TimeInUtc))
                 return new DecisionFilterResult(false, "SESSION");
