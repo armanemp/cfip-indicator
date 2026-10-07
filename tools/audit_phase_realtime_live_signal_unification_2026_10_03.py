@@ -61,6 +61,17 @@ check(
     "IndependentEvidence(direction) *" not in tactical_analyzer
 )
 
+topdown_rule = read("src/CFIP.Indicator/Core/Math/TopDownCalibrationRule.cs")
+topdown_analyzer = read("src/CFIP.Indicator/Analysis/Market/Decision/TopDownCalibrationAnalyzer.cs")
+
+check(
+    "tactical top-down bypass requires strong midframe confirmation",
+    "AllowsTacticalBypass(" in topdown_rule and
+    "decision.MidframeDirection" in topdown_analyzer and
+    "decision.MidframeAlignment" in topdown_analyzer and
+    "decision.MidframeAbsoluteStrength" in topdown_analyzer
+)
+
 check(
     "directional consensus rejects fragile raw-score near ties",
     "shareDerivedGap" in consensus and
