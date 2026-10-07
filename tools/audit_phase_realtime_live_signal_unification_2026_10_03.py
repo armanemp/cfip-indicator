@@ -202,10 +202,9 @@ check(
     "Chart.DrawIcon(" in stack and
     "ChartIconType.UpArrow" in stack and
     "ChartIconType.DownArrow" in stack and
-    "HorizontalAlignment = HorizontalAlignment.Right" in stack and
-    "VerticalAlignment = VerticalAlignment.Bottom" in stack and
-    "ChartIconType.UpArrow" not in stack and
-    "ChartIconType.DownArrow" not in stack
+    "ResolveArrowBarIndex(" in stack and
+    "ResolveArrowAtr(" in stack and
+    "RemoveStackedSignalArrows();" in stack
 )
 
 check(
