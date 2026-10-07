@@ -59,12 +59,24 @@ require(
     "panel restore must invalidate the canonical full-render presentation key",
 )
 
-restore_block_start = visibility.find("if (!_panelHidden)")
-restore_block_end = visibility.find("if (_panelHidden)", restore_block_start)
+toggle_start = visibility.find("private void TogglePanel()")
+toggle_end = visibility.find("private void RemovePanel()", toggle_start)
+require(
+    toggle_start >= 0 and
+    toggle_end > toggle_start,
+    "TogglePanel method boundary must remain discoverable",
+)
+
+toggle_code = visibility[toggle_start:toggle_end]
+restore_block_start = toggle_code.find("if (!_panelHidden)")
+restore_block_end = toggle_code.find(
+    "if (_panel != null)",
+    restore_block_start,
+)
 require(
     restore_block_start >= 0 and
     restore_block_end > restore_block_start and
-    "RenderPanel();" in visibility[restore_block_start:restore_block_end],
+    "RenderPanel();" in toggle_code[restore_block_start:],
     "panel restore must force the canonical full panel renderer after becoming visible",
 )
 
