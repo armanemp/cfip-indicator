@@ -2159,9 +2159,10 @@ namespace cAlgo
                         70, 75, 70, 1.50));
 
             Assert(
-                recoveredPosition.Allowed &&
-                string.IsNullOrEmpty(recoveredPosition.Reason),
-                "strong one-dimension price-position recovery accepted");
+                !recoveredPosition.Allowed &&
+                recoveredPosition.Reason ==
+                    "SIGNAL QUALITY • PRICE POSITION",
+                "price-position deficiency remains blocked");
 
             ActionableSignalQualityResult weakEvidence =
                 ActionableSignalQualityRule.Evaluate(
