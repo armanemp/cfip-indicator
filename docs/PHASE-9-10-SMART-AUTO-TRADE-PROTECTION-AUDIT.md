@@ -1,4 +1,4 @@
-# Phase 9.10 — Smart Auto-Trade / Auto-Order Protection & Accumulated Audit
+STATUS: SUPERSEDED — Active signal-label presentation is governed by the 2026-10-07 compact colored chart-control contract in docs/WORKFLOW.md and docs/CFIP-ROADMAP.md. This file remains historical implementation context.\n\n# Phase 9.10 — Smart Auto-Trade / Auto-Order Protection & Accumulated Audit
 
 Date: 2026-09-29
 
