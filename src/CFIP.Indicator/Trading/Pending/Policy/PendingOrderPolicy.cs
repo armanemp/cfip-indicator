@@ -68,6 +68,10 @@ namespace cAlgo
             if (!strongBase)
                 return false;
 
+            if (IndependentEvidenceGroupCount(
+                    _reaction.Direction) < 3)
+                return false;
+
             RangeSignalQualityResult rangeQuality =
                 EvaluateRangeSignalQuality(
                     Math.Max(
