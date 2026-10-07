@@ -131,9 +131,9 @@ namespace cAlgo
                     lowerTouches++;
             }
 
-            if (upperTouches < minTouches ||
-                lowerTouches < minTouches)
-                return empty;
+            bool robustTouches =
+                upperTouches >= minTouches &&
+                lowerTouches >= minTouches;
 
             double efficiency =
                 RangeEfficiency(
@@ -144,10 +144,41 @@ namespace cAlgo
             if (efficiency > 0.62)
                 return empty;
 
-            int score = 40;
-            score += Math.Min(20, (upperTouches + lowerTouches) * 3);
-            score += efficiency < 0.38 ? 15 : 7;
-            score += widthAtr <= 2.5 ? 10 : 4;
+            // A market can be entering a range before the second clean touch
+            // exists on both sides. Treat a tight, low-efficiency compression as
+            // a forming range, but never promote it to a trade by itself.
+            bool formingRange =
+                !robustTouches &&
+                efficiency <= 0.42 &&
+                widthAtr <= Math.Min(
+                    maxWidthAtr,
+                    2.20);
+
+            if (!robustTouches &&
+                !formingRange)
+                return empty;
+
+            int score =
+                robustTouches
+                    ? 40
+                    : 30;
+
+            score += Math.Min(
+                20,
+                (upperTouches + lowerTouches) * 3);
+
+            score +=
+                efficiency < 0.38
+                    ? 15
+                    : 7;
+
+            score +=
+                widthAtr <= 2.5
+                    ? 10
+                    : 4;
+
+            if (formingRange)
+                score += 5;
 
             int sweepDirection = 0;
             int sweepIndex = -1;
@@ -242,7 +273,8 @@ namespace cAlgo
             score = Math.Max(0, Math.Min(100, score));
 
             if (score < minimumScore &&
-                !confirmedBreakout)
+                !confirmedBreakout &&
+                sweepDirection == 0)
                 return BuildRangeOnly(
                     high,
                     low,
@@ -251,7 +283,9 @@ namespace cAlgo
                     rangeLast,
                     score,
                     upperTouches,
-                    lowerTouches);
+                    lowerTouches,
+                    useOpeningRange,
+                    formingRange);
 
             bool retest =
                 false;
@@ -422,11 +456,20 @@ namespace cAlgo
             int index,
             int score,
             int upperTouches,
-            int lowerTouches)
+            int lowerTouches,
+            bool useOpeningRange,
+            bool formingRange)
         {
+            string state =
+                formingRange
+                    ? "RANGE_FORMING"
+                    : "RANGE";
+
             return new RangeManipulationSnapshot
             {
-                State = "RANGE",
+                State = useOpeningRange
+                    ? "OPENING_" + state
+                    : state,
                 Direction = 0,
                 Score = score,
                 High = high,
@@ -439,7 +482,8 @@ namespace cAlgo
                 RetestIndex = -1,
                 IsRange = true,
                 Reason =
-                    "RANGE " +
+                    state +
+                    " " +
                     upperTouches +
                     "/" +
                     lowerTouches +
