@@ -144,10 +144,6 @@ namespace cAlgo
                 _prediction,
                 closedM5);
 
-            RenderPredictionObjects(
-                _prediction,
-                closedM5);
-
             RenderRangeManipulation(
                 _rangeManipulation,
                 closedM5);
