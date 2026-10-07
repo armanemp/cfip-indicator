@@ -113,8 +113,9 @@ factory = read(
     "src/CFIP.Indicator/Trading/Lifecycle/LivePlanFactory.cs"
 )
 check(
-    "aggressive fills retain the source trace while recovery remains opt-in",
-    "ExecutionMode.BreakoutMarket,\n                    true)" in aggressive and
+    "aggressive cBot execution is separated from indicator trace-binding recovery",
+    "bool aggressiveAction =" in aggressive and
+    "ExecutionAction.Aggressive" in aggressive and
     "bool bindSignalTrace = false" in factory and
     "if (bindSignalTrace)" in factory,
 )
