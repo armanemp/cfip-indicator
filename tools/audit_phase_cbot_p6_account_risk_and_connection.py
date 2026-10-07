@@ -59,8 +59,8 @@ for token in (
     "MaximumSpreadToStopRiskRatio",
     "EnableDailyLossLimit",
     "MaximumDailyLossPercent",
-    "MaximumOpenPositions",
-    "OneOrderPerSignal",
+    "MaxConcurrentScenarios",
+    "MaxExecutionMarginUsagePercent",
 ):
     require(token in settings, "execution settings bridge missing " + token)
 
@@ -128,3 +128,10 @@ print("broker-session/spread guards: PASS")
 print("daily-loss enforcement: PASS")
 print("scenario-aware capacity: PASS")
 print("cBot final margin/volume ownership: PASS")
+
+require(
+    "MaximumOpenPositions" not in bot and
+    "OneOrderPerSignal" not in bot and
+    "Max Concurrent Scenarios" in bot,
+    "cBot must expose one broker-side concurrency authority without dead compatibility controls",
+)
