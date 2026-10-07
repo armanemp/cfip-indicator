@@ -368,8 +368,21 @@ namespace cAlgo
 
         private void RenderCalculationState(
             int index,
-            int closedM5)
+            int closedM5,
+            bool newClosedBar)
         {
+            DateTime now = TimeInUtc;
+            const int chartPresentationIntervalMilliseconds = 200;
+
+            if (!newClosedBar &&
+                closedM5 == _lastChartPresentationM5 &&
+                now < _lastChartPresentationUtc.AddMilliseconds(
+                    chartPresentationIntervalMilliseconds))
+                return;
+
+            _lastChartPresentationUtc = now;
+            _lastChartPresentationM5 = closedM5;
+
             // Keep chart actionability on the same current-quote state as execution.
             RefreshLiveDecisionActionability(
                 closedM5);
