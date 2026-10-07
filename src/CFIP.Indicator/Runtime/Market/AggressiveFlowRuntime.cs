@@ -24,7 +24,55 @@ namespace cAlgo
                 return;
 
             _aggressiveFlowTicks.Tick += OnAggressiveFlowTick;
-            RefreshAggressiveFlowSnapshot(TimeInUtc);
+            _aggressiveFlowTicks.HistoryLoaded += OnAggressiveFlowHistoryLoaded;
+            _aggressiveFlowTicks.Reloaded += OnAggressiveFlowReloaded;
+
+            // Seed immediately from the ticks already resident in the terminal,
+            // then ask cTrader for more history. Both paths converge on the same
+            // analyzer owner; no second flow cache is introduced.
+            _aggressiveFlowAnalyzer.SeedFromHistory(_aggressiveFlowTicks);
+            RefreshAggressiveFlowSnapshot(
+                _aggressiveFlowTicks.LastTick.Time.ToUniversalTime());
+
+            try
+            {
+                _aggressiveFlowTicks.LoadMoreHistoryAsync();
+            }
+            catch (Exception ex)
+            {
+                Print(
+                    "CFIP aggressive-flow history load request failed: {0}",
+                    ex.Message);
+            }
+        }
+
+        private void OnAggressiveFlowHistoryLoaded(
+            TicksHistoryLoadedEventArgs args)
+        {
+            try
+            {
+                if (_aggressiveFlowTicks == null)
+                    return;
+
+                _aggressiveFlowAnalyzer.SeedFromHistory(
+                    _aggressiveFlowTicks);
+
+                Tick lastTick = _aggressiveFlowTicks.LastTick;
+                RefreshAggressiveFlowSnapshot(
+                    lastTick.Time.ToUniversalTime());
+            }
+            catch (Exception ex)
+            {
+                Print(
+                    "CFIP aggressive-flow history reseed failed: {0}",
+                    ex.Message);
+            }
+        }
+
+        private void OnAggressiveFlowReloaded(
+            TicksHistoryLoadedEventArgs args)
+        {
+            OnAggressiveFlowHistoryLoaded(args);
         }
 
         private void OnAggressiveFlowTick(TicksTickEventArgs args)
@@ -73,6 +121,8 @@ namespace cAlgo
             try
             {
                 _aggressiveFlowTicks.Tick -= OnAggressiveFlowTick;
+                _aggressiveFlowTicks.HistoryLoaded -= OnAggressiveFlowHistoryLoaded;
+                _aggressiveFlowTicks.Reloaded -= OnAggressiveFlowReloaded;
             }
             catch (Exception ex)
             {
