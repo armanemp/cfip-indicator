@@ -204,7 +204,8 @@ namespace cAlgo
                     input.M5Frame == null
                         ? 0
                         : input.M5Frame.IndicatorConflict,
-                    decision.IndependentEvidenceGroupCount);
+                    decision.IndependentEvidenceGroupCount,
+                    m15Quality);
 
             if (decision.Direction == 0)
             {
