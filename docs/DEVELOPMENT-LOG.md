@@ -1665,7 +1665,7 @@ Findings and corrections:
 - added permanent semantic-parameter and whole-project integrity audits to CI;
 - updated workflow documentation so whole-project auditing is mandatory for every future phase.
 
-Current parameter surface: 531 = 528 baseline + 3 OSS extension.
+Current parameter surface: 529 = 526 baseline + 3 OSS extension.
 
 Next planned phase after green verification: Phase 7.4 — MaximumOpenPositions semantics.
 Track 8 remains the analytical correctness track, including the dedicated Order Block mathematical audit.
@@ -1697,7 +1697,7 @@ Phase 7.3 is complete. The implementation removed the proven duplicate EnableDyn
 
 Final pre-merge verification: Source / Architecture PASS; dead/unused parameter audit PASS; runtime UI audit PASS; semantic parameter audit PASS; full project integrity audit PASS; Runtime Acceptance Contracts PASS; cTrader Compile PASS.
 
-Current project surface: 531 public parameters (528 baseline + 3 OSS extension). The standing project audit scans 419 production C# files for duplicate method signatures, parameter uniqueness, visual synchronization, execution authority and continuity rules.
+Current project surface: 529 public parameters (526 baseline + 3 OSS extension). The standing project audit scans 419 production C# files for duplicate method signatures, parameter uniqueness, visual synchronization, execution authority and continuity rules.
 
 Next planned implementation phase: Phase 7.4 — MaximumOpenPositions semantics.
 
