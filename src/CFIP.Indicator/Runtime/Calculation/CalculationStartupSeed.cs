@@ -72,7 +72,8 @@ namespace cAlgo
 
                 RenderCalculationState(
                     Bars.Count - 1,
-                    closedM5);
+                    closedM5,
+                    true);
 
                 RefreshReadOnlyProvider(
                     closedM5);
