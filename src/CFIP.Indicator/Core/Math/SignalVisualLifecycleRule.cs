@@ -65,9 +65,10 @@ namespace cAlgo
                 direction != decisionDirection)
                 return false;
 
-            // Setup Preview is a structural forecast. It is intentionally visible
-            // before TriggerReady/EntryAllowed, but it is still age-bounded.
-            return true;
+            // A setup preview is still pre-trigger, but it must already have
+            // passed the canonical decision gates. Blocked/low-quality decisions
+            // must never create a trade-looking visual on the chart.
+            return decisionEntryAllowed;
         }
 
         public static bool IsSetupPreviewWithinPracticalDistance(
