@@ -179,6 +179,20 @@ check(
     "compositeBonus" in quality_selection
 )
 check(
+    "signal ingestion and transport reload remain Timer-owned",
+    "protected override void OnTimer()" in bot and
+    "ReloadSignalStore(true)" in bot and
+    "ReloadSignalStore(false)" not in bot and
+    "ProcessSignalEnvelope(" in bot,
+)
+check(
+    "Timer and Tick cycles are exception-isolated so one runtime fault cannot terminate the lifecycle",
+    "TIMER CYCLE EXCEPTION" in bot and
+    "TICK CYCLE EXCEPTION" in bot and
+    "catch (Exception ex)" in bot,
+)
+
+check(
     "timer dedupe tracks each scenario revision independently",
     "MaxRealtimeTimerScenarioRevisions = 128" in bot and
     "_lastRealtimeTimerRevisionByScenario" in bot and
