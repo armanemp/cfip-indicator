@@ -70,9 +70,11 @@ namespace cAlgo
         {
             _cycleFaulted = false;
 
-            // A recoverable fault is diagnostic/cycle-scoped. Do not carry an
-            // old calculation fault forward as a permanent entry kill switch.
-            if (_state != RuntimeFaultState.Healthy)
+            // A recoverable degraded state is cycle-scoped, but an explicit
+            // ENTRY_BLOCKED state remains fail-closed until management confirms
+            // recovery. This prevents a new calculation cycle from re-arming
+            // entry before broker/runtime state has been reconciled.
+            if (_state == RuntimeFaultState.Degraded)
                 _state = RuntimeFaultState.Healthy;
         }
 
