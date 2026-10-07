@@ -18,8 +18,8 @@ PR #338 merged to `main` as `55d2ad4f146f373374e348bd706620f0831c13db`.
 
 Canonical contract:
 - `PlanLineRenderer` owns signal-line geometry and the final materialized line color.
-- `PlanLabelAnchorCalculator` is the sole owner of the horizontal gap and resolves the label anchor exactly one chart bar before the canonical line start in the same `Bars.OpenTimes` DateTime/OpenTime coordinate system used by the native label creation path.
-- `PlanLabelRenderer` is the sole native `ChartText` label owner; labels are 11px, regular-weight, exact-price, background-free and `HorizontalAlignment.Left`. The visible start of the label text is anchored one chart bar before the canonical line start.
+- `PlanLabelAnchorCalculator` remains the sole owner of the horizontal gap and resolves the label anchor exactly one chart bar before the canonical line start in the same `Bars.OpenTimes` DateTime/OpenTime coordinate system used by the chart-control placement path.
+- `PlanLabelRenderer` is the sole plan-label owner; each label is a compact reusable chart-control box at the exact normalized line price, right-anchored to remain left of the line, with regular-weight 11px text, matching canonical line color and ellipsis trimming. Legacy ChartText/no-box statements are historical and no longer govern active presentation.
 - Label text uses exactly the same materialized color as its corresponding line.
 - Pending, parallel and prediction label paths reuse the same canonical renderer/anchor/formatter instead of creating a second geometry or presentation authority.
 - Obsolete `CFIP.cBot/Execution/CbotExecutionSettings.cs` was removed; current cBot execution settings remain owned by the active cBot execution-settings contract.
