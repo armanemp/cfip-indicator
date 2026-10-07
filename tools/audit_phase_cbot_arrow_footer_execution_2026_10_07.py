@@ -46,10 +46,8 @@ check(
 
 check(
     "arrow overlay is reordered above the panel after panel creation",
-    "EnsureSignalArrowBox();" in panel_factory and
-    "BringSignalArrowBoxToFront();" in panel_factory and
-    "Chart.RemoveControl(_signalArrowBox);" in arrow and
-    "Chart.AddControl(_signalArrowBox);" in arrow,
+    "Chart.DrawIcon(" in arrow and
+    "RemoveStackedSignalArrows();" in arrow,
 )
 
 check(
