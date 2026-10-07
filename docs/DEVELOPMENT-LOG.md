@@ -4195,3 +4195,11 @@ Implementation:
 - extended the realtime source audit to enforce these ownership/anti-inflation rules.
 
 This is intended to reduce false directional confidence while preserving valid strong signals. It is not a profitability claim.
+
+
+
+## Top-Down tactical precision hardening — 2026-10-07
+
+Finding: the Top-Down decision gate previously accepted any `TacticalOpportunityAllowed` result when normal top-down calibration was not eligible. That let the tactical lane act as a broad hierarchy bypass.
+
+Correction: the canonical `TopDownCalibrationRule` now owns a tactical-bypass predicate requiring strong M15/M30 midframe direction, alignment and absolute strength. Counter-HTF tactical candidates additionally require a genuine opposing HTF anchor. Regression contracts cover M5-only rejection and counter-HTF symmetry.
