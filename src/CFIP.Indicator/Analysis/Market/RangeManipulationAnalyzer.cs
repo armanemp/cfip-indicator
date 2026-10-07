@@ -338,7 +338,7 @@ namespace cAlgo
                 Low = low,
                 WidthAtr = widthAtr,
                 StartIndex = first,
-                EndIndex = rangeLast,
+                EndIndex = index,
                 SweepIndex = -1,
                 BreakoutIndex = -1,
                 RetestIndex = -1,
