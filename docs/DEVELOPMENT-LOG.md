@@ -4203,3 +4203,21 @@ This is intended to reduce false directional confidence while preserving valid s
 Finding: the Top-Down decision gate previously accepted any `TacticalOpportunityAllowed` result when normal top-down calibration was not eligible. That let the tactical lane act as a broad hierarchy bypass.
 
 Correction: the canonical `TopDownCalibrationRule` now owns a tactical-bypass predicate requiring strong M15/M30 midframe direction, alignment and absolute strength. Counter-HTF tactical candidates additionally require a genuine opposing HTF anchor. Regression contracts cover M5-only rejection and counter-HTF symmetry.
+
+
+## 2026-10-07 — Signal quality precision extension
+
+Deep signal review found two remaining confidence-inflation paths in the canonical decision chain.
+
+First, TimeframeAgreementAnalyzer treated any valid non-zero-quality aligned timeframe as 100% alignment credit. This meant a weak M15/M30/HTF frame could contribute its full configured weight to agreement even when its own frame quality was poor. The semantics are now centralized in TimeframeAgreementRule, which keeps the configured weight as the denominator but scales aligned credit by the frame's validated quality.
+
+Second, StructuralConfirmationAnalyzer could count M15/H1/H4 structural flags even when the corresponding frame's overall direction was explicitly opposite the candidate. That could turn contradictory context into positive structural confirmations. StructuralConfirmationRule now blocks only that contradictory case while retaining neutral-frame structure for transition/recovery use.
+
+Regression coverage now proves:
+- 100% agreement for fully aligned high-quality frames;
+- reduced agreement for weak aligned M15 and strong opposing M15;
+- BUY/SELL symmetry;
+- stale/disabled/invalid-direction handling;
+- rejection of opposite-frame structural confirmations.
+
+No live threshold was raised to conceal the defects, no duplicate decision path was introduced, and no broker execution authority moved back into the Indicator. Empirical signal improvement still requires replay/terminal evidence.
