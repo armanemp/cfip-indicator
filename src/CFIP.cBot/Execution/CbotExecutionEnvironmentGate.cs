@@ -93,6 +93,24 @@ namespace CFIP.cBot.Execution
                 return false;
             }
 
+            if (envelope.Intent.Action == ExecutionAction.Market &&
+                !EffectiveExecutionEnabledForAction(
+                    robot,
+                    settings,
+                    ExecutionAction.Market))
+            {
+                reason = "CBOT MARKET EXECUTION DISABLED";
+                return false;
+            }
+
+            if ((envelope.Intent.Action == ExecutionAction.PendingStop ||
+                 envelope.Intent.Action == ExecutionAction.PendingLimit) &&
+                !settings.EnableAutomaticOrders)
+            {
+                reason = "CBOT AUTOMATIC ORDERS DISABLED";
+                return false;
+            }
+
             if (!string.Equals(
                     envelope.Identity.Symbol,
                     robot.SymbolName,
@@ -242,6 +260,22 @@ namespace CFIP.cBot.Execution
             }
 
             return true;
+        }
+
+        private static bool EffectiveExecutionEnabledForAction(
+            Robot robot,
+            CbotExecutionSettings settings,
+            ExecutionAction action)
+        {
+            // The environment gate is the final cBot-owned policy boundary.
+            // Transport/presentation state can never arm an execution mode.
+            if (action == ExecutionAction.Market)
+                return settings.EnableAutoTrading;
+
+            return action == ExecutionAction.PendingStop ||
+                   action == ExecutionAction.PendingLimit
+                ? settings.EnableAutomaticOrders
+                : settings.EnableAutoTrading;
         }
 
         private static string ResolveManagedInstanceRoot(
