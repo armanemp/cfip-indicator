@@ -825,7 +825,7 @@ namespace CFIP.cBot
                 EffectiveSessionExecutionCap)
             {
                 LogBlockedState("SESSION EXECUTION CAP REACHED");
-                return true;
+                return false;
             }
 
             if (envelope.Intent.Action == ExecutionAction.PendingStop ||
