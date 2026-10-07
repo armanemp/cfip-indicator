@@ -796,7 +796,7 @@ namespace CFIP.cBot
                 return false;
             }
 
-            if (shadowResult == null
+            if (shadowResult == null)
             {
                 LogBlockedState(
                     "SHADOW STATE UNAVAILABLE");
@@ -806,7 +806,7 @@ namespace CFIP.cBot
                 return true;
             }
 
-            if (shadowResult.State != ShadowHostState.Ready
+            if (shadowResult.State != ShadowHostState.Ready)
             {
                 LogBlockedState(
                     shadowResult.Reason ??
@@ -823,7 +823,7 @@ namespace CFIP.cBot
                 EffectiveSessionExecutionCap)
             {
                 LogBlockedState("SESSION EXECUTION CAP REACHED");
-                return;
+                return false;
             }
 
             if (envelope.Intent.Action == ExecutionAction.PendingStop ||
@@ -834,9 +834,9 @@ namespace CFIP.cBot
                         envelope,
                         Account.IsLive,
                         nowUtc,
-                        MaxExecutionMarginUsagePercent,
-                        ExecutionMarginBufferPercent,
-                        EffectiveConcurrentScenarioLimit,
+                        _executionSettings.MaxExecutionMarginUsagePercent,
+                        _executionSettings.ExecutionMarginBufferPercent,
+                        _executionSettings.MaxConcurrentScenarios,
                         _idempotencyStore,
                         out BrokerExecutionReport pendingReport,
                         out string pendingReason))
@@ -890,9 +890,9 @@ namespace CFIP.cBot
                     envelope,
                     Account.IsLive,
                     nowUtc,
-                    MaxExecutionMarginUsagePercent,
-                    ExecutionMarginBufferPercent,
-                    EffectiveConcurrentScenarioLimit,
+                    _executionSettings.MaxExecutionMarginUsagePercent,
+                    _executionSettings.ExecutionMarginBufferPercent,
+                    _executionSettings.MaxConcurrentScenarios,
                     _idempotencyStore,
                     out BrokerExecutionReport report,
                     out string executionReason))
