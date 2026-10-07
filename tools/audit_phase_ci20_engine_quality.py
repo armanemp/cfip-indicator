@@ -70,9 +70,24 @@ require(
 
 require(
     "M15 is the canonical decision timeframe" in evaluator and
+    "m15ContextTooWeak" in evaluator and
+    "input.M15Frame == null" in evaluator and
+    "input.M15Frame.Quality <" in evaluator and
     "strongM15Conflict" in evaluator and
     'BlockReason = "M15 CANONICAL CONFLICT"' in evaluator,
     "M15 canonical directional ownership is not enforced",
+)
+require(
+    "decision.IndependentEvidenceGroupCount =" in evaluator and
+    "decision.IndependentEvidenceGroupCount < 3" in evaluator and
+    'BlockReason = "EVIDENCE DIVERSITY"' in evaluator,
+    "directional consensus can bypass independent evidence-family diversity",
+)
+require(
+    "retestQuality" in quality and
+    "retestQuality <= 0" not in quality and
+    "int effectiveRetestQuality" in quality,
+    "missing retest evidence is still treated as neutral quality",
 )
 
 require(
