@@ -19,6 +19,7 @@ namespace cAlgo
     /// All decisions use closed bars by default, so historical signals are causal
     /// and do not depend on future candles.
     /// </summary>
+#pragma warning disable CS0612
     [Indicator(
         "CFIP Opening Range Manipulation",
         IsOverlay = true,
@@ -26,6 +27,7 @@ namespace cAlgo
         TimeZone = TimeZones.UTC,
         AccessRights = AccessRights.None)]
     public class CFIPOpeningRangeManipulationIndicator : Indicator
+#pragma warning restore CS0612
     {
         public enum RangeState
         {
@@ -62,8 +64,6 @@ namespace cAlgo
             public int BullBreakoutBar = -1;
             public int BearBreakoutBar = -1;
             public RangeState State = RangeState.BuildingRange;
-            public int Direction;
-            public int Score;
             public string Reason = string.Empty;
         }
 
@@ -706,7 +706,7 @@ namespace cAlgo
             int closedIndex,
             double atr)
         {
-            if (closedIndex <= session.EndIndex + 1)
+            if (closedIndex <= session.EndIndex)
                 return;
 
             double minSweep =
@@ -1515,7 +1515,7 @@ namespace cAlgo
                  i < index;
                  i++)
             {
-                long volume =
+                double volume =
                     Bars.TickVolumes[i];
 
                 if (volume <= 0)
@@ -1636,10 +1636,21 @@ namespace cAlgo
                     0,
                     DateTimeKind.Utc);
 
-            if (time < candidate)
-                candidate = candidate.AddDays(-1);
+            if (time >= candidate)
+                return candidate;
 
-            return candidate;
+            DateTime previous = candidate.AddDays(-1);
+            DateTime previousRangeEnd =
+                previous.AddMinutes(
+                    Math.Max(1, OpeningRangeMinutes));
+
+            // Before today's opening window, keep the previous session only
+            // while its own opening window is still being built. Once that
+            // window is over, expose today's session as WAITING instead of
+            // carrying yesterday's range into a new trading day.
+            return time < previousRangeEnd
+                ? previous
+                : candidate;
         }
 
         private int FindFirstIndexAtOrAfter(DateTime time)
