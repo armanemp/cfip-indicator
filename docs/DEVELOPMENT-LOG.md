@@ -4218,4 +4218,4 @@ Corrections:
 - The signal-arrow fallback now requires the canonical MTF trend tier to be STRONG; weak/medium non-actionable trend states are no longer presented as trade arrows.
 - No new public parameter, parallel decision path, or alternate execution logic was introduced.
 
-Focused contract coverage was added for BUY/SELL symmetry, neutral/opposite structural confirmation rejection, and M15 direction anchoring against bearish higher-timeframe strength.
+Focused contract coverage was added for BUY/SELL symmetry and neutral/opposite structural confirmation rejection. M15 direction anchoring and neutral-frame consensus isolation are enforced by the source-architecture audit because their production owners depend on the full Indicator model/runtime graph.

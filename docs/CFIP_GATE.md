@@ -1350,7 +1350,7 @@ Repository-side Source/Architecture, Runtime Acceptance and cTrader Compile gate
 - resolved M15 direction cannot be flipped by weighted higher/lower-timeframe trend strength;
 - weak/medium non-actionable MTF trend states are not rendered through the trade-signal arrow surface.
 
-**Verification added:** decision-contract coverage for BUY/SELL symmetry and M15-vs-HTF direction anchoring; CI-20 source audit coverage for all three invariants.
+**Verification added:** Decision Contracts coverage for BUY/SELL symmetry and structural-confirmation integrity; CI-20 source-audit coverage for M15 direction anchoring, weak-arrow suppression, and neutral-frame consensus isolation.
 
 **Not yet evidence:** local Release build on the operator machine, GitHub workflow conclusion for this exact head, and target-terminal/replay measurement of live signal precision. No empirical win-rate or predictive improvement is claimed until those are measured.
 
@@ -1373,6 +1373,6 @@ Expected local build signal: `Build succeeded. 0 Warning(s) 0 Error(s)`.
 
 **Additional root cause closed:** the canonical FrameDecisionContributionAdapter previously converted neutral frames (Direction = 0) into directional consensus contributions from raw BullScore/BearScore. Neutral evidence is now fail-closed at the decision contribution boundary.
 
-**Acceptance:** a neutral frame with deliberately asymmetric raw scores must contribute zero BUY/SELL consensus. This is covered by the Decision Contracts program and CI-20 source audit.
+**Acceptance:** a neutral frame with deliberately asymmetric raw scores must contribute zero BUY/SELL consensus. The production-owner invariant is covered by CI-20 source audit; the Decision Contracts project intentionally remains dependency-light and does not mirror the internal runtime Frame graph.
 
 **No strategy threshold was lowered and no parallel decision engine was added.**

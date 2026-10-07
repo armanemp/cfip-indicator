@@ -38,7 +38,6 @@ namespace cAlgo
             VerifyEntryGeometry();
             VerifyEntrySignalTiming();
             VerifyStructuralConfirmationDirectionality();
-            VerifyM15CanonicalTrendStrengthDirection();
 
             Console.WriteLine("Decision contracts OK");
         }
@@ -1302,29 +1301,6 @@ namespace cAlgo
 
         private static void VerifyQualityWeightedFrameContribution()
         {
-            Frame neutral =
-                new Frame
-                {
-                    Direction = 0,
-                    BullScore = 90,
-                    BearScore = 10,
-                    Quality = 95,
-                    Evidence = 4
-                };
-
-            DecisionFrameContributionAdapter adapter =
-                new DecisionFrameContributionAdapter();
-
-            DecisionFrameContribution neutralContribution =
-                adapter.Calculate(
-                    neutral,
-                    10);
-
-            Assert(
-                Math.Abs(neutralContribution.Bull) < 0.0001 &&
-                Math.Abs(neutralContribution.Bear) < 0.0001,
-                "neutral frame cannot contribute directional consensus");
-
             DecisionFrameContributionCalculator calculator =
                 new DecisionFrameContributionCalculator();
 
@@ -2729,83 +2705,6 @@ namespace cAlgo
                     1,
                     true) == 0,
                 "opposite-direction structure is not confirmation");
-        }
-
-        private static void VerifyM15CanonicalTrendStrengthDirection()
-        {
-            Frame m15 =
-                new Frame
-                {
-                    NativeIndicatorsReady = true,
-                    Atr = 1.0,
-                    Direction = 1,
-                    BullScore = 58,
-                    BearScore = 4,
-                    Quality = 90,
-                    TrendBull = true,
-                    MomentumBull = true,
-                    Adx = 28,
-                    EmaSpreadAtr = 0.45,
-                    EmaSlopeAtr = 0.10,
-                    StructureBull = true,
-                    MssBull = true,
-                    FvgBull = true,
-                    FvgBullQuality = 90,
-                    IndicatorIndependentEvidenceGroupCount = 3
-                };
-
-            Frame h1 =
-                new Frame
-                {
-                    NativeIndicatorsReady = true,
-                    Atr = 1.0,
-                    Direction = -1,
-                    BullScore = 4,
-                    BearScore = 78,
-                    Quality = 90,
-                    TrendBear = true,
-                    MomentumBear = true,
-                    Adx = 30,
-                    EmaSpreadAtr = 0.50,
-                    EmaSlopeAtr = -0.10,
-                    StructureBear = true,
-                    MssBear = true,
-                    FvgBear = true,
-                    FvgBearQuality = 90,
-                    IndicatorIndependentEvidenceGroupCount = 3
-                };
-
-            Frame h4 =
-                new Frame
-                {
-                    NativeIndicatorsReady = true,
-                    Atr = 1.0,
-                    Direction = -1,
-                    BullScore = 3,
-                    BearScore = 76,
-                    Quality = 88,
-                    TrendBear = true,
-                    MomentumBear = true,
-                    Adx = 29,
-                    EmaSpreadAtr = 0.48,
-                    EmaSlopeAtr = -0.09,
-                    StructureBear = true,
-                    MssBear = true,
-                    FvgBear = true,
-                    FvgBearQuality = 88,
-                    IndicatorIndependentEvidenceGroupCount = 3
-                };
-
-            MtfTrendStrengthResult result =
-                MtfTrendStrengthRule.Evaluate(
-                    new[] { null, null, m15, null, h1, h4, null, null },
-                    new[] { 0.0, 0.0, 8.0, 0.0, 12.0, 12.0, 0.0, 0.0 },
-                    0.0);
-
-            Assert(
-                result.Direction == 1 &&
-                result.Level > 0,
-                "M15 canonical direction cannot be flipped by bearish HTF strength");
         }
 
         private static void Assert(bool condition, string name)
