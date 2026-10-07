@@ -898,3 +898,12 @@ Footer اکنون چهار ردیف canonical دارد:
 6. cBot live/pending execution + reconciliation + protection lifecycle.
 7. End-to-end compile/runtime/architecture gates و terminal verification.
 8. Outcome/calibration/leakage audit.
+
+
+## Batch 04.2 — Live signal precision
+- The current open M5 reaction remains the only intrabar signal layer.
+- Aggressive Flow is not a vote and cannot replace the canonical M15-centered decision.
+- Flow freshness is capped at five seconds for live signal consumers.
+- A strongly opposing fresh flow snapshot can veto an intrabar reaction; aligned flow does not manufacture a signal.
+- MTF trend/arrow strength ignores stale flow.
+- This is intended to improve current-state precision without reintroducing tick-by-tick direction flipping.
