@@ -58,12 +58,12 @@ The source/architecture failure is therefore a documentation-continuity defect i
 | Contract | Automated controlled check | Live cTrader |
 |---|---:|---:|
 | Recoverable fault enters explicit runtime fault state | Required | Required |
-| Entry remains blocked after recoverable fault | Required | Required |
-| Management/protection continue during entry block | Required | Required |
-| Entry remains disarmed through RECOVERING → HEALTHY | Required | Required |
-| Explicit AutoTradingEnabled re-arm transition | Required | Required |
+| Entry remains blocked for the faulted calculation cycle | Required | Required |
+| Management/protection continue during the faulted cycle | Required | Required |
+| Next clean calculation cycle restores entry eligibility | Required | Required |
+| Indicator runtime fault cannot latch a permanent trading kill switch | Required | Required |
 
-The automated state-machine contract proves deterministic transitions and the no-blind-re-arm invariant. It does not emulate live terminal event timing or broker-side behavior.
+The automated state-machine contract proves deterministic cycle-local fault isolation. The cBot remains the broker-execution authority, so an Indicator calculation fault cannot permanently disarm automatic trading. It does not emulate live terminal event timing or broker-side behavior.
 
 
 ## Phase 1.4 — Closed-bar retry and signal/execution synchronization
