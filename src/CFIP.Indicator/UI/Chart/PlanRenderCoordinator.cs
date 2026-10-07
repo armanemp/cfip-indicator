@@ -105,9 +105,9 @@ namespace cAlgo
             // sits behind the live market Entry, keep execution state intact
             // but do not render a misleading trigger line between Entry and SL.
             bool triggerOnEntrySide =
-                snapshot.Direction == 1
+                (preview ? snapshot.PlanDirection : snapshot.AuthoritativeDirection) == 1
                     ? trigger >= entry
-                    : snapshot.Direction == -1
+                    : (preview ? snapshot.PlanDirection : snapshot.AuthoritativeDirection) == -1
                         ? trigger <= entry
                         : false;
 
