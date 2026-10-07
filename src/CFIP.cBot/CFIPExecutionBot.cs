@@ -739,12 +739,9 @@ namespace CFIP.cBot
                 !_executionEnvironment.Evaluate(
                     this,
                     envelope,
-                    MaxExecutionMarginUsagePercent,
-                    ExecutionMarginBufferPercent,
                     _executionSettings,
                     _dailyLossGuard,
                     pendingAction,
-                    EffectiveConcurrentScenarioLimit,
                     nowUtc,
                     Account.IsLive && executionEnabled,
                     out string environmentReason))
@@ -755,7 +752,8 @@ namespace CFIP.cBot
                     "EXECUTION BLOCKED • " +
                     environmentReason,
                     true);
-                return;
+                return IsRealtimeExecutionRetryableReason(
+                    environmentReason);
             }
 
             bool actionEnabled =
@@ -882,7 +880,13 @@ namespace CFIP.cBot
                             : envelope.Identity.ScenarioId);
                 }
 
-                return;
+                return
+                    pendingReport == null
+                        ? IsRealtimeExecutionRetryableReason(
+                            pendingReason)
+                        : ShouldRetryBrokerReport(
+                            pendingReport,
+                            pendingReason);
             }
 
             if (_market.TryExecute(
@@ -953,12 +957,13 @@ namespace CFIP.cBot
                         ? ""
                         : envelope.Identity.ScenarioId);
             }
-        return report == null
-            ? IsRealtimeExecutionRetryableReason(
-                executionReason)
-            : ShouldRetryBrokerReport(
-                report,
-                executionReason);
+            return
+                report == null
+                    ? IsRealtimeExecutionRetryableReason(
+                        executionReason)
+                    : ShouldRetryBrokerReport(
+                        report,
+                        executionReason);
         }
 
         private void PlayBrokerOutcomeAudio(
