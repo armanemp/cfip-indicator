@@ -617,6 +617,24 @@ namespace CFIP.cBot
                 exception);
         }
 
+        private static bool ShouldRetryBrokerReport(
+            BrokerExecutionReport report,
+            string reason)
+        {
+            if (report == null)
+                return false;
+
+            if (report.Status ==
+                BrokerReportStatus.RecoveryRequired)
+                return false;
+
+            if (report.Status !=
+                BrokerReportStatus.Rejected)
+                return false;
+
+            return ShouldRetryExecutionReason(reason);
+        }
+
         private static bool ShouldRetryExecutionReason(
             string reason)
         {
@@ -884,8 +902,12 @@ namespace CFIP.cBot
                             : envelope.Identity.ScenarioId);
                 }
 
-                return pendingReport == null &&
-                       ShouldRetryExecutionReason(pendingReason);
+                return
+                    pendingReport == null
+                        ? ShouldRetryExecutionReason(pendingReason)
+                        : ShouldRetryBrokerReport(
+                            pendingReport,
+                            pendingReason);
             }
 
             if (_market.TryExecute(
