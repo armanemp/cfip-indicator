@@ -118,7 +118,7 @@ Status: VERIFIED COMPLETE — implemented directly on `main`.
 Closure:
 - One canonical directional-arrow renderer now owns active Plan/WATCH/Reaction arrows.
 - Signal/plan lines are Solid, one-pixel and finite 40-bar geometry.
-- Labels are regular-weight native ChartText using the exact line color, with their visible text start one chart bar before the canonical line start.
+- Labels are owned by the compact boxed renderer; they remain regular-weight, use the exact canonical line color, and are positioned one chart bar before the line without overlap.
 - User-reported Release-build CS0219 warning for dead `PanelMainRenderer.buttonMargin` was removed.
 - Source/Architecture, Runtime Acceptance and cTrader Compile all passed on code head `a3cd97f715ed6b6b91599b79fe3fa42c82690e1c`.
 
