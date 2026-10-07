@@ -8900,20 +8900,35 @@ namespace cAlgo
             machine.BeginCycle();
 
             Assert(
-                machine.CanAutomaticEntryProceed,
-                "the next clean runtime cycle automatically restores entry without a hidden permanent trading switch");
+                !machine.CanAutomaticEntryProceed,
+                "entry remains fail-closed until management confirms recovery");
 
+            machine.MarkManagementReadyForRecovery();
+
+            Assert(
+                machine.State == RuntimeFaultState.Recovering &&
+                !machine.CanAutomaticEntryProceed,
+                "management recovery stage does not re-arm entry prematurely");
+
+            machine.CompleteCycle();
+
+            Assert(
+                machine.State == RuntimeFaultState.Healthy &&
+                machine.CanAutomaticEntryProceed,
+                "confirmed recovery restores entry without a hidden permanent trading switch");
+
+            machine.BeginCycle();
             machine.RecordRecoverableFault();
 
             Assert(
                 !machine.CanAutomaticEntryProceed,
-                "a later recoverable runtime fault blocks only its current cycle");
+                "a later recoverable runtime fault blocks its current cycle");
 
             machine.BeginCycle();
 
             Assert(
-                machine.CanAutomaticEntryProceed,
-                "a new clean cycle clears the previous recoverable fault");
+                !machine.CanAutomaticEntryProceed,
+                "blocked runtime remains fail-closed until the next recovery boundary");
         }
 
         private static AlertDelivery BuildTestAlertDelivery(
