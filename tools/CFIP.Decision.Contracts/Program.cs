@@ -545,8 +545,8 @@ namespace cAlgo
                     0);
 
             // Missing retest is zero contribution; neutral fixture therefore
-            // evaluates deterministically to 20 after the strict quality fix.
-            int expected = 20;
+            // evaluates deterministically to 17 under the canonical quality weights.
+            int expected = 17;
 
             Assert(
                 neutralQuality == expected,
