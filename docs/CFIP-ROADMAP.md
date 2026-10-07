@@ -839,7 +839,7 @@ No trading threshold, MTF role, broker mutation authority or strategy quality ga
 
 - [x] Replace candle-anchored directional arrow presentation with one fixed bottom-right signal box; Show Signal Arrow remains the single default-on visibility control.
 - [x] Preserve canonical 9-level strength and centralized signal color ownership in the box.
-- [x] Replace the ambiguous M1/M5/M15/H1/H4 mini-bars with two full-width BUY/SELL pressure bars directly below the timeframe lamps.
+- [x] Replace the ambiguous M1/M5/M15/H1/H4 mini-bars with two full-width combined BUY/SELL pressure bars directly below the timeframe lamps; each source uses one physical track whose green/red segments resize against the same total width.
 - [x] Keep BUY/SELL pressure presentation owned by PanelFooterFactory and derived from closed M15 tick-volume/candle-range evidence.
 - [x] Add a CI source gate for arrow-box single ownership and BUY/SELL footer-pressure ownership.
 - [ ] Target-terminal visual acceptance of the Release artifact remains required before declaring this UI work unit complete.
