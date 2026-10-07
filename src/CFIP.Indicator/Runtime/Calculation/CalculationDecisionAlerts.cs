@@ -128,10 +128,11 @@ namespace cAlgo
 
         private void ProcessDecisionOwnedReactionAlert()
         {
-            if (_reaction == null ||
-                _m5Bars == null ||
-                _m5Bars.Count < 10)
-                return;
+            // Reaction is calculated from the currently forming M5 candle.
+            // It remains an internal precision input, never a user-facing signal
+            // or alert. Confirmed signal alerts are emitted only from the closed-M5
+            // decision lifecycle.
+            return;
 
             int reactionM5 =
                 _m5Bars.Count - 1;
