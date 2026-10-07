@@ -29,6 +29,8 @@ namespace cAlgo
                                         Math.Max(
                                             3,
                                             MinimumStructuralConfirmations) &&
+                                        IndependentEvidenceGroupCount(
+                                            _decision.Direction) >= 3 &&
                                         _decision.Confidence >=
                                         PendingMinimumConfidence &&
                                         _decision.SmartQuality >=
@@ -66,6 +68,10 @@ namespace cAlgo
                     _reaction.ReactionClosedBarConfirmed);
 
             if (!strongBase)
+                return false;
+
+            if (IndependentEvidenceGroupCount(
+                    _reaction.Direction) < 3)
                 return false;
 
             RangeSignalQualityResult rangeQuality =
