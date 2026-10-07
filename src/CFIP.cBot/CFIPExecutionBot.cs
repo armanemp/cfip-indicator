@@ -239,9 +239,13 @@ namespace CFIP.cBot
         private SignalEnvelope _lastSignalEnvelope;
         private long _stateRevision;
         private const int MaxRealtimeTimerScenarioRevisions = 128;
+        private const int RealtimeSameRevisionRetrySeconds = 1;
 
         private readonly Dictionary<string, long> _lastRealtimeTimerRevisionByScenario =
             new Dictionary<string, long>(StringComparer.Ordinal);
+
+        private readonly Dictionary<string, DateTime> _lastRealtimeTimerAttemptUtcByScenario =
+            new Dictionary<string, DateTime>(StringComparer.Ordinal);
 
         private readonly Queue<string> _lastRealtimeTimerScenarioOrder =
             new Queue<string>();
@@ -437,9 +441,49 @@ namespace CFIP.cBot
 
             if (_lastRealtimeTimerRevisionByScenario.TryGetValue(
                     key,
-                    out long observedRevision) &&
-                envelope.Identity.Revision <= observedRevision)
-                return false;
+                    out long observedRevision))
+            {
+                if (envelope.Identity.Revision < observedRevision)
+                    return false;
+
+                if (envelope.Identity.Revision == observedRevision &&
+                    _lastRealtimeTimerAttemptUtcByScenario.TryGetValue(
+                        key,
+                        out DateTime lastAttemptUtc) &&
+                    (Server.TimeInUtc - lastAttemptUtc).TotalSeconds <
+                    RealtimeSameRevisionRetrySeconds)
+                    return false;
+            }
+
+            return true;
+        }
+
+        private void RecordRealtimeTimerAttempt(
+            SignalEnvelope envelope,
+            bool terminal)
+        {
+            if (envelope == null ||
+                envelope.Identity == null ||
+                string.IsNullOrWhiteSpace(
+                    _boundIndicatorInstanceId))
+                return;
+
+            string scenarioId =
+                envelope.Identity.ScenarioId ?? "";
+
+            if (string.IsNullOrWhiteSpace(scenarioId))
+                return;
+
+            string key =
+                _boundIndicatorInstanceId +
+                "\u001F" +
+                scenarioId;
+
+            _lastRealtimeTimerAttemptUtcByScenario[key] =
+                Server.TimeInUtc;
+
+            if (!terminal)
+                return;
 
             if (!_lastRealtimeTimerRevisionByScenario.ContainsKey(key))
                 _lastRealtimeTimerScenarioOrder.Enqueue(key);
@@ -453,18 +497,15 @@ namespace CFIP.cBot
                 string oldestKey =
                     _lastRealtimeTimerScenarioOrder.Dequeue();
 
-                if (_lastRealtimeTimerRevisionByScenario.ContainsKey(
-                        oldestKey))
-                    _lastRealtimeTimerRevisionByScenario.Remove(
-                        oldestKey);
+                _lastRealtimeTimerRevisionByScenario.Remove(oldestKey);
+                _lastRealtimeTimerAttemptUtcByScenario.Remove(oldestKey);
             }
-
-            return true;
         }
 
         private void ClearRealtimeTimerObservationState()
         {
             _lastRealtimeTimerRevisionByScenario.Clear();
+            _lastRealtimeTimerAttemptUtcByScenario.Clear();
             _lastRealtimeTimerScenarioOrder.Clear();
         }
 
