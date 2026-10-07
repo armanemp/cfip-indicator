@@ -29,13 +29,13 @@ namespace cAlgo
                         0.0,
                         structuralConfirmations * 16.0));
 
+            // Missing retest confirmation is not neutral evidence. Treating it
+            // as 50 artificially lifts marginal setups into the executable band.
             int effectiveRetestQuality =
-                retestQuality <= 0
-                    ? 50
-                    : NumericGuards.ClampInt(
-                        retestQuality,
-                        0,
-                        100);
+                NumericGuards.ClampInt(
+                    retestQuality,
+                    0,
+                    100);
 
             int diversityBonus =
                 IndependentEvidenceDiversityRule.QualityBonus(
