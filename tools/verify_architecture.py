@@ -932,7 +932,16 @@ for required_transition in (
 if "_cycleFaulted = true;" not in runtime_fault_machine_code:
     raise SystemExit("Runtime fault state machine must mark the affected calculation cycle as faulted")
 
-if "_entryArmed = false;" in runtime_fault_machine_code:
+block_method_start = runtime_fault_machine_code.find("public void BlockAutomaticEntry(")
+rearm_method_start = runtime_fault_machine_code.find("public bool RequestExplicitRearm(")
+block_method_end = (
+    rearm_method_start
+    if block_method_start >= 0 and rearm_method_start > block_method_start
+    else len(runtime_fault_machine_code)
+)
+block_method_code = runtime_fault_machine_code[block_method_start:block_method_end]
+
+if "_entryArmed = false;" in block_method_code:
     raise SystemExit("Runtime fault state machine must not latch the Indicator-wide entry switch off")
 
 if "if (_state != RuntimeFaultState.Healthy)" not in runtime_fault_machine_code:
