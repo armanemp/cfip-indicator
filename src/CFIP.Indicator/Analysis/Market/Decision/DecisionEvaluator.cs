@@ -47,11 +47,12 @@ namespace cAlgo
 
             bool weakM15Context =
                 consensus.Direction != 0 &&
-                m15Direction != 0 &&
-                m15Quality <
+                (input.M15Frame == null ||
+                 m15Direction == 0 ||
+                 m15Quality <
                     Math.Max(
                         65,
-                        input.MinimumSmartDirectionShare);
+                        input.MinimumSmartDirectionShare));
 
             bool strongM15Conflict =
                 consensus.Direction != 0 &&
