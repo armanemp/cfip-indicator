@@ -874,7 +874,7 @@ No trading threshold, MTF role, broker mutation authority or strategy quality ga
 - [x] Footer has four deterministic rows with thicker bars and explicit DOM-vs-flow semantics.
 - [x] Obsolete `FullWidthLevelLines` public parameter was removed rather than artificially consumed.
 - [x] Architecture / parameter baselines are reconciled to the actual 533-parameter source tree.
-- [ ] Final Source/Architecture, cTrader Compile and Runtime Acceptance must all pass on the final head.
+- [x] Final Source/Architecture (#5127), cTrader Compile (#5120) and Runtime Acceptance (#4936) all passed on the final head.
 - [ ] Target-terminal visual/audio/cBot acceptance remains mandatory.
 
  CFIP — Canonical Master Roadmap
