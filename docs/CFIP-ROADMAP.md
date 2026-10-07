@@ -1779,3 +1779,9 @@ Correction:
 - BUY/SELL symmetry and bounded quality remain enforced by contracts.
 
 The intent is higher signal precision through removal of artificial confidence, not blind threshold inflation. Empirical signal-quality improvement still requires target-terminal/replay evidence.
+
+
+
+## Top-Down tactical precision hardening — 2026-10-07
+
+The tactical exception path was hardened so `TacticalOpportunityAllowed` alone can no longer bypass the M15/M30 hierarchy. A tactical bypass now requires strong same-direction midframe confirmation; a Counter-HTF tactical path additionally requires an explicit opposing HTF anchor. This preserves the intentional tactical/counter-HTF lane while preventing M5-only directions from becoming canonical signals.
