@@ -30,6 +30,8 @@ check("UI labels DOM as DOM", "DOM BUY" in footer and "DOM SELL" in footer)
 check("UI exposes directional tick proxy separately", "FLOW BUY TICKS" in footer and "FLOW SELL TICKS" in footer)
 check("footer reserves four rows", "PanelFlowPressureRailHeight = 84" in constants and "PanelFooterMinHeight = 146" in constants)
 
+check("live reaction uses fresh flow only as opposition veto", "StronglyOpposes(" in analyzer and "flowOpposes" in reaction and "FLOW OPPOSITION" in reaction and "TryGetFreshAggressiveFlowSnapshot" in reaction)
+
 if errors:
     for e in errors:
         print("FAIL | " + e)
