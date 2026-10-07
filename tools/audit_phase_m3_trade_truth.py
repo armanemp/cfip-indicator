@@ -139,9 +139,17 @@ require(
 require(
     live.index("RefreshLiveDecisionActionability(") <
     live.index("BuildSignalVisualSnapshot(") <
-    live.index("RenderLatestAlertSignalMarker(") <
-    live.index("RenderPanel();"),
-    "M3: live presentation must consume the refreshed decision before provider/panel state is published",
+    live.index("RenderLatestAlertSignalMarker("),
+    "M3: live chart presentation must consume the refreshed decision before marker rendering",
+)
+
+panel_heartbeat = read("src/CFIP.Indicator/Runtime/Supervision/RuntimePanelHeartbeat.cs")
+panel_content = read("src/CFIP.Indicator/UI/Panel/PanelContentRefresh.cs")
+require(
+    "RefreshPanelContentIfDue(" in panel_heartbeat and
+    "PanelContentRefreshMilliseconds = 500" in panel_content and
+    "RenderPanel();" not in live,
+    "M3: full panel layout must remain timer-owned and off the realtime tick path",
 )
 
 require(
