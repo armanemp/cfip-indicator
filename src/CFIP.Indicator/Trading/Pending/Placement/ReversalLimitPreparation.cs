@@ -17,10 +17,14 @@ namespace cAlgo
             out double volume,
             out ExecutionIntent pendingIntent)
         {
+            // Pending reversal orders require a reaction that has already been
+            // confirmed on a closed M5 bar. The live/forming reaction direction
+            // is never sufficient to manufacture an executable pending intent.
             direction =
-                _reaction == null
-                    ? 0
-                    : _reaction.Direction;
+                _reaction != null &&
+                _reaction.ReactionClosedBarConfirmed
+                    ? _reaction.ReactionConfirmedDirection
+                    : 0;
             atr = 0;
             targetEntry = 0;
             stop = 0;
