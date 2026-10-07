@@ -28,9 +28,7 @@ namespace cAlgo
             int m5Direction,
             int m5Quality,
             int zoneQuality,
-            int waveTrendQuality,
-            int structuralEvidence,
-            int independentEvidence,
+            int independentEvidenceGroupCount,
             int selectedDirection,
             int htfDirection,
             int htfAlignment,
@@ -52,19 +50,24 @@ namespace cAlgo
 
             int quality =
                 (int)Math.Round(
-                    m5Quality * 0.45 +
                     Math.Max(
                         0,
                         Math.Min(
                             100,
-                            zoneQuality)) * 0.10 +
-                    waveTrendQuality * 0.20 +
-                    Math.Min(
-                        100,
-                        structuralEvidence * 12) * 0.15 +
-                    Math.Min(
-                        100,
-                        independentEvidence * 12) * 0.10);
+                            m5Quality)) * 0.60 +
+                    Math.Max(
+                        0,
+                        Math.Min(
+                            100,
+                            zoneQuality)) * 0.25 +
+                    Math.Max(
+                        0,
+                        Math.Min(
+                            4,
+                            independentEvidenceGroupCount)) /
+                        4.0 *
+                        100.0 *
+                        0.15);
 
             bool strongHtfConflict =
                 htfDirection != 0 &&
