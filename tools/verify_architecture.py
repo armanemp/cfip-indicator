@@ -929,11 +929,14 @@ for required_transition in (
     if required_transition not in runtime_fault_machine_code:
         raise SystemExit(f"Runtime fault transition missing: {required_transition}")
 
-if "_entryArmed = false;" not in runtime_fault_machine_code:
-    raise SystemExit("Runtime fault state machine must latch automatic entry off after a fault")
+if "_cycleFaulted = true;" not in runtime_fault_machine_code:
+    raise SystemExit("Runtime fault state machine must mark the affected calculation cycle as faulted")
 
-if "if (explicitEnableTransition &&" not in runtime_fault_machine_code:
-    raise SystemExit("Runtime fault state machine must require an explicit enable transition for re-arm")
+if "if (_state != RuntimeFaultState.Healthy)" not in runtime_fault_machine_code:
+    raise SystemExit("Runtime fault state machine must clear stale fault state at the next cycle boundary")
+
+if "return _state == RuntimeFaultState.Healthy &&" not in runtime_fault_machine_code or    "!_cycleFaulted" not in runtime_fault_machine_code:
+    raise SystemExit("Automatic entry must be blocked only for the faulted runtime cycle")
 
 if "CanAutomaticEntryProceed" not in runtime_fault_boundary_code:
     raise SystemExit("Runtime fault boundary must expose the automatic-entry gate")
@@ -944,8 +947,8 @@ if "RecordRecoverableFault(" not in runtime_fault_boundary_code or    "BlockAuto
 if "ApplyRuntimeFaultState();" not in runtime_fault_boundary_code:
     raise SystemExit("Runtime fault state must be reflected in runtime authority")
 
-if "_autoTradingEnabledRuntime = false;" not in runtime_fault_boundary_code or    "_automaticOrdersEnabledRuntime = false;" not in runtime_fault_boundary_code:
-    raise SystemExit("Runtime recovery must not re-arm automatic flags")
+if "_autoTradingEnabledRuntime = false;" in runtime_fault_boundary_code or    "_automaticOrdersEnabledRuntime = false;" in runtime_fault_boundary_code:
+    raise SystemExit("Runtime fault boundary must not globally disable Indicator trading flags")
 
 if "BeginRuntimeFaultCycle(" not in calculation_cycle_code or    "CompleteRuntimeFaultCycle(" not in calculation_cycle_code:
     raise SystemExit("Calculate must bracket each runtime cycle with explicit fault-state lifecycle")
