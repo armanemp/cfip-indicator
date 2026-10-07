@@ -133,11 +133,14 @@ require(
 )
 require(
     "CompactPlanLabelFontSize = 11.0" in label_renderer and
-    "label.IsBold" in label_renderer and
-    "Chart.DrawText(" in label_renderer and
+    "FontWeight = FontWeight.Normal" in label_renderer and
+    "Chart.AddControl(" in label_renderer and
+    "Chart.MoveControl(" in label_renderer and
     "Chart.DrawRectangle(" not in label_renderer and
+    "TextTrimming = TextTrimming.CharacterEllipsis" in label_renderer and
     "CompactPlanLabelGapBars = 1" in read("src/CFIP.Indicator/UI/Chart/PlanLabelAnchorCalculator.cs") and
     "GetCompactPlanLabelAnchorTime(" in label_renderer and
+    "HorizontalAlignment.Right" in label_renderer and
     "HorizontalAlignment.Left" in label_renderer and
     "GetCompactPlanLabelAnchorTime(" in read("src/CFIP.Indicator/UI/Chart/PlanLabelAnchorCalculator.cs"),
     "compact level labels must retain the canonical text-only presentation with one-bar left clearance",
