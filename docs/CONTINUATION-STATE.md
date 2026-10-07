@@ -2908,3 +2908,24 @@ Repository CI closeout is PASS on PR #375 final head `7ed5d74f97460d01a54912845b
 - Indicator broker execution boundary: no direct market/pending broker mutation or trading-permission request remains in Indicator. cBot is the broker-mutation owner.
 - Obsolete Indicator execution UI/reminder parameters were removed. Indicator execution state is internal intent-readiness only.
 - Demo cBot: market/pending/management execution defaults are armed and legacy all-disabled demo instances auto-migrate on start; LIVE remains explicitly armed.
+
+
+## Realtime signal latency correction — 2026-10-07
+
+Status: implemented.
+
+Forensic finding:
+- `Calculate()` is already cTrader's realtime tick boundary, but the live M5 Reaction owner was throttled by a 750ms debounce plus an ATR-relative price-movement condition.
+- The canonical visual resolver preferred the closed-bar Decision over the current live Reaction, so a valid same-direction intrabar signal could remain visually stale.
+- `RenderCalculationState()` also invoked the full `RenderPanel()` layout on every tick even though panel content/heartbeat already has a 500ms timer-owned refresh path.
+- The stacked signal arrow preferred `MtfTrendDirection`, preventing the canonical live signal direction from reaching the arrow surface.
+
+Correction:
+- `ReactionTimingRule` now owns a deterministic 100ms live-reaction refresh cadence.
+- Live Reaction now refreshes from the indicator tick path without the 750ms/ATR-movement debounce.
+- Canonical signal presentation prefers an accepted-direction live Reaction while preserving the anti-flip gate for opposite directions.
+- Stacked arrow direction now consumes `SignalVisualSnapshot.AuthoritativeDirection`; its 1..9 strength ladder remains owned by the canonical MTF trend-strength rule.
+- Full panel rendering was removed from the tick hot path; RuntimePanelHeartbeat/PanelContentRefresh remain the panel presentation owners.
+- Deterministic runtime-contract coverage was added for the 100ms cadence.
+
+Target-terminal verification remains required for actual observed latency, because cTrader executes Indicator `Calculate()` on incoming ticks but terminal performance/market-tick frequency determine the final wall-clock response.
