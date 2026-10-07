@@ -6188,25 +6188,43 @@ namespace cAlgo
                 "entry remains blocked after fault");
 
             machine.BeginCycle();
-            machine.MarkManagementReadyForRecovery();
-
-            Assert(
-                machine.State == RuntimeFaultState.Recovering,
-                "healthy management enters recovery");
-
-            Assert(
-                !machine.CanAutomaticEntryProceed,
-                "recovery does not re-arm entry");
-
-            machine.CompleteCycle();
 
             Assert(
                 machine.State == RuntimeFaultState.Healthy,
-                "clean recovery returns healthy");
+                "next calculation cycle clears the previous runtime fault");
 
             Assert(
-                !machine.CanAutomaticEntryProceed,
-                "healthy recovery remains disarmed");
+                machine.CanAutomaticEntryProceed,
+                "next clean cycle re-arms automatic entry");
+
+            RuntimeFaultStateMachine recoveryMachine =
+                new RuntimeFaultStateMachine();
+
+            recoveryMachine.BeginCycle();
+            recoveryMachine.ObserveAutoTradingSetting(true);
+            recoveryMachine.BlockAutomaticEntry();
+            recoveryMachine.MarkManagementReadyForRecovery();
+
+            Assert(
+                recoveryMachine.State == RuntimeFaultState.Recovering,
+                "management recovery enters recovering state");
+
+            Assert(
+                !recoveryMachine.CanAutomaticEntryProceed,
+                "recovery does not re-arm entry");
+
+            recoveryMachine.CompleteCycle();
+
+            Assert(
+                recoveryMachine.State == RuntimeFaultState.Degraded,
+                "faulted recovery cycle remains diagnostic until the next cycle");
+
+            recoveryMachine.BeginCycle();
+
+            Assert(
+                recoveryMachine.State == RuntimeFaultState.Healthy &&
+                recoveryMachine.CanAutomaticEntryProceed,
+                "post-recovery clean cycle returns healthy");
 
             machine.ObserveAutoTradingSetting(false);
             machine.ObserveAutoTradingSetting(true);
