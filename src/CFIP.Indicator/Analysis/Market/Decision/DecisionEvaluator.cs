@@ -173,6 +173,12 @@ namespace cAlgo
 
             decision.TimeframeAgreement = selectedTimeframeAgreement;
             decision.IndependentEvidence = selectedIndependentEvidence;
+            decision.IndependentEvidenceGroupCount =
+                consensus.Direction == 0
+                    ? 0
+                    : consensus.Direction == 1
+                        ? evidence.BullIndependentEvidenceGroups
+                        : evidence.BearIndependentEvidenceGroups;
             decision.StructuralConfirmations = selectedStructuralConfirmations;
             decision.RetestQuality = selectedRetestQuality;
 
@@ -190,11 +196,24 @@ namespace cAlgo
                     input.M5Frame == null
                         ? 0
                         : input.M5Frame.IndicatorConflict,
-                    consensus.Direction == 0
-                        ? 0
-                        : consensus.Direction == 1
-                            ? evidence.BullIndependentEvidenceGroups
-                            : evidence.BearIndependentEvidenceGroups);
+                    decision.IndependentEvidenceGroupCount);
+
+            // A trade candidate must be supported by at least three independent
+            // evidence families. Multiple correlated indicators inside one family
+            // are not enough to manufacture a high-quality signal.
+            if (decision.Direction != 0 &&
+                decision.IndependentEvidenceGroupCount < 3)
+            {
+                decision.Direction = 0;
+                decision.Confidence = strongestShare;
+                decision.TriggerReady = false;
+                decision.EntryAllowed = false;
+                decision.BlockReason = "EVIDENCE DIVERSITY";
+                decision.Reason =
+                    "EVIDENCE DIVERSITY | GROUPS=" +
+                    decision.IndependentEvidenceGroupCount;
+                return decision;
+            }
 
             if (decision.Direction == 0)
             {
