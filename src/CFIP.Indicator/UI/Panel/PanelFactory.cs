@@ -233,12 +233,9 @@ namespace cAlgo
                         
                                         CreatePanelRestoreButton();
 
-                                        // Create the canonical signal-arrow overlay after every
-                                        // panel-owned control so cTrader keeps the arrow surface
-                                        // above the panel z-order. Arrow state/content remains owned
-                                        // exclusively by SignalStackedArrowRenderer.
-                                        EnsureSignalArrowBox();
-                                        BringSignalArrowBoxToFront();
+                                        // Chart arrows are rendered directly by the canonical
+                                        // SignalStackedArrowRenderer. The panel owns no arrow
+                                        // surface or arrow z-order state.
                                     }
                                     catch (Exception ex)
                                     {
