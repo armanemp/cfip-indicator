@@ -132,10 +132,12 @@ namespace cAlgo
                 input.PlanDirection)
                 return false;
 
-            return
-                input.DecisionEntryAllowed &&
-                input.DecisionActionableNow &&
-                input.DecisionTriggerReady;
+            // A confirmed pre-trade plan owns its Entry/Trigger/SL/TP
+            // geometry until it expires, is replaced, becomes a pending order,
+            // or becomes a live position. Current trigger actionability is a
+            // broker/execution state and must not erase the already-created plan
+            // visuals from the chart.
+            return input.DecisionEntryAllowed;
         }
     }
 }
