@@ -88,8 +88,7 @@ namespace cAlgo
             high.IsInteractive = false;
             low.IsInteractive = false;
 
-            if (snapshot.SweepIndex >= 0 &&
-                true)
+            if (snapshot.SweepIndex >= 0)
             {
                 int chartIndex =
                     MapM5ToChart(
@@ -140,17 +139,49 @@ namespace cAlgo
                     baseColor);
             }
 
-            if (true)
+            if (snapshot.IsManipulationWatch &&
+                snapshot.WatchDirection != 0)
             {
-                DateTime labelTime =
+                int chartIndex =
+                    Math.Max(
+                        0,
+                        Math.Min(
+                            Bars.Count - 1,
+                            MapM5ToChart(
+                                closedM5,
+                                Bars.Count - 1)));
+
+                double watchPrice =
+                    snapshot.WatchDirection > 0
+                        ? snapshot.Low
+                        : snapshot.High;
+
+                Chart.DrawIcon(
+                    RangeVisualPrefix + "WATCH",
+                    snapshot.WatchDirection > 0
+                        ? ChartIconType.UpArrow
+                        : ChartIconType.DownArrow,
+                    chartIndex,
+                    watchPrice,
+                    baseColor);
+            }
+
+            DateTime labelTime =
                     Bars.OpenTimes[Math.Max(0, start)];
 
                 Chart.DrawText(
                     RangeVisualPrefix + "LABEL",
-                    "RANGE " +
-                    snapshot.State +
-                    " " +
-                    snapshot.Score,
+                    snapshot.IsManipulationWatch
+                        ? "MANIPULATION WATCH " +
+                          (snapshot.WatchDirection > 0
+                              ? "BUY"
+                              : "SELL") +
+                          " " +
+                          snapshot.WatchScore
+                        : "RANGE " +
+                          snapshot.State +
+                          " " +
+                          snapshot.Score,
                     labelTime,
                     snapshot.Direction > 0
                         ? snapshot.Low
@@ -166,6 +197,7 @@ namespace cAlgo
             Chart.RemoveObject(RangeVisualPrefix + "LOW");
             Chart.RemoveObject(RangeVisualPrefix + "SWEEP");
             Chart.RemoveObject(RangeVisualPrefix + "BREAKOUT");
+            Chart.RemoveObject(RangeVisualPrefix + "WATCH");
             Chart.RemoveObject(RangeVisualPrefix + "LABEL");
         }
     }
