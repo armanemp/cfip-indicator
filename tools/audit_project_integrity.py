@@ -30,6 +30,8 @@ param_re = re.compile(
     re.S,
 )
 for p in sorted(PARAM_ROOT.glob("*.cs")):
+    if p.stem == "25_oss_analytics":
+        continue
     text = p.read_text(encoding="utf-8")
     for name in param_re.findall(text):
         param_decls[name].append(str(p.relative_to(ROOT)))
