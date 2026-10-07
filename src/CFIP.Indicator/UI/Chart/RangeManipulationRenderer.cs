@@ -201,4 +201,3 @@ namespace cAlgo
             Chart.RemoveObject(RangeVisualPrefix + "LABEL");
         }
     }
-}
