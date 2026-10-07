@@ -226,7 +226,6 @@ namespace cAlgo
             else if (preTradePlanVisible)
             {
                 snapshot.PlanActive = true;
-                snapshot.Stage = "PLAN";
                 snapshot.EntryMode = _plan.EntryMode;
                 snapshot.CreatedM5 = _plan.CreatedM5;
                 snapshot.Entry = _plan.Entry;
@@ -238,6 +237,20 @@ namespace cAlgo
                 snapshot.Tp2 = _plan.Tp2;
                 snapshot.Tp3 = _plan.Tp3;
                 snapshot.Tp4 = _plan.Tp4;
+                snapshot.Stage =
+                    reactionReady &&
+                    _reaction != null &&
+                    _reaction.Direction == _plan.Direction
+                        ? "REACTION + PLAN"
+                        : "PLAN";
+            }
+            else if (reactionReady)
+            {
+                // The current open-M5 reaction is the realtime signal layer.
+                // It is intentionally evaluated before the closed-decision
+                // presentation states so a valid live trigger is not hidden
+                // behind a stale closed-bar label.
+                snapshot.Stage = "REACTION";
             }
             else if (setupPreviewVisible)
             {
@@ -271,10 +284,6 @@ namespace cAlgo
                     triggerRuntimeReady
                         ? "TRIGGER READY"
                         : "CONFIRMED";
-            }
-            else if (reactionReady)
-            {
-                snapshot.Stage = "REACTION";
             }
             else if (predictionReady)
             {
