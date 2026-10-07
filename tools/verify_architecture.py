@@ -55,10 +55,10 @@ parameters = sum(
     len(re.findall(r"\[Parameter\s*\(", p.read_text(encoding="utf-8")))
     for p in parameter_files
 )
-if parameters != 543:
-    raise SystemExit(f"Expected 543 total parameters, found {parameters}")
-if len(parameter_files) != 30:
-    raise SystemExit(f"Expected 30 parameter-group files, found {len(parameter_files)}")
+if parameters != 534:
+    raise SystemExit(f"Expected 534 total parameters, found {parameters}")
+if len(parameter_files) != 28:
+    raise SystemExit(f"Expected 28 parameter-group files, found {len(parameter_files)}")
 
 news_parameter_file = PARAMETER_ROOT / "28_news_guard.cs"
 if not news_parameter_file.exists():
@@ -75,8 +75,8 @@ if news_parameters != 14:
     )
 baseline_parameter_files = [p for p in parameter_files if p.stem != "25_oss_analytics"]
 baseline_parameters = sum(len(re.findall(r"\[Parameter\s*\(", p.read_text(encoding="utf-8"))) for p in baseline_parameter_files)
-if baseline_parameters != 540:
-    raise SystemExit(f"Expected 540 baseline parameters, found {baseline_parameters}")
+if baseline_parameters != 531:
+    raise SystemExit(f"Expected 531 baseline parameters, found {baseline_parameters}")
 extension_parameters = len(re.findall(r"\[Parameter\s*\(", (PARAMETER_ROOT / "25_oss_analytics.cs").read_text(encoding="utf-8")))
 if extension_parameters != 3:
     raise SystemExit(f"Expected 3 OSS extension parameters, found {extension_parameters}")
