@@ -73,12 +73,13 @@ namespace cAlgo
                 return empty;
 
             int span = Math.Max(12, Math.Min(80, lookback));
-            int first = Math.Max(2, index - span + 1);
+            int rangeLast = index - 1;
+            int first = Math.Max(2, rangeLast - span + 1);
 
             double high = bars.HighPrices[first];
             double low = bars.LowPrices[first];
 
-            for (int i = first + 1; i <= index; i++)
+            for (int i = first + 1; i <= rangeLast; i++)
             {
                 high = Math.Max(high, bars.HighPrices[i]);
                 low = Math.Min(low, bars.LowPrices[i]);
@@ -225,7 +226,7 @@ namespace cAlgo
                     low,
                     widthAtr,
                     first,
-                    index,
+                    rangeLast,
                     score,
                     upperTouches,
                     lowerTouches);
@@ -337,7 +338,7 @@ namespace cAlgo
                 Low = low,
                 WidthAtr = widthAtr,
                 StartIndex = first,
-                EndIndex = index,
+                EndIndex = rangeLast,
                 SweepIndex = -1,
                 BreakoutIndex = -1,
                 RetestIndex = -1,
