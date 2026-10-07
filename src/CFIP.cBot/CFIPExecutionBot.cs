@@ -488,35 +488,45 @@ namespace CFIP.cBot
                     out SignalScenarioBatch scenarioBatch,
                     out _))
                 {
-                    if (scenarioBatch == null ||
-                        scenarioBatch.ContractVersion != ContractVersion.Current ||
-                        !string.Equals(
+                    bool validBatch =
+                        scenarioBatch != null &&
+                        scenarioBatch.ContractVersion == ContractVersion.Current &&
+                        string.Equals(
                             scenarioBatch.IndicatorInstanceId,
                             _boundIndicatorInstanceId,
-                            StringComparison.Ordinal) ||
-                        !string.Equals(
+                            StringComparison.Ordinal) &&
+                        string.Equals(
                             scenarioBatch.Symbol,
                             SymbolName,
-                            StringComparison.Ordinal))
-                        return;
+                            StringComparison.Ordinal);
 
                     SignalEnvelope[] scenarios =
-                        scenarioBatch.Scenarios ??
-                        Array.Empty<SignalEnvelope>();
+                        validBatch
+                            ? scenarioBatch.Scenarios ??
+                              Array.Empty<SignalEnvelope>()
+                            : Array.Empty<SignalEnvelope>();
 
-                    for (int i = 0; i < scenarios.Length; i++)
+                    // An empty or invalid batch is not an execution result.
+                    // Fall through to the canonical single-envelope transport
+                    // so a fresh actionable signal can never be hidden behind
+                    // an empty/stale scenario container.
+                    if (validBatch &&
+                        scenarios.Length > 0)
                     {
-                        SignalEnvelope scenario = scenarios[i];
+                        for (int i = 0; i < scenarios.Length; i++)
+                        {
+                            SignalEnvelope scenario = scenarios[i];
 
-                        if (!ShouldProcessRealtimeTimerEnvelope(scenario))
-                            continue;
+                            if (!ShouldProcessRealtimeTimerEnvelope(scenario))
+                                continue;
 
-                        ProcessSignalEnvelope(scenario, nowUtc);
+                            ProcessSignalEnvelope(scenario, nowUtc);
+                        }
+
+                        SweepScenarioProtectionStates(nowUtc);
+                        PublishExecutionState("HEARTBEAT", false);
+                        return;
                     }
-
-                    SweepScenarioProtectionStates(nowUtc);
-                    PublishExecutionState("HEARTBEAT", false);
-                    return;
                 }
 
                 if (!CfipDeviceSignalTransport.TryRead(
