@@ -101,7 +101,8 @@ namespace cAlgo
 
             DecisionFilterResult marketResult =
                 EvaluateDecisionMarketGates(
-                    closedM5);
+                    closedM5,
+                    decision);
 
             if (!marketResult.Allowed)
             {
