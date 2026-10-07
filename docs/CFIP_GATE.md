@@ -1365,3 +1365,14 @@ dotnet build "src/CFIP.Indicator/CFIP.Indicator.csproj" --configuration Release
 Expected local build signal: `Build succeeded. 0 Warning(s) 0 Error(s)`.
 
 **cTrader boundary:** after installing the resulting Release artifact, verify that a clearly rising M15 does not display a SELL trade arrow merely because H1/H4 evidence is bearish; verify weak/blocked states do not masquerade as actionable arrows.
+
+
+### 2026-10-07 — Decision consensus integrity follow-up
+
+**Status:** VERIFICATION
+
+**Additional root cause closed:** the canonical FrameDecisionContributionAdapter previously converted neutral frames (Direction = 0) into directional consensus contributions from raw BullScore/BearScore. Neutral evidence is now fail-closed at the decision contribution boundary.
+
+**Acceptance:** a neutral frame with deliberately asymmetric raw scores must contribute zero BUY/SELL consensus. This is covered by the Decision Contracts program and CI-20 source audit.
+
+**No strategy threshold was lowered and no parallel decision engine was added.**

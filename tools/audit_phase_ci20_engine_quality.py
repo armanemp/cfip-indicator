@@ -28,6 +28,7 @@ actionable_quality = read("src/CFIP.Indicator/Core/Math/ActionableSignalQualityR
 structural_confirmation = read("src/CFIP.Indicator/Core/Math/StructuralConfirmationRule.cs")
 mtf_trend_strength = read("src/CFIP.Indicator/Core/Math/MtfTrendStrengthRule.cs")
 signal_arrow = read("src/CFIP.Indicator/UI/Chart/SignalStackedArrowRenderer.cs")
+frame_contribution_adapter = read("src/CFIP.Indicator/Analysis/Market/Decision/FrameDecisionContributionAdapter.cs")
 retest_quality = read("src/CFIP.Indicator/Planning/Filters/RegimeFilter.cs")
 execution_mode = read("src/CFIP.Indicator/Planning/Execution/ExecutionModeResolver.cs")
 
@@ -86,6 +87,11 @@ require(
     "DistanceToRawZone(" in entry_zones and
     "return false;" in entry_zones,
     "execution-zone fallback is not bounded by practical market distance",
+)
+
+require(
+    "frame.Direction == 0" in frame_contribution_adapter,
+    "neutral frames must not contribute directional consensus",
 )
 
 require(

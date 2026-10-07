@@ -1302,6 +1302,29 @@ namespace cAlgo
 
         private static void VerifyQualityWeightedFrameContribution()
         {
+            Frame neutral =
+                new Frame
+                {
+                    Direction = 0,
+                    BullScore = 90,
+                    BearScore = 10,
+                    Quality = 95,
+                    Evidence = 4
+                };
+
+            DecisionFrameContributionAdapter adapter =
+                new DecisionFrameContributionAdapter();
+
+            DecisionFrameContribution neutralContribution =
+                adapter.Calculate(
+                    neutral,
+                    10);
+
+            Assert(
+                Math.Abs(neutralContribution.Bull) < 0.0001 &&
+                Math.Abs(neutralContribution.Bear) < 0.0001,
+                "neutral frame cannot contribute directional consensus");
+
             DecisionFrameContributionCalculator calculator =
                 new DecisionFrameContributionCalculator();
 

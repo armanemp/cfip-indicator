@@ -9,7 +9,8 @@ namespace cAlgo
             Frame frame,
             double weight)
         {
-            if (frame == null)
+            if (frame == null ||
+                frame.Direction == 0)
                 return new DecisionFrameContribution(0, 0, 0);
 
             DecisionFrameContribution result =
