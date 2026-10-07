@@ -47,7 +47,7 @@ require("frame.Bars.ClosePrices[frame.Index]" in m_tf, "closed-frame pressure so
 require(
     "AuthoritativeDirection" in arrows and
     "RemoveStackedSignalArrows();" in arrows and
-    "UpdateSignalArrowBox(" in arrows,
+    "Chart.DrawIcon(" in arrows and "CanonicalTrendArrowPrefix" in arrows,
     "canonical arrow direction owner must remain explicit",
 )
 require("SignalPresentationColorRule.Resolve(" in arrows and "SignalPresentationColorRule.Resolve(" in panel_tf, "arrows and timeframe panel must share one color owner")
