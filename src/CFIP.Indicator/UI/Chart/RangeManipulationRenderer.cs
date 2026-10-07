@@ -13,8 +13,8 @@ namespace cAlgo
         {
             RemoveRangeManipulationObjects();
 
-            if (!RangeEngineEnabled ||
-                !ShowRangeZones ||
+            if (false ||
+                false ||
                 snapshot == null ||
                 !snapshot.IsRange ||
                 snapshot.High <= snapshot.Low ||
@@ -91,7 +91,7 @@ namespace cAlgo
             low.IsInteractive = false;
 
             if (snapshot.SweepIndex >= 0 &&
-                ShowManipulationMarks)
+                true)
             {
                 int chartIndex =
                     MapM5ToChart(
@@ -142,7 +142,7 @@ namespace cAlgo
                     baseColor);
             }
 
-            if (ShowRangeLabels)
+            if (true)
             {
                 DateTime labelTime =
                     Bars.OpenTimes[Math.Max(0, start)];
