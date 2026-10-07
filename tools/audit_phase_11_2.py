@@ -52,8 +52,13 @@ require(
 )
 require(
     LABEL,
+    r"HorizontalAlignment\s*=\s*\n\s*HorizontalAlignment\.Right",
+    "compact label box is anchored to the left of the line",
+)
+require(
+    LABEL,
     r"HorizontalAlignment\s*=\s*\n\s*HorizontalAlignment\.Left",
-    "left-aligned level labels at the left-of-line anchor",
+    "label text remains left-aligned inside its box",
 )
 require(
     LABEL,
@@ -62,8 +67,18 @@ require(
 )
 require(
     LABEL,
-    r"Chart\.DrawText\(\s*\n\s*name,\s*\n\s*text,\s*\n\s*expectedTime,",
-    "chart-space time-based canonical label X creation",
+    r"Chart\.AddControl\(\s*\n\s*box,\s*\n\s*labelTime,\s*\n\s*labelPrice",
+    "chart-space time/price canonical label placement",
+)
+require(
+    LABEL,
+    r"Chart\.MoveControl\(\s*\n\s*box,\s*\n\s*labelTime,\s*\n\s*labelPrice",
+    "reusable label control follows the canonical anchor without recreating a parallel geometry path",
+)
+require(
+    LABEL,
+    r"TextTrimming\s*=\s*\n\s*TextTrimming\.Ellipsis",
+    "bounded label text without overflow",
 )
 ANCHOR = ROOT / "src/CFIP.Indicator/UI/Chart/PlanLabelAnchorCalculator.cs"
 require(
@@ -77,8 +92,8 @@ require(
     "exact one-bar gap is owned by the canonical OpenTime anchor",
 )
 
-if re.search(r"label\.Time\s*=", LABEL.read_text(encoding="utf-8")):
-    raise SystemExit("canonical signal labels must not mutate ChartText.Time after creation")
+if re.search(r"ChartText\s+label\s*=", LABEL.read_text(encoding="utf-8")):
+    raise SystemExit("legacy ChartText signal-label owner remains after compact box cutover")
 require(LAMP, r'ForegroundColor\s*=\s*Color\.FromArgb', "processing lamp pulse color")
 require(LAMP, r'_processingLampPulseIndex\s*=\s*\(_processingLampPulseIndex \+ 1\) % 6', "processing lamp pulse state")
 require(PANEL_FACTORY, r"CreateProcessingHeartbeatLamp\(\)[\s\S]*?_panelHeaderStack\.AddChild", "lamp header ownership")
