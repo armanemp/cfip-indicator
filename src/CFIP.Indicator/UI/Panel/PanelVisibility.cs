@@ -26,10 +26,28 @@ namespace cAlgo
                                     if (_panel != null)
                                         _panel.IsVisible =
                                             !_panelHidden;
-                        
+
+                                    // The MTF lamp rail is hosted directly by the panel stack,
+                                    // while the footer/action surface is hosted by _buttonStack.
+                                    // Hiding the panel makes _buttonStack invisible through the
+                                    // normal layout pass. Restoring only _panel.IsVisible would
+                                    // therefore expose the lamp rail while leaving the footer
+                                    // invisible until another full render occurred.
+                                    if (_buttonStack != null)
+                                        _buttonStack.IsVisible =
+                                            ShowUnifiedPanel &&
+                                            !_panelHidden;
+
                                     if (_panelRestoreButton != null)
                                         _panelRestoreButton.IsVisible =
                                             _panelHidden;
+
+                                    if (!_panelHidden)
+                                    {
+                                        _lastPanelRenderUtc =
+                                            DateTime.MinValue;
+                                        RenderPanel();
+                                    }
 
                                 }
         
