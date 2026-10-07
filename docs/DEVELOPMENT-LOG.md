@@ -4178,3 +4178,20 @@ Implementation:
 Result:
 - the signal path is now designed for sub-second live reaction refresh on incoming ticks, with no intentional 750ms debounce;
 - target cTrader replay remains required to confirm empirical terminal latency and timing under live quote conditions.
+
+
+
+## Signal-quality precision hardening — 2026-10-07
+
+Deep review found two confidence-inflation defects:
+1. Tactical opportunity quality double-counted WaveTrend, structural and independent evidence after those components had already been represented by the M5 frame quality.
+2. Softmax consensus could convert a small raw score gap into a directional share that passed the configured share floor, despite weak absolute separation.
+
+Implementation:
+- centralized Tactical quality in `TacticalOpportunityRule` using M5 quality, execution-zone quality and evidence diversity;
+- removed duplicated evidence composition from `DecisionTacticalOpportunityAnalyzer`;
+- added raw-score separation to `DecisionConsensusCalculator`, derived from the existing share/temperature contract and total evidence mass;
+- added Decision Contracts regression coverage for fragile near-ties, materially separated consensus and tactical-quality bounds/symmetry;
+- extended the realtime source audit to enforce these ownership/anti-inflation rules.
+
+This is intended to reduce false directional confidence while preserving valid strong signals. It is not a profitability claim.
