@@ -1,4 +1,4 @@
-# Native No-Box Signal Label Refinement — 2026-10-04
+STATUS: SUPERSEDED — The 2026-10-07 compact colored chart-control label contract supersedes this no-box presentation decision.\n\n# Native No-Box Signal Label Refinement — 2026-10-04
 
 ## Decision
 Do not use ChartRectangle for signal labels. The rectangle is a chart-bound X/Y shape and is therefore a poor fit for compact text tagging: its width/height are price/time geometry and can visually drift or become oversized with chart scaling. cTrader provides ChartText specifically for text anchored to chart coordinates, including HorizontalAlignment and VerticalAlignment. It also provides ChartIcon for small native markers.
