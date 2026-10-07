@@ -11,6 +11,11 @@ namespace cAlgo
         AccessRights = AccessRights.None)]
     public partial class CFIPIndicator : Indicator
     {
+        private readonly RangeManipulationAnalyzer _rangeManipulationAnalyzer =
+            new RangeManipulationAnalyzer();
+
+        private RangeManipulationSnapshot _rangeManipulation =
+            RangeManipulationSnapshot.Empty;
     }
 #pragma warning restore CS0612
 }
