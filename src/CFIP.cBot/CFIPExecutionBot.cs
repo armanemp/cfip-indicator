@@ -131,7 +131,7 @@ namespace CFIP.cBot
         [Parameter(
             "Max Demo Executions Per Session",
             Group = "Safety",
-            DefaultValue = 3,
+            DefaultValue = 20,
             MinValue = 1,
             MaxValue = 20)]
         public int MaxDemoExecutionsPerSession { get; set; }
@@ -139,7 +139,7 @@ namespace CFIP.cBot
         [Parameter(
             "Max Live Executions Per Session",
             Group = "Safety",
-            DefaultValue = 3,
+            DefaultValue = 20,
             MinValue = 1,
             MaxValue = 20)]
         public int MaxLiveExecutionsPerSession { get; set; }
