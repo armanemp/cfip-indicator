@@ -28,8 +28,23 @@ namespace cAlgo
             if (m15Atr <= 0)
                 return;
 
-            RenderNearestFvg(_m15Bars, m15Index, 1, m15Atr, market, "M15_BULL", Color.Green);
-            RenderNearestFvg(_m15Bars, m15Index, -1, m15Atr, market, "M15_BEAR", Color.Red);
+            RenderNearestFvg(
+                _m15Bars,
+                m15Index,
+                1,
+                m15Atr,
+                market,
+                "M15_BULL",
+                Color.Green);
+
+            RenderNearestFvg(
+                _m15Bars,
+                m15Index,
+                -1,
+                m15Atr,
+                market,
+                "M15_BEAR",
+                Color.Red);
 
             if (_h1Bars != null)
             {
@@ -43,8 +58,23 @@ namespace cAlgo
 
                     if (h1Atr > 0)
                     {
-                        RenderNearestFvg(_h1Bars, h1Index, 1, h1Atr, market, "H1_BULL", Color.Green);
-                        RenderNearestFvg(_h1Bars, h1Index, -1, h1Atr, market, "H1_BEAR", Color.Red);
+                        RenderNearestFvg(
+                            _h1Bars,
+                            h1Index,
+                            1,
+                            h1Atr,
+                            market,
+                            "H1_BULL",
+                            Color.DarkGreen);
+
+                        RenderNearestFvg(
+                            _h1Bars,
+                            h1Index,
+                            -1,
+                            h1Atr,
+                            market,
+                            "H1_BEAR",
+                            Color.DarkRed);
                     }
                 }
             }
@@ -97,7 +127,9 @@ namespace cAlgo
                 LineStyle.Solid);
 
             rectangle.IsFilled = true;
-            rectangle.Color = Color.FromArgb(16, color);
+            rectangle.Color = Color.FromArgb(
+                16,
+                color);
             rectangle.IsInteractive = false;
 
             Chart.DrawText(
@@ -138,7 +170,11 @@ namespace cAlgo
 
             return best >= 0
                 ? best
-                : Math.Max(0, Math.Min(Bars.Count - 1, fallback));
+                : Math.Max(
+                    0,
+                    Math.Min(
+                        Bars.Count - 1,
+                        fallback));
         }
 
         private void RemoveCanonicalFvgObjects()
