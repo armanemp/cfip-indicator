@@ -1785,3 +1785,14 @@ The intent is higher signal precision through removal of artificial confidence, 
 ## Top-Down tactical precision hardening — 2026-10-07
 
 The tactical exception path was hardened so `TacticalOpportunityAllowed` alone can no longer bypass the M15/M30 hierarchy. A tactical bypass now requires strong same-direction midframe confirmation; a Counter-HTF tactical path additionally requires an explicit opposing HTF anchor. This preserves the intentional tactical/counter-HTF lane while preventing M5-only directions from becoming canonical signals.
+
+
+## 2026-10-07 — Signal quality precision extension
+
+Repository-side signal precision was hardened beyond threshold tuning:
+- TimeframeAgreementRule is now the single owner of MTF agreement credit and weights aligned frames by their validated frame quality. A weak aligned frame therefore cannot manufacture near-perfect agreement.
+- StructuralConfirmationRule is now the single owner of higher-timeframe structural-confirmation directionality; structure from a frame whose overall direction is opposite the candidate is treated as contradictory rather than a confirmation.
+- Deterministic Decision Contracts cover perfect alignment, weak aligned M15, strong opposing M15, BUY/SELL symmetry, disabled/stale timeframe handling, invalid direction and opposing structural confirmation.
+- A CI source audit enforces the ownership chain and prevents the old quality-blind/contradictory confirmation formulas from returning.
+
+This is a precision correction, not a blanket threshold increase. Repository verification is required on the branch; target-terminal/replay evidence is still required before claiming empirical false-signal improvement.
