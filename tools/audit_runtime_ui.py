@@ -165,7 +165,7 @@ if "ResolveCanonicalPlanLineColor(" not in line or "ResolveCanonicalPlanLineColo
     raise SystemExit("Plan labels must use the exact canonical signal-line color owner")
 if "Chart.AddControl(" not in compact_label_renderer or "new Border" not in compact_label_renderer:
     raise SystemExit("Plan label renderer must own the compact chart-control box")
-if "TextTrimming = TextTrimming.CharacterEllipsis" not in compact_label_renderer:
+if "TextTrimming.CharacterEllipsis" not in compact_label_renderer:
     raise SystemExit("Plan label boxes must prevent text overflow")
 if "semanticColor" not in compact_label_renderer or "label.ForegroundColor =" not in compact_label_renderer or "box.BorderColor =" not in compact_label_renderer:
     raise SystemExit("Plan label renderer must apply the exact semantic line color")
