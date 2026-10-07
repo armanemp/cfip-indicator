@@ -65,9 +65,6 @@ namespace cAlgo
                 direction != decisionDirection)
                 return false;
 
-            // A setup preview is still pre-trigger, but it must already have
-            // passed the canonical decision gates. Blocked/low-quality decisions
-            // must never create a trade-looking visual on the chart.
             return decisionEntryAllowed;
         }
 
@@ -90,9 +87,6 @@ namespace cAlgo
                         configuredMaximumEntryDistanceAtr)
                     : 0.45;
 
-            // A preview is a nearby structural setup, not a multi-session forecast.
-            // Keep it bounded by the existing entry-distance policy and cap the
-            // display envelope at 1.5 ATR of the canonical M5 volatility.
             double maximumDistanceAtr =
                 System.Math.Max(
                     0.80,
@@ -132,10 +126,11 @@ namespace cAlgo
                 input.PlanDirection)
                 return false;
 
-            return
-                input.DecisionEntryAllowed &&
-                input.DecisionActionableNow &&
-                input.DecisionTriggerReady;
+            // Entry/Trigger/SL/TP geometry belongs to the accepted plan lifecycle.
+            // It must not disappear merely because the instantaneous trigger or
+            // actionability state changed. Arrow/execution readiness is a separate
+            // final gate owned by the decision/actionability path.
+            return input.DecisionEntryAllowed;
         }
     }
 }
