@@ -83,7 +83,8 @@ namespace cAlgo
                     "ENTRY CALIBRATED",
                     StringComparison.OrdinalIgnoreCase))
             {
-                if (decision.TacticalOpportunityAllowed)
+                if (AllowsTacticalTopDownBypass(
+                        decision))
                     return new DecisionFilterResult(
                         true,
                         string.Empty);
@@ -109,6 +110,47 @@ namespace cAlgo
             return new DecisionFilterResult(
                 true,
                 string.Empty);
+        private bool AllowsTacticalTopDownBypass(
+            Decision decision)
+        {
+            if (decision == null ||
+                !decision.TacticalOpportunityAllowed ||
+                (decision.Direction != 1 &&
+                 decision.Direction != -1))
+                return false;
+
+            int strongMidframeFloor =
+                Math.Max(
+                    65,
+                    Math.Max(
+                        MinimumTimeframeAgreement,
+                        SmartMinimumTimeframeAgreement) -
+                    5);
+
+            bool midframeAligned =
+                decision.MidframeDirection ==
+                    decision.Direction &&
+                decision.MidframeAlignment >=
+                    strongMidframeFloor &&
+                decision.MidframeAbsoluteStrength >=
+                    strongMidframeFloor;
+
+            if (!midframeAligned)
+                return false;
+
+            // A Counter-HTF tactical opportunity is valid only when the canonical
+            // M15/M30 midframe strongly supports the counter direction. This keeps
+            // the intentional countertrend lane while preventing an M5-only
+            // direction from bypassing the top-down hierarchy.
+            return
+                decision.TacticalOpportunityLane ==
+                    OpportunityLane.CounterHtfTactical
+                    ? decision.HtfAnchorDirection != 0 &&
+                      decision.HtfAnchorDirection !=
+                      decision.Direction
+                    : true;
+        }
+
         }
     }
 }
