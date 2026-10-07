@@ -198,6 +198,47 @@ namespace cAlgo
                 direction,
                 atr);
 
+            // Current execution/setup zones must remain practically reachable from
+            // the current quote. HTF structure may legitimately inform targets, but
+            // an H1 swing several ATR away must never become the apparent current
+            // entry signal. Future pending-order mining has its own bounded path.
+            double maximumPracticalZoneDistanceAtr =
+                Math.Max(
+                    0.80,
+                    Math.Min(
+                        1.50,
+                        Math.Max(
+                            0.05,
+                            MaximumEntryDistanceAtr) *
+                        2.50));
+
+            for (int candidateIndex = candidates.Count - 1;
+                 candidateIndex >= 0;
+                 candidateIndex--)
+            {
+                ExecutionZoneSelectionCandidate candidate =
+                    candidates[candidateIndex];
+
+                if (candidate == null)
+                {
+                    candidates.RemoveAt(candidateIndex);
+                    continue;
+                }
+
+                double distance =
+                    DistanceToRawZone(
+                        market,
+                        candidate.Low,
+                        candidate.High);
+
+                if (distance >
+                    atr *
+                    maximumPracticalZoneDistanceAtr)
+                {
+                    candidates.RemoveAt(candidateIndex);
+                }
+            }
+
             ExecutionZoneSelectionCandidate best = null;
 
             for (int i = 0;
