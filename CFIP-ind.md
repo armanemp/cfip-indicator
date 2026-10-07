@@ -868,15 +868,16 @@ Footer اکنون چهار ردیف canonical دارد:
 - [x] DOM semantics
 - [x] Aggressive-flow owner
 - [x] bounded rolling proxy
-- [x] runtime subscription lifecycle
-- [x] four-row UI
-- [x] explicit volume semantics
+- [x] startup history seed
+- [x] reconnect/history reseed
+- [x] flow normalization against session/regime activity
+- [x] canonical arrow-strength consumer alignment
+- [x] four-row UI with thicker deterministic bars
+- [x] explicit DOM-vs-flow volume semantics
 - [x] startup lifetime timeout removed
-- [x] static acceptance gate
-- [ ] reconnect/history reseed contract
-- [ ] flow normalization against symbol/session regime
-- [ ] arrow strength consumer alignment
-- [ ] full compile/runtime/architecture CI verification
+- [x] dead `FullWidthLevelLines` parameter removed
+- [ ] final compile/runtime/architecture CI on the latest head
+- [ ] target-terminal validation
 
 ## 17. به‌روزرسانی پیشرفت — Batch 04
 با تکمیل owner اولیه Flow/DOM و حذف timeout lifecycle:
