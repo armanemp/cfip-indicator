@@ -16,5 +16,11 @@ namespace CFIP.Contracts
             return "CFIPSignalScenarioBatch" +
                    ContractBusKeyHash.Hash(instanceId);
         }
+
+        public static string ForHeartbeat(string instanceId)
+        {
+            return "CFIPSignalHeartbeat" +
+                   ContractBusKeyHash.Hash(instanceId);
+        }
     }
 }
