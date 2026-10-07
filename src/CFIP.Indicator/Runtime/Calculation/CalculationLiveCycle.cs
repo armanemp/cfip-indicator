@@ -33,24 +33,16 @@ namespace cAlgo
             bool newM5 =
                 liveM5 != _lastReactionM5;
 
-            bool priceMoved =
-                _lastReactionMarket <= 0 ||
-                Math.Abs(
-                    market -
-                    _lastReactionMarket) >=
-                Math.Max(
-                    Symbol.TickSize * 2,
-                    atr * 0.01);
-
-            bool intervalElapsed =
-                (now -
-                 _lastReactionCalcUtc)
-                .TotalMilliseconds >= 750;
+            bool liveRefreshDue =
+                ReactionTimingRule.IsLiveRefreshDue(
+                    now,
+                    _lastReactionCalcUtc,
+                    liveM5,
+                    _lastReactionM5);
 
             if (_reaction == null ||
                 newM5 ||
-                (intervalElapsed &&
-                 priceMoved))
+                liveRefreshDue)
             {
                 _reaction =
                     BuildReaction();
