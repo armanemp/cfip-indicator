@@ -149,21 +149,6 @@ namespace CFIP.cBot.Execution
                     return true;
                 }
 
-                if (!TryAllowProtectionMutation(
-                        robot,
-                        command,
-                        settings,
-                        nowUtc,
-                        out string cooldownReason))
-                {
-                    // Keep the command queued. A cooldown is a temporary execution
-                    // deferment, not a broker mutation fact. Recording a synthetic
-                    // acknowledgment here would move the command into the
-                    // confirmation-only branch and could freeze the request.
-                    status = cooldownReason;
-                    return true;
-                }
-
                 ExecuteOne(
                     robot,
                     instanceId,
