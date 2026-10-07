@@ -907,3 +907,13 @@ Footer اکنون چهار ردیف canonical دارد:
 - A strongly opposing fresh flow snapshot can veto an intrabar reaction; aligned flow does not manufacture a signal.
 - MTF trend/arrow strength ignores stale flow.
 - This is intended to improve current-state precision without reintroducing tick-by-tick direction flipping.
+
+
+## Batch 04.3 — cBot runtime continuity / execution boundary
+- Runtime faults are cycle-local and cannot latch Indicator execution readiness off.
+- cBot remains the sole broker mutation owner: market/pending/management broker APIs stay inside cBot mutation coordinators.
+- Indicator-side Trading/Execution code is retained only where it prepares platform-neutral intent, evaluates analytical/pre-trade policy, publishes management commands, or reconciles/read-model state; direct broker mutation is prohibited.
+- cBot chart binding now has a bounded 10-second transient-reload grace period. A temporary disappearance from ChartIndicators.Custom does not immediately clear the known Indicator instance or stop the execution polling loop.
+- A persistent detach still fails closed after the grace period.
+- Current branch/PR: phase/cbot-binding-runtime-hardening-2026-10-07 / PR #380, head 55d7e97926b73e8a628ec93ad08d74f15d0fcd2a.
+- Current qualitative completion estimate: ~80%, with ~20% remaining. The largest remaining work is empirical terminal validation, anti-flip/episode identity, pending-candidate evidence lineage, and final cBot protection/outcome calibration closure.
