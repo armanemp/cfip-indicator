@@ -111,6 +111,10 @@ namespace cAlgo
 
             if (futurePending)
             {
+                if (candidate.IndependentEvidenceGroupCount < 3)
+                    return BlockScenarioExecutionPolicy(
+                        "FUTURE EVIDENCE DIVERSITY");
+
                 if (!candidate.FutureOrderReady)
                     return BlockScenarioExecutionPolicy("FUTURE ORDER NOT ARMED");
 
