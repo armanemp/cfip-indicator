@@ -245,6 +245,8 @@ namespace CFIP.cBot
         private SignalEnvelope _lastSignalEnvelope;
         private long _stateRevision;
         private const int MaxRealtimeTimerScenarioRevisions = 128;
+        private DateTime _nextRuntimeFaultLogUtc = DateTime.MinValue;
+        private int _runtimeFaultCount;
 
         private readonly Dictionary<string, long> _lastRealtimeTimerRevisionByScenario =
             new Dictionary<string, long>(StringComparer.Ordinal);
@@ -378,6 +380,8 @@ namespace CFIP.cBot
 
         protected override void OnTick()
         {
+            try
+            {
             _tickCount++;
             PublishPresence("RUNNING");
 
@@ -484,6 +488,12 @@ namespace CFIP.cBot
 
             SweepScenarioProtectionStates(nowUtc);
             return;
+        
+            }
+            catch (Exception ex)
+            {
+                HandleRuntimeFault("OnTick", ex);
+            }
         }
 
         private bool ShouldProcessRealtimeTimerEnvelope(
@@ -541,6 +551,8 @@ namespace CFIP.cBot
 
         protected override void OnTimer()
         {
+            try
+            {
             if (!RefreshIndicatorBinding(false))
                 return;
 
@@ -608,6 +620,50 @@ namespace CFIP.cBot
                 nowUtc);
 
             SweepScenarioProtectionStates(nowUtc);
+        
+            }
+            catch (Exception ex)
+            {
+                HandleRuntimeFault("OnTimer", ex);
+            }
+        }
+
+        private void HandleRuntimeFault(
+            string source,
+            Exception exception)
+        {
+            _runtimeFaultCount++;
+
+            DateTime now = Server.TimeInUtc;
+            bool logNow =
+                now >= _nextRuntimeFaultLogUtc;
+
+            if (logNow)
+                _nextRuntimeFaultLogUtc = now.AddSeconds(5);
+
+            if (logNow)
+            {
+                Print(
+                    "CFIP cBot RUNTIME FAULT | source={0} | count={1} | type={2} | message={3}",
+                    source ?? "UNKNOWN",
+                    _runtimeFaultCount,
+                    exception == null ? "UNKNOWN" : exception.GetType().Name,
+                    exception == null ? "UNKNOWN" : exception.Message);
+            }
+
+            // A single transient callback fault must not silently terminate the
+            // cBot lifecycle. Keep the canonical execution state intact and
+            // publish the fault as telemetry so the Indicator can distinguish
+            // a live cBot from a stale heartbeat.
+            PublishExecutionState(
+                "RUNTIME FAULT RECOVERED • " +
+                (source ?? "UNKNOWN"),
+                true);
+        }
+
+        protected override void OnException(Exception exception)
+        {
+            HandleRuntimeFault("OnException", exception);
         }
 
         private void ProcessSignalEnvelope(
