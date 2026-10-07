@@ -16,7 +16,6 @@ namespace CFIP.cBot.Execution
         public double MaximumSpreadToStopRiskRatio { get; }
         public bool EnableDailyLossLimit { get; }
         public double MaximumDailyLossPercent { get; }
-        public bool OneOrderPerSignal { get; }
         public bool EnableLiveExitManagement { get; }
         public bool EnablePartialTakeProfit { get; }
         public bool AutoBrokerProtection { get; }
@@ -32,7 +31,6 @@ namespace CFIP.cBot.Execution
             bool useMarketHoursGuard,
             bool useSpreadFilter, double maximumSpreadToStopRiskRatio,
             bool enableDailyLossLimit, double maximumDailyLossPercent,
-            bool oneOrderPerSignal,
             bool enableLiveExitManagement, bool enablePartialTakeProfit,
             bool autoBrokerProtection, bool autoProtectBrokerPositions,
             bool syncBrokerTakeProfit, bool managedActionsOnly,
@@ -46,7 +44,6 @@ namespace CFIP.cBot.Execution
             MaximumSpreadToStopRiskRatio = NormalizePositive(maximumSpreadToStopRiskRatio, 0.18);
             EnableDailyLossLimit = enableDailyLossLimit;
             MaximumDailyLossPercent = Math.Max(0, double.IsNaN(maximumDailyLossPercent) || double.IsInfinity(maximumDailyLossPercent) ? 3.0 : maximumDailyLossPercent);
-            OneOrderPerSignal = oneOrderPerSignal;
             EnableLiveExitManagement = enableLiveExitManagement;
             EnablePartialTakeProfit = enablePartialTakeProfit;
             AutoBrokerProtection = autoBrokerProtection;
@@ -68,7 +65,6 @@ namespace CFIP.cBot.Execution
                 robot.UseMarketHoursGuard,
                 robot.UseSpreadFilter, robot.MaximumSpreadToStopRiskRatio,
                 robot.EnableDailyLossLimit, robot.MaximumDailyLossPercent,
-                robot.OneOrderPerSignal,
                 robot.EnableLiveExitManagement, robot.EnablePartialTakeProfit,
                 robot.AutoBrokerProtection, robot.AutoProtectBrokerPositions,
                 robot.SyncBrokerTakeProfit, robot.ManagedActionsOnly,
