@@ -9,6 +9,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="../../src/CFIP.Indicator/Core/Math/NumericGuards.cs" Link="Core/Math/NumericGuards.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/TimeframeAgreementRule.cs" Link="Core/Math/TimeframeAgreementRule.cs" />
+    <Compile Include="../../src/CFIP.Indicator/Core/Math/StructuralConfirmationRule.cs" Link="Core/Math/StructuralConfirmationRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/MarketRegimeIdentity.cs" Link="Core/Math/MarketRegimeIdentity.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Math/MarketRegimeClassifier.cs" Link="Core/Math/MarketRegimeClassifier.cs" />
     <Compile Include="../../src/CFIP.Indicator/Core/Models/MarketRegimeClassificationInput.cs" Link="Core/Models/MarketRegimeClassificationInput.cs" />
@@ -64,5 +66,6 @@
     <Compile Include="../../src/CFIP.Indicator/Core/Math/SignalVisualLifecycleRule.cs" Link="Core/Math/SignalVisualLifecycleRule.cs" />
     <Compile Include="../../src/CFIP.Indicator/Trading/Risk/AdaptiveOutcomeRiskPolicy.cs" Link="Trading/Risk/AdaptiveOutcomeRiskPolicy.cs" />
     <Compile Include="../../src/CFIP.Indicator/Trading/Intelligence/OutcomeObservation.cs" Link="Trading/Intelligence/OutcomeObservation.cs" />
+    <Compile Include="SignalQualityPrecisionContracts.cs" Link="SignalQualityPrecisionContracts.cs" />
   </ItemGroup>
 </Project>
