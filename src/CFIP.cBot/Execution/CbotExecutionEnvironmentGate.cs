@@ -183,12 +183,12 @@ namespace CFIP.cBot.Execution
                     ResolveManagedInstanceRoot(
                         envelope.Intent.ExecutionLabel ?? string.Empty));
 
-            if (maximumConcurrentScenarios < 1 ||
-                managedScenarioObjects >= maximumConcurrentScenarios)
+            if (settings.MaxConcurrentScenarios < 1 ||
+                managedScenarioObjects >= settings.MaxConcurrentScenarios)
             {
                 reason =
                     "CONCURRENT SCENARIO CAPACITY BLOCKED • " +
-                    Math.Max(1, maximumConcurrentScenarios);
+                    settings.MaxConcurrentScenarios;
                 return false;
             }
 
@@ -250,10 +250,10 @@ namespace CFIP.cBot.Execution
                 }
             }
 
-            if (!FinitePositive(maximumMarginUsagePercent) ||
-                !FinitePositive(marginBufferPercent) ||
-                marginBufferPercent >=
-                maximumMarginUsagePercent)
+            if (!FinitePositive(settings.MaxExecutionMarginUsagePercent) ||
+                !FinitePositive(settings.ExecutionMarginBufferPercent) ||
+                settings.ExecutionMarginBufferPercent >=
+                settings.MaxExecutionMarginUsagePercent)
             {
                 reason = "MARGIN SAFETY CONFIGURATION INVALID";
                 return false;
