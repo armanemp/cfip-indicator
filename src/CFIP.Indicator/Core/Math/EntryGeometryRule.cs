@@ -236,6 +236,21 @@ namespace cAlgo
                 market <= zoneHigh + tolerance;
         }
 
+        public static bool IsTriggerOnEntrySide(
+            int direction,
+            double entry,
+            double trigger)
+        {
+            if ((direction != 1 && direction != -1) ||
+                !NumericGuards.IsFinitePositive(entry) ||
+                !NumericGuards.IsFinitePositive(trigger))
+                return false;
+
+            return direction == 1
+                ? trigger >= entry
+                : trigger <= entry;
+        }
+
         public static bool IsTriggerReached(
             int direction,
             double market,

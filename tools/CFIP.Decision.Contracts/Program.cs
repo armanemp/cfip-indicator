@@ -70,6 +70,26 @@ namespace cAlgo
                 Math.Abs(retest.ActualEntry - retest.Market) < 1e-12,
                 "BUY retest geometry uses the canonical tolerant zone");
 
+            Assert(
+                EntryGeometryRule.IsTriggerOnEntrySide(
+                    1,
+                    100.08,
+                    101.00) &&
+                !EntryGeometryRule.IsTriggerOnEntrySide(
+                    1,
+                    100.08,
+                    99.90) &&
+                EntryGeometryRule.IsTriggerOnEntrySide(
+                    -1,
+                    99.92,
+                    99.00) &&
+                !EntryGeometryRule.IsTriggerOnEntrySide(
+                    -1,
+                    99.92,
+                    100.10),
+                "trigger presentation geometry is directionally symmetric");
+
+
             EntryGeometrySnapshot continuationRetest =
                 EntryGeometryRule.Evaluate(
                     1,
