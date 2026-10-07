@@ -544,13 +544,9 @@ namespace cAlgo
                     directional.RegimeQuality,
                     0);
 
-            int expected =
-                NumericGuards.ClampInt(
-                    (int)Math.Round(
-                        50 * 0.25 +
-                        70 * 0.10),
-                    0,
-                    100);
+            // Missing retest is zero contribution; neutral fixture therefore
+            // evaluates deterministically to 20 after the strict quality fix.
+            int expected = 20;
 
             Assert(
                 neutralQuality == expected,
