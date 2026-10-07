@@ -543,7 +543,7 @@ namespace CFIP.cBot.Execution
             if (!TryAcquireBrokerMutationSlot(
                     robot,
                     nowUtc,
-                    out string mutationReason))
+                    out string targetMutationReason))
             {
                 status = mutationReason;
                 return;
