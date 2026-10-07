@@ -145,6 +145,48 @@ namespace cAlgo
                 htfStrong, eligible, stage);
         }
 
+        internal static bool AllowsTacticalBypass(
+            bool tacticalAllowed,
+            int selectedDirection,
+            OpportunityLane lane,
+            int htfDirection,
+            int midDirection,
+            int midAlignment,
+            int midAbsoluteStrength,
+            int minimumStrongAlignment)
+        {
+            if (!tacticalAllowed ||
+                (selectedDirection != 1 &&
+                 selectedDirection != -1))
+                return false;
+
+            int floor =
+                Math.Max(
+                    65,
+                    Math.Max(
+                        50,
+                        minimumStrongAlignment) -
+                    5);
+
+            bool midframeAligned =
+                midDirection == selectedDirection &&
+                midAlignment >= floor &&
+                midAbsoluteStrength >= floor;
+
+            if (!midframeAligned)
+                return false;
+
+            if (lane ==
+                OpportunityLane.CounterHtfTactical)
+            {
+                return
+                    htfDirection != 0 &&
+                    htfDirection != selectedDirection;
+            }
+
+            return true;
+        }
+
         private static TopDownCalibrationGroupResult EvaluateGroup(
             int[] directions,
             int[] qualities,
