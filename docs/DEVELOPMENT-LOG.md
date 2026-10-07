@@ -4158,3 +4158,23 @@ Operator action: pull canonical `main` before target-terminal validation.
 - Indicator-side broker permission requests and obsolete execution UI parameters/reminder were removed. Intent readiness remains internal; broker execution remains cBot-owned.
 - Demo cBot startup self-heals legacy all-disabled demo execution settings. Live execution remains explicitly armed only by cBot live controls.
 - cBot market-hours protection now follows the broker symbol schedule rather than a fixed UTC window.
+
+
+## Realtime signal latency hardening — 2026-10-07
+
+Finding:
+- the indicator already receives realtime ticks through `Calculate()`, but the live M5 Reaction path introduced up to 750ms cadence delay and required a minimum ATR-relative quote move;
+- canonical visual direction and stacked arrow direction could still be sourced from closed M5/MTF state, masking the live reaction;
+- full panel layout was unnecessarily on the tick hot path.
+
+Implementation:
+- added the canonical 100ms refresh policy to `ReactionTimingRule`;
+- removed the 750ms/ATR-movement debounce from `UpdateLiveReaction()`;
+- made same-direction live Reaction presentation visible through the canonical signal resolver without allowing an opposite direction to bypass the anti-flip owner;
+- made the stacked arrow consume `AuthoritativeDirection` while keeping MTF trend strength as the sole strength owner;
+- removed per-tick full-panel rendering and retained timer-owned panel content refresh;
+- added deterministic runtime contract coverage and updated the realtime source audit.
+
+Result:
+- the signal path is now designed for sub-second live reaction refresh on incoming ticks, with no intentional 750ms debounce;
+- target cTrader replay remains required to confirm empirical terminal latency and timing under live quote conditions.
