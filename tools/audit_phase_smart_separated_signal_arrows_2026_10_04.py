@@ -76,25 +76,17 @@ check(
     "snapshot.MtfTrendStrengthLevel" in stack and
     "snapshot.MtfTrendDirection != 0" in stack and
     "((strength - 1) % 3) + 1" in stack and
-    "UpdateSignalArrowBox(" in stack and
-    '"↑"' in stack and
-    '"↓"' in stack,
+    "Chart.DrawIcon(" in stack and
+    "ChartIconType.UpArrow" in stack and
+    "ChartIconType.DownArrow" in stack,
 )
 
 check(
     "three arrows use deterministic fixed-box spacing",
-    "Orientation.Horizontal" in stack and
-    "_signalArrowBoxArrows" in stack and
-    "new System.Collections.Generic.List<TextBlock>(3)" in stack and
-    "Width = 18" in stack and
-    "Height = 36" in stack and
-    "FontFamily = \"Segoe UI Symbol\"" in stack and
-    "FontSize = 28" in stack and
-    "FontWeight = FontWeight.ExtraBold" in stack and
-    "LineHeight = 32" in stack and
-    "Margin = new Thickness(0, 0, 0, 0)" in stack and
-    "Width = 66" in stack and
-    "Height = 66" in stack,
+    "DrawCanonicalTrendArrow(" in stack and
+    "ResolveArrowBarIndex(" in stack and
+    "ResolveArrowAtr(" in stack and
+    "arrowCount" in stack,
 )
 
 check(
@@ -141,10 +133,8 @@ check(
     "all production arrow call-sites use one calculation-lifecycle owner",
     "RenderCanonicalMtfTrendArrows(" in read("src/CFIP.Indicator/Runtime/Calculation/CalculationLiveCycle.cs") and
     "RenderStackedSignalArrows(" in stack and
-    "EnsureSignalArrowBox();" in read("src/CFIP.Indicator/UI/Panel/PanelFactory.cs") and
-    "BringSignalArrowBoxToFront();" in read("src/CFIP.Indicator/UI/Panel/PanelFactory.cs") and
-    "Chart.RemoveControl(_signalArrowBox);" in stack and
-    "Chart.AddControl(_signalArrowBox);" in stack and
+    "Chart.DrawIcon(" in stack and
+    "RemoveStackedSignalArrows();" in stack and
     "snapshot.MtfTrendDirection != 0" in stack and
     "ResolveSignalArrowState(" not in signal and
     "fallbackState" not in stack,
