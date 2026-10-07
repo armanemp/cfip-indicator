@@ -68,14 +68,11 @@ namespace cAlgo
 
         public void BeginCycle()
         {
+            // A new calculation cycle clears only the cycle-local fault flag.
+            // It never clears a degraded/blocked runtime state implicitly.
+            // Recovery must cross the explicit management confirmation boundary
+            // so a fresh cycle cannot silently re-arm automatic entry.
             _cycleFaulted = false;
-
-            // A recoverable degraded state is cycle-scoped, but an explicit
-            // ENTRY_BLOCKED state remains fail-closed until management confirms
-            // recovery. This prevents a new calculation cycle from re-arming
-            // entry before broker/runtime state has been reconciled.
-            if (_state == RuntimeFaultState.Degraded)
-                _state = RuntimeFaultState.Healthy;
         }
 
         public void ObserveAutoTradingSetting(
@@ -222,10 +219,14 @@ namespace cAlgo
 
         public void MarkManagementReadyForRecovery()
         {
-            // Management/protection may complete after a recoverable fault, but
-            // the affected cycle remains entry-blocked until its boundary closes.
-            if (_state == RuntimeFaultState.EntryBlocked)
+            // Management/protection may confirm recovery from either a direct
+            // degraded observation or an explicit entry block. The state remains
+            // non-entry-eligible until CompleteCycle closes the recovery boundary.
+            if (_state == RuntimeFaultState.EntryBlocked ||
+                _state == RuntimeFaultState.Degraded)
+            {
                 _state = RuntimeFaultState.Recovering;
+            }
         }
 
         public void CompleteCycle()
@@ -241,7 +242,8 @@ namespace cAlgo
                 _state == RuntimeFaultState.Recovering)
             {
                 // Preserve a diagnostic degraded state for the completed faulted
-                // cycle. BeginCycle() clears it before the next decision cycle.
+                // cycle. A later cycle cannot clear it implicitly; management must
+                // confirm recovery before entry can become eligible again.
                 _state = RuntimeFaultState.Degraded;
             }
         }
