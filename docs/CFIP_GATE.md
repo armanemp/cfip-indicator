@@ -1335,3 +1335,33 @@ Repository-side Source/Architecture, Runtime Acceptance and cTrader Compile gate
 - cBot realtime timer deduplication is now scenario-scoped and bounded instead of using one global last-scenario tuple, so concurrent scenarios do not reprocess each other at the same revision.
 - Provider execution-intent capture is reset before each live pending evaluation, preventing an older M5 intent from being reused after current actionability changes.
 - Automated gates must remain green before merge; target-terminal validation remains required for final visual/broker confirmation.
+
+
+## 2026-10-07 — Signal precision closure
+
+**Status:** VERIFICATION
+
+**Implementation head:** `13a7af06ec6b29fb3143dd460c6670c90824ed59`
+
+**Canonical owners changed:** `StructuralConfirmationRule`, `MtfTrendStrengthRule`, `SignalStackedArrowRenderer`.
+
+**Root causes closed:**
+- neutral-frame structure can no longer count as directional confirmation;
+- resolved M15 direction cannot be flipped by weighted higher/lower-timeframe trend strength;
+- weak/medium non-actionable MTF trend states are not rendered through the trade-signal arrow surface.
+
+**Verification added:** decision-contract coverage for BUY/SELL symmetry and M15-vs-HTF direction anchoring; CI-20 source audit coverage for all three invariants.
+
+**Not yet evidence:** local Release build on the operator machine, GitHub workflow conclusion for this exact head, and target-terminal/replay measurement of live signal precision. No empirical win-rate or predictive improvement is claimed until those are measured.
+
+**Operator verification command:**
+```powershell
+cd C:\Users\armanemp\Desktop\cfip-indicator
+git checkout main
+git pull --ff-only origin main
+dotnet build "src/CFIP.Indicator/CFIP.Indicator.csproj" --configuration Release
+```
+
+Expected local build signal: `Build succeeded. 0 Warning(s) 0 Error(s)`.
+
+**cTrader boundary:** after installing the resulting Release artifact, verify that a clearly rising M15 does not display a SELL trade arrow merely because H1/H4 evidence is bearish; verify weak/blocked states do not masquerade as actionable arrows.
