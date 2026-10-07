@@ -396,7 +396,6 @@ namespace cAlgo
                 private DateTime _lastCalculationCompletedUtc = DateTime.MinValue;
                 private DateTime _lastReactionCalcUtc = DateTime.MinValue;
                 private int _lastReactionM5 = -1;
-                private double _lastReactionMarket;
                 private DateTime _lastExecutionModelBuildUtc = DateTime.MinValue;
                 private int _lastExecutionModelM5 = -1;
                 private double _lastExecutionModelMarket;
