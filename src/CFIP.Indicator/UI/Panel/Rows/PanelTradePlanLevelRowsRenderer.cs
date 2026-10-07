@@ -16,7 +16,7 @@ namespace cAlgo
                 EntryGeometryRule.IsTriggerOnEntrySide(
                     _plan.Direction,
                     _plan.Entry,
-                    _plan.EntryTrigger)
+                    _plan.EntryTrigger))
             {
                 AddPanelRow(
                     ref slot,
