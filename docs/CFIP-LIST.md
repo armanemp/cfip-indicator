@@ -427,7 +427,7 @@ Canonical owners and acceptance:
 - PlanLabelAnchorCalculator.cs: sole one-bar horizontal-gap owner.
 - PlanLabelRenderer.cs: sole native ChartText label owner.
 - Pending, parallel and prediction labels reuse the same label renderer/anchor contract.
-- Label text is exact-price, regular-weight, no background/rectangle, and uses the exact corresponding line color.
+- Label text is exact-price, regular-weight, inside one compact chart-control box, and uses the exact corresponding line color for the box/text accent.
 - The visible start of left-aligned label text is exactly one chart bar before the canonical line start.
 - Color.White is forbidden for canonical signal/plan line labels.
 - Source/Architecture, Runtime UI, accumulated and single-owner guards enforce the contract.
