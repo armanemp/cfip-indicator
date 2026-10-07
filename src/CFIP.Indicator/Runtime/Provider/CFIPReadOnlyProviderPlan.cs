@@ -38,6 +38,45 @@ namespace cAlgo
                     _plan.Direction != direction)
                     return null;
 
+                // M15 is the canonical execution direction. M5 is the trigger/
+                // precision layer and must never create a counter-M15 market
+                // direction by itself. Explicit reversal candidates have their
+                // own pending/reversal qualification path and do not enter here.
+                if (_m15Frame != null)
+                {
+                    if (_m15Frame.Direction != 0 &&
+                        _m15Frame.Direction != direction)
+                    {
+                        Print(
+                            "CFIP CANONICAL CBOT BLOCK | M15 DIRECTION CONFLICT | m5={0} | decision={1} | m15={2}",
+                            closedM5,
+                            direction,
+                            _m15Frame.Direction);
+                        return null;
+                    }
+
+                    // Immediate market execution is continuation/precision
+                    // execution. A temporary M5 counter-move must not become a
+                    // market reversal simply because the composite score wins
+                    // that side. Reversals require the dedicated reversal path.
+                    bool m15TrendAligned =
+                        direction == 1
+                            ? _m15Frame.TrendBull
+                            : _m15Frame.TrendBear;
+
+                    if (!m15TrendAligned)
+                    {
+                        Print(
+                            "CFIP CANONICAL CBOT BLOCK | M15 TREND NOT ALIGNED | m5={0} | decision={1} | m15Direction={2} | trendBull={3} | trendBear={4}",
+                            closedM5,
+                            direction,
+                            _m15Frame.Direction,
+                            _m15Frame.TrendBull,
+                            _m15Frame.TrendBear);
+                        return null;
+                    }
+                }
+
                 if (_plan.EntryMode != ExecutionMode.RetestMarket &&
                     _plan.EntryMode != ExecutionMode.BreakoutMarket)
                     return null;

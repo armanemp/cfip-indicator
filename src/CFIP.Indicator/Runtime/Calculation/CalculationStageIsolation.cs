@@ -440,7 +440,8 @@ namespace cAlgo
                 {
                     RenderCalculationState(
                         index,
-                        closedM5);
+                        closedM5,
+                        newClosedBar);
                     return true;
                 },
                 index,

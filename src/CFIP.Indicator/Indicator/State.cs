@@ -395,6 +395,8 @@ namespace cAlgo
                 private bool _panelOverflowReported;
                 private DateTime _lastCalculationCompletedUtc = DateTime.MinValue;
                 private DateTime _lastReactionCalcUtc = DateTime.MinValue;
+                private DateTime _lastChartPresentationUtc = DateTime.MinValue;
+                private int _lastChartPresentationM5 = -1;
                 private int _lastReactionM5 = -1;
                 private DateTime _lastExecutionModelBuildUtc = DateTime.MinValue;
                 private int _lastExecutionModelM5 = -1;

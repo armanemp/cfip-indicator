@@ -48,12 +48,15 @@ namespace cAlgo
                         Bars.Count - 1,
                         end));
 
+            // Direction is semantic here: bullish=green, bearish=red, neutral=gray.
+            // It is not a trend-strength scale. Strength remains owned by the
+            // snapshot score/watch score and must not be encoded as a third hue.
             Color baseColor =
                 snapshot.Direction > 0
-                    ? Color.Lime
+                    ? Color.Green
                     : snapshot.Direction < 0
                         ? Color.Red
-                        : Color.Gold;
+                        : Color.White;
 
             ChartRectangle zone =
                 Chart.DrawRectangle(
@@ -99,6 +102,8 @@ namespace cAlgo
             high.IsInteractive = false;
             low.IsInteractive = false;
 
+            int renderedEventIndex = -1;
+
             if (snapshot.SweepIndex >= 0)
             {
                 int chartIndex =
@@ -121,6 +126,8 @@ namespace cAlgo
                                     Bars.Count - 1,
                                     chartIndex))];
 
+                renderedEventIndex = chartIndex;
+
                 Chart.DrawIcon(
                     RangeVisualPrefix + "SWEEP",
                     snapshot.Direction > 0
@@ -131,12 +138,14 @@ namespace cAlgo
                     baseColor);
             }
 
-            if (snapshot.IsConfirmedBreakout)
+            if (snapshot.IsConfirmedBreakout && renderedEventIndex < 0)
             {
                 int chartIndex =
                     ResolveRangeChartIndex(
                         snapshot.BreakoutIndex,
                         start);
+
+                renderedEventIndex = chartIndex;
 
                 Chart.DrawIcon(
                     RangeVisualPrefix + "BREAKOUT",
@@ -151,7 +160,8 @@ namespace cAlgo
             }
 
             if (snapshot.IsManipulationWatch &&
-                snapshot.WatchDirection != 0)
+                snapshot.WatchDirection != 0 &&
+                renderedEventIndex < 0)
             {
                 int chartIndex =
                     ResolveRangeChartIndex(
@@ -162,6 +172,8 @@ namespace cAlgo
                     snapshot.WatchDirection > 0
                         ? snapshot.Low
                         : snapshot.High;
+
+                renderedEventIndex = chartIndex;
 
                 Chart.DrawIcon(
                     RangeVisualPrefix + "WATCH",

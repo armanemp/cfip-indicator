@@ -189,12 +189,11 @@ namespace cAlgo
 
             f.Evidence = evidence;
 
-            if (bull >= FrameScoringConstants.DirectionMinimumScore &&
-                bull >= bear + FrameScoringConstants.DirectionMinimumLead)
-                f.Direction = 1;
-            else if (bear >= FrameScoringConstants.DirectionMinimumScore &&
-                     bear >= bull + FrameScoringConstants.DirectionMinimumLead)
-                f.Direction = -1;
+            f.Direction =
+                ResolveScoredFrameDirection(
+                    f,
+                    bull,
+                    bear);
 
             double total =
                 Math.Max(
@@ -262,6 +261,52 @@ namespace cAlgo
                     FrameScoringConstants.QualityMaximum);
 
             return f;
+        }
+    }
+}
+
+        private int ResolveScoredFrameDirection(
+            Frame frame,
+            int bull,
+            int bear)
+        {
+            bool m15 =
+                frame != null &&
+                ReferenceEquals(
+                    frame.Bars,
+                    _m15Bars);
+
+            // M15 is the canonical execution/decision frame. When its closed
+            // price/EMA structure clearly identifies a trend, counter-trend
+            // FVG/OB/liquidity/rejection observations describe a retracement or
+            // reaction and must not flip the canonical direction. A genuine
+            // reversal remains the responsibility of the dedicated reversal path.
+            if (m15)
+            {
+                if (frame.TrendBull)
+                {
+                    return bull >= FrameScoringConstants.DirectionMinimumScore
+                        ? 1
+                        : 0;
+                }
+
+                if (frame.TrendBear)
+                {
+                    return bear >= FrameScoringConstants.DirectionMinimumScore
+                        ? -1
+                        : 0;
+                }
+            }
+
+            if (bull >= FrameScoringConstants.DirectionMinimumScore &&
+                bull >= bear + FrameScoringConstants.DirectionMinimumLead)
+                return 1;
+
+            if (bear >= FrameScoringConstants.DirectionMinimumScore &&
+                bear >= bull + FrameScoringConstants.DirectionMinimumLead)
+                return -1;
+
+            return 0;
         }
     }
 }

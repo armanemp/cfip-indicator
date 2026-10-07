@@ -148,6 +148,10 @@ namespace cAlgo
                 _rangeManipulation,
                 closedM5);
 
+            // FVG chart presentation consumes the same canonical zone engine
+            // used by execution; it is bounded to the nearest M15/H1 zones.
+            RenderCanonicalFvgZones(closedM5);
+
             EmitContextAlerts(
                 closedM5);
 

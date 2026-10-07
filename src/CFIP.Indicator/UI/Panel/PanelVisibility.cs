@@ -44,9 +44,13 @@ namespace cAlgo
 
                                     if (!_panelHidden)
                                     {
+                                        // Visibility restore is intentionally lightweight.
+                                        // The timer-owned panel refresh will rebuild any
+                                        // stale content/layout without blocking the click.
                                         _lastPanelRenderUtc =
                                             DateTime.MinValue;
-                                        RenderPanel();
+                                        _lastPanelContentRefreshUtc =
+                                            DateTime.MinValue;
                                     }
 
                                 }

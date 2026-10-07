@@ -52,10 +52,45 @@ namespace CFIP.cBot.Execution
                 return false;
             }
 
+            if (robot.Symbol == null)
+            {
+                reason = "SYMBOL UNAVAILABLE";
+                return false;
+            }
+
+            // Broker-level trading mode is distinct from the cBot's own
+            // execution switches. Surface the exact broker state so a platform
+            // trading lock is never misdiagnosed as a signal-quality problem.
+            switch (robot.Symbol.TradingMode)
+            {
+                case SymbolTradingMode.FullyDisabled:
+                    reason = "SYMBOL TRADING FULLY DISABLED";
+                    return false;
+
+                case SymbolTradingMode.CloseOnly:
+                    reason = "SYMBOL CLOSE ONLY • NEW ENTRY DISABLED";
+                    return false;
+
+                case SymbolTradingMode.DisabledWithPendingOrderExecution:
+                    if (!pendingAction)
+                    {
+                        reason =
+                            "SYMBOL PENDING-EXECUTION ONLY • MARKET ENTRY DISABLED";
+                        return false;
+                    }
+                    break;
+            }
+
+            if (!robot.Symbol.IsTradingEnabled &&
+                robot.Symbol.TradingMode == SymbolTradingMode.FullAccess)
+            {
+                reason = "SYMBOL TRADING TEMPORARILY DISABLED";
+                return false;
+            }
+
             if (settings.UseMarketHoursGuard)
             {
-                if (robot.Symbol == null ||
-                    robot.Symbol.MarketHours == null)
+                if (robot.Symbol.MarketHours == null)
                 {
                     reason = "SYMBOL MARKET HOURS UNAVAILABLE";
                     return false;
