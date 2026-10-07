@@ -33,6 +33,11 @@ namespace cAlgo
                         : 0))
                 return new DecisionFilterResult(false, "INDEPENDENT EVIDENCE");
 
+            if (input.SmartDecisionEnabled &&
+                input.IndependentEvidenceGroups <
+                input.MinimumIndependentEvidenceGroups)
+                return new DecisionFilterResult(false, "EVIDENCE DIVERSITY");
+
             if (input.RequireStructuralConfirmation &&
                 input.StructuralConfirmations <
                 input.MinimumStructuralConfirmations)
