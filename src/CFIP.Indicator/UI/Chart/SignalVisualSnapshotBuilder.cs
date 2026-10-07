@@ -87,6 +87,22 @@ namespace cAlgo
                 _setupPreview != null &&
                 _setupPreview.Direction != 0;
 
+            double setupPreviewMarket =
+                _setupPreview != null &&
+                _setupPreview.Direction != 0
+                    ? (_setupPreview.Direction == 1
+                        ? Symbol.Ask
+                        : Symbol.Bid)
+                    : 0;
+
+            double setupPreviewAtr =
+                _m5Bars != null &&
+                closedM5 >= 1
+                    ? Atr(
+                        _m5Bars,
+                        closedM5)
+                    : 0;
+
             bool setupPreviewVisible =
                 SignalVisualLifecycleRule.IsSetupPreviewVisible(
                     hasSetupPreview,
@@ -94,31 +110,18 @@ namespace cAlgo
                     closedM5,
                     _setupPreview == null ? 0 : _setupPreview.Direction,
                     _decision == null ? 0 : _decision.Direction,
-                    _decision != null && _decision.EntryAllowed);
+                    _decision != null && _decision.EntryAllowed) &&
+                SignalVisualLifecycleRule.IsSetupPreviewWithinPracticalDistance(
+                    setupPreviewMarket,
+                    _setupPreview == null ? 0 : _setupPreview.Entry,
+                    setupPreviewAtr,
+                    MaximumEntryDistanceAtr);
 
-            bool reactionReady =
-                !pendingValid &&
-                !livePlan &&
-                EnableLiveReaction &&
-                ShowReactionArrow &&
-                _reaction != null &&
-                _reaction.TriggerReady &&
-                _reaction.Direction != 0 &&
-                _reaction.Confidence >=
-                    LiveReactionThreshold &&
-                _reaction.IndependentEvidence >=
-                    Math.Max(
-                        2,
-                        MinimumLiveReactionEvidence) &&
-                IsRangeSignalVisualAllowed(
-                    closedM5,
-                    _reaction.Direction,
-                    _reaction.Confidence,
-                    _reaction.SmartQuality,
-                    _reaction.Edge,
-                    _reaction.IndependentEvidence,
-                    StructuralConfirmations(
-                        _reaction.Direction));
+            // Live Reaction is retained for internal precision analysis, but it
+            // is deliberately excluded from the user-facing trade-signal lifecycle.
+            // A forming M5 candle must never create the authoritative signal arrow,
+            // stage or direction.
+            bool reactionReady = false;
 
             snapshot.PlanDirection =
                 _plan == null ? 0 : _plan.Direction;
@@ -238,11 +241,7 @@ namespace cAlgo
                 snapshot.Tp3 = _plan.Tp3;
                 snapshot.Tp4 = _plan.Tp4;
                 snapshot.Stage =
-                    reactionReady &&
-                    _reaction != null &&
-                    _reaction.Direction == _plan.Direction
-                        ? "REACTION + PLAN"
-                        : "PLAN";
+                    "PLAN";
             }
             else if (reactionReady)
             {
