@@ -83,14 +83,20 @@ namespace cAlgo
             {
                 _hasObservedAutoTradingSetting = true;
                 _lastAutoTradingEnabled = enabled;
-                _entryArmed = enabled;
+                // Indicator runtime faults must never own the cBot execution arm.
+                // The cBot is the sole execution authority; this state only tracks
+                // cycle-local readiness for analytical signal production.
+                _entryArmed = true;
                 return;
             }
 
             if (!enabled)
             {
-                _entryArmed = false;
+                // Execution arming is cBot-owned. An Indicator-side setting/state
+                // change must not latch the Indicator runtime into a permanent
+                // entry-disabled state.
                 _lastAutoTradingEnabled = false;
+                _entryArmed = true;
                 return;
             }
 
