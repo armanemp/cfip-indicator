@@ -2,24 +2,24 @@ namespace cAlgo
 {
     internal sealed class OutcomeObservation
     {
-        public long PositionId;
-        public string SignalTraceId;
-        public int Direction;
-        public OpportunityLane Lane;
-        public ExecutionMode EntryMode;
-        public string Regime;
-        public int Confidence;
-        public int ConfidenceBucket;
-        public int CreatedM5;
-        public int ClosedM5;
-        public int LifecycleBars;
-        public double Pips;
-        public double NetProfit;
-        public double RealizedR;
-        public bool Profitable;
-        public bool CalibrationEligible;
-        public bool ProtectionRecoveryAtClose;
-        public bool ServerSideTakeProfitLadderActive;
-        public long ObservedUtcTicks;
+        public long PositionId { get; set; }
+        public string SignalTraceId { get; set; }
+        public int Direction { get; set; }
+        public OpportunityLane Lane { get; set; }
+        public ExecutionMode EntryMode { get; set; }
+        public string Regime { get; set; }
+        public int Confidence { get; set; }
+        public int ConfidenceBucket { get; set; }
+        public int CreatedM5 { get; set; }
+        public int ClosedM5 { get; set; }
+        public int LifecycleBars { get; set; }
+        public double Pips { get; set; }
+        public double NetProfit { get; set; }
+        public double RealizedR { get; set; }
+        public bool Profitable { get; set; }
+        public bool CalibrationEligible { get; set; }
+        public bool ProtectionRecoveryAtClose { get; set; }
+        public bool ServerSideTakeProfitLadderActive { get; set; }
+        public long ObservedUtcTicks { get; set; }
     }
 }
