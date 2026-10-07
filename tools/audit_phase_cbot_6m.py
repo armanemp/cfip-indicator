@@ -201,11 +201,21 @@ check(
 )
 
 check(
-    "timer dedupe tracks each scenario revision independently",
+    "timer dedupe tracks revisions without consuming transient failures",
     "MaxRealtimeTimerScenarioRevisions = 128" in bot and
+    "RealtimeSameRevisionRetrySeconds = 1" in bot and
     "_lastRealtimeTimerRevisionByScenario" in bot and
-    "_lastRealtimeTimerScenarioOrder" in bot and
-    "envelope.Identity.Revision <= observedRevision" in bot
+    "_lastRealtimeTimerAttemptUtcByScenario" in bot and
+    "RecordRealtimeTimerAttempt(" in bot and
+    "envelope.Identity.Revision < observedRevision" in bot and
+    "envelope.Identity.Revision <= observedRevision" not in bot
+)
+check(
+    "signal transport preserves the envelope observation timestamp",
+    "SignalEnvelopeCodec.TryDeserialize(" in transport and
+    "RefreshEnvelopeHeartbeat" not in transport and
+    "TryReadHeartbeat" not in transport and
+    "ObservedUtc = heartbeat" not in transport
 )
 check(
     "cBot scenario PlanSnapshot carries the composite plan quality",
