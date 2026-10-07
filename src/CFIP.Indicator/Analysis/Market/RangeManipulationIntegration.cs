@@ -37,7 +37,8 @@ namespace cAlgo
                     Symbol.PipSize,
                     RangeBreakoutAtrInternal,
                     RangeRetestAtrInternal,
-                    RangeSignalMinimumScoreInternal);
+                    RangeSignalMinimumScoreInternal,
+                    SessionStartUtc);
         }
 
         private void ApplyRangeIntelligenceToDecision(
