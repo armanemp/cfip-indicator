@@ -10,12 +10,9 @@ namespace CFIP.cBot.Execution
         public bool Evaluate(
             Robot robot,
             SignalEnvelope envelope,
-            double maximumMarginUsagePercent,
-            double marginBufferPercent,
             CbotExecutionSettings settings,
             CbotDailyLossGuard dailyLossGuard,
             bool pendingAction,
-            int maximumConcurrentScenarios,
             DateTime nowUtc,
             bool allowLiveExecution,
             out string reason)
