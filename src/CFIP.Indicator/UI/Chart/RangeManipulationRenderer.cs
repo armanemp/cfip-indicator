@@ -20,22 +20,33 @@ namespace cAlgo
                 return;
 
             int start =
-                Math.Max(
-                    0,
-                    Math.Min(
-                        Bars.Count - 1,
-                        MapM5ToChart(
-                            snapshot.StartIndex,
-                            Bars.Count - 1)));
+                ResolveRangeChartIndex(
+                    snapshot.StartIndex,
+                    0);
 
             int end =
+                ResolveRangeChartIndex(
+                    closedM5,
+                    start + 1);
+
+            if (start < 0 ||
+                end < 0)
+            {
+                Print(
+                    "CFIP range render skipped | unable to map M5 range to chart bars | start={0} end={1} chartBars={2} m5Bars={3}",
+                    snapshot.StartIndex,
+                    closedM5,
+                    Bars.Count,
+                    _m5Bars.Count);
+                return;
+            }
+
+            end =
                 Math.Max(
                     start + 1,
                     Math.Min(
                         Bars.Count - 1,
-                        MapM5ToChart(
-                            closedM5,
-                            Bars.Count - 1)));
+                        end));
 
             Color baseColor =
                 snapshot.Direction > 0
@@ -91,9 +102,9 @@ namespace cAlgo
             if (snapshot.SweepIndex >= 0)
             {
                 int chartIndex =
-                    MapM5ToChart(
+                    ResolveRangeChartIndex(
                         snapshot.SweepIndex,
-                        Bars.Count - 1);
+                        start);
 
                 double price =
                     snapshot.Direction > 0
@@ -123,9 +134,9 @@ namespace cAlgo
             if (snapshot.IsConfirmedBreakout)
             {
                 int chartIndex =
-                    MapM5ToChart(
+                    ResolveRangeChartIndex(
                         snapshot.BreakoutIndex,
-                        Bars.Count - 1);
+                        start);
 
                 Chart.DrawIcon(
                     RangeVisualPrefix + "BREAKOUT",
@@ -143,13 +154,9 @@ namespace cAlgo
                 snapshot.WatchDirection != 0)
             {
                 int chartIndex =
-                    Math.Max(
-                        0,
-                        Math.Min(
-                            Bars.Count - 1,
-                            MapM5ToChart(
-                                closedM5,
-                                Bars.Count - 1)));
+                    ResolveRangeChartIndex(
+                        closedM5,
+                        start);
 
                 double watchPrice =
                     snapshot.WatchDirection > 0
@@ -187,6 +194,57 @@ namespace cAlgo
                         ? snapshot.Low
                         : snapshot.High,
                     baseColor);
+        }
+
+
+        private int ResolveRangeChartIndex(
+            int m5Index,
+            int fallbackIndex)
+        {
+            if (_m5Bars == null ||
+                Bars == null ||
+                m5Index < 0 ||
+                m5Index >= _m5Bars.Count ||
+                Bars.Count < 1)
+                return Math.Max(
+                    0,
+                    Math.Min(
+                        Bars.Count - 1,
+                        fallbackIndex));
+
+            DateTime target =
+                _m5Bars.OpenTimes[m5Index];
+
+            int lo = 0;
+            int hi = Bars.Count - 1;
+            int best = -1;
+
+            while (lo <= hi)
+            {
+                int mid = lo + ((hi - lo) / 2);
+                DateTime t = Bars.OpenTimes[mid];
+
+                if (t == target)
+                    return mid;
+
+                if (t < target)
+                {
+                    best = mid;
+                    lo = mid + 1;
+                }
+                else
+                {
+                    hi = mid - 1;
+                }
+            }
+
+            return best >= 0
+                ? best
+                : Math.Max(
+                    0,
+                    Math.Min(
+                        Bars.Count - 1,
+                        fallbackIndex));
         }
 
         private void RemoveRangeManipulationObjects()
