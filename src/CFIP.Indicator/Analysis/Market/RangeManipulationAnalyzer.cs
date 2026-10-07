@@ -58,7 +58,8 @@ namespace cAlgo
             double pipSize,
             double breakoutAtr,
             double retestAtr,
-            int minimumScore)
+            int minimumScore,
+            int sessionStartUtcHour)
         {
             RangeManipulationSnapshot empty =
                 RangeManipulationSnapshot.Empty;
@@ -72,9 +73,30 @@ namespace cAlgo
             if (!IsFinitePositive(atr))
                 return empty;
 
-            int span = Math.Max(12, Math.Min(80, lookback));
             int rangeLast = index - 1;
-            int first = Math.Max(2, rangeLast - span + 1);
+            int span = Math.Max(12, Math.Min(80, lookback));
+            int first;
+
+            bool useOpeningRange =
+                TryGetOpeningRangeBounds(
+                    bars,
+                    index,
+                    sessionStartUtcHour,
+                    90,
+                    out int openingFirst,
+                    out int openingLast) &&
+                index >= openingLast + 1 &&
+                index <= openingLast + 72;
+
+            if (useOpeningRange)
+            {
+                first = openingFirst;
+                rangeLast = openingLast;
+            }
+            else
+            {
+                first = Math.Max(2, rangeLast - span + 1);
+            }
 
             double high = bars.HighPrices[first];
             double low = bars.LowPrices[first];
@@ -289,7 +311,9 @@ namespace cAlgo
 
             return new RangeManipulationSnapshot
             {
-                State = state,
+                State = useOpeningRange
+                    ? "OPENING_" + state
+                    : state,
                 Direction = direction,
                 Score = score,
                 High = high,
@@ -317,6 +341,77 @@ namespace cAlgo
                     " | " +
                     state
             };
+        }
+
+
+
+        private static bool TryGetOpeningRangeBounds(
+            Bars bars,
+            int index,
+            int sessionStartUtcHour,
+            int openingMinutes,
+            out int first,
+            out int last)
+        {
+            first = -1;
+            last = -1;
+
+            if (bars == null ||
+                index < 5 ||
+                index >= bars.Count)
+                return false;
+
+            DateTime current =
+                bars.OpenTimes[index];
+
+            DateTime start =
+                new DateTime(
+                    current.Year,
+                    current.Month,
+                    current.Day,
+                    Math.Max(
+                        0,
+                        Math.Min(
+                            23,
+                            sessionStartUtcHour)),
+                    0,
+                    0,
+                    DateTimeKind.Utc);
+
+            if (current < start)
+                start = start.AddDays(-1);
+
+            DateTime end =
+                start.AddMinutes(
+                    Math.Max(
+                        15,
+                        openingMinutes));
+
+            if (current < end)
+                return false;
+
+            first =
+                bars.OpenTimes.GetIndexByTime(start);
+
+            if (first < 0)
+                return false;
+
+            if (bars.OpenTimes[first] < start)
+                first++;
+
+            last =
+                bars.OpenTimes.GetIndexByTime(
+                    end.AddTicks(-1));
+
+            if (last < first)
+                return false;
+
+            last =
+                Math.Min(
+                    last,
+                    index - 1);
+
+            return last - first + 1 >= 3;
         }
 
         private static RangeManipulationSnapshot BuildRangeOnly(
