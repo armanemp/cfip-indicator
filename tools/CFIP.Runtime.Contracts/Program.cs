@@ -6205,8 +6205,8 @@ namespace cAlgo
                 "clean recovery returns healthy");
 
             Assert(
-                !machine.CanAutomaticEntryProceed,
-                "healthy recovery remains disarmed");
+                machine.CanAutomaticEntryProceed,
+                "healthy recovery restores the enabled cycle");
 
             machine.ObserveAutoTradingSetting(false);
             machine.ObserveAutoTradingSetting(true);
