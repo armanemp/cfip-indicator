@@ -188,6 +188,7 @@ namespace cAlgo
                         24,
                         footerAreaHeight -
                         PanelFlowPressureRailHeight -
+                        PanelFlowPressureTopSpacing -
                         PanelFooterActionGap);
 
                 _buttonStack.IsVisible =
