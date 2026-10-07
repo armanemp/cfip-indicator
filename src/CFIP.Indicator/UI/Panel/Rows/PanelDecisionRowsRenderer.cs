@@ -14,6 +14,45 @@ namespace cAlgo
             ref int slot,
             int contentWidth)
         {
+                                                if (_rangeManipulation != null &&
+                                                    _rangeManipulation.IsRange)
+                                                {
+                                                    string rangeDirection =
+                                                        _rangeManipulation.IsManipulationWatch
+                                                            ? DirectionText(
+                                                                _rangeManipulation.WatchDirection)
+                                                            : "WAIT";
+
+                                                    string rangeStage =
+                                                        _rangeManipulation.IsManipulationWatch
+                                                            ? "MANIPULATION WATCH"
+                                                            : _rangeManipulation.State;
+
+                                                    AddPanelRow(
+                                                        ref slot,
+                                                        "RANGE INTEL  " +
+                                                        rangeStage +
+                                                        "  •  " +
+                                                        rangeDirection +
+                                                        "  •  Q" +
+                                                        _rangeManipulation.Score +
+                                                        "  •  WATCH " +
+                                                        _rangeManipulation.WatchScore +
+                                                        "  •  BND " +
+                                                        _rangeManipulation.BoundaryPressure +
+                                                        "  MOM " +
+                                                        _rangeManipulation.MomentumPressure +
+                                                        " VOL " +
+                                                        _rangeManipulation.VolumePressure,
+                                                        _rangeManipulation.WatchDirection > 0
+                                                            ? TpLineColor
+                                                            : _rangeManipulation.WatchDirection < 0
+                                                                ? SlLineColor
+                                                                : PanelWarningColor,
+                                                        true,
+                                                        contentWidth);
+                                                }
+
                                                 if (_decision != null)
                                                 {
                                                     int direction =
