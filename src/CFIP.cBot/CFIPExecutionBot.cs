@@ -1578,9 +1578,7 @@ namespace CFIP.cBot
             string detail =
                 exception == null
                     ? "UNKNOWN"
-                    : exception.GetType().Name +
-                      ": " +
-                      (exception.Message ?? "NO MESSAGE");
+                    : (exception.Message ?? "NO MESSAGE");
 
             Print(
                 "CFIP cBot RUNTIME FAULT | stage={0} | error={1} | utc={2:O} | ticks={3} | executions={4}",
