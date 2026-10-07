@@ -71,8 +71,11 @@ require(
 require(
     "M15 is the canonical decision timeframe" in evaluator and
     "strongM15Conflict" in evaluator and
+    "bool weakM15Context" in evaluator and
+    "(input.M15Frame == null ||" in evaluator and
+    "m15Direction == 0" in evaluator and
     'BlockReason = "M15 CANONICAL CONFLICT"' in evaluator,
-    "M15 canonical directional ownership is not enforced",
+    "M15 canonical directional ownership is not enforced for missing/neutral/weak context",
 )
 
 require(

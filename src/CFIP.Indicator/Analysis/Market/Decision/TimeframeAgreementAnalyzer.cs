@@ -93,6 +93,12 @@ namespace cAlgo
                 frames[7] == null || bars[7] == null ? -1 : frames[7].Index
             };
 
+            for (int i = 0; i < closedIndices.Length; i++)
+            {
+                if (closedIndices[i] < -1)
+                    return 0;
+            }
+
             double[] weights =
             {
                 UseM1Trigger ? Math.Max(1.0, M5Weight * 0.35) : 0,

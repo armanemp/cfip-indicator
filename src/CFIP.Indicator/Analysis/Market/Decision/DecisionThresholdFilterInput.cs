@@ -7,6 +7,7 @@ namespace cAlgo
         public int SmartQuality { get; }
         public int TimeframeAgreement { get; }
         public int IndependentEvidence { get; }
+        public int IndependentEvidenceGroups { get; }
         public int StructuralConfirmations { get; }
 
         public int MinimumConfidence { get; }
@@ -19,6 +20,7 @@ namespace cAlgo
         public bool SmartDecisionEnabled { get; }
         public bool RequireStructuralConfirmation { get; }
         public int MinimumStructuralConfirmations { get; }
+        public int MinimumIndependentEvidenceGroups { get; }
 
         public DecisionThresholdFilterInput(
             int confidence,
@@ -37,12 +39,54 @@ namespace cAlgo
             bool smartDecisionEnabled,
             bool requireStructuralConfirmation,
             int minimumStructuralConfirmations)
+            : this(
+                confidence,
+                edge,
+                smartQuality,
+                timeframeAgreement,
+                independentEvidence,
+                0,
+                structuralConfirmations,
+                minimumConfidence,
+                minimumEdge,
+                minimumSmartQuality,
+                requireHigherTfAgreement,
+                minimumTimeframeAgreement,
+                minimumIndependentEvidence,
+                smartMinimumIndependentEvidence,
+                0,
+                smartDecisionEnabled,
+                requireStructuralConfirmation,
+                minimumStructuralConfirmations)
+        {
+        }
+
+        public DecisionThresholdFilterInput(
+            int confidence,
+            int edge,
+            int smartQuality,
+            int timeframeAgreement,
+            int independentEvidence,
+            int independentEvidenceGroups,
+            int structuralConfirmations,
+            int minimumConfidence,
+            int minimumEdge,
+            int minimumSmartQuality,
+            bool requireHigherTfAgreement,
+            int minimumTimeframeAgreement,
+            int minimumIndependentEvidence,
+            int smartMinimumIndependentEvidence,
+            int minimumIndependentEvidenceGroups,
+            bool smartDecisionEnabled,
+            bool requireStructuralConfirmation,
+            int minimumStructuralConfirmations)
         {
             Confidence = confidence;
             Edge = edge;
             SmartQuality = smartQuality;
             TimeframeAgreement = timeframeAgreement;
             IndependentEvidence = independentEvidence;
+            IndependentEvidenceGroups = independentEvidenceGroups;
             StructuralConfirmations = structuralConfirmations;
             MinimumConfidence = minimumConfidence;
             MinimumEdge = minimumEdge;
@@ -51,6 +95,7 @@ namespace cAlgo
             MinimumTimeframeAgreement = minimumTimeframeAgreement;
             MinimumIndependentEvidence = minimumIndependentEvidence;
             SmartMinimumIndependentEvidence = smartMinimumIndependentEvidence;
+            MinimumIndependentEvidenceGroups = minimumIndependentEvidenceGroups;
             SmartDecisionEnabled = smartDecisionEnabled;
             RequireStructuralConfirmation = requireStructuralConfirmation;
             MinimumStructuralConfirmations = minimumStructuralConfirmations;

@@ -29,13 +29,14 @@ namespace cAlgo
                         0.0,
                         structuralConfirmations * 16.0));
 
+            // Missing retest evidence is absence of confirmation, not a neutral
+            // 50/100 contribution. A neutral fallback was inflating quality for
+            // setups with no actual retest confirmation.
             int effectiveRetestQuality =
-                retestQuality <= 0
-                    ? 50
-                    : NumericGuards.ClampInt(
-                        retestQuality,
-                        0,
-                        100);
+                NumericGuards.ClampInt(
+                    retestQuality,
+                    0,
+                    100);
 
             int diversityBonus =
                 IndependentEvidenceDiversityRule.QualityBonus(

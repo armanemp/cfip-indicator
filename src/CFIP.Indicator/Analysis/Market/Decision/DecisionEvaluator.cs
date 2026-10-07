@@ -32,25 +32,68 @@ namespace cAlgo
                     input.SmartScoreTemperature,
                     input.MinimumSmartDirectionShare);
 
-            DecisionEvidenceSnapshot evidence = input.Evidence;
-
-            // M15 is the canonical decision timeframe. Lower-timeframe evidence
-            // may improve entry precision, but a strong, closed M15 direction
-            // must not be overturned by a collection of faster-frame votes.
+            // M15 is the canonical decision timeframe. Lower frames can improve
+            // entry precision, but they cannot manufacture a trade direction while
+            // the closed M15 context is weak or points the other way.
             int m15Direction =
                 input.M15Frame == null
                     ? 0
                     : input.M15Frame.Direction;
 
+            int m15Quality =
+                input.M15Frame == null
+                    ? 0
+                    : input.M15Frame.Quality;
+
+            bool weakM15Context =
+                consensus.Direction != 0 &&
+                (input.M15Frame == null ||
+                 m15Direction == 0 ||
+                 m15Quality <
+                    Math.Max(
+                        65,
+                        input.MinimumSmartDirectionShare));
+
             bool strongM15Conflict =
                 consensus.Direction != 0 &&
                 m15Direction != 0 &&
                 m15Direction != consensus.Direction &&
-                input.M15Frame != null &&
-                input.M15Frame.Quality >=
+                m15Quality >=
                     Math.Max(
-                        60,
+                        65,
                         input.MinimumSmartDirectionShare);
+
+            if (weakM15Context)
+            {
+                return new Decision
+                {
+                    BuyShare = consensus.BuyShare,
+                    SellShare = consensus.SellShare,
+                    Direction = 0,
+                    Edge = consensus.Edge,
+                    Regime = input.Regime,
+                    RegimeQuality = input.Evidence.RegimeQuality,
+                    IndicatorConfluenceQuality =
+                        input.M5Frame == null
+                            ? 0
+                            : input.M5Frame.IndicatorConfluenceQuality,
+                    IndicatorConflict =
+                        input.M5Frame == null
+                            ? 0
+                            : input.M5Frame.IndicatorConflict,
+                    Confidence = consensus.Edge,
+                    TriggerReady = false,
+                    EntryAllowed = false,
+                    BlockReason = "M15 CONTEXT WEAK",
+                    Reason =
+                        "M15 CONTEXT WEAK | M15 QUALITY=" +
+                        m15Quality +
+                        " | REQUIRED=" +
+                        Math.Max(
+                            65,
+                            input.MinimumSmartDirectionShare)
+                };
+            }
 
             if (strongM15Conflict)
             {
@@ -61,7 +104,7 @@ namespace cAlgo
                     Direction = 0,
                     Edge = consensus.Edge,
                     Regime = input.Regime,
-                    RegimeQuality = evidence.RegimeQuality,
+                    RegimeQuality = input.Evidence.RegimeQuality,
                     IndicatorConfluenceQuality =
                         input.M5Frame == null
                             ? 0
@@ -81,6 +124,8 @@ namespace cAlgo
                         consensus.Direction
                 };
             }
+
+            DecisionEvidenceSnapshot evidence = input.Evidence;
 
             Decision decision =
                 new Decision
@@ -136,6 +181,12 @@ namespace cAlgo
 
             decision.TimeframeAgreement = selectedTimeframeAgreement;
             decision.IndependentEvidence = selectedIndependentEvidence;
+            decision.IndependentEvidenceGroupCount =
+                consensus.Direction == 0
+                    ? 0
+                    : consensus.Direction == 1
+                        ? evidence.BullIndependentEvidenceGroups
+                        : evidence.BearIndependentEvidenceGroups;
             decision.StructuralConfirmations = selectedStructuralConfirmations;
             decision.RetestQuality = selectedRetestQuality;
 
@@ -153,11 +204,7 @@ namespace cAlgo
                     input.M5Frame == null
                         ? 0
                         : input.M5Frame.IndicatorConflict,
-                    consensus.Direction == 0
-                        ? 0
-                        : consensus.Direction == 1
-                            ? evidence.BullIndependentEvidenceGroups
-                            : evidence.BearIndependentEvidenceGroups);
+                    decision.IndependentEvidenceGroupCount);
 
             if (decision.Direction == 0)
             {
