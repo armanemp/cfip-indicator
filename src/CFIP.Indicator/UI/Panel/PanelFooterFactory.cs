@@ -45,7 +45,7 @@ namespace cAlgo
 
             _panelBuyPressureRow =
                 CreateFlowPressureRow(
-                    "BUY",
+                    "DOM BUY",
                     BuyArrowColor,
                     out _panelBuyPressureTrack,
                     out _panelBuyPressureFill,
@@ -346,6 +346,54 @@ namespace cAlgo
                 (int)Math.Round(
                     track.Width *
                     NumericGuards.ClampDouble(share, 0, 1)));
+        }
+
+        private bool TryResolveCanonicalBuySellLiquidity(
+            out double buyLiquidity,
+            out double sellLiquidity)
+        {
+            buyLiquidity = 0;
+            sellLiquidity = 0;
+
+            try
+            {
+                if (_marketDepth == null)
+                    _marketDepth =
+                        MarketData.GetMarketDepth(Symbol.Name);
+
+                if (_marketDepth == null)
+                    return false;
+
+                foreach (MarketDepthEntry entry in _marketDepth.BidEntries)
+                {
+                    double volume = entry.VolumeInUnits;
+                    if (!double.IsNaN(volume) &&
+                        !double.IsInfinity(volume) &&
+                        volume > 0)
+                        buyLiquidity += volume;
+                }
+
+                foreach (MarketDepthEntry entry in _marketDepth.AskEntries)
+                {
+                    double volume = entry.VolumeInUnits;
+                    if (!double.IsNaN(volume) &&
+                        !double.IsInfinity(volume) &&
+                        volume > 0)
+                        sellLiquidity += volume;
+                }
+
+                return NumericGuards.IsFinitePositive(
+                    buyLiquidity + sellLiquidity);
+            }
+            catch (Exception ex)
+            {
+                Print(
+                    "CFIP realtime market-depth snapshot failed: {0}",
+                    ex.Message);
+                buyLiquidity = 0;
+                sellLiquidity = 0;
+                return false;
+            }
         }
 
         private string FormatRealtimeVolume(
