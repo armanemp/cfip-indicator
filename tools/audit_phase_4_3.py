@@ -117,7 +117,7 @@ check(
     "ExecutionAction.Aggressive" in aggressive and
     "BuildReport(" in aggressive and
     "envelope.Identity" in aggressive and
-    "SignalId" in broker_report and
+    "SignalId" in contract_identity and
     "BrokerReportStatus.RecoveryRequired" in aggressive,
 )
 check(
