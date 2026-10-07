@@ -26,9 +26,10 @@ check("runtime unsubscribes", ".Tick -= OnAggressiveFlowTick" in runtime)
 check("runtime starts after data initialization", "StartAggressiveFlowRuntime();" in init)
 check("runtime stops on destroy", "StopAggressiveFlowRuntime();" in init)
 check("DOM uses broker depth volume", "entry.VolumeInUnits" in footer and "BidEntries" in footer and "AskEntries" in footer)
-check("UI labels DOM as DOM", "DOM BUY" in footer and "DOM SELL" in footer)
-check("UI exposes directional tick proxy separately", "FLOW BUY TICKS" in footer and "FLOW SELL TICKS" in footer)
-check("footer reserves four rows", "PanelFlowPressureRailHeight = 84" in constants and "PanelFooterMinHeight = 146" in constants)
+check("UI combines DOM BUY/SELL in one physical bar", '"DOM"' in footer and "CreateCombinedFlowPressureRow(" in footer and "segments.AddChild(buyFill)" in footer and "segments.AddChild(sellFill)" in footer)
+check("UI combines FLOW BUY/SELL ticks in one physical bar", '"FLOW TICKS"' in footer and "ApplyCombinedFlowBar(" in footer)
+check("BUY and SELL segments always consume the same full bar", "normalizedBuy /= total" in footer and "normalizedSell /= total" in footer and "sellWidth = Math.Max(1, width - buyWidth)" in footer)
+check("footer reserves two combined pressure rows", "PanelFlowPressureRailHeight = 96" in constants and "PanelFlowPressureRowHeight = 23" in constants)
 
 if errors:
     for e in errors:
