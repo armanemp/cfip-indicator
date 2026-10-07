@@ -758,12 +758,9 @@ namespace CFIP.cBot
                 !_executionEnvironment.Evaluate(
                     this,
                     envelope,
-                    MaxExecutionMarginUsagePercent,
-                    ExecutionMarginBufferPercent,
                     _executionSettings,
                     _dailyLossGuard,
                     pendingAction,
-                    EffectiveConcurrentScenarioLimit,
                     nowUtc,
                     Account.IsLive && executionEnabled,
                     out string environmentReason))
@@ -915,9 +912,9 @@ namespace CFIP.cBot
                     envelope,
                     Account.IsLive,
                     nowUtc,
-                    MaxExecutionMarginUsagePercent,
-                    ExecutionMarginBufferPercent,
-                    EffectiveConcurrentScenarioLimit,
+                    _executionSettings.MaxExecutionMarginUsagePercent,
+                    _executionSettings.ExecutionMarginBufferPercent,
+                    _executionSettings.MaxConcurrentScenarios,
                     _idempotencyStore,
                     out BrokerExecutionReport report,
                     out string executionReason))
