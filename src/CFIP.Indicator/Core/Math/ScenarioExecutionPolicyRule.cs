@@ -31,6 +31,8 @@ namespace cAlgo
 
     internal static class ScenarioExecutionPolicyRule
     {
+        private const int MinimumExecutableScenarioQuality = 78;
+
         internal static ScenarioExecutionPolicyResult Evaluate(
             TradeOpportunityCandidate candidate,
             Decision decision,
@@ -111,8 +113,16 @@ namespace cAlgo
 
             if (futurePending)
             {
+                if (candidate.IndependentEvidenceGroupCount < 3)
+                    return BlockScenarioExecutionPolicy(
+                        "FUTURE EVIDENCE DIVERSITY");
+
                 if (!candidate.FutureOrderReady)
                     return BlockScenarioExecutionPolicy("FUTURE ORDER NOT ARMED");
+
+                if (candidate.Quality < MinimumExecutableScenarioQuality)
+                    return BlockScenarioExecutionPolicy(
+                        "FUTURE PENDING QUALITY BELOW EXECUTION FLOOR");
 
                 return new ScenarioExecutionPolicyResult(
                     true,
@@ -126,6 +136,10 @@ namespace cAlgo
                     string.IsNullOrWhiteSpace(candidate.ActionabilityReason)
                         ? "SCENARIO NOT ACTIONABLE"
                         : candidate.ActionabilityReason);
+
+            if (candidate.Quality < MinimumExecutableScenarioQuality)
+                return BlockScenarioExecutionPolicy(
+                    "SCENARIO QUALITY BELOW EXECUTION FLOOR");
 
             bool independentTimeframe =
                 !string.IsNullOrWhiteSpace(candidate.SourceTimeframe) &&
