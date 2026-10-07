@@ -1762,3 +1762,20 @@ Scope closed:
 - runtime contract and source audit updated to enforce the realtime path.
 
 Live cTrader replay is still required to measure terminal-level latency and verify the observed time from tick -> reaction -> visual signal/alert.
+
+
+
+## Signal-quality precision hardening — 2026-10-07
+
+Status: implemented on `main`.
+
+Forensic findings:
+- Tactical opportunity quality was being pre-composed in `DecisionTacticalOpportunityAnalyzer` and then its WaveTrend, structural and independent-evidence components were added again by `TacticalOpportunityRule`, creating evidence double-counting.
+- Consensus direction relied primarily on softmax share; with a relatively high score temperature, small raw score gaps could produce a directional share large enough to satisfy the configured share floor.
+
+Correction:
+- Tactical quality now has one canonical formula owned by `TacticalOpportunityRule`: M5 frame quality + execution-zone quality + independent-evidence diversity.
+- Consensus now requires meaningful raw score separation in addition to the configured softmax-share threshold. The minimum raw gap is derived from the configured share/temperature and a bounded fraction of total evidence mass; no new public parameter was introduced.
+- BUY/SELL symmetry and bounded quality remain enforced by contracts.
+
+The intent is higher signal precision through removal of artificial confidence, not blind threshold inflation. Empirical signal-quality improvement still requires target-terminal/replay evidence.
