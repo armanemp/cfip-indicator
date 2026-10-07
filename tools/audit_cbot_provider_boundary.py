@@ -118,12 +118,15 @@ check(
 )
 
 check(
-    "cBot timer dedupe is scenario-scoped and bounded",
+    "cBot timer dedupe is scenario-scoped, bounded, and transient-retry aware",
     "MaxRealtimeTimerScenarioRevisions = 128" in cbot and
+    "RealtimeExecutionRetryInterval" in cbot and
     "_lastRealtimeTimerRevisionByScenario" in cbot and
+    "_nextRealtimeExecutionRetryUtcByScenario" in cbot and
     "_lastRealtimeTimerScenarioOrder" in cbot and
     "scenarioId" in cbot and
-    "envelope.Identity.Revision <= observedRevision" in cbot and
+    "envelope.Identity.Revision < observedRevision" in cbot and
+    "envelope.Identity.Revision <= observedRevision" not in cbot and
     "ClearRealtimeTimerObservationState();" in cbot and
     "_lastObservedEnvelopeRevision" not in cbot and
     "_lastObservedEnvelopeScenarioId" not in cbot and

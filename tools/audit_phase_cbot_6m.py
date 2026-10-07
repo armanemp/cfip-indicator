@@ -201,11 +201,19 @@ check(
 )
 
 check(
-    "timer dedupe tracks each scenario revision independently",
+    "timer retry is scenario-local and does not consume transient failures",
     "MaxRealtimeTimerScenarioRevisions = 128" in bot and
+    "RealtimeExecutionRetryInterval" in bot and
     "_lastRealtimeTimerRevisionByScenario" in bot and
-    "_lastRealtimeTimerScenarioOrder" in bot and
-    "envelope.Identity.Revision <= observedRevision" in bot
+    "_nextRealtimeExecutionRetryUtcByScenario" in bot and
+    "envelope.Identity.Revision < observedRevision" in bot and
+    "envelope.Identity.Revision <= observedRevision" not in bot
+)
+check(
+    "transport never refreshes immutable signal timestamps from heartbeat",
+    "TryReadHeartbeat" not in transport and
+    "RefreshEnvelopeHeartbeat" not in transport and
+    "ObservedUtc = heartbeat" not in transport
 )
 check(
     "cBot scenario PlanSnapshot carries the composite plan quality",

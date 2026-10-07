@@ -10096,7 +10096,8 @@ namespace cAlgo
                     Lane = OpportunityLane.Tactical,
                     ExecutionMode = ExecutionMode.RetestMarket,
                     ActionableNow = true,
-                    PresentationOnly = false
+                    PresentationOnly = false,
+                    Quality = 78
                 };
 
             ScenarioExecutionPolicyResult retestPolicy =

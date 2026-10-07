@@ -239,12 +239,17 @@ namespace CFIP.cBot
         private SignalEnvelope _lastSignalEnvelope;
         private long _stateRevision;
         private const int MaxRealtimeTimerScenarioRevisions = 128;
+        private static readonly TimeSpan RealtimeExecutionRetryInterval =
+            TimeSpan.FromSeconds(1);
 
         private readonly Dictionary<string, long> _lastRealtimeTimerRevisionByScenario =
             new Dictionary<string, long>(StringComparer.Ordinal);
 
         private readonly Queue<string> _lastRealtimeTimerScenarioOrder =
             new Queue<string>();
+
+        private readonly Dictionary<string, DateTime> _nextRealtimeExecutionRetryUtcByScenario =
+            new Dictionary<string, DateTime>(StringComparer.Ordinal);
 
         private bool EffectiveMarketExecutionEnabled =>
             Account.IsLive
@@ -437,9 +442,22 @@ namespace CFIP.cBot
 
             if (_lastRealtimeTimerRevisionByScenario.TryGetValue(
                     key,
-                    out long observedRevision) &&
-                envelope.Identity.Revision <= observedRevision)
-                return false;
+                    out long observedRevision))
+            {
+                if (envelope.Identity.Revision < observedRevision)
+                    return false;
+
+                if (envelope.Identity.Revision == observedRevision)
+                {
+                    if (!_nextRealtimeExecutionRetryUtcByScenario.TryGetValue(
+                            key,
+                            out DateTime retryUtc) ||
+                        Server.TimeInUtc < retryUtc)
+                        return false;
+
+                    return true;
+                }
+            }
 
             if (!_lastRealtimeTimerRevisionByScenario.ContainsKey(key))
                 _lastRealtimeTimerScenarioOrder.Enqueue(key);
@@ -462,10 +480,30 @@ namespace CFIP.cBot
             return true;
         }
 
+        private static bool IsRealtimeExecutionRetryableReason(
+            string reason)
+        {
+            if (string.IsNullOrWhiteSpace(reason))
+                return false;
+
+            return
+                reason.IndexOf("SPREAD", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                reason.IndexOf("MARKET CLOSED", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                reason.IndexOf("EXECUTION DISABLED", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                reason.IndexOf("AUTO TRADING DISABLED", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                reason.IndexOf("AUTOMATIC ORDERS DISABLED", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                reason.IndexOf("LIVE EXECUTION NOT ARMED", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                reason.IndexOf("MARGIN", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                reason.IndexOf("SCENARIO CAPACITY BLOCKED", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                reason.IndexOf("CONCURRENT SCENARIO CAPACITY BLOCKED", StringComparison.OrdinalIgnoreCase) >= 0;
+
+        }
+
         private void ClearRealtimeTimerObservationState()
         {
             _lastRealtimeTimerRevisionByScenario.Clear();
             _lastRealtimeTimerScenarioOrder.Clear();
+            _nextRealtimeExecutionRetryUtcByScenario.Clear();
         }
 
         protected override void OnTimer()
@@ -522,7 +560,21 @@ namespace CFIP.cBot
                             if (!ShouldProcessRealtimeTimerEnvelope(scenario))
                                 continue;
 
-                            ProcessSignalEnvelope(scenario, nowUtc);
+                            bool retryScenario =
+                                ProcessSignalEnvelope(
+                                    scenario,
+                                    nowUtc);
+                            string scenarioKey =
+                                BuildRealtimeScenarioKey(
+                                    scenario);
+
+                            if (retryScenario)
+                                _nextRealtimeExecutionRetryUtcByScenario[scenarioKey] =
+                                    nowUtc.Add(
+                                        RealtimeExecutionRetryInterval);
+                            else
+                                _nextRealtimeExecutionRetryUtcByScenario.Remove(
+                                    scenarioKey);
                             processedScenarioCount++;
                         }
 
@@ -547,7 +599,21 @@ namespace CFIP.cBot
                 if (!ShouldProcessRealtimeTimerEnvelope(envelope))
                     return;
 
-                ProcessSignalEnvelope(envelope, nowUtc);
+                bool retryEnvelope =
+                    ProcessSignalEnvelope(
+                        envelope,
+                        nowUtc);
+                string envelopeKey =
+                    BuildRealtimeScenarioKey(
+                        envelope);
+
+                if (retryEnvelope)
+                    _nextRealtimeExecutionRetryUtcByScenario[envelopeKey] =
+                        nowUtc.Add(
+                            RealtimeExecutionRetryInterval);
+                else
+                    _nextRealtimeExecutionRetryUtcByScenario.Remove(
+                        envelopeKey);
                 SweepScenarioProtectionStates(nowUtc);
                 PublishExecutionState("HEARTBEAT", false);
             }
@@ -564,7 +630,32 @@ namespace CFIP.cBot
                 exception);
         }
 
-        private void ProcessSignalEnvelope(
+        private string BuildRealtimeScenarioKey(
+            SignalEnvelope envelope)
+        {
+            if (envelope == null ||
+                envelope.Identity == null)
+                return string.Empty;
+
+            return (_boundIndicatorInstanceId ?? string.Empty) +
+                   "\u001F" +
+                   (envelope.Identity.ScenarioId ?? string.Empty);
+        }
+
+        private static bool ShouldRetryBrokerReport(
+            BrokerExecutionReport report,
+            string reason)
+        {
+            if (report == null ||
+                report.Status == BrokerReportStatus.RecoveryRequired)
+                return false;
+
+            return
+                report.Status == BrokerReportStatus.Rejected &&
+                IsRealtimeExecutionRetryableReason(reason);
+        }
+
+        private bool ProcessSignalEnvelope(
             SignalEnvelope envelope,
             DateTime nowUtc)
         {
@@ -580,7 +671,7 @@ namespace CFIP.cBot
                     "SIGNAL PREFLIGHT BLOCKED • " +
                     signalPreflightReason,
                     true);
-                return;
+                return false;
             }
 
             TrackScenarioEnvelope(envelope);
@@ -641,7 +732,7 @@ namespace CFIP.cBot
                         envelope.Identity == null
                             ? ""
                             : envelope.Identity.ScenarioId);
-                    return;
+                    return false;
                 }
             }
 
@@ -662,12 +753,9 @@ namespace CFIP.cBot
                 !_executionEnvironment.Evaluate(
                     this,
                     envelope,
-                    MaxExecutionMarginUsagePercent,
-                    ExecutionMarginBufferPercent,
                     _executionSettings,
                     _dailyLossGuard,
                     pendingAction,
-                    EffectiveConcurrentScenarioLimit,
                     nowUtc,
                     Account.IsLive && executionEnabled,
                     out string environmentReason))
@@ -678,7 +766,8 @@ namespace CFIP.cBot
                     "EXECUTION BLOCKED • " +
                     environmentReason,
                     true);
-                return;
+                return IsRealtimeExecutionRetryableReason(
+                    environmentReason);
             }
 
             bool actionEnabled =
@@ -699,7 +788,7 @@ namespace CFIP.cBot
                 PublishExecutionState(
                     "EXECUTION DISABLED • ENABLE cBOT EXECUTION",
                     true);
-                return;
+                return false;
             }
 
             if (envelope.Intent == null ||
@@ -716,7 +805,7 @@ namespace CFIP.cBot
                         ? "NO INTENT"
                         : envelope.Intent.Action.ToString()),
                     true);
-                return;
+                return false;
             }
 
             if (shadowResult == null)
@@ -726,7 +815,7 @@ namespace CFIP.cBot
                 PublishExecutionState(
                     "WAITING • SHADOW STATE UNAVAILABLE",
                     true);
-                return;
+                return true;
             }
 
             if (shadowResult.State != ShadowHostState.Ready)
@@ -739,14 +828,14 @@ namespace CFIP.cBot
                     (shadowResult.Reason ??
                      shadowResult.State.ToString()),
                     true);
-                return;
+                return true;
             }
 
             if (_sessionExecutions >=
                 EffectiveSessionExecutionCap)
             {
                 LogBlockedState("SESSION EXECUTION CAP REACHED");
-                return;
+                return false;
             }
 
             if (envelope.Intent.Action == ExecutionAction.PendingStop ||
@@ -757,9 +846,9 @@ namespace CFIP.cBot
                         envelope,
                         Account.IsLive,
                         nowUtc,
-                        MaxExecutionMarginUsagePercent,
-                        ExecutionMarginBufferPercent,
-                        EffectiveConcurrentScenarioLimit,
+                        _executionSettings.MaxExecutionMarginUsagePercent,
+                        _executionSettings.ExecutionMarginBufferPercent,
+                        _executionSettings.MaxConcurrentScenarios,
                         _idempotencyStore,
                         out BrokerExecutionReport pendingReport,
                         out string pendingReason))
@@ -805,7 +894,13 @@ namespace CFIP.cBot
                             : envelope.Identity.ScenarioId);
                 }
 
-                return;
+                return
+                    pendingReport == null
+                        ? IsRealtimeExecutionRetryableReason(
+                            pendingReason)
+                        : ShouldRetryBrokerReport(
+                            pendingReport,
+                            pendingReason);
             }
 
             if (_market.TryExecute(
@@ -813,9 +908,9 @@ namespace CFIP.cBot
                     envelope,
                     Account.IsLive,
                     nowUtc,
-                    MaxExecutionMarginUsagePercent,
-                    ExecutionMarginBufferPercent,
-                    EffectiveConcurrentScenarioLimit,
+                    _executionSettings.MaxExecutionMarginUsagePercent,
+                    _executionSettings.ExecutionMarginBufferPercent,
+                    _executionSettings.MaxConcurrentScenarios,
                     _idempotencyStore,
                     out BrokerExecutionReport report,
                     out string executionReason))
@@ -876,6 +971,13 @@ namespace CFIP.cBot
                         ? ""
                         : envelope.Identity.ScenarioId);
             }
+            return
+                report == null
+                    ? IsRealtimeExecutionRetryableReason(
+                        executionReason)
+                    : ShouldRetryBrokerReport(
+                        report,
+                        executionReason);
         }
 
         private void PlayBrokerOutcomeAudio(

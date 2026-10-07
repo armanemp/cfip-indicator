@@ -11,6 +11,7 @@ namespace cAlgo
             VerifyDecisionScoreBoundariesAndTraceability();
             VerifyNeutralQualityIsolation();
             VerifyQualityBoundaries();
+            VerifyCanonicalContextQualityContribution();
             VerifyTopDownCalibrationAbsoluteStrength();
             VerifyTacticalTopDownBypass();
             VerifyConfidenceCalibrationKeyEquality();
@@ -2672,6 +2673,43 @@ namespace cAlgo
                 !invalidTp.Allowed &&
                 invalidTp.Reason == "RISK/TP NUMERIC INVALID",
                 "smart break-even rejects non-finite TP1");
+        }
+
+
+        private static void VerifyCanonicalContextQualityContribution()
+        {
+            DecisionQualityCalculator calculator =
+                new DecisionQualityCalculator();
+
+            int weakContextQuality =
+                calculator.Calculate(
+                    82,
+                    78,
+                    6,
+                    4,
+                    75,
+                    0,
+                    0,
+                    0,
+                    3,
+                    65);
+
+            int strongContextQuality =
+                calculator.Calculate(
+                    82,
+                    78,
+                    6,
+                    4,
+                    75,
+                    0,
+                    0,
+                    0,
+                    3,
+                    90);
+
+            Assert(
+                strongContextQuality > weakContextQuality,
+                "canonical M15 context quality materially improves the decision quality score");
         }
 
         private static void Assert(bool condition, string name)
