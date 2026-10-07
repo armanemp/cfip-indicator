@@ -391,9 +391,13 @@ namespace CFIP.cBot
             ReloadSignalStore(false);
 
             DateTime nowUtc = Server.TimeInUtc;
+
             ReconcileBrokerState(false);
             PublishExecutionState("HEARTBEAT", false);
 
+            // Broker management is tick-driven because protection changes must
+            // react to the live position immediately. Signal ingestion/execution
+            // has one owner only: OnTimer().
             if (EffectiveManagementExecutionEnabled &&
                 !string.IsNullOrWhiteSpace(_boundIndicatorInstanceId))
             {
@@ -415,75 +419,7 @@ namespace CFIP.cBot
                 }
             }
 
-            bool hasScenarioBatch =
-                CfipDeviceSignalTransport.TryReadScenarioBatch(
-                    this,
-                    _boundIndicatorInstanceId,
-                    out SignalScenarioBatch scenarioBatch,
-                    out string scenarioBatchReason);
-
-            if (hasScenarioBatch)
-            {
-                if (scenarioBatch == null ||
-                    scenarioBatch.ContractVersion != ContractVersion.Current ||
-                    !string.Equals(
-                        scenarioBatch.IndicatorInstanceId,
-                        _boundIndicatorInstanceId,
-                        StringComparison.Ordinal) ||
-                    !string.Equals(
-                        scenarioBatch.Symbol,
-                        SymbolName,
-                        StringComparison.Ordinal))
-                {
-                    LogBlockedState(
-                        "SCENARIO BATCH CONTRACT OR IDENTITY MISMATCH");
-                    return;
-                }
-
-                SignalEnvelope[] scenarios =
-                    scenarioBatch.Scenarios ??
-                    Array.Empty<SignalEnvelope>();
-
-                if (scenarios.Length == 0)
-                {
-                    PublishExecutionState(
-                        "NO EXECUTABLE SCENARIOS",
-                        false);
-                    return;
-                }
-
-                for (int scenarioIndex = 0;
-                     scenarioIndex < scenarios.Length;
-                     scenarioIndex++)
-                {
-                    ProcessSignalEnvelope(
-                        scenarios[scenarioIndex],
-                        nowUtc);
-                }
-
-                SweepScenarioProtectionStates(nowUtc);
-                return;
-            }
-
-            if (!CfipDeviceSignalTransport.TryRead(
-                    this,
-                    _boundIndicatorInstanceId,
-                    out SignalEnvelope envelope,
-                    out string transportReason))
-            {
-                LogBlockedState(
-                    string.IsNullOrWhiteSpace(scenarioBatchReason)
-                        ? transportReason
-                        : scenarioBatchReason);
-                return;
-            }
-
-            ProcessSignalEnvelope(
-                envelope,
-                nowUtc);
-
             SweepScenarioProtectionStates(nowUtc);
-            return;
         }
 
         private bool ShouldProcessRealtimeTimerEnvelope(
