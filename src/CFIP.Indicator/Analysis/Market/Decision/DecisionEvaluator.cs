@@ -196,7 +196,10 @@ namespace cAlgo
                     input.M5Frame == null
                         ? 0
                         : input.M5Frame.IndicatorConflict,
-                    decision.IndependentEvidenceGroupCount);
+                    decision.IndependentEvidenceGroupCount,
+                    input.M15Frame == null
+                        ? 0
+                        : input.M15Frame.Quality);
 
             // A trade candidate must be supported by at least three independent
             // evidence families. Multiple correlated indicators inside one family
