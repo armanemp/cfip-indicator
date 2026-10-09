@@ -31,6 +31,10 @@ namespace cAlgo
 
     internal static class ScenarioExecutionPolicyRule
     {
+        // Executable scenarios must clear a common quality floor. This is deliberately
+        // above the broad decision floor so presentation/watch states cannot leak into
+        // broker execution, including future pending orders.
+        private const int MinimumExecutableScenarioQuality = 78;
         internal static ScenarioExecutionPolicyResult Evaluate(
             TradeOpportunityCandidate candidate,
             Decision decision,
@@ -114,6 +118,10 @@ namespace cAlgo
                 if (!candidate.FutureOrderReady)
                     return BlockScenarioExecutionPolicy("FUTURE ORDER NOT ARMED");
 
+                if (candidate.Quality < MinimumExecutableScenarioQuality)
+                    return BlockScenarioExecutionPolicy(
+                        "FUTURE PENDING QUALITY BELOW EXECUTION FLOOR");
+
                 return new ScenarioExecutionPolicyResult(
                     true,
                     true,
@@ -126,6 +134,10 @@ namespace cAlgo
                     string.IsNullOrWhiteSpace(candidate.ActionabilityReason)
                         ? "SCENARIO NOT ACTIONABLE"
                         : candidate.ActionabilityReason);
+
+            if (candidate.Quality < MinimumExecutableScenarioQuality)
+                return BlockScenarioExecutionPolicy(
+                    "SCENARIO QUALITY BELOW EXECUTION FLOOR");
 
             bool independentTimeframe =
                 !string.IsNullOrWhiteSpace(candidate.SourceTimeframe) &&

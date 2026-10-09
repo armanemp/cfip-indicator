@@ -2970,3 +2970,14 @@ Verification note: GitHub source inspection confirms the intended ordering: M1 t
 - Final cBot environment preflight now enforces action-specific execution policy at the broker boundary: Market actions require cBot automatic trading policy; Pending Stop/Limit actions require automatic-order policy.
 - Indicator remains analysis/signal-only; no broker execution path was moved back into the Indicator.
 - Local Windows build and actual cTrader runtime execution remain the required verification step.
+
+## 2026-10-07 — Signal Quality / cBot Retry Boundary Hardening
+
+Status: **IMPLEMENTED — branch verification pending**
+
+- Realtime cBot signal revisions are no longer permanently consumed when a transient broker/environment gate blocks execution.
+- The cBot retries the same scenario revision on a bounded cadence for transient conditions such as spread, market-hours, execution permission, margin, and scenario-capacity blocks.
+- Permanent analytical/preflight failures remain revision-stable and are not blindly retried.
+- Executable scenario policy now enforces one shared minimum scenario quality floor of 78/100, including future pending scenarios.
+- This quality floor is owned by ScenarioExecutionPolicyRule; no second execution-quality gate was added to the broker coordinator.
+- Live execution remains explicitly opt-in; no code change auto-arms real-money execution.

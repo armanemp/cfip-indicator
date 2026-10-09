@@ -240,12 +240,17 @@ namespace CFIP.cBot
         private SignalEnvelope _lastSignalEnvelope;
         private long _stateRevision;
         private const int MaxRealtimeTimerScenarioRevisions = 128;
+        private static readonly TimeSpan RealtimeExecutionRetryInterval =
+            TimeSpan.FromSeconds(1);
 
         private readonly Dictionary<string, long> _lastRealtimeTimerRevisionByScenario =
             new Dictionary<string, long>(StringComparer.Ordinal);
 
         private readonly Queue<string> _lastRealtimeTimerScenarioOrder =
             new Queue<string>();
+
+        private readonly Dictionary<string, DateTime> _nextRealtimeExecutionRetryUtcByScenario =
+            new Dictionary<string, DateTime>(StringComparer.Ordinal);
 
         private bool EffectiveMarketExecutionEnabled =>
             Account.IsLive
@@ -460,7 +465,21 @@ namespace CFIP.cBot
                     key,
                     out long observedRevision) &&
                 envelope.Identity.Revision <= observedRevision)
-                return false;
+            {
+                if (_state != ShadowHostState.Blocked ||
+                    !IsRealtimeExecutionRetryableReason(_lastLoggedReason))
+                    return false;
+
+                if (_nextRealtimeExecutionRetryUtcByScenario.TryGetValue(
+                        key,
+                        out DateTime retryUtc) &&
+                    Server.TimeInUtc < retryUtc)
+                    return false;
+
+                _nextRealtimeExecutionRetryUtcByScenario[key] =
+                    Server.TimeInUtc.Add(RealtimeExecutionRetryInterval);
+                return true;
+            }
 
             if (!_lastRealtimeTimerRevisionByScenario.ContainsKey(key))
                 _lastRealtimeTimerScenarioOrder.Enqueue(key);
@@ -483,10 +502,28 @@ namespace CFIP.cBot
             return true;
         }
 
+        private static bool IsRealtimeExecutionRetryableReason(string reason)
+        {
+            if (string.IsNullOrWhiteSpace(reason))
+                return false;
+
+            return
+                reason.IndexOf("SPREAD", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                reason.IndexOf("MARKET CLOSED", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                reason.IndexOf("EXECUTION DISABLED", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                reason.IndexOf("AUTO TRADING DISABLED", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                reason.IndexOf("AUTOMATIC ORDERS DISABLED", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                reason.IndexOf("LIVE EXECUTION NOT ARMED", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                reason.IndexOf("MARGIN", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                reason.IndexOf("SCENARIO CAPACITY BLOCKED", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                reason.IndexOf("CONCURRENT SCENARIO CAPACITY BLOCKED", StringComparison.OrdinalIgnoreCase) >= 0;
+        }
+
         private void ClearRealtimeTimerObservationState()
         {
             _lastRealtimeTimerRevisionByScenario.Clear();
             _lastRealtimeTimerScenarioOrder.Clear();
+            _nextRealtimeExecutionRetryUtcByScenario.Clear();
         }
 
         protected override void OnTimer()

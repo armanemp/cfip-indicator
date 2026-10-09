@@ -1500,7 +1500,7 @@ if "ClosedContext = closedContext" not in decision_orchestration_code:
 if "TimeframeAgreement(1, closedContext)" not in decision_orchestration_code or "TimeframeAgreement(-1, closedContext)" not in decision_orchestration_code:
     raise SystemExit("Decision timeframe evidence must use the canonical closed context")
 
-if "int[] closedIndices" not in decision_timeframe_code or "closedIndices[i]" not in decision_timeframe_code:
+if "int[] closedIndices" not in decision_timeframe_code or "TimeframeAgreementRule.Calculate(" not in decision_timeframe_code or "closedIndices," not in decision_timeframe_code:
     raise SystemExit("Timeframe agreement must consume canonical closed indices")
 
 if "BuildDecision(" not in closed_calculation_code or "mtf);" not in closed_calculation_code:
